@@ -22,13 +22,21 @@ package org.polepos;
 
 public class Settings {
     
-    private static final boolean DEBUG = true;
+    /**
+     * not final, so there is message System.out
+     */
+    private static boolean DEBUG = true;
     
-    public static final String CIRCUIT = 
-        DEBUG ? "settings/DebugCircuits.properties" : "settings/Circuits.properties" ;
+    public static final String CIRCUIT = DEBUG ? "settings/DebugCircuits.properties" : "settings/Circuits.properties" ;
     
     public static final String JDBC = "settings/Jdbc.properties";
     
     public static final String JDO = "settings/Jdo.properties";
+    
+    static{
+        if(DEBUG){
+            System.out.println(Settings.class.getName() + ".DEBUG is set to true.");
+        }
+    }
 
 }
