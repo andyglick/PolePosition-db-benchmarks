@@ -19,6 +19,8 @@ MA  02111-1307, USA. */
 
 package org.polepos.teams.db4o;
 
+import java.util.*;
+
 import org.polepos.framework.*;
 
 import com.db4o.*;
@@ -32,7 +34,23 @@ public class Db4oTeam extends Team{
 
     private boolean _clientServerOverTcp = false;
     
+    private final List<Driver> _drivers;
     
+    public Db4oTeam() {
+        _drivers = new ArrayList<Driver>();
+        addDrivers();
+    }
+    
+    private void addDrivers(){
+        addDriver(new MelbourneDb4o());
+        addDriver(new SepangDb4o());
+        addDriver(new BahrainDb4o());
+        addDriver(new ImolaDb4o());
+        addDriver(new BarcelonaDb4o());
+        addDriver(new MonacoDb4o());
+        addDriver(new NurburgringDb4o());
+        addDriver(new MontrealDb4o());
+    }
     
     @Override
     public String name(){
@@ -48,19 +66,24 @@ public class Db4oTeam extends Team{
     public Car[] cars(){
 		return new Car[]{ new Db4oCar(_clientServer, _clientServerOverTcp) };
 	}
+    
+    public void addDriver(Driver driver){
+        _drivers.add(driver);
+    }
+    
+    public void addDriver(String driverName){
+        try {
+            Class clazz = this.getClass().getClassLoader().loadClass(driverName);
+            addDriver((Driver)clazz.newInstance());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public Driver[] drivers() {
-        return new Driver[]{
-            new MelbourneDb4o(),
-            new SepangDb4o(),
-            new BahrainDb4o(),
-            new ImolaDb4o(),
-            new BarcelonaDb4o(),
-            new MonacoDb4o(),
-            new NurburgringDb4o(),
-            new MontrealDb4o()
-        };
+        return _drivers.toArray(new Driver[0]);
     }
 
     @Override
