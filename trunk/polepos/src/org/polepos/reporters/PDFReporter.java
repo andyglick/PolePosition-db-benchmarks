@@ -26,6 +26,7 @@ import java.util.*;
 import java.util.List;
 
 import org.jfree.chart.*;
+import org.polepos.*;
 import org.polepos.framework.*;
 
 import com.lowagie.text.*;
@@ -176,7 +177,10 @@ public class PDFReporter extends GraphReporter {
 		List<TurnSetup> setups=graph.setups();
 		Table table = setupTable(graph);
 		int idx=1;
-        addTableCell(table, 0, 0,"t [time in ms]" , null,false,true);
+        String unitsLegend = Settings.GRAPH_MEMORY_CONSUMPTION ?
+            "t [time in ms]\nm [memory in kB]"
+           :"t [time in ms]";
+        addTableCell(table, 0, 0,unitsLegend , null,false,true);
 		for(TurnSetup setup : setups) {
             StringBuffer header = new StringBuffer();
             boolean first = true;
@@ -206,6 +210,16 @@ public class PDFReporter extends GraphReporter {
 				hidx++;
 			}
 			vidx++;
+            if(Settings.GRAPH_MEMORY_CONSUMPTION){
+                addTableCell(table,0,vidx,"","",true,false);
+                hidx=1;
+                for(TurnSetup setup : setups) {
+                    String text=String.valueOf(graph.memoryIncreaseFor(teamCar,setup));
+                    addTableCell(table,hidx,vidx,text, null,false,false);
+                    hidx++;
+                }
+                vidx++;
+            }
 		}
 		para.add(table);
         para.add(new Chunk("\n",bigFont));

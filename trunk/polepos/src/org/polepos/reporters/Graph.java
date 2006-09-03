@@ -103,6 +103,15 @@ public class Graph {
         }
 		return res.getTime();
 	}
+    
+    public final long memoryIncreaseFor(TeamCar teamCar, TurnSetup setup) {
+        Result res = results.get(new ResultsKey(teamCar,setup));
+        if(res == null){
+            return Integer.MAX_VALUE;
+        }
+        return res.getMemoryIncrease();
+    }
+
 	
 	private class ResultsKey {
         

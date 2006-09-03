@@ -23,9 +23,23 @@ package org.polepos;
 public class Settings {
     
     /**
-     * not final, so there is message System.out
+     * This variable is not final, to prevent inlining by the compiler, 
+     * so it get's printed to System.out when it is accessed.
      */
     private static boolean DEBUG = true;
+    
+    /**
+     * Experimental.
+     * Consecutive tests influence eachother, which makes measurement
+     * of memory consumption difficult and inaccurate. Garbage collection
+     * may free memory randomly at any time and a VM may appear to have
+     * more memory after a benchmark task, even though the task used up 
+     * a lot of memory.
+     * If a task appears to give back memory to the VM, the measured value
+     * for memory consumption will be reported as '2' to prevent distortion
+     * in the logarithmic graphs. 
+     */
+    public static boolean GRAPH_MEMORY_CONSUMPTION = false;
     
     public static final String CIRCUIT = DEBUG ? "settings/DebugCircuits.properties" : "settings/Circuits.properties" ;
     
@@ -34,9 +48,18 @@ public class Settings {
     public static final String JDO = "settings/Jdo.properties";
     
     static{
+        
+        String className = Settings.class.getName() ;
+        
         if(DEBUG){
-            System.out.println(Settings.class.getName() + ".DEBUG is set to true.");
+            System.out.println(className + ".DEBUG is set to true.\n");
         }
+        if(GRAPH_MEMORY_CONSUMPTION){
+            System.out.println(className + ".GRAPH_MEMORY_CONSUMPTION is set to true.");
+            System.out.println("This feature is experimental and will produce inaccurate results.");
+            System.out.println("Negative memory consumption is reported as '2' to prevent distorted graphs.\n");
+        }
+
     }
 
 }
