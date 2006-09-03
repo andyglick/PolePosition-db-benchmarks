@@ -28,7 +28,7 @@ import com.db4o.io.*;
 
 public class Db4oTeam extends Team{
     
-    private String _name = "db4o"; 
+    private String _name = db4oName(); 
     
     private boolean _clientServer = false;
 
@@ -93,7 +93,7 @@ public class Db4oTeam extends Team{
 
     @Override
     public void configure(int[] options) {
-        _name = "db4o";
+        _name = db4oName();
         if(options != null){
             for (int i = 0; i < options.length; i++) {
                 try{
@@ -129,10 +129,8 @@ public class Db4oTeam extends Team{
         }
     }
     
-    
-    
-    
-    
-    
+    private String db4oName(){
+        return "db4o";
+    }
     
 }
