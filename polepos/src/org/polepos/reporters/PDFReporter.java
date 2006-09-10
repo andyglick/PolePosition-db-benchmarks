@@ -101,7 +101,7 @@ public class PDFReporter extends GraphReporter {
                 }
             }else{
                 Car car = teamCar.getCar();
-                webSite = car.getWebsite();
+                webSite = car.website();
                 if(webSite != null){
                     if(! printed.contains(car)){
                         printed.add(car);
@@ -177,9 +177,7 @@ public class PDFReporter extends GraphReporter {
 		List<TurnSetup> setups=graph.setups();
 		Table table = setupTable(graph);
 		int idx=1;
-        String unitsLegend = Settings.GRAPH_MEMORY_CONSUMPTION ?
-            "t [time in ms]\nm [memory in kB]"
-           :"t [time in ms]";
+        String unitsLegend = "t [time in ms]";
         addTableCell(table, 0, 0,unitsLegend , null,false,true);
 		for(TurnSetup setup : setups) {
             StringBuffer header = new StringBuffer();
@@ -210,16 +208,6 @@ public class PDFReporter extends GraphReporter {
 				hidx++;
 			}
 			vidx++;
-            if(Settings.GRAPH_MEMORY_CONSUMPTION){
-                addTableCell(table,0,vidx,"","",true,false);
-                hidx=1;
-                for(TurnSetup setup : setups) {
-                    String text=String.valueOf(graph.memoryIncreaseFor(teamCar,setup));
-                    addTableCell(table,hidx,vidx,text, null,false,false);
-                    hidx++;
-                }
-                vidx++;
-            }
 		}
 		para.add(table);
         para.add(new Chunk("\n",bigFont));

@@ -27,7 +27,6 @@ import org.jfree.chart.plot.*;
 import org.jfree.chart.renderer.category.*;
 import org.jfree.data.category.*;
 import org.jfree.ui.*;
-import org.polepos.*;
 import org.polepos.framework.*;
 
 
@@ -41,15 +40,10 @@ public class ChartBuilder {
 
 	public JFreeChart createChart(Graph graph) {
 		CategoryDataset dataset=createDataset(graph);
-		String n = graph.setups().get(0).getMostImportantNameForGraph();
 		CategoryAxis categoryAxis = new CategoryAxis("");
 		categoryAxis.setLabelFont(CATEGORY_LABEL_FONT);
 		categoryAxis.setTickLabelFont(CATEGORY_TICKLABEL_FONT);
-        
-        String yLegendText = Settings.GRAPH_MEMORY_CONSUMPTION ?
-            " 1  /  log(t)   1 / log(m)        better >"
-           :" 1  /  log(t)                     better >";
-        
+        String yLegendText =  " 1  /  log(t + 2)                     better >";
 		ValueAxis valueAxis = new NumberAxis(yLegendText);
 		valueAxis.setLabelFont(VALUE_LABEL_FONT);
 		valueAxis.setTickLabelFont(VALUE_TICKLABEL_FONT);
@@ -68,30 +62,12 @@ public class ChartBuilder {
 	private CategoryDataset createDataset(Graph graph) {
 		DefaultCategoryDataset dataset=new DefaultCategoryDataset();
 		for(TeamCar teamCar : graph.teamCars()) {
-            
-            String timeName = Settings.GRAPH_MEMORY_CONSUMPTION ? "t " : "";
-            
 			for(TurnSetup setup : graph.setups()) {
                 String legend = "" + setup.getMostImportantValueForGraph();
                 double time = graph.timeFor(teamCar,setup);
-                double logTime = Math.log( time );
-                double valForOutput = 0;
-                if(logTime != 0){
-                    valForOutput = ((double)1)/logTime;
-                }
-				dataset.addValue(valForOutput,(timeName + teamCar.toString()),legend);
-                
-                if(Settings.GRAPH_MEMORY_CONSUMPTION){
-                    
-                    double memory = graph.memoryIncreaseFor(teamCar,setup);
-                    double logMemory = Math.log(memory);
-                    valForOutput = 0;
-                    if(logMemory != 0){
-                        valForOutput = ((double)1)/logMemory;
-                    }
-                    dataset.addValue(valForOutput,("m "+ teamCar.toString()),legend);
-                }
-                
+                double logTime = Math.log( time + 2);
+                double valForOutput = 1 /logTime;
+				dataset.addValue(valForOutput,(teamCar.toString()),legend);
             }
         }
 		return dataset;

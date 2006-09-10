@@ -26,16 +26,27 @@ package org.polepos.framework;
  */
 public abstract class Car{
     
-    protected String mWebsite;
-    protected String mDescription;
+    protected String _website;
+    
+    protected String _description;
+    
+    private long _startMemory;
     
 	public abstract String name();
     
-    public String getWebsite(){
-        return mWebsite;
+    public String website(){
+        return _website;
     }
     
     public String description(){
-        return mDescription;
+        return _description;
+    }
+    
+    public void recordMemory(){
+        _startMemory = Memory.used();
+    }
+    
+    public long startMemory(){
+        return _startMemory;
     }
 }

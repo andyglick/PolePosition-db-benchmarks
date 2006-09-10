@@ -94,6 +94,9 @@ public abstract class GraphReporter extends Reporter{
     @Override
     public void endSeason() {
         if(mGraphs != null){
+            
+            OverViewChartBuilder overViewChartBuilder = new OverViewChartBuilder();
+            
             System.out.println("Checking checksums for " + getClass().getName());
             for(Circuit circuit : mCircuits){
                 for(Lap lap : circuit.laps()){
@@ -101,9 +104,13 @@ public abstract class GraphReporter extends Reporter{
                     if(graph != null){
                         graph.compareCheckSums();
                         report(graph);
+                        overViewChartBuilder.report(graph);
                     }
                 }
             }
+            
+            overViewChartBuilder.createJPGs();
+            
 			finish();
         }
     }

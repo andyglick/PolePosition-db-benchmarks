@@ -46,8 +46,8 @@ public class JdbcCar extends Car{
     public JdbcCar(  String dbtype ) throws CarMotorFailureException {
         
         mDBType = dbtype;
-        mWebsite = Jdbc.settings().getWebsite(mDBType);
-        mDescription = Jdbc.settings().getDescription(mDBType);
+        _website = Jdbc.settings().getWebsite(mDBType);
+        _description = Jdbc.settings().getDescription(mDBType);
         mName = Jdbc.settings().getName(mDBType);
         
         try{
