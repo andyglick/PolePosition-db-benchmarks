@@ -22,8 +22,7 @@ package org.polepos.framework;
 /**
  * @author Herkules
  */
-public class StopWatch
-{
+public class StopWatch {
     
 	private long startNanos;
     
@@ -32,49 +31,24 @@ public class StopWatch
     private long startMemory;
     
     private long stopMemory; 
-    
 
-	public void start()
-	{
-        startMemory = usedMemory();
+	public void start(){
+        startMemory = Memory.used();
 		startNanos = System.nanoTime();
 	}
-    
 
-	public void stop()
-	{
+	public void stop(){
 		nanosEllapsed = System.nanoTime() - startNanos;
-        stopMemory = usedMemory();
+        stopMemory = Memory.used();
 	}
 
-	public long millisEllapsed()
-	{
-        long res = nanosEllapsed / (long) 1000000;
-        // return at least two, to get a nice logarithmic value.
-        if(res < 2){
-            res = 2;
-        }
-        return res;
+	public long millisEllapsed(){
+        return nanosEllapsed / 1000000;
 	}
 
-	public String toString()
-	{
+	public String toString(){
 		return "" + millisEllapsed() + "ms";
 	}
-    
-    private long usedMemory(){
-        Runtime rt = Runtime.getRuntime();
-        while(true){
-            long memory1 = rt.freeMemory();    
-            System.gc();
-            System.runFinalization();
-            long memory2 = rt.freeMemory();
-            if(memory2 >= memory1){
-                break;
-            }
-        };
-        return rt.totalMemory() - rt.freeMemory();
-    }
     
     public long startMemory(){
         return startMemory;
@@ -83,6 +57,5 @@ public class StopWatch
     public long stopMemory(){
         return stopMemory;
     }
-    
 	
 }

@@ -88,15 +88,12 @@ public class Result {
         return mTeam;
     }
     
-    public long getMemoryIncrease(){
-        long memoryIncrease = (mStopMemory - mStartMemory) / 1000; 
-        if(memoryIncrease < 2){
-            System.out.println("org.polepos.framework.Result#getMemmoryIncrease()");
-            System.out.println("Result is: " + memoryIncrease);
-            System.out.println("Returning 2 to prevent distortion of graphs.");
-            return 2;
-        }
-        return memoryIncrease; 
+    public long getStartMemory(){
+        return mStartMemory;
+    }
+    
+    public long getStopMemory(){
+        return mStopMemory;
     }
     
 }

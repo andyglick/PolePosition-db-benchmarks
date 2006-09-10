@@ -111,7 +111,7 @@ public class PlainTextReporter extends Reporter{
             }
             mOut.println();
         }
-        mOut.println("[" + result.getIndex() + "] " + result.getTime() + "ms   " + result.getMemoryIncrease() + "kB");
+        mOut.println("[" + result.getIndex() + "] " + result.getTime() + "ms   ");
     }
 
 	public void endSeason() {

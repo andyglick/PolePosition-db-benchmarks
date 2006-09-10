@@ -59,47 +59,47 @@ public class Racer implements Runnable {
             for (Reporter reporter : reporters) {
                 reporter.startSeason();
             }
+            
 
-            for (Circuit circuit : circuits) {
+            for (Team team : teams) {
+                
+                for (Car car : team.cars()) {
+                    
+                    car.recordMemory();
 
-                System.out.println("* Racing on " + circuit.name());
+                    for (Circuit circuit : circuits) {
 
-                for (Reporter reporter : reporters) {
-                    reporter.sendToCircuit(circuit);
-                }
-
-                for (Team team : teams) {
-
-                    Driver[] drivers = team.nominate(circuit);
-
-                    if (drivers == null || drivers.length == 0) {
+                        System.out.println("\n** Racing " + team.name() + "/"
+                            + car.name() + " on " + circuit.name() + "\n");
 
                         for (Reporter reporter : reporters) {
-                            reporter.noDriver(team, circuit);
+                            reporter.sendToCircuit(circuit);
                         }
 
-                    } else {
+                        Driver[] drivers = team.nominate(circuit);
+
+                        if (drivers == null || drivers.length == 0) {
+    
+                            for (Reporter reporter : reporters) {
+                                reporter.noDriver(team, circuit);
+                            }
+                            
+                            continue;
+                        }
+    
                         for (Driver driver : drivers) {
-
-                            for (Car car : team.cars()) {
-
-                                if (car != null) {
-
-                                    System.out.println("** On track: " + team.name() + "/"
-                                        + car.name());
-
-                                    TurnSetup[] setups = circuit.lapSetups();
-                                    TurnResult[] results = circuit.race(team, car, driver);
-
-                                    for (Reporter reporter : reporters) {
-                                        reporter.report(team, car, setups, results);
-                                    }
-                                }
+    
+                            TurnSetup[] setups = circuit.lapSetups();
+                            TurnResult[] results = circuit.race(team, car, driver);
+    
+                            for (Reporter reporter : reporters) {
+                                reporter.report(team, car, setups, results);
                             }
                         }
                     }
                 }
             }
+            
 
             for (Reporter reporter : reporters) {
                 reporter.endSeason();

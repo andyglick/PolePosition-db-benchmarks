@@ -44,8 +44,8 @@ public class JdoCar extends Car {
         mName = name;
         mDbName = dbName;
 
-        mWebsite = Jdo.settings().getWebsite(name);
-        mDescription = Jdo.settings().getDescription(name);
+        _website = Jdo.settings().getWebsite(name);
+        _description = Jdo.settings().getDescription(name);
 
         initialize();
 
