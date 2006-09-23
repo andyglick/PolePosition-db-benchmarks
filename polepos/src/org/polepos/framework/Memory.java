@@ -36,7 +36,7 @@ public class Memory {
             System.gc();
             System.runFinalization();
             long memory2 = rt.freeMemory();
-            if(memory2 >= memory1){
+            if(memory2 <= memory1){
                 break;
             }
         };
