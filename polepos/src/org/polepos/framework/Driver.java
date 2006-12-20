@@ -24,7 +24,7 @@ package org.polepos.framework;
  *
  * @author Herkules
  */
-public abstract class Driver
+public abstract class Driver implements Cloneable
 {
     
     private Car mCar;
@@ -74,4 +74,16 @@ public abstract class Driver
         return mCheckSum; 
     }
     
+    public Driver clone(){
+        try{
+            return (Driver) super.clone();
+        }catch(CloneNotSupportedException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    public boolean canConcurrent() {
+    	return true;
+    }
 }

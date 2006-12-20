@@ -26,8 +26,31 @@ import java.util.*;
  */
 public abstract class Team 
 {
+    // whether run test concurrently, false by default
+	private boolean concurrent;
+	
+	// total concurrent thread count
+	private int concurrentCount = 0;
     
-    /**
+    public int getConcurrentCount() {
+		return concurrentCount;
+	}
+
+	public void setConcurrentCount(int concurrentCount) {
+		if (concurrentCount > 0) {
+			concurrent = true;
+			this.concurrentCount = concurrentCount;
+		} else {
+			concurrent = false;
+			this.concurrentCount = 0;
+		}
+	}
+
+	public boolean isConcurrent() {
+		return concurrent;
+	}
+
+	/**
      * Possibility to add a switch for different configurations
      * and to call from the outside, even throug different
      * ClassLoaders 
@@ -41,6 +64,14 @@ public abstract class Team
     public abstract Car[] cars();
     
     public abstract Driver[] drivers();
+    
+    protected void setUp() {
+    	
+    }
+    
+    protected void tearDown() {
+    	
+    }
     
     public Driver[] nominate(Circuit circuit) {
         Vector <Driver> vec = new Vector <Driver> ();

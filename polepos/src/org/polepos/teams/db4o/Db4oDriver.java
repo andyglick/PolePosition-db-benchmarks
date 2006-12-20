@@ -19,11 +19,15 @@ MA  02111-1307, USA. */
 
 package org.polepos.teams.db4o;
 
-import org.polepos.framework.*;
+import org.polepos.framework.Car;
+import org.polepos.framework.CarMotorFailureException;
+import org.polepos.framework.CheckSummable;
+import org.polepos.framework.Driver;
+import org.polepos.framework.TurnSetup;
 
-import com.db4o.*;
-import com.db4o.ext.*;
-import com.db4o.query.*;
+import com.db4o.ObjectSet;
+import com.db4o.ext.ExtObjectContainer;
+import com.db4o.query.Query;
 
 
 /**
@@ -35,17 +39,14 @@ public abstract class Db4oDriver extends Driver{
 
 	public void takeSeatIn( Car car , TurnSetup setup) throws CarMotorFailureException{
         super.takeSeatIn(car, setup);
-		((Db4oCar)car).initialize();
 	}
-
+	
 	public void prepare(){
 		mDB = ((Db4oCar)car()).createObjectContainer();		
 	}
 	
 	public void backToPit(){
 		mDB.close();
-        
-        ((Db4oCar)car()).closeServer();
         
         // give the weak reference collector thread time to end
         try {
