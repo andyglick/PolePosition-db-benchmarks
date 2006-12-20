@@ -19,6 +19,7 @@ MA  02111-1307, USA. */
 
 package org.polepos.teams.db4o;
 
+import java.io.File;
 import java.util.*;
 
 import org.polepos.framework.*;
@@ -35,6 +36,20 @@ public class Db4oTeam extends Team{
     private boolean _clientServerOverTcp = false;
     
     private final List<Driver> _drivers;
+    
+    public static ObjectServer server;
+    
+    public static final int SERVER_PORT = 4488;
+    
+    public static final String SERVER_HOST = "localhost";
+    
+    public static final String SERVER_USER = "db4o";
+    
+    public static final String SERVER_PASSWORD = "db4o";
+    
+    public static final String FOLDER = "data/db4o";
+
+    public static final String DB4O_FILE = "dbbench.yap"; 
     
     public Db4oTeam() {
         _drivers = new ArrayList<Driver>();
@@ -117,7 +132,10 @@ public class Db4oTeam extends Team{
                         case Db4oOptions.CACHED_BTREE_ROOT:
                             Db4o.configure().bTreeCacheHeight(1);
                             break;
-                            
+                        case Db4oOptions.CONCURRENT_COUNT:
+						    _name += " threads = " + Db4oOptions.CONCURRENT_COUNT;
+						    setConcurrentCount(Db4oOptions.CONCURRENT_COUNT);
+						    break;
                         default:
                     
                     }
@@ -132,5 +150,33 @@ public class Db4oTeam extends Team{
     private String db4oName(){
         return "db4o";
     }
+
+	protected void setUp() {
+		new File(FOLDER).mkdirs();
+	    deleteDatabaseFile();
+	    
+		if(_clientServer){
+            Db4o.configure().messageLevel(-1);
+            server = Db4o.openServer(path(), SERVER_PORT);
+            server.grantAccess(SERVER_USER, SERVER_PASSWORD);
+        }
+	}
+
+	protected void tearDown() {
+		if(_clientServer && server != null) {
+			server.close();
+		}
+	}
     
+	public final static String path(){
+        return FOLDER + "/" + DB4O_FILE;
+    }
+	
+    /**
+     * get rid of the database file.
+     */
+    private void deleteDatabaseFile()
+    {
+        new File( path() ).delete();
+    }    
 }

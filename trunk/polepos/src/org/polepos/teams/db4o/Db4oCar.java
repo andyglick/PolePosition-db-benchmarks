@@ -29,25 +29,11 @@ import com.db4o.ext.*;
 
 public class Db4oCar extends Car {
     
-    private static final int SERVER_PORT = 4488;
-    
-    private static final String SERVER_HOST = "localhost";
-    
-    private static final String SERVER_USER = "db4o";
-    
-    private static final String SERVER_PASSWORD = "db4o";
-    
 	private String name;
     
     private boolean _clientServer;
     
     private boolean _clientServerOverTcp;
-    
-    private ObjectServer _server;
-    
-    private static final String FOLDER = "data/db4o";
-
-    private static final String DB4O_FILE = "dbbench.yap"; 
 
 	Db4oCar(boolean clientServer, boolean clientServerOverTcp) {
         _clientServer = clientServer;
@@ -61,32 +47,17 @@ public class Db4oCar extends Car {
 	}
     
     /**
-     * Initialize the database by deleting the database file.
-     */
-    public void initialize()
-    {
-        new File(FOLDER).mkdirs();
-        deleteDatabaseFile();
-    }
-    
-    /**
      * Open database in the configured mode.
      */
     public ExtObjectContainer createObjectContainer()
     {
         if(! _clientServer){
-            return Db4o.openFile( path() ).ext();
-        }
-        
-        if(_clientServer){
-            Db4o.configure().messageLevel(-1);
-            _server = Db4o.openServer(path(), SERVER_PORT);
-            _server.grantAccess(SERVER_USER, SERVER_PASSWORD);
-        }
-        
+            return Db4o.openFile( Db4oTeam.path() ).ext();
+        }   
+
         if(_clientServerOverTcp){
             try {
-                return Db4o.openClient(SERVER_HOST, SERVER_PORT, SERVER_USER, SERVER_PASSWORD).ext();
+                return Db4o.openClient(Db4oTeam.SERVER_HOST, Db4oTeam.SERVER_PORT, Db4oTeam.SERVER_USER, Db4oTeam.SERVER_PASSWORD).ext();
             } catch (IOException e) {
                 
                 // Can happen if port not available
@@ -96,33 +67,7 @@ public class Db4oCar extends Car {
             }
             return null;
         }
-        
-        return _server.openClient().ext();
-    }
-    
-    /**
-     * closes any server if opened 
-     */
-    public void closeServer(){
-        if(_server != null){
-            _server.close();
-        }
-        _server = null;
-    }
-    
-    /**
-     * get rid of the database file.
-     */
-    private void deleteDatabaseFile()
-    {
-        new File( path() ).delete();
-    }
-    
-    
-    private final String path(){
-        return FOLDER + "/" + DB4O_FILE;
-        
-    }
-    
-
+        // embedded client server mode
+		return Db4oTeam.server.openClient().ext();
+	}
 }

@@ -91,22 +91,42 @@ public abstract class Circuit{
      * calling all the laps for all the lapSetups
      */
     public TurnResult[] race( Team team, Car car, Driver driver){
-        
+  
         TurnResult[] results = new TurnResult[ mLapSetups.length ];
 
         int index = 0;
+        
+        Driver[] drivers = null;
+    	
+        boolean concurrent = team.isConcurrent() && driver.canConcurrent();
+        
+        if (concurrent) {
+			drivers = new Driver[team.getConcurrentCount()];
+			drivers[0] = driver;
+			for (int i = 1; i < drivers.length; ++i) {
+				drivers[i] = driver.clone();
+			}
+		}
         
         for(TurnSetup setup : mLapSetups) {
             
             TurnResult result = new TurnResult(); 
             results[index++] = result;
             
+            team.setUp();
+            
             try {
-                driver.takeSeatIn(car, setup);
-            } catch (CarMotorFailureException e1) {
-                e1.printStackTrace();
-                break;
-            }
+				if (concurrent) {
+					for (int i = 0; i < drivers.length; ++i) {
+						drivers[i].takeSeatIn(car, setup);
+					}
+				} else {
+					driver.takeSeatIn(car, setup);
+				}
+			} catch (CarMotorFailureException e1) {
+				e1.printStackTrace();
+				break;
+			}
             
             
             boolean first = true;
@@ -129,26 +149,61 @@ public abstract class Circuit{
                     if(first){
                        first = false;
                     }else{
-                        driver.backToPit();
+                    	if (concurrent) {
+							for (Driver d : drivers) {
+								d.backToPit();
+							}
+						} else {
+							driver.backToPit();
+						}
                     }
                     
                     try {
-                        driver.prepare();
+                    	if (concurrent) {
+							for (Driver d : drivers) {
+								d.prepare();
+							}
+						} else {
+							driver.prepare();
+						}
                     } catch (CarMotorFailureException e) {
                         e.printStackTrace();
                     }        
                 }
                 
+                RunLapThread[] threads = null;
+                if(concurrent) {
+                	threads = new RunLapThread[drivers.length];
+                	for(int i = 0; i < drivers.length; ++i) {
+                		threads[i] = new RunLapThread(method, drivers[i]);
+                	}
+                }
                 
                 watch.start();
                 
                 try {
-                    method.invoke(driver, (Object[])null);
+                	if(concurrent) {
+						for (RunLapThread t : threads) {
+							t.start();
+						}
+					} else {
+						method.invoke(driver, (Object[]) null);
+					}
                 } catch (Exception e) {
                     System.err.println("Exception on calling method " + method);
                     e.printStackTrace();
                 }
                 
+                if(concurrent) {
+					for (RunLapThread t : threads) {
+						try {
+							t.join();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+            	
                 watch.stop();
                 
                 if(lap.reportResult()){
@@ -156,9 +211,35 @@ public abstract class Circuit{
                 }
             }
             
-            driver.backToPit();
+            if(concurrent) {
+				for (Driver d : drivers) {
+					d.backToPit();
+				}
+			} else {
+				driver.backToPit();
+			}
+            
+            team.tearDown();
         }
         return results;
     }
     
+}
+
+class RunLapThread extends Thread {
+	Method method;
+	Driver driver;
+	public RunLapThread(Method method, Driver driver) {
+		super();
+		this.method = method;
+		this.driver = driver;
+	}
+	public void run () {
+		try {
+			method.invoke(driver, (Object[]) null);
+		} catch (Exception e) {
+            System.err.println("Exception on calling method " + method);
+            e.printStackTrace();
+        }
+	}
 }
