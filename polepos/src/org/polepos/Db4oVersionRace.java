@@ -43,19 +43,25 @@ public class Db4oVersionRace {
         String jar55 = "db4o-5.5-java5.jar";
         
         return new Team[]{
+        	
+        	
+            db4oTeam(null, new int[]{Db4oOptions.LAZY_QUERIES} ),
+            db4oTeam(null, new int[]{Db4oOptions.SNAPSHOT_QUERIES} ),
+            db4oTeam(null, null),
+        	
         
-            db4oTeam(jar45, null),
+//            db4oTeam(jar45, null),
 //            db4oTeam(jar45, new int[]{Db4oOptions.CLIENT_SERVER, Db4oOptions.CLIENT_SERVER_TCP} ),
             
 //            db4oTeam(jar50, null),
 //            db4oTeam(jar50, new int[]{Db4oOptions.NO_FLUSH} ),
             
-            db4oTeam(jar52, new int[]{} ),
+//            db4oTeam(jar52, new int[]{} ),
 //            db4oTeam(jar52, new int[]{Db4oOptions.NO_FLUSH} ),
 //            db4oTeam(jar52, new int[]{Db4oOptions.CLIENT_SERVER, Db4oOptions.CLIENT_SERVER_TCP} ),
 //            db4oTeam(jar52, new int[]{Db4oOptions.CLIENT_SERVER, Db4oOptions.CLIENT_SERVER_TCP, Db4oOptions.NO_FLUSH} ),
             
-            db4oTeam(jar55, new int[]{Db4oOptions.CACHED_BTREE_ROOT} ),
+//            db4oTeam(jar55, new int[]{Db4oOptions.CACHED_BTREE_ROOT} ),
 //            db4oTeam(jar55, new int[]{Db4oOptions.NO_FLUSH} ),
 //            db4oTeam(jar55, new int[]{Db4oOptions.CLIENT_SERVER, Db4oOptions.CLIENT_SERVER_TCP} ),
 //            db4oTeam(jar55, new int[]{Db4oOptions.CLIENT_SERVER, Db4oOptions.CLIENT_SERVER_TCP, Db4oOptions.NO_FLUSH} ),
