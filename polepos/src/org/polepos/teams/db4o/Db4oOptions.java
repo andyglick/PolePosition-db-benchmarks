@@ -9,6 +9,8 @@ public class Db4oOptions {
     public static final int CLIENT_SERVER_TCP = 3;
     public static final int MEMORY_IO = 4;
     public static final int CACHED_BTREE_ROOT = 5;
+    public static final int LAZY_QUERIES = 6;
+    public static final int SNAPSHOT_QUERIES = 7;
     public static final int CONCURRENT_COUNT = 10;
 
 }
