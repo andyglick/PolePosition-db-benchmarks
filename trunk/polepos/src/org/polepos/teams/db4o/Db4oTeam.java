@@ -25,6 +25,7 @@ import java.util.*;
 import org.polepos.framework.*;
 
 import com.db4o.*;
+import com.db4o.config.*;
 import com.db4o.io.*;
 
 public class Db4oTeam extends Team{
@@ -132,6 +133,14 @@ public class Db4oTeam extends Team{
                         case Db4oOptions.CACHED_BTREE_ROOT:
                             Db4o.configure().bTreeCacheHeight(1);
                             break;
+                        case Db4oOptions.LAZY_QUERIES:
+                        	Db4o.configure().queries().evaluationMode(QueryEvaluationMode.LAZY);
+                            _name += " LAZY";
+                        	break;
+                        case Db4oOptions.SNAPSHOT_QUERIES:
+                        	Db4o.configure().queries().evaluationMode(QueryEvaluationMode.SNAPSHOT);
+                            _name += " SNAPSHOT";
+                        	break;
                         case Db4oOptions.CONCURRENT_COUNT:
 						    _name += " threads = " + Db4oOptions.CONCURRENT_COUNT;
 						    setConcurrentCount(Db4oOptions.CONCURRENT_COUNT);
