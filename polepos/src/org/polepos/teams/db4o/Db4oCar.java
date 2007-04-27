@@ -30,15 +30,16 @@ import com.db4o.ext.*;
 public class Db4oCar extends Car {
     
 	private String name;
-    
-    private boolean _clientServer;
-    
-    private boolean _clientServerOverTcp;
+	
+	private int[] _options;  
 
-	Db4oCar(boolean clientServer, boolean clientServerOverTcp) {
-        _clientServer = clientServer;
-        _clientServerOverTcp = clientServerOverTcp;
-        name = Db4o.version().substring(5);
+	public Db4oCar(int[] options) {
+		_options = options;
+		name = Db4o.version().substring(5);
+	}
+	
+	public int [] options() {
+		return _options;
 	}
 
 	@Override
@@ -51,11 +52,11 @@ public class Db4oCar extends Car {
      */
     public ExtObjectContainer createObjectContainer()
     {
-        if(! _clientServer){
-            return Db4o.openFile( Db4oTeam.path() ).ext();
-        }   
+        if (!isClientServer()) {
+			return Db4o.openFile(Db4oTeam.path()).ext();
+		}   
 
-        if(_clientServerOverTcp){
+        if(isClientServerOverTcp()){
             try {
                 return Db4o.openClient(Db4oTeam.SERVER_HOST, Db4oTeam.SERVER_PORT, Db4oTeam.SERVER_USER, Db4oTeam.SERVER_PASSWORD).ext();
             } catch (IOException e) {
@@ -69,5 +70,13 @@ public class Db4oCar extends Car {
         }
         // embedded client server mode
 		return Db4oTeam.server.openClient().ext();
+	}
+    
+    private boolean isClientServer() {
+		return Db4oOptions.containsOption(_options, Db4oOptions.CLIENT_SERVER);
+	}
+	
+	private boolean isClientServerOverTcp() {
+		return Db4oOptions.containsOption(_options, Db4oOptions.CLIENT_SERVER_TCP);
 	}
 }
