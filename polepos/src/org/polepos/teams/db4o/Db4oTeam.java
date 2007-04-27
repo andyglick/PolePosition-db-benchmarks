@@ -34,8 +34,6 @@ public class Db4oTeam extends Team{
     
     private boolean _clientServer = false;
 
-    private boolean _clientServerOverTcp = false;
-    
     private final List<Driver> _drivers;
 
 	private int[] _options;
@@ -126,7 +124,6 @@ public class Db4oTeam extends Team{
                             _name += " C/S";
                             break;
                         case Db4oOptions.CLIENT_SERVER_TCP:
-                            _clientServerOverTcp = true;
                             _name += " TCP";
                             break;
                         case Db4oOptions.MEMORY_IO:
@@ -143,6 +140,12 @@ public class Db4oTeam extends Team{
                         case Db4oOptions.SNAPSHOT_QUERIES:
                         	Db4o.configure().queries().evaluationMode(QueryEvaluationMode.SNAPSHOT);
                             _name += " SNAPSHOT";
+                        	break;
+                        case Db4oOptions.NORMAL_COLLECTION:
+                        	_name += " NC";
+                        	break;
+                        case Db4oOptions.P1FAST_COLLECTION:
+                        	_name += " P1FC";
                         	break;
                         case Db4oOptions.CONCURRENT_COUNT:
 						    _name += " threads = " + Db4oOptions.CONCURRENT_COUNT;
