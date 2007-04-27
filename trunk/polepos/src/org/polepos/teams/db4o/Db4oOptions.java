@@ -12,5 +12,18 @@ public class Db4oOptions {
     public static final int LAZY_QUERIES = 6;
     public static final int SNAPSHOT_QUERIES = 7;
     public static final int CONCURRENT_COUNT = 10;
-
+	public static final int NORMAL_COLLECTION = 11;
+	public static final int P1FAST_COLLECTION = 12;
+	
+	public static boolean containsOption(int[] options, int value) {
+		if(options == null) {
+			return false;
+		}
+		for (int opt : options) {
+			if(opt == value) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

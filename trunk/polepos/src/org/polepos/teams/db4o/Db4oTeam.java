@@ -37,6 +37,8 @@ public class Db4oTeam extends Team{
     private boolean _clientServerOverTcp = false;
     
     private final List<Driver> _drivers;
+
+	private int[] _options;
     
     public static ObjectServer server;
     
@@ -80,7 +82,7 @@ public class Db4oTeam extends Team{
 
     @Override
     public Car[] cars(){
-		return new Car[]{ new Db4oCar(_clientServer, _clientServerOverTcp) };
+		return new Car[]{ new Db4oCar(_options) };
 	}
     
     public void addDriver(Driver driver){
@@ -109,6 +111,7 @@ public class Db4oTeam extends Team{
 
     @Override
     public void configure(int[] options) {
+    	_options = options;
         _name = db4oName();
         if(options != null){
             for (int i = 0; i < options.length; i++) {
