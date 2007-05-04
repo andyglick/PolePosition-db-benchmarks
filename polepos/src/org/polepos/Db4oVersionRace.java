@@ -19,79 +19,65 @@ MA  02111-1307, USA. */
 
 package org.polepos;
 
-import java.io.*;
-import java.net.*;
 
+import org.polepos.circuits.bahrain.*;
+import org.polepos.circuits.barcelona.*;
+import org.polepos.circuits.imola.*;
+import org.polepos.circuits.melbourne.*;
+import org.polepos.circuits.monaco.*;
+import org.polepos.circuits.montreal.*;
+import org.polepos.circuits.nurburgring.*;
+import org.polepos.circuits.sepang.*;
 import org.polepos.framework.*;
+import org.polepos.runner.db4o.*;
 import org.polepos.teams.db4o.*;
 
 /**
- * uses Poleposition to run multiple db4o versions agains 
- * eachother to test performance progress.
+ * Please read the README file in the home directory first.
+ * 
  */
-public class Db4oVersionRace {
+public class Db4oVersionRace extends AbstractDb4oVersionsRaceRunner{
     
     public static void main(String[] arguments) {
-        new Racer(Circuits.all(), versions()).run();
+        new Db4oVersionRace().run();
     }
     
-    public static Team[] versions(){
-        
-        String jar45 = "db4o-4.5-java1.4.jar";
-        String jar50 = "db4o-5.0-java5.jar";
-        String jar52 = "db4o-5.2-java5.jar";
-        String jar55 = "db4o-5.5-java5.jar";
-        
-        return new Team[]{
-        	
-        	
-            db4oTeam(null, new int[]{Db4oOptions.LAZY_QUERIES} ),
-            db4oTeam(null, new int[]{Db4oOptions.SNAPSHOT_QUERIES} ),
-            db4oTeam(null, null),
-        	
-        
-//            db4oTeam(jar45, null),
-//            db4oTeam(jar45, new int[]{Db4oOptions.CLIENT_SERVER, Db4oOptions.CLIENT_SERVER_TCP} ),
-            
-//            db4oTeam(jar50, null),
-//            db4oTeam(jar50, new int[]{Db4oOptions.NO_FLUSH} ),
-            
-//            db4oTeam(jar52, new int[]{} ),
-//            db4oTeam(jar52, new int[]{Db4oOptions.NO_FLUSH} ),
-//            db4oTeam(jar52, new int[]{Db4oOptions.CLIENT_SERVER, Db4oOptions.CLIENT_SERVER_TCP} ),
-//            db4oTeam(jar52, new int[]{Db4oOptions.CLIENT_SERVER, Db4oOptions.CLIENT_SERVER_TCP, Db4oOptions.NO_FLUSH} ),
-            
-//            db4oTeam(jar55, new int[]{Db4oOptions.CACHED_BTREE_ROOT} ),
-//            db4oTeam(jar55, new int[]{Db4oOptions.NO_FLUSH} ),
-//            db4oTeam(jar55, new int[]{Db4oOptions.CLIENT_SERVER, Db4oOptions.CLIENT_SERVER_TCP} ),
-//            db4oTeam(jar55, new int[]{Db4oOptions.CLIENT_SERVER, Db4oOptions.CLIENT_SERVER_TCP, Db4oOptions.NO_FLUSH} ),
-        };
-    }
-    
-    private static Team db4oTeam(String jarName, int[] options) {
-        try {
-            
-            Team team = null;
-            
-            if(jarName == null){
-                team = (Team)Class.forName(Db4oTeam.class.getName()).newInstance();
-            }else{
-                String[] prefixes={"com.db4o.","org.polepos.teams.db4o."};
-                URL classURL=new File("bin").toURL();
-                URL jarURL=new File("lib/"+jarName).toURL();
-                
-                // System.out.println(classURL+" , "+jarURL);
-                
-                ClassLoader loader=new VersionClassLoader(new URL[]{classURL,jarURL},prefixes);
-                team = (Team)loader.loadClass(Db4oTeam.class.getName()).newInstance();
-            }
-            team.configure(options);
-            return team;
-        } catch (Exception exc) {
-            exc.printStackTrace();
-            return null;
-        }
-    }
-    
+    public Team[] teams() {
 
+		return new Team[] {
+				db4oTeam(Db4oVersions.JAR57, null),
+				db4oTeam(Db4oVersions.JAR55, null),
+				db4oTeam(Db4oVersions.JAR52, null),
+				db4oTeam(Db4oVersions.JAR57, new int[] {Db4oOptions.CLIENT_SERVER, Db4oOptions.CLIENT_SERVER_TCP }),
+				db4oTeam(Db4oVersions.JAR55, new int[] {Db4oOptions.CLIENT_SERVER,Db4oOptions.CLIENT_SERVER_TCP }),
+				db4oTeam(Db4oVersions.JAR52, new int[] {Db4oOptions.CLIENT_SERVER, Db4oOptions.CLIENT_SERVER_TCP }),
+		};
+	}
+
+	public Circuit[] circuits() {
+		return new Circuit[] { 
+				 new Melbourne(),
+				 new Sepang(),
+				 new Bahrain(),
+				 new Imola(),
+				 new Barcelona(),
+				 new Monaco(),
+				 new Nurburgring(),
+				 new Montreal(),
+		};
+	}
+
+	public Driver[] drivers() {
+		return new Driver [] {
+				new MelbourneDb4o(),
+		        new SepangDb4o(),
+		        new BahrainDb4o(),
+		        new ImolaDb4o(),
+		        new BarcelonaDb4o(),
+		        new MonacoDb4o(),
+		        new NurburgringDb4o(),
+		        new MontrealDb4o(),
+		};
+	}
+    
 }
