@@ -25,76 +25,67 @@ package org.polepos.framework;
 public class Result {
     
     
-    private final Circuit mCircuit;
+    private final Circuit _circuit;
     
-    private final Team mTeam;
+    private final Team _team;
     
-    private final TurnSetup mSetup;
+    private final TurnSetup _setup;
     
-    private final int mIndex;
+    private final int _index;
     
-    private final Lap mLap;
+    private final Lap _lap;
     
-    private final long mTime;
+    private final long _time;
     
-    private final long mCheckSum;
+    private final long _checkSum;
     
-    private final long mStartMemory;
+    private final long _memory;    
     
-    private final long mStopMemory;
-    
-    
-    public Result(Circuit circuit, Team team, Lap lap, TurnSetup setup, int index, long time, long checkSum, long startMemory, long stopMemory){
-        mCircuit = circuit;
-        mTeam = team;
-        mLap = lap;
-        mSetup = setup;
-        mIndex = index;
-        mTime = time;
-        mCheckSum = checkSum;
-        mStartMemory = startMemory;
-        mStopMemory = stopMemory;
+    public Result(Circuit circuit, Team team, Lap lap, TurnSetup setup, int index, long time, long memory, long checkSum){
+        _circuit = circuit;
+        _team = team;
+        _lap = lap;
+        _setup = setup;
+        _index = index;
+        _time = time;
+        _checkSum = checkSum;
+        _memory = memory;
     }
     
     public String getName(){
-        return mLap.name();
+        return _lap.name();
     }
     
     public long getTime(){
-        return mTime;
+        return _time;
     }
     
     public TurnSetup getSetup(){
-        return mSetup;
+        return _setup;
     }
     
     public int getIndex(){
-        return mIndex;
+        return _index;
     }
     
     public Circuit getCircuit(){
-        return mCircuit;
+        return _circuit;
     }
     
     public Lap getLap(){
-        return mLap;
+        return _lap;
     }
     
     public long getCheckSum(){
-        return mCheckSum;
+        return _checkSum;
     }
     
     public Team getTeam(){
-        return mTeam;
+        return _team;
     }
     
-    public long getStartMemory(){
-        return mStartMemory;
+    public long getMemory(){
+        return _memory;
     }
-    
-    public long getStopMemory(){
-        return mStopMemory;
-    }
-    
 }
 

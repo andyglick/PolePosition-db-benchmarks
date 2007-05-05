@@ -22,6 +22,8 @@ package org.polepos.framework;
 import java.lang.reflect.*;
 import java.util.*;
 
+import org.polepos.watcher.*;
+
 /**
  * a set of timed test cases that work against the same data
  */
@@ -30,11 +32,16 @@ public abstract class Circuit{
     private final List<Lap> mLaps;
     
     private final TurnSetup[] mLapSetups;
+        
+    // TODO: watcher can be installed, and should be sorted, i.e. memory watcher
+	// should start before time watcher
+    private TimeWatcher _timeWatcher;
     
-    private final StopWatch watch;
+    private MemoryWatcher _memoryWatcher;
     
     protected Circuit(){
-        watch = new StopWatch();
+        _timeWatcher = new TimeWatcher();
+		_memoryWatcher = new MemoryWatcher();
         mLaps = new ArrayList<Lap>();
         mLapSetups = TurnSetup.read(this);
         addLaps();
@@ -179,7 +186,8 @@ public abstract class Circuit{
                 	}
                 }
                 
-                watch.start();
+                _memoryWatcher.start();
+                _timeWatcher.start();
                 
                 try {
                 	if(concurrent) {
@@ -203,11 +211,14 @@ public abstract class Circuit{
 						}
 					}
 				}
-            	
-                watch.stop();
+                
+                _timeWatcher.stop();
+                _memoryWatcher.stop();
                 
                 if(lap.reportResult()){
-                    result.report(new Result(this, team, lap, setup, index, watch.millisEllapsed(), driver.checkSum(), watch.startMemory(), watch.stopMemory()));
+                	long time = (Long)_timeWatcher.value();
+                	long memory = (Long) _memoryWatcher.value();
+                    result.report(new Result(this, team, lap, setup, index, time, memory, driver.checkSum()));
                 }
             }
             
