@@ -23,13 +23,13 @@ package org.polepos.framework;
 
 public class Memory {
     
-    public static long used(){
-        return calculateUsedMemory();
+    public static long used(boolean callgc){
+    	return calculateUsedMemory(callgc);
     }
     
-    private static long calculateUsedMemory(){
+    private static long calculateUsedMemory(boolean callgc){
         Runtime rt = Runtime.getRuntime();
-        while(true){
+        while(callgc){
             long memory1 = rt.freeMemory();    
             System.gc();
             System.runFinalization();

@@ -103,6 +103,15 @@ public class Graph {
         }
 		return res.getTime();
 	}
+	
+	public final long memoryFor(TeamCar teamCar, TurnSetup setup) {
+	    // FIXME: the memory watcher is not correct.
+        Result res = results.get(new ResultsKey(teamCar,setup));
+        if(res == null){
+            return Integer.MAX_VALUE;
+        }
+		return res.getStopMemory() - teamCar.getCar().startMemory();
+	}
     
     public final long startMemoryFor(TeamCar teamCar, TurnSetup setup) {
         Result res = results.get(new ResultsKey(teamCar,setup));

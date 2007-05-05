@@ -117,9 +117,15 @@ public class HTMLReporter extends GraphReporter {
 	}
 
 	private void renderLapGraph(Graph graph) throws IOException {
-		JFreeChart chart=new ChartBuilder().createChart(graph);
-		BufferedImage img=chart.createBufferedImage(750,500);
-		ImageIO.write(img, "jpg", new File(outdir,lapFilePrefix()+".jpg"));
+		JFreeChart timeChart = new ChartBuilder().createTimeChart(graph);
+		BufferedImage timeImage = timeChart.createBufferedImage(750, 500);
+		ImageIO.write(timeImage, "jpg", new File(outdir, lapFilePrefix()
+				+ "_time.jpg"));
+
+		JFreeChart memoryChart = new ChartBuilder().createMemoryChart(graph);
+		BufferedImage memoryImage = memoryChart.createBufferedImage(750, 500);
+		ImageIO.write(memoryImage, "jpg", new File(outdir, lapFilePrefix()
+				+ "_memory.jpg"));
 	}
 
 	private void renderPage(String targetName,VelocityContext context) {
