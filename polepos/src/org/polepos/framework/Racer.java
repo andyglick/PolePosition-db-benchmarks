@@ -65,8 +65,6 @@ public class Racer implements Runnable {
                 
                 for (Car car : team.cars()) {
                     
-                    car.recordMemory();
-
                     for (Circuit circuit : circuits) {
 
                         System.out.println("\n** Racing " + team.name() + "/"

@@ -19,19 +19,18 @@ MA  02111-1307, USA. */
 
 package org.polepos.framework;
 
+
 /**
  * a specialized implementation of a team
  *
- * @author Herkules
+ * @author Herkules, Andrew Zhang
  */
 public abstract class Car{
     
     protected String _website;
     
     protected String _description;
-    
-    private long _startMemory;
-    
+        
 	public abstract String name();
     
     public String website(){
@@ -40,13 +39,5 @@ public abstract class Car{
     
     public String description(){
         return _description;
-    }
-    
-    public void recordMemory(){
-        _startMemory = Memory.used(true);
-    }
-    
-    public long startMemory(){
-        return _startMemory;
     }
 }
