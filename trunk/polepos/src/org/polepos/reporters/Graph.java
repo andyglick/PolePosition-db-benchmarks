@@ -105,30 +105,12 @@ public class Graph {
 	}
 	
 	public final long memoryFor(TeamCar teamCar, TurnSetup setup) {
-	    // FIXME: the memory watcher is not correct.
-        Result res = results.get(new ResultsKey(teamCar,setup));
+	    Result res = results.get(new ResultsKey(teamCar,setup));
         if(res == null){
             return Integer.MAX_VALUE;
         }
-		return res.getStopMemory() - teamCar.getCar().startMemory();
+		return res.getMemory();
 	}
-    
-    public final long startMemoryFor(TeamCar teamCar, TurnSetup setup) {
-        Result res = results.get(new ResultsKey(teamCar,setup));
-        if(res == null){
-            return Integer.MAX_VALUE;
-        }
-        return res.getStartMemory();
-    }
-    
-    public final long stopMemoryFor(TeamCar teamCar, TurnSetup setup) {
-        Result res = results.get(new ResultsKey(teamCar,setup));
-        if(res == null){
-            return Integer.MAX_VALUE;
-        }
-        return res.getStopMemory();
-    }
-
 	
 	private class ResultsKey {
         
