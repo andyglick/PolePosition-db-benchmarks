@@ -51,31 +51,20 @@ public class OverViewChartBuilder {
     
 
     public void report(Graph graph) {
-        
-        for(TeamCar teamCar : graph.teamCars()) {
-            
-            long carStartMemory = teamCar.getCar().startMemory();
-            
-            for(TurnSetup setup : graph.setups()) {
-                
-                String legend = graph.circuit().name() + setup.getMostImportantValueForGraph();
-                
-                double time = graph.timeFor(teamCar,setup);
-                double logTime = Math.log( time + 2);
-                double valForOutput = 1 / logTime;
-                _timeDataset.addValue(valForOutput,(teamCar.toString()),legend);
-                    
-                long startMemory = graph.startMemoryFor(teamCar,setup);
-                startMemory -= carStartMemory;
-                _memoryDataset.addValue(startMemory,teamCar.toString(),":" + legend);
-                
-                long stopMemory = graph.stopMemoryFor(teamCar,setup);
-                stopMemory -= carStartMemory;
-                _memoryDataset.addValue(stopMemory,teamCar.toString(),legend + ":");
-                
-            }
-        }
-        
+        for (TeamCar teamCar : graph.teamCars()) {
+			for (TurnSetup setup : graph.setups()) {
+				String legend = graph.circuit().name()
+						+ setup.getMostImportantValueForGraph();
+				double time = graph.timeFor(teamCar, setup);
+				double logTime = Math.log(time + 2);
+				double valForOutput = 1 / logTime;
+				_timeDataset.addValue(valForOutput, (teamCar.toString()),
+						legend);
+				long memory = graph.memoryFor(teamCar, setup);
+				_memoryDataset.addValue(memory, teamCar.toString(), ":"
+						+ legend);
+			}
+		}
     }
     
     public void createJPGs() {

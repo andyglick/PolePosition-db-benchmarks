@@ -26,6 +26,7 @@ import java.util.*;
 import java.util.List;
 
 import org.jfree.chart.*;
+import org.jfree.data.category.*;
 import org.polepos.framework.*;
 
 import com.lowagie.text.*;
@@ -33,9 +34,9 @@ import com.lowagie.text.pdf.*;
 
 
 public class PDFReporter extends GraphReporter {
-	private Circuit mCircuit;
-	private Document mDocument;
-	private PdfWriter mWriter;
+	private Circuit _circuit;
+	private Document _document;
+	private PdfWriter _writer;
     
     private com.lowagie.text.Font h1Font = FontFactory.getFont(FontFactory.HELVETICA,15,Font.BOLD);
     private com.lowagie.text.Font h2Font = FontFactory.getFont(FontFactory.HELVETICA,12,Font.BOLD);
@@ -43,10 +44,9 @@ public class PDFReporter extends GraphReporter {
     private com.lowagie.text.Font bigFont = FontFactory.getFont(FontFactory.HELVETICA,10,Font.BOLD);
     private com.lowagie.text.Font smallFont = FontFactory.getFont(FontFactory.HELVETICA,9,Font.PLAIN);
     
-	
     protected void report(Graph graph) {
         
-		if(mDocument==null) {
+		if(_document==null) {
 	        setupDocument(PATH);
             try {
                 renderFirstPage(graph);
@@ -54,38 +54,38 @@ public class PDFReporter extends GraphReporter {
                 e.printStackTrace();
             }
 		}
-		if(mDocument==null) {
+		if(_document==null) {
 			return;
 		}
         
         Circuit circuit = graph.circuit();
-        if(! circuit.equals(mCircuit)){
-            mCircuit = circuit;
+        if(! circuit.equals(_circuit)){
+            _circuit = circuit;
         }
         
-		JFreeChart timeChart = new ChartBuilder().createTimeChart(graph);
+        JFreeChart timeChart = createTimeChart(graph);
         timeChart.setBackgroundPaint(null);
         try {
 			renderTimeTable(graph);
 			renderChart(timeChart);
-			mDocument.newPage();
+			_document.newPage();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		JFreeChart memoryChart = new ChartBuilder().createMemoryChart(graph);
+		JFreeChart memoryChart = createMemoryChart(graph);
 		memoryChart.setBackgroundPaint(null);
         try {
 			renderMemoryTable(graph);
 			renderChart(memoryChart);
-			mDocument.newPage();
+			_document.newPage();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
     }
-    
+
     private void renderFirstPage(Graph graph) throws DocumentException{
-        if(mDocument == null){
+        if(_document == null){
             return;
         }
         
@@ -95,7 +95,7 @@ public class PDFReporter extends GraphReporter {
         para.add(linked(new Chunk(WEBSITE + "\n\n\n", smallFont), WEBSITE));
         para.add(new Chunk("Participating teams\n\n",h2Font));
         
-        mDocument.add(para);
+        _document.add(para);
         
         List printed = new ArrayList();
         
@@ -118,7 +118,7 @@ public class PDFReporter extends GraphReporter {
                 }
             }
         }
-        mDocument.newPage();
+        _document.newPage();
     }
     
     private void renderTeam(String name, String description, String website) throws DocumentException{
@@ -131,7 +131,7 @@ public class PDFReporter extends GraphReporter {
             para.add(linked(new Chunk(website + "\n", smallFont), website));
         }
         para.add(new Chunk("\n",smallFont));
-        mDocument.add(para);
+        _document.add(para);
     }
     
     private Element linked(Chunk chunk, String link){
@@ -149,31 +149,31 @@ public class PDFReporter extends GraphReporter {
 		String fileName = path + "/" + "PolePosition.pdf";
 		File file = new File(fileName);
 		file.delete();
-		mDocument = new Document();
+		_document = new Document();
 		try {
-			mWriter = PdfWriter.getInstance(mDocument, new FileOutputStream(file));
-			mDocument.open();
+			_writer = PdfWriter.getInstance(_document, new FileOutputStream(file));
+			_document.open();
 		} catch (Exception exc) {
 			exc.printStackTrace();
-			mDocument=null;
+			_document=null;
 		}
 	}
 
     @Override
 	public void endSeason() {
         super.endSeason();
-        if(mDocument != null){
-            mDocument.close();
+        if(_document != null){
+            _document.close();
         }
-        if(mWriter != null){
-            mWriter.close();
+        if(_writer != null){
+            _writer.close();
         }
 	}
 
 	private void renderTimeTable(Graph graph) throws DocumentException {
 		String unitsLegend = "t [time in ms]";
 		renderTable(Reporter.TIME, graph, unitsLegend);
-        }
+	}
 	
 	private void renderMemoryTable(Graph graph) throws DocumentException {
 		String unitsLegend = "m [memory in bytes]";
@@ -227,7 +227,7 @@ public class PDFReporter extends GraphReporter {
 		}
 		para.add(table);
         para.add(new Chunk("\n",bigFont));
-        mDocument.add(para);
+        _document.add(para);
 	}
 
 	private String reportText(int type, Graph graph, TeamCar teamCar, TurnSetup setup) {
@@ -256,9 +256,11 @@ public class PDFReporter extends GraphReporter {
 	}
 	
 	private void renderChart(JFreeChart chart) throws DocumentException, BadElementException {
-        int width = 500;
-        int height = 300;
-		PdfContentByte cb = mWriter.getDirectContent();
+		renderChart(chart, 500, 300);
+	}
+	
+	private void renderChart(JFreeChart chart, int width, int height) throws DocumentException, BadElementException {
+        PdfContentByte cb = _writer.getDirectContent();
 		PdfTemplate tp = cb.createTemplate(width, height);
 		Graphics2D graphics = tp.createGraphics(width, height, new DefaultFontMapper());
 		java.awt.Rectangle area = new java.awt.Rectangle(0, 0, width, height);
@@ -266,8 +268,8 @@ public class PDFReporter extends GraphReporter {
 		graphics.dispose();
 		ImgTemplate imgtmpl=new ImgTemplate(tp);
 		//imgtmpl.setAlignment(Element.ALIGN_CENTER);
-		mDocument.add(imgtmpl);
-	}
+		_document.add(imgtmpl);
+	} 
 
 	private Table setupTable(Graph graph) throws BadElementException {
 		Table table=new Table(graph.setups().size()+1);
@@ -281,5 +283,22 @@ public class PDFReporter extends GraphReporter {
 	}
 
 	protected void finish() {
+		JFreeChart overviewTimeChart = createChart(_overviewTimeDataset, ReporterConstants.TIME_CHART_LEGEND);
+		renderOverviewPage(overviewTimeChart, ReporterConstants.TIME_OVERVIEW_LEGEND);
+		
+		JFreeChart overviewMemoryChart = createChart(_overviewMemoryDataset, ReporterConstants.MEMORY_CHART_LEGEND);
+		renderOverviewPage(overviewMemoryChart, ReporterConstants.MEMORY_OVERVIEW_LEGEND);			
+	}
+	
+	protected void renderOverviewPage(JFreeChart chart, String legend) {
+		Paragraph para = new Paragraph();
+		para.add(new Chunk(legend));
+		try {
+			_document.add(para);
+			renderChart(chart);
+			_document.newPage();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

@@ -117,12 +117,12 @@ public class HTMLReporter extends GraphReporter {
 	}
 
 	private void renderLapGraph(Graph graph) throws IOException {
-		JFreeChart timeChart = new ChartBuilder().createTimeChart(graph);
+		JFreeChart timeChart = createTimeChart(graph);
 		BufferedImage timeImage = timeChart.createBufferedImage(750, 500);
 		ImageIO.write(timeImage, "jpg", new File(outdir, lapFilePrefix()
 				+ "_time.jpg"));
 
-		JFreeChart memoryChart = new ChartBuilder().createMemoryChart(graph);
+		JFreeChart memoryChart = createMemoryChart(graph);
 		BufferedImage memoryImage = memoryChart.createBufferedImage(750, 500);
 		ImageIO.write(memoryImage, "jpg", new File(outdir, lapFilePrefix()
 				+ "_memory.jpg"));
