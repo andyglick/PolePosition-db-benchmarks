@@ -22,7 +22,6 @@ package org.polepos.teams.jdbc;
 
 import java.sql.*;
 
-import org.polepos.circuits.barcelona.*;
 import org.polepos.circuits.monaco.*;
 import org.polepos.framework.*;
 

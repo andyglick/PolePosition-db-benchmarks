@@ -33,13 +33,13 @@ public class StopWatch {
     private long stopMemory; 
 
 	public void start(){
-        startMemory = Memory.used();
+        startMemory = Memory.used(false);
 		startNanos = System.nanoTime();
 	}
 
 	public void stop(){
 		nanosEllapsed = System.nanoTime() - startNanos;
-        stopMemory = Memory.used();
+        stopMemory = Memory.used(false);
 	}
 
 	public long millisEllapsed(){

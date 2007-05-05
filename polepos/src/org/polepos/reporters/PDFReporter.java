@@ -26,7 +26,6 @@ import java.util.*;
 import java.util.List;
 
 import org.jfree.chart.*;
-import org.polepos.*;
 import org.polepos.framework.*;
 
 import com.lowagie.text.*;
@@ -64,12 +63,21 @@ public class PDFReporter extends GraphReporter {
             mCircuit = circuit;
         }
         
-		JFreeChart chart = new ChartBuilder().createChart(graph);
-		
-        chart.setBackgroundPaint(null);
+		JFreeChart timeChart = new ChartBuilder().createTimeChart(graph);
+        timeChart.setBackgroundPaint(null);
         try {
-			renderTable(graph);
-			renderChart(chart);
+			renderTimeTable(graph);
+			renderChart(timeChart);
+			mDocument.newPage();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		JFreeChart memoryChart = new ChartBuilder().createMemoryChart(graph);
+		memoryChart.setBackgroundPaint(null);
+        try {
+			renderMemoryTable(graph);
+			renderChart(memoryChart);
 			mDocument.newPage();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -162,10 +170,18 @@ public class PDFReporter extends GraphReporter {
         }
 	}
 
-	private void renderTable(Graph graph) throws DocumentException {
+	private void renderTimeTable(Graph graph) throws DocumentException {
+		String unitsLegend = "t [time in ms]";
+		renderTable(Reporter.TIME, graph, unitsLegend);
+        }
+	
+	private void renderMemoryTable(Graph graph) throws DocumentException {
+		String unitsLegend = "m [memory in bytes]";
+		renderTable(Reporter.MEMORY, graph, unitsLegend);
+	}
+
+	private void renderTable(int type, Graph graph, String unitsLegend) throws BadElementException, DocumentException {
 		Paragraph para=new Paragraph();
-		// para.setAlignment(Element.ALIGN_CENTER);
-        
         Circuit circuit = graph.circuit();
         Lap lap = graph.lap();
         
@@ -177,7 +193,6 @@ public class PDFReporter extends GraphReporter {
 		List<TurnSetup> setups=graph.setups();
 		Table table = setupTable(graph);
 		int idx=1;
-        String unitsLegend = "t [time in ms]";
         addTableCell(table, 0, 0,unitsLegend , null,false,true);
 		for(TurnSetup setup : setups) {
             StringBuffer header = new StringBuffer();
@@ -203,7 +218,8 @@ public class PDFReporter extends GraphReporter {
 			addTableCell(table,0,vidx,teamCar.toString(),teamCar.website(),true,false);
 			int hidx=1;
 			for(TurnSetup setup : setups) {
-				String text=String.valueOf(graph.timeFor(teamCar,setup));
+				String text = reportText(type, graph, teamCar, setup);
+//				String text=String.valueOf(graph.timeFor(teamCar,setup));
 				addTableCell(table,hidx,vidx,text, null,false,false);
 				hidx++;
 			}
@@ -213,6 +229,19 @@ public class PDFReporter extends GraphReporter {
         para.add(new Chunk("\n",bigFont));
         mDocument.add(para);
 	}
+
+	private String reportText(int type, Graph graph, TeamCar teamCar, TurnSetup setup) {
+		String text = null;
+		switch (type) {
+		case Reporter.TIME:
+			text = String.valueOf(graph.timeFor(teamCar, setup));
+			break;
+		case Reporter.MEMORY:
+			text = String.valueOf(graph.memoryFor(teamCar, setup));
+		}
+		return text;
+	}
+
 
 	private void addTableCell(Table table, int hidx, int vidx, String text, String link, boolean bold,boolean header) throws BadElementException {
         Chunk chunk = new Chunk(text,FontFactory.getFont(FontFactory.HELVETICA,9,(bold ? Font.BOLD : Font.PLAIN)));

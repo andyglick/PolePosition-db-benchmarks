@@ -32,6 +32,10 @@ public abstract class Reporter {
     protected final static String WEBSITE="http://www.polepos.org";
     
     protected final static String PATH="doc/results";
+    
+    public final static int TIME = 1;
+    
+    public final static int MEMORY = 2;
         
     protected Car mCar;
     

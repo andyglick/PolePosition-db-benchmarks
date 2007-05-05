@@ -43,7 +43,7 @@ public abstract class Car{
     }
     
     public void recordMemory(){
-        _startMemory = Memory.used();
+        _startMemory = Memory.used(true);
     }
     
     public long startMemory(){
