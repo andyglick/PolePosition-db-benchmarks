@@ -26,7 +26,6 @@ import java.util.*;
 import java.util.List;
 
 import org.jfree.chart.*;
-import org.jfree.data.category.*;
 import org.polepos.framework.*;
 
 import com.lowagie.text.*;
@@ -37,17 +36,16 @@ public class PDFReporter extends GraphReporter {
 	private Circuit _circuit;
 	private Document _document;
 	private PdfWriter _writer;
-    
-    private com.lowagie.text.Font h1Font = FontFactory.getFont(FontFactory.HELVETICA,15,Font.BOLD);
-    private com.lowagie.text.Font h2Font = FontFactory.getFont(FontFactory.HELVETICA,12,Font.BOLD);
-    
-    private com.lowagie.text.Font bigFont = FontFactory.getFont(FontFactory.HELVETICA,10,Font.BOLD);
-    private com.lowagie.text.Font smallFont = FontFactory.getFont(FontFactory.HELVETICA,9,Font.PLAIN);
+	
+	private static final com.lowagie.text.Font h1Font = FontFactory.getFont(FontFactory.HELVETICA,15,Font.BOLD);
+    private static final com.lowagie.text.Font h2Font = FontFactory.getFont(FontFactory.HELVETICA,12,Font.BOLD);
+    private static final com.lowagie.text.Font bigFont = FontFactory.getFont(FontFactory.HELVETICA,10,Font.BOLD);
+    private static final com.lowagie.text.Font smallFont = FontFactory.getFont(FontFactory.HELVETICA,9,Font.PLAIN);
     
     protected void report(Graph graph) {
         
 		if(_document==null) {
-	        setupDocument(PATH);
+	        setupDocument(ReporterConstants.PATH);
             try {
                 renderFirstPage(graph);
             } catch (DocumentException e) {
@@ -92,12 +90,12 @@ public class PDFReporter extends GraphReporter {
         Paragraph para=new Paragraph();
         para.add(new Chunk("PolePosition\n",h1Font));
         para.add(new Chunk("the open source database benchmark\n",smallFont));
-        para.add(linked(new Chunk(WEBSITE + "\n\n\n", smallFont), WEBSITE));
+        para.add(linked(new Chunk(ReporterConstants.WEBSITE + "\n\n\n", smallFont), ReporterConstants.WEBSITE));
         para.add(new Chunk("Participating teams\n\n",h2Font));
         
         _document.add(para);
         
-        List printed = new ArrayList();
+        List <Object> printed = new ArrayList <Object>();
         
         for(TeamCar teamCar :graph.teamCars()){
             Team team = teamCar.getTeam();
@@ -172,12 +170,12 @@ public class PDFReporter extends GraphReporter {
 
 	private void renderTimeTable(Graph graph) throws DocumentException {
 		String unitsLegend = "t [time in ms]";
-		renderTable(Reporter.TIME, graph, unitsLegend);
+		renderTable(ReporterConstants.TIME, graph, unitsLegend);
 	}
 	
 	private void renderMemoryTable(Graph graph) throws DocumentException {
 		String unitsLegend = "m [memory in bytes]";
-		renderTable(Reporter.MEMORY, graph, unitsLegend);
+		renderTable(ReporterConstants.MEMORY, graph, unitsLegend);
 	}
 
 	private void renderTable(int type, Graph graph, String unitsLegend) throws BadElementException, DocumentException {
@@ -233,10 +231,10 @@ public class PDFReporter extends GraphReporter {
 	private String reportText(int type, Graph graph, TeamCar teamCar, TurnSetup setup) {
 		String text = null;
 		switch (type) {
-		case Reporter.TIME:
+		case ReporterConstants.TIME:
 			text = String.valueOf(graph.timeFor(teamCar, setup));
 			break;
-		case Reporter.MEMORY:
+		case ReporterConstants.MEMORY:
 			text = String.valueOf(graph.memoryFor(teamCar, setup));
 		}
 		return text;

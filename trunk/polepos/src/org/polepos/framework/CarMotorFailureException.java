@@ -22,4 +22,6 @@ package org.polepos.framework;
 
 public class CarMotorFailureException extends Exception{
 
+	private static final long serialVersionUID = 1L;
+
 }
