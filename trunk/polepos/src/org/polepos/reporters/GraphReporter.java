@@ -138,12 +138,13 @@ public abstract class GraphReporter extends Reporter{
 		DefaultCategoryDataset dataset=new DefaultCategoryDataset();
 		String circuitName = graph.circuit().name().substring(0,3);
 		for(TeamCar teamCar : graph.teamCars()) {
+			int i = 0;
 			for(TurnSetup setup : graph.setups()) {
 				String legend = "" + setup.getMostImportantValueForGraph();
 	            double time = graph.timeFor(teamCar,setup);
 	            double logedTime = MathUtil.toLogedValue(time);
 	            dataset.addValue(logedTime,(teamCar.toString()),legend);
-	            _overviewTimeDataset.addValue(logedTime,(teamCar.toString()),circuitName);
+	            _overviewTimeDataset.addValue(logedTime,(teamCar.toString()),circuitName + ++i);
 	        }
 	    }
 		return dataset;
@@ -153,12 +154,13 @@ public abstract class GraphReporter extends Reporter{
 		DefaultCategoryDataset dataset=new DefaultCategoryDataset();
 		String circuitName = graph.circuit().name().substring(0,3);
 		for(TeamCar teamCar : graph.teamCars()) {
+			int i = 0;
 			for(TurnSetup setup : graph.setups()) {
 	            String legend = "" + setup.getMostImportantValueForGraph();
 	            double memory = graph.memoryFor(teamCar,setup);
 	            double logedMemory = MathUtil.toLogedValue(memory);
 				dataset.addValue(logedMemory,(teamCar.toString()),legend);
-				_overviewMemoryDataset.addValue(logedMemory,(teamCar.toString()),circuitName);
+				_overviewMemoryDataset.addValue(logedMemory,(teamCar.toString()),circuitName + ++i);
 	        }
 	    }
 		return dataset;

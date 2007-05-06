@@ -67,6 +67,7 @@ public class HTMLReporter extends GraphReporter {
 	}
 
 	protected void finish() {
+		renderOverviewGraph();
 		renderCircuitPage();
 		renderIndexPage();
 		copyStylesheet();
@@ -126,6 +127,20 @@ public class HTMLReporter extends GraphReporter {
 		BufferedImage memoryImage = memoryChart.createBufferedImage(750, 500);
 		ImageIO.write(memoryImage, "jpg", new File(outdir, lapFilePrefix()
 				+ "_memory.jpg"));
+	}
+	
+	private void renderOverviewGraph() {
+		try{
+			JFreeChart timeChart = createChart(_overviewTimeDataset, ReporterConstants.TIME_OVERVIEW_LEGEND);
+			BufferedImage timeImage = timeChart.createBufferedImage(750, 500);
+			ImageIO.write(timeImage, "jpg", new File(outdir, "overview_time.jpg"));
+			
+			JFreeChart memoryChart = createChart(_overviewMemoryDataset, ReporterConstants.MEMORY_OVERVIEW_LEGEND);
+			BufferedImage memoryImage = memoryChart.createBufferedImage(750, 500);
+			ImageIO.write(memoryImage, "jpg", new File(outdir, "overview_memory.jpg"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void renderPage(String targetName,VelocityContext context) {
