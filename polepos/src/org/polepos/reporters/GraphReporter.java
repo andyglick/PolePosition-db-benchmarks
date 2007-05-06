@@ -97,7 +97,7 @@ public abstract class GraphReporter extends Reporter{
             graph = new Graph(result);
             mGraphs.put(cl, graph);
         }
-        graph.addResult(mTeamCar, result);
+        graph.addResult(_teamCar, result);
         
     }
     

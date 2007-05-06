@@ -23,6 +23,10 @@ package org.polepos.reporters;
 import java.awt.*;
 
 public class ReporterConstants {
+	protected final static String WEBSITE="http://www.polepos.org";
+    protected final static String PATH="doc/results";
+    public final static int TIME = 1;
+    public final static int MEMORY = 2;
 	public static final String TIME_CHART_LEGEND = " 1  /  log(t + 2)                     better >";
     public static final String MEMORY_CHART_LEGEND = " 1  /  log(m + 2)                     better >";
     public static final String TIME_OVERVIEW_LEGEND = "Time Overview\n\n";

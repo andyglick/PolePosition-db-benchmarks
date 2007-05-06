@@ -28,25 +28,17 @@ import org.polepos.framework.*;
  * base class for reporting the results.
  */
 public abstract class Reporter {
-    
-    protected final static String WEBSITE="http://www.polepos.org";
-    
-    protected final static String PATH="doc/results";
-    
-    public final static int TIME = 1;
-    
-    public final static int MEMORY = 2;
         
-    protected Car mCar;
+    protected Car _car;
     
-    protected Team mTeam;
+    protected Team _team;
     
-    protected TeamCar mTeamCar;
+    protected TeamCar _teamCar;
     
-    private boolean mTaskListPrinted;
+    private boolean _taskListPrinted;
     
     public Reporter(){
-        new File(PATH).mkdirs();
+        new File(ReporterConstants.PATH).mkdirs();
     }
     
     public abstract String file();
@@ -58,11 +50,11 @@ public abstract class Reporter {
     public abstract void endSeason();
     
     public String path(){
-        return new File(PATH).getAbsolutePath();
+        return new File(ReporterConstants.PATH).getAbsolutePath();
     }
 
     public void sendToCircuit(Circuit circuit) {
-        mTaskListPrinted = false;
+        _taskListPrinted = false;
     }
     
     public void noDriver(Team team, Circuit circuit) {
@@ -71,22 +63,22 @@ public abstract class Reporter {
     
     public void report( Team team, Car car, TurnSetup[] setups, TurnResult[] results ){
         
-        if(! mTaskListPrinted){
+        if(! _taskListPrinted){
             results[0].requestTaskNames(this);
-            mTaskListPrinted = true;
+            _taskListPrinted = true;
         }
         
-        if(team != mTeam){
-            mTeam = team;
+        if(team != _team){
+            _team = team;
             reportTeam(team);
         }
         
-        if(car != mCar){
-            mCar = car;
+        if(car != _car){
+            _car = car;
             reportCar(car);
         }
         
-        mTeamCar = new TeamCar(team, car);
+        _teamCar = new TeamCar(team, car);
         
         reportSetups(setups);
         
