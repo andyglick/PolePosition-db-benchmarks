@@ -68,6 +68,7 @@ public class HTMLReporter extends GraphReporter {
 
 	protected void finish() {
 		renderOverviewGraph();
+		renderOverviewPage();
 		renderCircuitPage();
 		renderIndexPage();
 		copyStylesheet();
@@ -143,6 +144,12 @@ public class HTMLReporter extends GraphReporter {
 		}
 	}
 
+	private void renderOverviewPage(){
+		VelocityContext context = new VelocityContext();
+		context.put("includefile", "overview.vhtml");
+		renderPage("overview.html", context);
+	}
+	
 	private void renderPage(String targetName,VelocityContext context) {
 		BufferedWriter out=null;
 		try {
