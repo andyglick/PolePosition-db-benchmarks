@@ -55,7 +55,7 @@ public class MemoryWatcher implements Watcher {
 		public void run() {
 			_startFreeMemory = MemoryUtil.freeMemory();
 			_minFreeMemory = _startFreeMemory;
-			while(_stop) {
+			while(!_stop) {
 				monitorMemory();
 				ThreadUtil.sleepIgnoreInterruption(10);
 			}
