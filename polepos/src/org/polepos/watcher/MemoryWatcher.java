@@ -23,16 +23,16 @@ import org.polepos.util.*;
 
 public class MemoryWatcher implements Watcher {
 
-	private long _startFreeMemory;
+	private long _startUsedMemory;
 	
-	private long _minFreeMemory;
+	private long _maxUsedMemory;
 	
 	private boolean _stop;
 	
 	public void start() {
 		_stop = false;
 		MemoryUtil.clear();
-		_startFreeMemory = MemoryUtil.freeMemory();
+		_maxUsedMemory = _startUsedMemory = MemoryUtil.usedMemory();
 		new MemoryWatcherThread().start();
 	}
 
@@ -42,19 +42,17 @@ public class MemoryWatcher implements Watcher {
 	}
 
 	public Object value() {
-		return _startFreeMemory - _minFreeMemory;
+		return _maxUsedMemory - _startUsedMemory ;
 	}
 
 	private void monitorMemory() {
-		long freeMemory = MemoryUtil.freeMemory();
-		if(freeMemory < _minFreeMemory) {
-			_minFreeMemory = freeMemory;
+		long usedMemory = MemoryUtil.usedMemory();
+		if(usedMemory > _maxUsedMemory) {
+			_maxUsedMemory = usedMemory;
 		}
 	}
 	private class MemoryWatcherThread extends Thread {
 		public void run() {
-			_startFreeMemory = MemoryUtil.freeMemory();
-			_minFreeMemory = _startFreeMemory;
 			while(!_stop) {
 				monitorMemory();
 				ThreadUtil.sleepIgnoreInterruption(10);
