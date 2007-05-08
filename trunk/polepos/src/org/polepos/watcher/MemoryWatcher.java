@@ -33,7 +33,7 @@ public class MemoryWatcher implements Watcher {
 		_stop = false;
 		MemoryUtil.clear();
 		_startFreeMemory = MemoryUtil.freeMemory();
-		new MemoryWatcherThread().run();
+		new MemoryWatcherThread().start();
 	}
 
 	public void stop() {
