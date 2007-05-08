@@ -57,7 +57,7 @@ public class MelbourneDb4o extends Db4oDriver implements MelbourneDriver{
 	}
 
 	public void read(){
-        readExtent(Pilot.class);
+        doQuery(Pilot.class);
 	}
 
     public void read_hot() {
