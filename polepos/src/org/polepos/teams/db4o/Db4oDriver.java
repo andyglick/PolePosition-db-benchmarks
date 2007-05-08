@@ -19,45 +19,37 @@ MA  02111-1307, USA. */
 
 package org.polepos.teams.db4o;
 
-import org.polepos.framework.Car;
-import org.polepos.framework.CarMotorFailureException;
-import org.polepos.framework.CheckSummable;
-import org.polepos.framework.Driver;
-import org.polepos.framework.TurnSetup;
+import org.polepos.framework.*;
+import org.polepos.util.*;
 
-import com.db4o.ObjectSet;
-import com.db4o.ext.ExtObjectContainer;
-import com.db4o.query.Query;
+import com.db4o.*;
+import com.db4o.ext.*;
+import com.db4o.query.*;
 
 
 /**
- * @author Herkules
+ * @author Herkules, Andrew Zhang
  */
-public abstract class Db4oDriver extends Driver{
+public class Db4oDriver extends Driver{
     
-	private ExtObjectContainer mDB;
+	private ExtObjectContainer _container;
 
 	public void takeSeatIn( Car car , TurnSetup setup) throws CarMotorFailureException{
         super.takeSeatIn(car, setup);
 	}
 	
 	public void prepare(){
-		mDB = ((Db4oCar)car()).createObjectContainer();		
+		_container = ((Db4oCar)car()).createObjectContainer();		
 	}
 	
 	public void backToPit(){
-		mDB.close();
-        
+		_container.close();        
         // give the weak reference collector thread time to end
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        ThreadUtil.sleepIgnoreInterruption(500);
 	}
 	
 	public ExtObjectContainer db(){
-		return mDB;
+		return _container;
 	}
     
     protected ObjectSet doQuery( Query q ){
@@ -84,10 +76,10 @@ public abstract class Db4oDriver extends Driver{
     }
     
     protected void commit(){
-        mDB.commit();
+        _container.commit();
     }
     
     protected void store(Object obj){
-        mDB.set(obj);
+        _container.set(obj);
     }
 }
