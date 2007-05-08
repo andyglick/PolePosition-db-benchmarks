@@ -22,21 +22,15 @@ package org.polepos.util;
 
 
 public class MemoryUtil {
-    
+
 	private static Runtime _runtime = Runtime.getRuntime();
-	    
-    public static long freeMemory() {
-    	return _runtime.freeMemory();
-    }
-    
-    public static void clear() {
-    	long memory1, memory2;
-		do {
-          memory1 = _runtime.freeMemory();    
-          System.gc();
-          System.runFinalization();
-          ThreadUtil.sleepIgnoreInterruption(10);
-          memory2 = _runtime.freeMemory();
-      } while(memory2 <= memory1);
-    }
+
+	public static long usedMemory() {
+		return _runtime.totalMemory() - _runtime.freeMemory();
+	}
+
+	public static void clear() {
+		System.gc();
+		System.runFinalization();
+	}
 }
