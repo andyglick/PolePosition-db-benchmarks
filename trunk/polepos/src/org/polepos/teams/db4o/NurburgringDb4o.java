@@ -46,7 +46,7 @@ public class NurburgringDb4o extends Db4oDriver implements NurburgringDriver{
     }
 
     public void read(){
-        readExtent(N1.class);
+        doQuery(N1.class);
     }
 
 }

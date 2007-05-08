@@ -45,7 +45,7 @@ public class BarcelonaDb4o extends Db4oDriver implements BarcelonaDriver{
     }
     
     public void read(){
-        readExtent(B4.class);
+        doQuery(B4.class);
     }
     
     public void query(){
