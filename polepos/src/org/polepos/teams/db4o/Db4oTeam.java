@@ -145,8 +145,16 @@ public class Db4oTeam extends Team{
                         	_name += " NC";
                         	break;
                         case Db4oOptions.P1FAST_COLLECTION:
-                        	_name += " P1FC";
-                        	break;
+                            _name += " P1FC";
+                            break;
+                        case Db4oOptions.INDEX_FREESPACE:
+                            _name += " f:IX";
+                            Db4o.configure().freespace().useIndexSystem();
+                            break;
+                        case Db4oOptions.BTREE_FREESPACE:
+                            _name += " f:B";
+                            Db4o.configure().freespace().useBTreeSystem();
+                            break;
                         case Db4oOptions.CONCURRENT_COUNT:
 						    _name += " threads = " + Db4oOptions.CONCURRENT_COUNT;
 						    setConcurrentCount(Db4oOptions.CONCURRENT_COUNT);

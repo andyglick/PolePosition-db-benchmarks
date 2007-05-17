@@ -57,16 +57,7 @@ public class Db4oCar extends Car {
 		}   
 
         if(isClientServerOverTcp()){
-            try {
-                return Db4o.openClient(Db4oTeam.SERVER_HOST, Db4oTeam.SERVER_PORT, Db4oTeam.SERVER_USER, Db4oTeam.SERVER_PASSWORD).ext();
-            } catch (IOException e) {
-                
-                // Can happen if port not available
-                // Check SERVER_ settings
-                
-                e.printStackTrace();
-            }
-            return null;
+            return Db4o.openClient(Db4oTeam.SERVER_HOST, Db4oTeam.SERVER_PORT, Db4oTeam.SERVER_USER, Db4oTeam.SERVER_PASSWORD).ext();
         }
         // embedded client server mode
 		return Db4oTeam.server.openClient().ext();
