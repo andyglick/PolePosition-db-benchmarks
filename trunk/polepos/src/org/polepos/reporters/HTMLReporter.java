@@ -139,6 +139,10 @@ public class HTMLReporter extends GraphReporter {
 			JFreeChart memoryChart = createChart(_overviewMemoryDataset, ReporterConstants.MEMORY_OVERVIEW_LEGEND);
 			BufferedImage memoryImage = memoryChart.createBufferedImage(750, 500);
 			ImageIO.write(memoryImage, "jpg", new File(outdir, "overview_memory.jpg"));
+			
+			JFreeChart sizeChart = createChart(_overviewSizeDataset, ReporterConstants.SIZE_OVERVIEW_LEGEND);
+			BufferedImage sizeImage = sizeChart.createBufferedImage(750, 500);
+			ImageIO.write(sizeImage, "jpg", new File(outdir, "overview_size.jpg"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

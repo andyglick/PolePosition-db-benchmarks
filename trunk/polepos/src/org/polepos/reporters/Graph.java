@@ -112,6 +112,14 @@ public class Graph {
 		return res.getMemory();
 	}
 	
+	public final long sizeFor(TeamCar teamCar, TurnSetup setup) {
+	    Result res = results.get(new ResultsKey(teamCar,setup));
+        if(res == null){
+            return Integer.MAX_VALUE;
+        }
+		return res.getDatabaseSize();
+	}
+	
 	private class ResultsKey {
         
         final TeamCar teamCar;

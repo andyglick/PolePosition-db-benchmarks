@@ -65,6 +65,10 @@ public abstract class Team
     
     public abstract Driver[] drivers();
     
+    public abstract String website();
+    
+    public abstract String databaseFile();
+    
     protected void setUp() {
     	
     }
@@ -85,7 +89,5 @@ public abstract class Team
         vec.toArray(result);
         return result;
     }
-    
-    public abstract String website();
 
 }

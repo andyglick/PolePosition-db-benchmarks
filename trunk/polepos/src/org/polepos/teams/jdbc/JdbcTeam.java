@@ -72,6 +72,11 @@ public class JdbcTeam extends Team{
         return null;
     }
 
+    public String databaseFile() {
+    	// not supported yet
+    	return null;
+    }
+    
     @Override
     public void configure(int[] options) {
         // TODO Auto-generated method stub

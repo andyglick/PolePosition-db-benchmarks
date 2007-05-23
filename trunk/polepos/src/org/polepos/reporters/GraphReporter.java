@@ -39,6 +39,7 @@ public abstract class GraphReporter extends Reporter{
     private java.util.List<Circuit> mCircuits;
 	protected final DefaultCategoryDataset _overviewTimeDataset = new DefaultCategoryDataset();
 	protected final DefaultCategoryDataset _overviewMemoryDataset = new DefaultCategoryDataset();
+	protected final DefaultCategoryDataset _overviewSizeDataset = new DefaultCategoryDataset();
     
     
     @Override
@@ -112,6 +113,7 @@ public abstract class GraphReporter extends Reporter{
                     if(graph != null){
                         graph.compareCheckSums();
                         report(graph);
+                        reportOverviewDatabaseSize(graph);
                         overViewChartBuilder.report(graph);
                     }
                 }
@@ -166,6 +168,18 @@ public abstract class GraphReporter extends Reporter{
 		return dataset;
 	}
 
+	private void reportOverviewDatabaseSize(Graph graph) {
+		String circuitName = graph.circuit().name().substring(0,3);
+		for(TeamCar teamCar : graph.teamCars()) {
+			int i = 0;
+			for(TurnSetup setup : graph.setups()) {
+	            double databaseSize = graph.sizeFor(teamCar,setup);
+	            double logedSize = MathUtil.toLogedValue(databaseSize);
+				_overviewSizeDataset.addValue(logedSize,(teamCar.toString()),circuitName + ++i);
+	        }
+	    }
+	}
+	
 	public JFreeChart createChart(CategoryDataset dataset, String legendText) {
 		CategoryAxis categoryAxis = new CategoryAxis("");
 		categoryAxis.setLabelFont(ReporterConstants.CATEGORY_LABEL_FONT);
