@@ -28,7 +28,7 @@ import com.db4o.*;
 import com.db4o.config.*;
 import com.db4o.io.*;
 
-public class Db4oTeam extends Team{
+public class Db4oTeam extends Team {
     
     private String _name = db4oName(); 
     
@@ -50,7 +50,9 @@ public class Db4oTeam extends Team{
     
     public static final String FOLDER = "data/db4o";
 
-    public static final String DB4O_FILE = "dbbench.yap"; 
+    public static final String DB4O_FILE = "dbbench.yap";
+
+	public static final String PATH = FOLDER + "/" + DB4O_FILE; 
     
     public Db4oTeam() {
         _drivers = new ArrayList<Driver>();
@@ -180,7 +182,7 @@ public class Db4oTeam extends Team{
 	    
 		if(_clientServer){
             Db4o.configure().messageLevel(-1);
-            server = Db4o.openServer(path(), SERVER_PORT);
+            server = Db4o.openServer(databaseFile(), SERVER_PORT);
             server.grantAccess(SERVER_USER, SERVER_PASSWORD);
         }
 	}
@@ -191,8 +193,8 @@ public class Db4oTeam extends Team{
 		}
 	}
     
-	public final static String path(){
-        return FOLDER + "/" + DB4O_FILE;
+	public final String databaseFile(){
+        return PATH;
     }
 	
     /**
@@ -200,6 +202,6 @@ public class Db4oTeam extends Team{
      */
     private void deleteDatabaseFile()
     {
-        new File( path() ).delete();
+        new File( databaseFile() ).delete();
     }    
 }

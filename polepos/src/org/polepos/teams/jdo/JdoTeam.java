@@ -82,6 +82,11 @@ public class JdoTeam extends Team{
 		return mCars;
 	}
     
+    public String databaseFile() {
+    	// not supported yet
+    	return null;
+    }
+
     @Override
     public Driver[] drivers() {
         return new Driver[]{

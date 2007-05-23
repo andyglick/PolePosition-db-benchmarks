@@ -285,7 +285,10 @@ public class PDFReporter extends GraphReporter {
 		renderOverviewPage(overviewTimeChart, ReporterConstants.TIME_OVERVIEW_LEGEND);
 		
 		JFreeChart overviewMemoryChart = createChart(_overviewMemoryDataset, ReporterConstants.MEMORY_CHART_LEGEND);
-		renderOverviewPage(overviewMemoryChart, ReporterConstants.MEMORY_OVERVIEW_LEGEND);			
+		renderOverviewPage(overviewMemoryChart, ReporterConstants.MEMORY_OVERVIEW_LEGEND);
+		
+		JFreeChart overviewSizeChart = createChart(_overviewSizeDataset, ReporterConstants.SIZE_CHART_LEGEND);
+		renderOverviewPage(overviewTimeChart, ReporterConstants.SIZE_OVERVIEW_LEGEND);
 	}
 	
 	protected void renderOverviewPage(JFreeChart chart, String legend) {

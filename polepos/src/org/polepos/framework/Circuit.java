@@ -39,13 +39,20 @@ public abstract class Circuit{
     
     private MemoryWatcher _memoryWatcher;
     
+    private FileSizeWatcher _fileSizeWatcher;
+    
     protected Circuit(){
-        _timeWatcher = new TimeWatcher();
-		_memoryWatcher = new MemoryWatcher();
+        initWatchers();
         mLaps = new ArrayList<Lap>();
         mLapSetups = TurnSetup.read(this);
         addLaps();
     }
+
+	private void initWatchers() {
+		_timeWatcher = new TimeWatcher();
+		_memoryWatcher = new MemoryWatcher();
+		_fileSizeWatcher = new FileSizeWatcher();
+	}
     
 	/**
      * public official name for reporting
@@ -188,6 +195,8 @@ public abstract class Circuit{
                 
                 _memoryWatcher.start();
                 _timeWatcher.start();
+                _fileSizeWatcher.monitorFile(team.databaseFile());
+                _fileSizeWatcher.start();
                 
                 try {
                 	if(concurrent) {
@@ -214,11 +223,14 @@ public abstract class Circuit{
                 
                 _timeWatcher.stop();
                 _memoryWatcher.stop();
+                _fileSizeWatcher.stop();
                 
                 if(lap.reportResult()){
                 	long time = (Long)_timeWatcher.value();
                 	long memory = (Long) _memoryWatcher.value();
-                    result.report(new Result(this, team, lap, setup, index, time, memory, driver.checkSum()));
+                	long databaseSize = (Long) _fileSizeWatcher.value();
+                	
+                    result.report(new Result(this, team, lap, setup, index, time, memory, databaseSize, driver.checkSum()));
                 }
             }
             

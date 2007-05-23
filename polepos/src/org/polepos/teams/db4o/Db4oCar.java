@@ -53,7 +53,7 @@ public class Db4oCar extends Car {
     public ExtObjectContainer createObjectContainer()
     {
         if (!isClientServer()) {
-			return Db4o.openFile(Db4oTeam.path()).ext();
+			return Db4o.openFile(Db4oTeam.PATH).ext();
 		}   
 
         if(isClientServerOverTcp()){

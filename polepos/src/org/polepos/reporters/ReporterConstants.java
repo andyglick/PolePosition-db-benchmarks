@@ -29,8 +29,10 @@ public class ReporterConstants {
     public final static int MEMORY = 2;
 	public static final String TIME_CHART_LEGEND = " 1  /  log(t + 2)                     better >";
     public static final String MEMORY_CHART_LEGEND = " 1  /  log(m + 2)                     better >";
+    public static final String SIZE_CHART_LEGEND = " 1  /  log(b + 2)                     better >";
     public static final String TIME_OVERVIEW_LEGEND = "Time Overview\n\n";
     public static final String MEMORY_OVERVIEW_LEGEND = "Memory Overview\n\n";
+    public static final String SIZE_OVERVIEW_LEGEND = "Database Size Overview\n\n";
     public static final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 14);
     public static final Font LEGEND_FONT = new Font("SansSerif", Font.PLAIN, 12);
     public static final Font VALUE_LABEL_FONT = new Font("SansSerif", Font.ITALIC, 12);

@@ -41,15 +41,18 @@ public class Result {
     
     private final long _memory;    
     
-    public Result(Circuit circuit, Team team, Lap lap, TurnSetup setup, int index, long time, long memory, long checkSum){
+    private final long _databaseSize;
+    
+    public Result(Circuit circuit, Team team, Lap lap, TurnSetup setup, int index, long time, long memory, long databaseSize, long checkSum){
         _circuit = circuit;
         _team = team;
         _lap = lap;
         _setup = setup;
         _index = index;
         _time = time;
-        _checkSum = checkSum;
         _memory = memory;
+        _databaseSize = databaseSize;
+        _checkSum = checkSum;
     }
     
     public String getName(){
@@ -86,6 +89,10 @@ public class Result {
     
     public long getMemory(){
         return _memory;
+    }
+    
+    public long getDatabaseSize() {
+    	return _databaseSize;
     }
 }
 

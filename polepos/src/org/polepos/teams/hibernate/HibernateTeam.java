@@ -44,6 +44,11 @@ public class HibernateTeam extends Team{
         return "relational persistence for idiomatic Java";
     }
 
+    public String databaseFile() {
+    	// not supported yet
+    	return null;
+    }
+
 
 	public Car[] cars(){
 		return mCars;
