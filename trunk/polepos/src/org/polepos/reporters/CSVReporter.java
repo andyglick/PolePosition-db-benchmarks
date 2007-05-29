@@ -20,6 +20,7 @@ MA  02111-1307, USA. */
 package org.polepos.reporters;
 
 import java.io.*;
+import java.util.*;
 
 import org.polepos.framework.*;
 
@@ -80,7 +81,7 @@ public class CSVReporter extends GraphReporter {
         }
 	}
 
-	protected void finish() {
+	protected void finish(List <TeamCar> cars) {
 	}
 
 }

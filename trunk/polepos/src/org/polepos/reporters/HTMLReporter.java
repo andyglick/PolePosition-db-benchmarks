@@ -66,7 +66,7 @@ public class HTMLReporter extends GraphReporter {
 		return circuit().internalName()+"_"+lap().name();
 	}
 
-	protected void finish() {
+	protected void finish(List <TeamCar> cars) {
 		renderOverviewGraph();
 		renderOverviewPage();
 		renderCircuitPage();
