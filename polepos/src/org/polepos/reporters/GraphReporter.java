@@ -21,6 +21,7 @@ package org.polepos.reporters;
 
 import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 import org.jfree.chart.*;
 import org.jfree.chart.axis.*;
@@ -104,13 +105,18 @@ public abstract class GraphReporter extends Reporter{
     
     @Override
     public void endSeason() {
+    	List<TeamCar> cars = null;
         if(mGraphs != null){
             OverViewChartBuilder overViewChartBuilder = new OverViewChartBuilder();
             System.out.println("Checking checksums for " + getClass().getName());
             for(Circuit circuit : mCircuits){
                 for(Lap lap : circuit.laps()){
                     Graph graph =mGraphs.get(new CircuitLap(circuit, lap));
+                    
                     if(graph != null){
+                    	if(cars == null) {
+                    		cars = graph.teamCars();
+                    	}
                         graph.compareCheckSums();
                         report(graph);
                         reportOverviewDatabaseSize(graph);
@@ -119,12 +125,12 @@ public abstract class GraphReporter extends Reporter{
                 }
             }
             overViewChartBuilder.createJPGs();
-			finish();
+			finish(cars);
         }
     }
 
 	protected abstract void report(Graph graph);
-	protected abstract void finish();
+	protected abstract void finish(List <TeamCar> cars);
 
 	protected JFreeChart createTimeChart(Graph graph) {
 		CategoryDataset dataset = createTimeDataset(graph);

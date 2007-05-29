@@ -37,25 +37,16 @@ public class PDFReporter extends GraphReporter {
 	private Document _document;
 	private PdfWriter _writer;
 	
+	private LinkedList _pdfData = new LinkedList();
 	private static final com.lowagie.text.Font h1Font = FontFactory.getFont(FontFactory.HELVETICA,15,Font.BOLD);
     private static final com.lowagie.text.Font h2Font = FontFactory.getFont(FontFactory.HELVETICA,12,Font.BOLD);
     private static final com.lowagie.text.Font bigFont = FontFactory.getFont(FontFactory.HELVETICA,10,Font.BOLD);
     private static final com.lowagie.text.Font smallFont = FontFactory.getFont(FontFactory.HELVETICA,9,Font.PLAIN);
     
     protected void report(Graph graph) {
-        
-		if(_document==null) {
-	        setupDocument(ReporterConstants.PATH);
-            try {
-                renderFirstPage(graph);
-            } catch (DocumentException e) {
-                e.printStackTrace();
-            }
-		}
-		if(_document==null) {
-			return;
-		}
-        
+    	if(_document == null) {
+    		setupDocument(ReporterConstants.PATH);
+    	}
         Circuit circuit = graph.circuit();
         if(! circuit.equals(_circuit)){
             _circuit = circuit;
@@ -65,45 +56,34 @@ public class PDFReporter extends GraphReporter {
         timeChart.setBackgroundPaint(null);
         try {
 			renderTimeTable(graph);
-			renderChart(timeChart);
-			_document.newPage();
+			_pdfData.add(renderChart(timeChart));
+			_pdfData.add(new NewPageLabel());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		JFreeChart memoryChart = createMemoryChart(graph);
-		memoryChart.setBackgroundPaint(null);
-        try {
-			renderMemoryTable(graph);
-			renderChart(memoryChart);
-			_document.newPage();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		// for overview
+		createMemoryChart(graph);
     }
 
-    private void renderFirstPage(Graph graph) throws DocumentException{
-        if(_document == null){
-            return;
-        }
-        
+    private void renderFirstPage(List<TeamCar> cars) throws DocumentException{        
         Paragraph para=new Paragraph();
         para.add(new Chunk("PolePosition\n",h1Font));
         para.add(new Chunk("the open source database benchmark\n",smallFont));
         para.add(linked(new Chunk(ReporterConstants.WEBSITE + "\n\n\n", smallFont), ReporterConstants.WEBSITE));
         para.add(new Chunk("Participating teams\n\n",h2Font));
         
-        _document.add(para);
+        int i = 0;
+        _pdfData.add(i++, para);
         
         List <Object> printed = new ArrayList <Object>();
         
-        for(TeamCar teamCar :graph.teamCars()){
+        for(TeamCar teamCar : cars){
             Team team = teamCar.getTeam();
             String webSite = team.website();
             if(webSite != null){
                 if(! printed.contains(team)){
                     printed.add(team);
-                    renderTeam(team.name(), team.description(), webSite);
+                    _pdfData.add(i++, renderTeam(team.name(), team.description(), webSite));
                 }
             }else{
                 Car car = teamCar.getCar();
@@ -111,15 +91,15 @@ public class PDFReporter extends GraphReporter {
                 if(webSite != null){
                     if(! printed.contains(car)){
                         printed.add(car);
-                        renderTeam(car.name(), car.description(), webSite);
+                        _pdfData.add(i++, renderTeam(car.name(), car.description(), webSite));
                     }
                 }
             }
         }
-        _document.newPage();
+        _pdfData.add(i++, new NewPageLabel());
     }
     
-    private void renderTeam(String name, String description, String website) throws DocumentException{
+    private Element renderTeam(String name, String description, String website) throws DocumentException{
         Paragraph para=new Paragraph();
         para.add(linked(new Chunk(name + "\n",bigFont), website));
         if(description != null){
@@ -129,7 +109,7 @@ public class PDFReporter extends GraphReporter {
             para.add(linked(new Chunk(website + "\n", smallFont), website));
         }
         para.add(new Chunk("\n",smallFont));
-        _document.add(para);
+        return para;
     }
     
     private Element linked(Chunk chunk, String link){
@@ -217,7 +197,6 @@ public class PDFReporter extends GraphReporter {
 			int hidx=1;
 			for(TurnSetup setup : setups) {
 				String text = reportText(type, graph, teamCar, setup);
-//				String text=String.valueOf(graph.timeFor(teamCar,setup));
 				addTableCell(table,hidx,vidx,text, null,false,false);
 				hidx++;
 			}
@@ -225,7 +204,7 @@ public class PDFReporter extends GraphReporter {
 		}
 		para.add(table);
         para.add(new Chunk("\n",bigFont));
-        _document.add(para);
+        _pdfData.add(para);
 	}
 
 	private String reportText(int type, Graph graph, TeamCar teamCar, TurnSetup setup) {
@@ -253,20 +232,18 @@ public class PDFReporter extends GraphReporter {
 		table.addCell(cell,new Point(vidx,hidx));
 	}
 	
-	private void renderChart(JFreeChart chart) throws DocumentException, BadElementException {
-		renderChart(chart, 500, 300);
+	private Element renderChart(JFreeChart chart) throws DocumentException, BadElementException {
+		return renderChart(chart, 500, 300);
 	}
 	
-	private void renderChart(JFreeChart chart, int width, int height) throws DocumentException, BadElementException {
+	private Element renderChart(JFreeChart chart, int width, int height) throws DocumentException, BadElementException {
         PdfContentByte cb = _writer.getDirectContent();
 		PdfTemplate tp = cb.createTemplate(width, height);
 		Graphics2D graphics = tp.createGraphics(width, height, new DefaultFontMapper());
 		java.awt.Rectangle area = new java.awt.Rectangle(0, 0, width, height);
 		chart.draw(graphics, area);
 		graphics.dispose();
-		ImgTemplate imgtmpl=new ImgTemplate(tp);
-		//imgtmpl.setAlignment(Element.ALIGN_CENTER);
-		_document.add(imgtmpl);
+		return new ImgTemplate(tp);
 	} 
 
 	private Table setupTable(Graph graph) throws BadElementException {
@@ -280,26 +257,54 @@ public class PDFReporter extends GraphReporter {
 		return table;
 	}
 
-	protected void finish() {
-		JFreeChart overviewTimeChart = createChart(_overviewTimeDataset, ReporterConstants.TIME_CHART_LEGEND);
-		renderOverviewPage(overviewTimeChart, ReporterConstants.TIME_OVERVIEW_LEGEND);
-		
-		JFreeChart overviewMemoryChart = createChart(_overviewMemoryDataset, ReporterConstants.MEMORY_CHART_LEGEND);
-		renderOverviewPage(overviewMemoryChart, ReporterConstants.MEMORY_OVERVIEW_LEGEND);
-		
-		JFreeChart overviewSizeChart = createChart(_overviewSizeDataset, ReporterConstants.SIZE_CHART_LEGEND);
-		renderOverviewPage(overviewTimeChart, ReporterConstants.SIZE_OVERVIEW_LEGEND);
-	}
-	
-	protected void renderOverviewPage(JFreeChart chart, String legend) {
-		Paragraph para = new Paragraph();
-		para.add(new Chunk(legend));
+	protected void finish(List<TeamCar> cars) {
 		try {
-			_document.add(para);
-			renderChart(chart);
-			_document.newPage();
-		} catch (Exception e) {
+			JFreeChart overviewSizeChart = createChart(_overviewSizeDataset,
+					ReporterConstants.SIZE_CHART_LEGEND);
+			renderOverviewPage(overviewSizeChart,
+					ReporterConstants.SIZE_OVERVIEW_LEGEND);
+
+			JFreeChart overviewMemoryChart = createChart(
+					_overviewMemoryDataset,
+					ReporterConstants.MEMORY_CHART_LEGEND);
+			renderOverviewPage(overviewMemoryChart,
+					ReporterConstants.MEMORY_OVERVIEW_LEGEND);
+
+			JFreeChart overviewTimeChart = createChart(_overviewTimeDataset,
+					ReporterConstants.TIME_CHART_LEGEND);
+			renderOverviewPage(overviewTimeChart,
+					ReporterConstants.TIME_OVERVIEW_LEGEND);
+
+			renderFirstPage(cars);
+			
+			renderPDFFile();
+		} catch (DocumentException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private void renderPDFFile() throws DocumentException {
+        Iterator iter = _pdfData.iterator();
+        while(iter.hasNext()) {
+        	Object obj = iter.next();
+        	if(isNewPage(obj)) {
+        		_document.newPage();
+        	} else {
+        		_document.add((Element)obj);
+        	}
+        }
+	}
+
+	private boolean isNewPage(Object obj) {
+		return obj instanceof NewPageLabel;
+	}
+
+	protected void renderOverviewPage(JFreeChart chart, String legend) throws DocumentException {
+		Paragraph para = new Paragraph();
+		para.add(new Chunk(legend));
+		int i = 0;
+		_pdfData.add(i++, para);
+		_pdfData.add(i++, renderChart(chart));
+		_pdfData.add(i++, new NewPageLabel());
 	}
 }
