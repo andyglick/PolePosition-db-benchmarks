@@ -41,7 +41,7 @@ public class MemoryWatcher implements Watcher {
 		monitorMemory();
 	}
 
-	public Object value() {
+	public long value() {
 		return _maxUsedMemory - _startUsedMemory ;
 	}
 

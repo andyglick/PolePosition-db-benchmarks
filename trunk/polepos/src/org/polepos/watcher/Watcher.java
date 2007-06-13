@@ -25,6 +25,6 @@ public interface Watcher {
 	
 	public void stop(); 
 	
-	public Object value();
+	public long value();
 	
 }

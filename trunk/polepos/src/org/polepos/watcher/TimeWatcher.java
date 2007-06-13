@@ -33,7 +33,7 @@ public class TimeWatcher implements Watcher {
 		_endTime = System.nanoTime();
 	}
 
-	public Object value() {
+	public long value() {
 		return (_endTime - _startTime)/1000000;
 	}
 }

@@ -35,7 +35,7 @@ public class FileSizeWatcher implements Watcher {
 	public void stop() {
 	}
 
-	public Object value() {
+	public long value() {
 		if(_fileName == null) {
 			return 0;
 		}
