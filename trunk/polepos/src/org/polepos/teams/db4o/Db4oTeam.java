@@ -137,11 +137,11 @@ public class Db4oTeam extends Team {
                             break;
                         case Db4oOptions.LAZY_QUERIES:
                         	Db4o.configure().queries().evaluationMode(QueryEvaluationMode.LAZY);
-                            _name += " LAZY";
+                            _name += " Q:LAZY";
                         	break;
                         case Db4oOptions.SNAPSHOT_QUERIES:
                         	Db4o.configure().queries().evaluationMode(QueryEvaluationMode.SNAPSHOT);
-                            _name += " SNAPSHOT";
+                            _name += " Q:SNAP";
                         	break;
                         case Db4oOptions.NORMAL_COLLECTION:
                         	_name += " NC";
