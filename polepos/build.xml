@@ -10,7 +10,7 @@
 
 	<path id="poleposition_classpath">
 		<fileset dir="lib">
-			<include name="db4o-5.7-java5.jar" />			
+			<include name="db4o-6.3-java5.jar" />			
 		</fileset>
 		<fileset dir="lib">
 			<include name="**/*.jar" />
@@ -28,8 +28,25 @@
 			</classpath>
 		</java>
 	</target>
+	
+        <target name="jormenhance" description="enhances the classes" >
+         <java classname="de.ama.db.tools.Enhancer" fork="true">
+            <classpath>
+                <fileset dir="lib">
+                    <include name="**/*.jar"/>
+                </fileset>
+                <pathelement location="bin/"/>
+            </classpath>
 
-	<target name="race" depends="compile, jdoenhance" description="runs with all circuits and all teams ">
+            <arg value="indir" />
+            <arg path="bin"/>
+            <arg value="verbose" />
+            <arg value="1" />
+         </java>
+        </target>
+
+
+	<target name="race" depends="compile, jormenhance" description="runs with all circuits and all teams ">
 
 		<java classname="org.polepos.RunSeason">
 			<classpath>
@@ -51,6 +68,7 @@
 			<arg value="hibernate" />
 			<arg value="jdbc" />
 			<arg value="${jdo}" />
+			<arg value="GNA-JORM" />
 
 		</java>
 	</target>
