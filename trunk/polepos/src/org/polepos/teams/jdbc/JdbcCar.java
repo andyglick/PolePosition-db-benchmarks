@@ -30,28 +30,28 @@ import org.polepos.framework.*;
  */
 public class JdbcCar extends Car{
     
-    private static Connection mConnection;
-    private static Statement mStatement;
+    private static Connection _connection;
+    private static Statement _statement;
     
-    private final String mDBType;
-    private String mName;
+    private final String _dbType;
+    private String _name;
     
-    private final static Map<Class,String> mColTypesMap = new HashMap<Class,String>();
+    private final static Map<Class,String> _colTypesMap = new HashMap<Class,String>();
     
     static{
-        mColTypesMap.put( String.class, "VARCHAR(100)" );
-        mColTypesMap.put( Integer.TYPE, "INTEGER" );
+        _colTypesMap.put( String.class, "VARCHAR(100)" );
+        _colTypesMap.put( Integer.TYPE, "INTEGER" );
     }
     
     public JdbcCar(  String dbtype ) throws CarMotorFailureException {
         
-        mDBType = dbtype;
-        _website = Jdbc.settings().getWebsite(mDBType);
-        _description = Jdbc.settings().getDescription(mDBType);
-        mName = Jdbc.settings().getName(mDBType);
+        _dbType = dbtype;
+        _website = Jdbc.settings().getWebsite(_dbType);
+        _description = Jdbc.settings().getDescription(_dbType);
+        _name = Jdbc.settings().getName(_dbType);
         
         try{
-            Class.forName( Jdbc.settings().getDriverClass( mDBType )).newInstance();
+            Class.forName( Jdbc.settings().getDriverClass( _dbType )).newInstance();
         }catch(Exception e){
             e.printStackTrace();
             throw new CarMotorFailureException();
@@ -60,10 +60,10 @@ public class JdbcCar extends Car{
 
     public String name()
     {
-        if(mName != null){
-            return mName;
+        if(_name != null){
+            return _name;
         }
-        return mDBType;
+        return _dbType;
     }
 
     
@@ -71,11 +71,11 @@ public class JdbcCar extends Car{
     {
         
         try {
-            assert null == mConnection : "database has to be closed before opening";
-            mConnection = DriverManager.getConnection( Jdbc.settings().getConnectUrl( mDBType ),
-                        Jdbc.settings().getUsername( mDBType ), Jdbc.settings().getPassword( mDBType ) );
-            mConnection.setAutoCommit( false );
-            mStatement = mConnection.createStatement();
+            assert null == _connection : "database has to be closed before opening";
+            _connection = DriverManager.getConnection( Jdbc.settings().getConnectUrl( _dbType ),
+                        Jdbc.settings().getUsername( _dbType ), Jdbc.settings().getPassword( _dbType ) );
+            _connection.setAutoCommit( false );
+            _statement = _connection.createStatement();
         } catch (SQLException e) {
             e.printStackTrace();
             throw new CarMotorFailureException();
@@ -86,28 +86,34 @@ public class JdbcCar extends Car{
     /**
      *
      */
-    public void closeConnection()
-    {
-        
-        if(mStatement != null){
-            try {
-                mStatement.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        
-        try
+    public void close()
+    {      
+        closeStatement(_statement);   
+        commit();      
+        closeConnection();
+    }
+
+	private void closeConnection() {
+		try
         {
-            mConnection.commit();
-            mConnection.close();
+            _connection.close();
         }
         catch ( SQLException sqlex )
         {
             sqlex.printStackTrace();
         }
-        mConnection = null;
-    }
+        _connection = null;
+	}
+
+	private void closeStatement(Statement stmt) {
+		if(stmt != null){
+            try {
+            	stmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+	}
     
     
     /**
@@ -117,7 +123,7 @@ public class JdbcCar extends Car{
     {
         try
         {
-            mConnection.commit();
+            _connection.commit();
         }
         catch ( SQLException ex )
         {
@@ -131,12 +137,10 @@ public class JdbcCar extends Car{
      */
     public void executeSQL( String sql )
     {
-//      Log.logger.fine( sql );
-
         Statement stmt = null;
         try
         {
-            stmt = mConnection.createStatement();
+            stmt = _connection.createStatement();
             stmt.execute( sql );
         }
         catch ( SQLException ex )
@@ -145,10 +149,7 @@ public class JdbcCar extends Car{
         }        
         finally
         {
-            if (stmt != null)
-            {
-                try { stmt.close(); } catch (SQLException sqlEx) { stmt = null; }
-            }
+           closeStatement(stmt);
         }
     }    
     
@@ -164,7 +165,7 @@ public class JdbcCar extends Car{
         ResultSet rs = null;
         try
         {
-            stmt = mConnection.createStatement();
+            stmt = _connection.createStatement();
             rs = stmt.executeQuery( sql );
         }
         catch ( SQLException ex )
@@ -186,7 +187,7 @@ public class JdbcCar extends Car{
         ResultSet rs = null;
         try
         {
-            stmt = mConnection.createStatement( ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE );
+            stmt = _connection.createStatement( ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE );
             rs = stmt.executeQuery( sql );
         }
         catch ( SQLException ex )
@@ -197,11 +198,8 @@ public class JdbcCar extends Car{
     }
     
     public void executeUpdate(String sql){
-        
-        Log.logger.fine( sql );
-        
         try {
-            mStatement.executeUpdate(sql);
+            _statement.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -213,24 +211,7 @@ public class JdbcCar extends Car{
      */
     public void dropTable( String tablename )
     {
-        Statement stmt = null;
-        try
-        {
-            stmt = mConnection.createStatement();
-            stmt.execute( "drop table " + tablename );
-        }
-        catch ( SQLException ex )
-        {
-            // intentionally empty
-            // don't bother about 'table does not exist'
-        }        
-        finally
-        {
-            if (stmt != null)
-            {
-                try { stmt.close(); } catch (SQLException sqlEx) { stmt = null; }
-            }
-        }
+       executeSQL( "drop table " + tablename);
     }
 
 
@@ -242,13 +223,11 @@ public class JdbcCar extends Car{
         String sql = "create table " + tablename
                 + " (" + colnames[0] + "  INTEGER NOT NULL"; 
 
-
         for ( int i = 1; i < colnames.length; i++ )
         {
-            sql += ", " + colnames[i] + " " + mColTypesMap.get( coltypes[i] );
+            sql += ", " + colnames[i] + " " + _colTypesMap.get( coltypes[i] );
         }
         sql += ", PRIMARY KEY(" + colnames[0] + "))";
-
         executeSQL( sql );
     }
 
@@ -268,7 +247,7 @@ public class JdbcCar extends Car{
         PreparedStatement stmt = null;
         try
         {
-            stmt = mConnection.prepareStatement( sql );
+            stmt = _connection.prepareStatement( sql );
         }
         catch ( SQLException ex )
         {

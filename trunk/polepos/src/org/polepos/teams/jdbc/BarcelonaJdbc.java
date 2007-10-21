@@ -53,7 +53,7 @@ public class BarcelonaJdbc extends JdbcDriver implements BarcelonaDriver {
             }
             i++;
         }
-        jdbcCar().closeConnection();
+        jdbcCar().close();
 
     }
 

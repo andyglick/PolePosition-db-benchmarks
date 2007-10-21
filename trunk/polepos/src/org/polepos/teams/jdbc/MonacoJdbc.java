@@ -38,7 +38,7 @@ public class MonacoJdbc extends JdbcDriver implements MonacoDriver{
         jdbcCar().createTable( "monaco", new String[]{ "id", "name"}, 
             new Class[]{Integer.TYPE, String.class} );
         
-        jdbcCar().closeConnection();
+        jdbcCar().close();
 
     }
     

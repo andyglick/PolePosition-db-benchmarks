@@ -59,7 +59,7 @@ public class BahrainJdbc extends JdbcDriver implements BahrainDriver
         jdbcCar().createIndex( TABLE, "Name" );
         jdbcCar().createIndex( TABLE, "LicenseID" );
 
-        jdbcCar().closeConnection();
+        jdbcCar().close();
 	}
 	
 	
@@ -175,23 +175,23 @@ public class BahrainJdbc extends JdbcDriver implements BahrainDriver
 	/**
 	 * do the update using the ResultSet#updateRow() method
 	 */
-	private void updateIndexedStringUpdateRow(int updateCount)
-	{
-        try{
-            ResultSet rs = jdbcCar().executeQueryForUpdate( "select ID, Name from bahrain" );
-
-            for (int i = 1; i <= updateCount ; i++) {
-                rs.next();
-				rs.updateString( 2, rs.getString( 2 ).toUpperCase() );
-				rs.updateRow();
-                addToCheckSum(1);
-            }
-        }
-        catch ( SQLException sqlex ){
-            sqlex.printStackTrace();
-        }
-        jdbcCar().commit();		
-	}
+//	private void updateIndexedStringUpdateRow(int updateCount)
+//	{
+//        try{
+//            ResultSet rs = jdbcCar().executeQueryForUpdate( "select ID, Name from bahrain" );
+//
+//            for (int i = 1; i <= updateCount ; i++) {
+//                rs.next();
+//				rs.updateString( 2, rs.getString( 2 ).toUpperCase() );
+//				rs.updateRow();
+//                addToCheckSum(1);
+//            }
+//        }
+//        catch ( SQLException sqlex ){
+//            sqlex.printStackTrace();
+//        }
+//        jdbcCar().commit();		
+//	}
 	
 	
 	/**

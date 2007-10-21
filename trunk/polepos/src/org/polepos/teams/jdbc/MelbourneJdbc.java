@@ -52,7 +52,7 @@ public class MelbourneJdbc extends JdbcDriver implements MelbourneDriver
         jdbcCar().createTable( "australia", new String[]{ "ID", "Name", "FirstName", "Points", "LicenseID" }, 
 					new Class[]{Integer.TYPE, String.class, String.class, Integer.TYPE, Integer.TYPE} );
 
-        jdbcCar().closeConnection();
+        jdbcCar().close();
 	}
 	
 	public void write(){
