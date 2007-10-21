@@ -39,7 +39,7 @@ public class ImolaJdbc extends JdbcDriver implements ImolaDriver {
         jdbcCar().dropTable( TABLE);
         jdbcCar().createTable( TABLE, new String[]{ "id", "Name", "FirstName", "Points", "LicenseID" }, 
 					new Class[]{Integer.TYPE, String.class, String.class, Integer.TYPE, Integer.TYPE} );
-        jdbcCar().closeConnection();
+        jdbcCar().close();
 	}
 
 	public void store() {

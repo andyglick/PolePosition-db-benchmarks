@@ -36,7 +36,7 @@ public abstract class JdbcDriver extends org.polepos.framework.Driver {
 	}
 	
 	public void backToPit(){
-        ((JdbcCar)car()).closeConnection();
+        ((JdbcCar)car()).close();
 	}
     
     public JdbcCar jdbcCar(){

@@ -47,7 +47,7 @@ public class SepangJdbc extends JdbcDriver implements SepangDriver{
 		jdbcCar().dropTable( "malaysia" );
 		jdbcCar().createTable( "malaysia", new String[]{ "id", "preceding", "subsequent", "name", "depth" }, new Class[]{Integer.TYPE,Integer.TYPE,Integer.TYPE,String.class, Integer.TYPE} );
 
-		jdbcCar().closeConnection();
+		jdbcCar().close();
 	}
 	
 	public void write(){
