@@ -32,5 +32,6 @@
 	<classpathentry kind="lib" path="lib/db4o-6.3-java5.jar"/>
 	<classpathentry kind="lib" path="lib/gna-jorm-runtime-05.07.jar"/>
 	<classpathentry kind="lib" path="lib/javassist.jar"/>
+	<classpathentry kind="lib" path="lib/sqlitejdbc-v037-native.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
