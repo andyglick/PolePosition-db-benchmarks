@@ -35,6 +35,8 @@ public class JdbcCar extends Car{
     
     private final String _dbType;
     private String _name;
+	private boolean _autoCommit;
+	private boolean _executeBatch;
     
     private final static Map<Class,String> _colTypesMap = new HashMap<Class,String>();
     
@@ -44,14 +46,16 @@ public class JdbcCar extends Car{
     }
     
     public JdbcCar(  String dbtype ) throws CarMotorFailureException {
-        
         _dbType = dbtype;
-        _website = Jdbc.settings().getWebsite(_dbType);
-        _description = Jdbc.settings().getDescription(_dbType);
-        _name = Jdbc.settings().getName(_dbType);
+        JdbcSettings jdbcSettings = Jdbc.settings();
+		_website = jdbcSettings.getWebsite(dbtype);
+        _description = jdbcSettings.getDescription(dbtype);
+        _name = jdbcSettings.getName(dbtype);
+        _autoCommit = jdbcSettings.getAutoCommit(dbtype);
+        _executeBatch = jdbcSettings.getExecuteBatch(dbtype);
         
         try{
-            Class.forName( Jdbc.settings().getDriverClass( _dbType )).newInstance();
+            Class.forName( jdbcSettings.getDriverClass( dbtype )).newInstance();
         }catch(Exception e){
             e.printStackTrace();
             throw new CarMotorFailureException();
@@ -72,9 +76,10 @@ public class JdbcCar extends Car{
         
         try {
             assert null == _connection : "database has to be closed before opening";
-            _connection = DriverManager.getConnection( Jdbc.settings().getConnectUrl( _dbType ),
-                        Jdbc.settings().getUsername( _dbType ), Jdbc.settings().getPassword( _dbType ) );
-            _connection.setAutoCommit( false );
+            JdbcSettings jdbcSettings = Jdbc.settings();
+			_connection = DriverManager.getConnection( jdbcSettings.getConnectUrl( _dbType ),
+                        jdbcSettings.getUsername( _dbType ), jdbcSettings.getPassword( _dbType ) );
+            _connection.setAutoCommit( _autoCommit );
             _statement = _connection.createStatement();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -121,6 +126,9 @@ public class JdbcCar extends Car{
      */
     public void commit()
     {
+    	if (_autoCommit) {
+    		return;
+    	}
         try
         {
             _connection.commit();
@@ -255,6 +263,10 @@ public class JdbcCar extends Car{
         }        
         return stmt;
     }
+
+	public boolean executeBatch() {
+		return _executeBatch;
+	}
 
 
 }

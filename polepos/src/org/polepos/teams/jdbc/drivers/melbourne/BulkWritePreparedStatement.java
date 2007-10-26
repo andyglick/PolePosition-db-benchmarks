@@ -35,12 +35,15 @@ import org.polepos.teams.jdbc.*;
 public class BulkWritePreparedStatement implements BulkWriteStrategy
 {
 	private final PreparedStatement mStmt;
+	
+	private final JdbcCar _car;
 
 	/** 
 	 * Creates a new instance of BulkWriteSingle.
 	 */
 	public BulkWritePreparedStatement( JdbcCar car, String tablename )
 	{
+		_car = car;
 		mStmt = car.prepareStatement( "insert into " + tablename + " (id,Name,FirstName,Points,LicenseID) values (?,?,?,?,?)" );
 	}
 
@@ -57,7 +60,7 @@ public class BulkWritePreparedStatement implements BulkWriteStrategy
 			}		
 			
 			// mckoi complains with an exception if the batch is empty
-			if ( count > 0 )
+			if ( count > 0 && _car.executeBatch())
 			{
 				mStmt.executeBatch();
 			}
@@ -80,6 +83,10 @@ public class BulkWritePreparedStatement implements BulkWriteStrategy
 		mStmt.setString(	3, p.getFirstName() );
 		mStmt.setInt(		4, p.getPoints() );
 		mStmt.setInt(		5, p.getPoints() );
-		mStmt.addBatch();
+		if(_car.executeBatch()) {
+			mStmt.addBatch();
+		} else {
+			mStmt.execute();
+		}
     }
 }
