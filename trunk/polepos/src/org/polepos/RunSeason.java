@@ -19,20 +19,18 @@
 
 package org.polepos;
 
-import org.polepos.circuits.bahrain.*;
-import org.polepos.circuits.barcelona.*;
-import org.polepos.circuits.imola.*;
-import org.polepos.circuits.melbourne.*;
-import org.polepos.circuits.monaco.*;
-import org.polepos.circuits.montreal.*;
-import org.polepos.circuits.nurburgring.*;
-import org.polepos.circuits.sepang.*;
-import org.polepos.framework.*;
-import org.polepos.runner.*;
-import org.polepos.teams.db4o.*;
-import org.polepos.teams.hibernate.*;
-import org.polepos.teams.jdbc.*;
-import org.polepos.teams.jdo.*;
+import org.polepos.circuits.bahrain.Bahrain;
+import org.polepos.circuits.barcelona.Barcelona;
+import org.polepos.circuits.imola.Imola;
+import org.polepos.circuits.melbourne.Melbourne;
+import org.polepos.circuits.sepang.Sepang;
+import org.polepos.framework.Circuit;
+import org.polepos.framework.Team;
+import org.polepos.runner.AbstractRunner;
+import org.polepos.teams.db4o.Db4oTeam;
+import org.polepos.teams.hibernate.HibernateTeam;
+import org.polepos.teams.jdbc.JdbcTeam;
+import org.polepos.teams.jdo.JdoTeam;
 
 /**
  * @author Herkules, Andrew Zhang
