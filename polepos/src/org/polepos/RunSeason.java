@@ -54,9 +54,6 @@ public class RunSeason extends AbstractRunner {
 				new Bahrain(),
 				new Imola(),
 				new Barcelona(), 
-				new Monaco(), 
-				new Nurburgring(),
-				new Montreal() 
 		};
 	}
 
