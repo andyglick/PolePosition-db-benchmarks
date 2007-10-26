@@ -35,11 +35,12 @@ public class BarcelonaJdbc extends JdbcDriver implements BarcelonaDriver {
         "barcelona3",
         "barcelona4",
     };
+	private boolean _executeBatch;
     
     public void takeSeatIn(Car car, TurnSetup setup) throws CarMotorFailureException{
         
         super.takeSeatIn(car, setup);
-
+        _executeBatch = jdbcCar().executeBatch();
         jdbcCar().openConnection();
         
         int i = 0;
@@ -67,27 +68,27 @@ public class BarcelonaJdbc extends JdbcDriver implements BarcelonaDriver {
             }
             
             int count = setup().getObjectCount();
-            if(count > 0){
-                for (int i = 1; i<= count; i++) {
-                    B4 b4 = new B4();
-                    b4.setAll(i);
-                    for (int j = 0; j < 5; j++) {
-                        statements[j].setInt(1, i);
-                        statements[j].setInt(2, i);
-                        statements[j].setInt(3, b4.getBx(j));
-                        statements[j].addBatch();
-                    }
-                }
-                
-                for (int j = 0; j < 5; j++) {
-                    statements[j].executeBatch();
-                    statements[j].close();
-                }
-            }
-
-        }catch ( SQLException sqlex ){
-            sqlex.printStackTrace();
-        }
+			for (int j = 0; j < 5; j++) {
+				for (int i = 1; i <= count; i++) {
+					B4 b4 = new B4();
+					b4.setAll(i);
+					statements[j].setInt(1, i);
+					statements[j].setInt(2, i);
+					statements[j].setInt(3, b4.getBx(j));
+					if (_executeBatch) {
+						statements[j].addBatch();
+					} else {
+						statements[j].execute();
+					}
+				}
+				if (_executeBatch) {
+					statements[j].executeBatch();
+				}
+				statements[j].close();
+			}
+		} catch (SQLException sqlex) {
+			sqlex.printStackTrace();
+		}
         
         jdbcCar().commit();     
         
@@ -122,23 +123,24 @@ public class BarcelonaJdbc extends JdbcDriver implements BarcelonaDriver {
         }
         
         try {
-            if(count > 0){
-                for (int i = 1; i<= count; i++) {
-                    for (int j = 0; j < 5; j++) {
-                        statements[j].setInt(1,i);
-                        statements[j].execute();
-                        addToCheckSum(1);
-                    }
-                }
-                
-                for (int j = 0; j < 5; j++) {
-                    statements[j].executeBatch();
-                    statements[j].close();
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+			for (int j = 0; j < 5; j++) {
+				for (int i = 1; i <= count; i++) {
+					statements[j].setInt(1, i);
+					addToCheckSum(1);
+					if (_executeBatch) {
+						statements[j].addBatch();
+					} else {
+						statements[j].execute();
+					}
+				}
+				if(_executeBatch) {
+					statements[j].executeBatch();
+				}
+				statements[j].close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
         
         jdbcCar().commit();     
     }
