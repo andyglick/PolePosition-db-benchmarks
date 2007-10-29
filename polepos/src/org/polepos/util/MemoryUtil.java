@@ -23,6 +23,7 @@ package org.polepos.util;
 
 public class MemoryUtil {
 
+	private static final int GC_TIMES = 5;
 	private static Runtime _runtime = Runtime.getRuntime();
 
 	public static long usedMemory() {
@@ -30,7 +31,14 @@ public class MemoryUtil {
 	}
 
 	public static void clear() {
-		System.gc();
-		System.runFinalization();
+		for (int i = 0; i < GC_TIMES; ++i) {
+			System.gc();
+			System.runFinalization();
+		}
+		try {
+			Thread.sleep(10);
+		} catch (InterruptedException e) {
+			// ignore
+		}
 	}
 }
