@@ -56,7 +56,7 @@ public class PlainTextReporter extends Reporter{
 
     @Override
     public String file() {
-        return "doc/results/F1Season.log";
+        return path() + "/F1Season.log";
     }
 
     @Override

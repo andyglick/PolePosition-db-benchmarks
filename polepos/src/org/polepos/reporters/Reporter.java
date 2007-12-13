@@ -38,7 +38,7 @@ public abstract class Reporter {
     private boolean _taskListPrinted;
     
     public Reporter(){
-        new File(ReporterConstants.PATH).mkdirs();
+        new File(path()).mkdirs();
     }
     
     public abstract String file();
@@ -50,7 +50,8 @@ public abstract class Reporter {
     public abstract void endSeason();
     
     public String path(){
-        return new File(ReporterConstants.PATH).getAbsolutePath();
+        String reportDir = System.getProperty("polepos.result.dir", "doc/results");
+        return reportDir;
     }
 
     public void sendToCircuit(Circuit circuit) {

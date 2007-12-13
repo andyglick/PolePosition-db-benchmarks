@@ -45,7 +45,7 @@ public class PDFReporter extends GraphReporter {
     
     protected void report(Graph graph) {
     	if(_document == null) {
-    		setupDocument(ReporterConstants.PATH);
+    		setupDocument(path());
     	}
         Circuit circuit = graph.circuit();
         if(! circuit.equals(_circuit)){

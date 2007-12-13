@@ -28,12 +28,11 @@ import org.polepos.framework.*;
 public class CSVReporter extends GraphReporter {
     
     private final static String TAB = "\t";
-    private final static String FOLDER = "doc/results";
 
 	protected void report(Graph graph){
-        new File(FOLDER).mkdirs();
+        new File(path()).mkdirs();
         
-        String fileName = FOLDER + "/" + graph.circuit().name() + "_" +  graph.lap().name() + ".f1graph";
+        String fileName = path() + "/" + graph.circuit().name() + "_" +  graph.lap().name() + ".f1graph";
         new File(fileName).delete();
         
         PrintStream ps = null;
