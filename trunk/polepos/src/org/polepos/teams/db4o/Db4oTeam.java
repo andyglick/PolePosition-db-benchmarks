@@ -48,7 +48,11 @@ public class Db4oTeam extends Team {
     
     public static final String SERVER_PASSWORD = "db4o";
     
-    public static final String FOLDER = "data/db4o";
+    public static final String FOLDER;
+    
+    static {
+        FOLDER = Db4oTeam.class.getResource("/").getPath() + "data/db4o";
+    }
 
     public static final String DB4O_FILE = "dbbench.yap";
 

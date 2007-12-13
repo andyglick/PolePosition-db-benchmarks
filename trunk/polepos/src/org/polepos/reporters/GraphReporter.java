@@ -124,7 +124,7 @@ public abstract class GraphReporter extends Reporter{
                     }
                 }
             }
-            overViewChartBuilder.createJPGs();
+            overViewChartBuilder.createJPGs(path());
 			finish(cars);
         }
     }

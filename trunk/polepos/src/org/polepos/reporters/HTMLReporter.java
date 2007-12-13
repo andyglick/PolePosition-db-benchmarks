@@ -32,9 +32,7 @@ import org.polepos.framework.*;
 
 
 public class HTMLReporter extends GraphReporter {	
-	private static final String TEMPLATEDIRNAME = "templates";
 	public final static String ENCODING = "utf-8";
-	public final static String OUTDIRNAME="doc/results/html";
 	
 	private File outdir=null;
 	private List<Circuit> circuits=new ArrayList<Circuit>();
@@ -74,16 +72,25 @@ public class HTMLReporter extends GraphReporter {
 		copyStylesheet();
 	}
 	
+	public String path() {
+	    return super.path() + "/html";
+	}
+	
 	private void setup() throws Exception {
-		outdir=new File(OUTDIRNAME);
+		outdir=new File(path());
 		outdir.mkdirs();
 		engine = new VelocityEngine();
 		engine.setProperty( VelocityEngine.RUNTIME_LOG_LOGSYSTEM, this);
 		engine.setProperty(VelocityEngine.ENCODING_DEFAULT,ENCODING);
-		engine.setProperty(VelocityEngine.FILE_RESOURCE_LOADER_PATH,TEMPLATEDIRNAME);
+		engine.setProperty(VelocityEngine.FILE_RESOURCE_LOADER_PATH,getTemplatesDir());
 		engine.init();
 	}
 
+	private String getTemplatesDir() {
+	    String templatesDir = System.getProperty("polepos.templates.dir", "templates");
+	    return templatesDir;
+	}
+	
 	private void renderIndexPage() {
         List<TeamCar> distinct = new ArrayList<TeamCar>();
         for(TeamCar teamCar :graph.teamCars()){
@@ -176,8 +183,8 @@ public class HTMLReporter extends GraphReporter {
 	}
 	
 	private void copyStylesheet() {
-		File sourcefile=new File(new File(TEMPLATEDIRNAME),"style.css");
-		File targetfile=new File(new File(OUTDIRNAME),"style.css");
+		File sourcefile=new File(new File(getTemplatesDir()),"style.css");
+		File targetfile=new File(new File(path()),"style.css");
 		copyFile(sourcefile, targetfile);
 	}
 

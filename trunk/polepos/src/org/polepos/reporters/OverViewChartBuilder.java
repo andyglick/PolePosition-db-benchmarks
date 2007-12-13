@@ -67,12 +67,14 @@ public class OverViewChartBuilder {
 		}
     }
     
-    public void createJPGs() {
-        createJPG(_memoryDataset, "< better          Memory consumption in kB ", "memory.jpg");
-        createJPG(_timeDataset, " 1  /  log(t + 2)                 better >" , "time.jpg");
+    public void createJPGs(String path) {
+        File memoryFile = new File(path, "memory.jpg");
+        File timeFile = new File(path, "time.jpg");
+        createJPG(_memoryDataset, "< better          Memory consumption in kB ", memoryFile);
+        createJPG(_timeDataset, " 1  /  log(t + 2)                 better >" , timeFile);
     }
     
-    private void createJPG(DefaultCategoryDataset dataset, String legendText, String filename){
+    private void createJPG(DefaultCategoryDataset dataset, String legendText, File file){
         
         CategoryAxis categoryAxis = new CategoryAxis("");
         categoryAxis.setLabelFont(CATEGORY_LABEL_FONT);
@@ -93,7 +95,7 @@ public class OverViewChartBuilder {
         
         BufferedImage img=chart.createBufferedImage(1100,900);
         try {
-            ImageIO.write(img, "jpg", new File(filename));
+            ImageIO.write(img, "jpg", file);
         } catch (IOException e) {
             e.printStackTrace();
         }

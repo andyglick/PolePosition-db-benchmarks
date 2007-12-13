@@ -20,6 +20,8 @@ MA  02111-1307, USA. */
 package org.polepos;
 
 
+import java.util.*;
+
 import org.polepos.circuits.bahrain.*;
 import org.polepos.circuits.barcelona.*;
 import org.polepos.circuits.imola.*;
@@ -43,16 +45,30 @@ public class Db4oVersionRace extends AbstractDb4oVersionsRaceRunner{
     }
     
     public Team[] teams() {
+        List<Team> teamList = new ArrayList<Team>();
+        
+        int[] options = new int[] { Db4oOptions.CLIENT_SERVER,
+                Db4oOptions.CLIENT_SERVER_TCP };
+        
+        String db4oCurrentVersion = System.getProperty("polepos.db4o.current");
+        if (db4oCurrentVersion != null) {
+            teamList.add(db4oTeam(db4oCurrentVersion, null));
+            teamList.add(db4oTeam(db4oCurrentVersion, options));
+        }
+        
+        teamList.add(db4oTeam(Db4oVersions.JAR63, null));
+        teamList.add(db4oTeam(Db4oVersions.JAR57, null));
+        teamList.add(db4oTeam(Db4oVersions.JAR45, null));
 
-		return new Team[] {
-				db4oTeam(Db4oVersions.JAR63, null),
-				db4oTeam(Db4oVersions.JAR57, null),
-				db4oTeam(Db4oVersions.JAR45, null),
-				db4oTeam(Db4oVersions.JAR63, new int[] {Db4oOptions.CLIENT_SERVER, Db4oOptions.CLIENT_SERVER_TCP }),
-				db4oTeam(Db4oVersions.JAR57, new int[] {Db4oOptions.CLIENT_SERVER,Db4oOptions.CLIENT_SERVER_TCP }),
-				db4oTeam(Db4oVersions.JAR45, new int[] {Db4oOptions.CLIENT_SERVER, Db4oOptions.CLIENT_SERVER_TCP }),
-		};
-	}
+        
+        teamList.add(db4oTeam(Db4oVersions.JAR63, options));
+        teamList.add(db4oTeam(Db4oVersions.JAR57, options));
+        teamList.add(db4oTeam(Db4oVersions.JAR45, options));
+        Team[] teams = new Team[teamList.size()];
+        
+        teamList.toArray(teams);
+        return teams;
+    }
 
 	public Circuit[] circuits() {
 		return new Circuit[] { 

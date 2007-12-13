@@ -51,11 +51,10 @@ public abstract class AbstractDb4oVersionsRaceRunner extends AbstractRunner {
             }else{
                 String[] prefixes={"com.db4o.","org.polepos.teams.db4o."};
                 
-                URL classURL=new File("bin").toURL();
-                URL jarURL=new File("lib/"+jarName).toURL();
+                URL jarURL=new File(workspace, "lib/"+jarName).toURL();
+                URL poleposClassURL=new File(workspace, "bin").toURL();
                 
-                URL poleposClassURL=new File(workspace + "/polepos/bin").toURL();                                
-                ClassLoader loader=new VersionClassLoader(new URL[]{poleposClassURL, classURL, jarURL},prefixes);
+                ClassLoader loader=new VersionClassLoader(new URL[]{poleposClassURL, jarURL},prefixes);
                 team = (Team)loader.loadClass(Db4oTeam.class.getName()).newInstance();
                 
             }
@@ -81,7 +80,10 @@ public abstract class AbstractDb4oVersionsRaceRunner extends AbstractRunner {
     
     private String workspace() {
     	if(_workspace == null) {
-    		guessWorkSpace();
+    	    _workspace = System.getProperty("polepos.dir");
+    	    if (_workspace == null) {
+    	        guessWorkSpace();
+    	    }
     	}
     	return _workspace;
     }
