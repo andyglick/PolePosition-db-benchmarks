@@ -26,7 +26,6 @@ import org.polepos.framework.*;
 
 import com.db4o.*;
 import com.db4o.config.*;
-import com.db4o.io.*;
 
 public class Db4oTeam extends Team {
     
@@ -134,7 +133,7 @@ public class Db4oTeam extends Team {
                             break;
                         case Db4oOptions.MEMORY_IO:
                             _name += " MemIO";
-                            Db4o.configure().io(new MemoryIoAdapter());
+                            Db4o.configure().io(new com.db4o.io.MemoryIoAdapter());
                             break;
                         case Db4oOptions.CACHED_BTREE_ROOT:
                             Db4o.configure().bTreeCacheHeight(1);
