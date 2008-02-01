@@ -51,10 +51,13 @@ public abstract class AbstractDb4oVersionsRaceRunner extends AbstractRunner {
             }else{
                 String[] prefixes={"com.db4o.","org.polepos.teams.db4o."};
                 
-                URL classURL=new File("bin").toURL();
-                URL jarURL=new File("lib/"+jarName).toURL();
+                URL poleposClassURL=new File(workspace + "/polepos/bin").toURL();
                 
-                URL poleposClassURL=new File(workspace + "/polepos/bin").toURL();                                
+                File db4oPoleposBin = new File(workspace + "/db4opolepos/bin");
+                URL classURL= db4oPoleposBin.exists() ?  db4oPoleposBin.toURL() : poleposClassURL;
+                
+                URL jarURL = jarURL(workspace, jarName);
+                
                 ClassLoader loader=new VersionClassLoader(new URL[]{poleposClassURL, classURL, jarURL},prefixes);
                 team = (Team)loader.loadClass(Db4oTeam.class.getName()).newInstance();
             }
@@ -70,6 +73,18 @@ public abstract class AbstractDb4oVersionsRaceRunner extends AbstractRunner {
             exc.printStackTrace();
             return null;
         }
+    }
+    
+    private URL jarURL(String workspace, String jarName) throws MalformedURLException{
+        File file = new File(workspace + "/polepos/lib/" + jarName);
+        if( file.exists()){
+            return file.toURL();
+        }
+        file = new File(workspace + "/db4opolepos/lib/" + jarName);
+        if( file.exists()){
+            return file.toURL();
+        }
+        return null;
     }
 
 	private void guessWorkSpace() {
