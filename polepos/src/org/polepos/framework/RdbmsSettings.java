@@ -33,7 +33,6 @@ public abstract class RdbmsSettings extends PropertiesHandler{
     protected final static String     KEY_JDO         = "jdo";
     protected final static String     KEY_NAME        = "name";
     protected final static String     KEY_WEBSITE     = "website";
-    protected final static String     KEY_AUTOCOMMIT  = "autocommit";
     protected final static String     KEY_BATCH		  = "executebatch";
 
     public RdbmsSettings(String file) {
@@ -83,11 +82,7 @@ public abstract class RdbmsSettings extends PropertiesHandler{
     public String getDescription(String dbtype) {
         return get( dbtype + "." + KEY_DESCRIPTION );
     }
-    
-    public boolean getAutoCommit(String dbtype) {
-		return Boolean.valueOf(get(dbtype + "." + KEY_AUTOCOMMIT, "false")).booleanValue();
-	}
-    
+        
     public boolean getExecuteBatch(String dbtype) {
     	return Boolean.valueOf(get(dbtype + "." + KEY_BATCH, "true")).booleanValue();
 	}

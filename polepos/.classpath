@@ -14,6 +14,7 @@
 	<classpathentry kind="lib" path="lib/hibernate-2.1/xalan-2.4.0.jar"/>
 	<classpathentry kind="lib" path="lib/hibernate-2.1/xerces-2.4.0.jar"/>
 	<classpathentry kind="lib" path="lib/hibernate-2.1/xml-apis.jar"/>
+	<classpathentry kind="lib" path="lib/sqlitejdbc-v038-native.jar"/>
 	<classpathentry kind="var" path="JUNIT_HOME/junit.jar" sourcepath="/ECLIPSE_HOME/plugins/org.eclipse.jdt.source_3.1.0/src/org.junit_3.8.1/junitsrc.zip"/>
 	<classpathentry kind="lib" path="lib/derby.jar"/>
 	<classpathentry kind="lib" path="lib/gnu-regexp-1.1.4.jar"/>
@@ -32,6 +33,5 @@
 	<classpathentry kind="lib" path="lib/db4o-6.3-java5.jar"/>
 	<classpathentry kind="lib" path="lib/gna-jorm-runtime-05.07.jar"/>
 	<classpathentry kind="lib" path="lib/javassist.jar"/>
-	<classpathentry kind="lib" path="lib/sqlitejdbc-v037-native.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
