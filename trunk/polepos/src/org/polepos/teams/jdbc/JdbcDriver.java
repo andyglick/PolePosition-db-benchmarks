@@ -47,20 +47,21 @@ public abstract class JdbcDriver extends org.polepos.framework.Driver {
 	 * Helper: perform any query
 	 */
 	protected void performQuery(String sql) {
-	    Log.logger.fine( "starting query" ); //NOI18N
-	    
-	    try{
-	        ResultSet rs = jdbcCar().executeQuery( sql );
-	
-			while( rs.next() ){
-	            Pilot p = new Pilot( rs.getString( 2 ), rs.getString( 3 ), rs.getInt( 4 ), rs.getInt( 5 ) );
-                addToCheckSum(p.checkSum());
-	        }
-	    }
-	    catch ( SQLException sqlex )
-	    {
-	        sqlex.printStackTrace();
-	    }
+		Log.logger.fine("starting query"); // NOI18N
+		JdbcCar car = jdbcCar();
+		ResultSet rs = null;
+		try {
+			rs = car.executeQuery(sql);
+			while (rs.next()) {
+				Pilot p = new Pilot(rs.getString(2), rs.getString(3), rs
+						.getInt(4), rs.getInt(5));
+				addToCheckSum(p.checkSum());
+			}
+		} catch (SQLException sqlex) {
+			sqlex.printStackTrace();
+		} finally {
+			car.closeQuery(rs);
+		}
 	}
 
 	protected <Value> void performSingleResultQuery(String sql,List<Value> values) {

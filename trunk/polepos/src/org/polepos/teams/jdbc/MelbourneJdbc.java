@@ -94,13 +94,12 @@ public class MelbourneJdbc extends JdbcDriver implements MelbourneDriver
         jdbcCar().commit();
     }
     
-	public void read(){
-        
+	public void read(){      
         int numobjects = setup().getObjectCount();
-        
+        JdbcCar car = jdbcCar();
+        ResultSet rs = null;
 		try{
-			ResultSet rs = jdbcCar().executeQuery("select * from australia");
-
+			rs = car.executeQuery("select * from australia");
 			for ( int i = 0; i < numobjects; i++ ){
 				rs.next();
 				Pilot p = new Pilot( rs.getString( 2 ), rs.getString( 3 ), rs.getInt( 4 ), rs.getInt( 5 ) );
@@ -109,6 +108,8 @@ public class MelbourneJdbc extends JdbcDriver implements MelbourneDriver
 		}
 		catch ( SQLException sqlex ){
 			sqlex.printStackTrace();
+		} finally {
+			car.closeQuery(rs);
 		}
 	}
     

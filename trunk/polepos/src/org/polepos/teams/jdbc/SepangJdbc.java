@@ -95,14 +95,20 @@ public class SepangJdbc extends JdbcDriver implements SepangDriver{
 	}
     
     private Tree read(int id) throws SQLException {
-        
-        ResultSet rs = jdbcCar().executeQuery("select * from malaysia where id=" + id);
-        rs.next();
-        
-        Tree tree = new Tree(rs.getInt(1),rs.getString(4), rs.getInt(5));
-        int precedingID = rs.getInt(2);
-        int subsequentID = rs.getInt(3);
-        rs.close();
+        JdbcCar car = jdbcCar();
+		ResultSet rs = null;
+		int precedingID, subsequentID;
+		Tree tree = null;
+		try {
+			rs = car.executeQuery("select * from malaysia where id=" + id);
+			rs.next();
+			tree = new Tree(rs.getInt(1), rs.getString(4), rs.getInt(5));
+			precedingID = rs.getInt(2);
+			subsequentID = rs.getInt(3);
+		} finally {
+			car.closeQuery(rs);
+		}
+		
         if(precedingID > 0){
             tree.preceding = read(precedingID);
         }
@@ -126,18 +132,24 @@ public class SepangJdbc extends JdbcDriver implements SepangDriver{
 	}
     
     private void delete(int id) throws SQLException{
-        ResultSet rs = jdbcCar().executeQuery("select * from malaysia where id=" + id);
-        rs.next();
-        int precedingID = rs.getInt(2);
-        int subsequentID = rs.getInt(3);
-        rs.close();
+        JdbcCar car = jdbcCar();
+		ResultSet rs = null;
+		int precedingID, subsequentID;
+		try {
+			rs = car.executeQuery("select * from malaysia where id=" + id);
+			rs.next();
+			precedingID = rs.getInt(2);
+			subsequentID = rs.getInt(3);
+		} finally {
+			car.closeQuery(rs);
+		}
         if(precedingID > 0){
             delete(precedingID);
         }
         if(subsequentID > 0){
             delete(subsequentID);
         }
-        jdbcCar().executeUpdate("delete from malaysia where id=" + id);
+        car.executeUpdate("delete from malaysia where id=" + id);
     }
 
 }

@@ -197,30 +197,32 @@ public class BahrainJdbc extends JdbcDriver implements BahrainDriver
 	/**
 	 * do the update using an 'update' SQL statement
 	 */
-	private void updateIndexedStringStmt(int updateCount)
-	{
-        try
-        {
-			PreparedStatement stmt = jdbcCar().prepareStatement( "update bahrain set Name=? where ID=?" );
-            ResultSet rs = jdbcCar().executeQuery( "select ID, Name from bahrain" );
-
-            for (int i = 0; i < updateCount ; i++) {
-                rs.next();
-				int id = rs.getInt( 1 );
-				String name = rs.getString( 2 ).toUpperCase();
-				stmt.setString( 1,  name );
-				stmt.setInt( 2, id );
-				stmt.addBatch();
-                addToCheckSum(1);
-            }		
+	private void updateIndexedStringStmt(int updateCount) {
+		JdbcCar car = jdbcCar();
+		ResultSet rs = null;
+		try {
+			PreparedStatement stmt = car.prepareStatement(
+					"update bahrain set Name=? where ID=?");
+			try {
+				rs = car.executeQuery("select ID, Name from bahrain");
+				for (int i = 0; i < updateCount; i++) {
+					rs.next();
+					int id = rs.getInt(1);
+					String name = rs.getString(2).toUpperCase();
+					stmt.setString(1, name);
+					stmt.setInt(2, id);
+					stmt.addBatch();
+					addToCheckSum(1);
+				}
+			} finally {
+				car.closeQuery(rs);
+			}
 			stmt.executeBatch();
 			stmt.close();
-        }
-        catch ( SQLException sqlex )
-        {
-            sqlex.printStackTrace();
-        }
-        jdbcCar().commit();		
+		} catch (SQLException sqlex) {
+			sqlex.printStackTrace();
+		}
+		car.commit();
 	}
 
 	
