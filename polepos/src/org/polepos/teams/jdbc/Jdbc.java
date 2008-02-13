@@ -28,7 +28,8 @@ public class Jdbc {
      */
     private static final String[] CREATE_DIRS = new String[]{
         "data/derby",
-        "data/mckoi"
+        "data/mckoi",
+        "data/sqlite"
     };
 
     private final static JdbcSettings sSettings = new JdbcSettings();
