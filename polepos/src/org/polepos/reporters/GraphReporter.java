@@ -41,7 +41,10 @@ public abstract class GraphReporter extends Reporter{
 	protected final DefaultCategoryDataset _overviewTimeDataset = new DefaultCategoryDataset();
 	protected final DefaultCategoryDataset _overviewMemoryDataset = new DefaultCategoryDataset();
 	protected final DefaultCategoryDataset _overviewSizeDataset = new DefaultCategoryDataset();
-    
+	
+	public static int timeIndex = 0;
+	public static int memoryIndex = 0;
+	public static int sizeIndex = 0;
     
     @Override
     public void startSeason() {
@@ -144,15 +147,16 @@ public abstract class GraphReporter extends Reporter{
 	
 	public CategoryDataset createTimeDataset(Graph graph) {
 		DefaultCategoryDataset dataset=new DefaultCategoryDataset();
-		String circuitName = graph.circuit().name().substring(0,3);
+		int currentTimeIndex = timeIndex;
 		for(TeamCar teamCar : graph.teamCars()) {
-			int i = 0;
+			timeIndex = currentTimeIndex;
 			for(TurnSetup setup : graph.setups()) {
 				String legend = "" + setup.getMostImportantValueForGraph();
 	            double time = graph.timeFor(teamCar,setup);
 	            double logedTime = MathUtil.toLogedValue(time);
-	            dataset.addValue(logedTime,(teamCar.toString()),legend);
-	            _overviewTimeDataset.addValue(logedTime,(teamCar.toString()),circuitName + ++i);
+	            dataset.addValue(logedTime,teamCar.toString(),legend);
+	            String xName = ""+ ++timeIndex;
+				_overviewTimeDataset.addValue(logedTime,teamCar.toString(),xName);
 	        }
 	    }
 		return dataset;
@@ -160,28 +164,30 @@ public abstract class GraphReporter extends Reporter{
 
 	private CategoryDataset createMemoryDataset(Graph graph) {
 		DefaultCategoryDataset dataset=new DefaultCategoryDataset();
-		String circuitName = graph.circuit().name().substring(0,3);
+		int currentMemoryIndex = memoryIndex;
 		for(TeamCar teamCar : graph.teamCars()) {
-			int i = 0;
+			memoryIndex = currentMemoryIndex;
 			for(TurnSetup setup : graph.setups()) {
 	            String legend = "" + setup.getMostImportantValueForGraph();
 	            double memory = graph.memoryFor(teamCar,setup);
 	            double logedMemory = MathUtil.toLogedValue(memory);
 				dataset.addValue(logedMemory,(teamCar.toString()),legend);
-				_overviewMemoryDataset.addValue(logedMemory,(teamCar.toString()),circuitName + ++i);
+				String xName = ""+ ++memoryIndex;
+				_overviewMemoryDataset.addValue(logedMemory,(teamCar.toString()),xName);
 	        }
 	    }
 		return dataset;
 	}
 
 	private void reportOverviewDatabaseSize(Graph graph) {
-		String circuitName = graph.circuit().name().substring(0,3);
+		int currentSizeIndex = sizeIndex;
 		for(TeamCar teamCar : graph.teamCars()) {
-			int i = 0;
+			sizeIndex = currentSizeIndex;
 			for(TurnSetup setup : graph.setups()) {
 	            double databaseSize = graph.sizeFor(teamCar,setup);
 	            double logedSize = MathUtil.toLogedValue(databaseSize);
-				_overviewSizeDataset.addValue(logedSize,(teamCar.toString()),circuitName + ++i);
+	            String xName = "" + ++sizeIndex;
+				_overviewSizeDataset.addValue(logedSize,(teamCar.toString()),xName);
 	        }
 	    }
 	}
