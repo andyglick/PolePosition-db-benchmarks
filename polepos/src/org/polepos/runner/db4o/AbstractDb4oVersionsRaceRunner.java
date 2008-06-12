@@ -62,6 +62,9 @@ public abstract class AbstractDb4oVersionsRaceRunner extends AbstractRunner {
                 team = (Team)loader.loadClass(Db4oTeam.class.getName()).newInstance();
             }
             team.configure(options);
+            if(jarName != null){
+                team.getClass().getMethod("setJarName", new Class[]{String.class}).invoke(team, jarName);
+            }
             
             for (int i = 0; i < drivers.length; i++) {
                 String driverName = drivers[i].getClass().getName();
