@@ -207,4 +207,9 @@ public class Db4oTeam extends Team {
     {
         new File( databaseFile() ).delete();
     }    
+    
+    public void setJarName(String jarName){
+        _name = _name.replaceAll("db4o", jarName);
+    }
+
 }
