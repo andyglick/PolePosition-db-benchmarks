@@ -35,15 +35,28 @@ public abstract class AbstractDb4oVersionsRaceRunner extends AbstractRunner {
 	
 	private String _workspace;
 	
+	
+	public Team db4oTeam(String jarName) {
+		return db4oTeam(jarName, null);
+	}
+	
+	/*
+	 * ConfigurationSettings will have to be run against TRUNK only
+	 * otherwise we get ClassCastExceptions in the callback. 
+	 */
+	public Team configuredDb4oTeam(ConfigurationSetting[] configurations) {
+		return db4oTeam(workspace(), null, drivers(), configurations);
+	}
+	
 	public Team db4oTeam(String jarName, int[] options) {
-    	return db4oTeam(workspace(), jarName, options, drivers()) ;
+    	return db4oTeam(jarName, options, drivers(), null) ;
     }
     
-	public Team db4oTeam(String jarName, int[] options, Driver[] drivers) {
-    	return db4oTeam(workspace(), jarName, options, drivers) ;
+	private Team db4oTeam(String jarName, int[] options, Driver[] drivers, ConfigurationSetting[] configurations) {
+    	return db4oTeam(workspace(), jarName, options, drivers, configurations) ;
     }
 	
-    private Team db4oTeam(String workspace, String jarName, int[] options, Driver[] drivers) {
+    private Team db4oTeam(String workspace, String jarName, int[] options, Driver[] drivers, ConfigurationSetting[] configurations) {
         try {
             Team team = null;    
             if(jarName == null){
@@ -61,7 +74,7 @@ public abstract class AbstractDb4oVersionsRaceRunner extends AbstractRunner {
                 ClassLoader loader=new VersionClassLoader(new URL[]{poleposClassURL, classURL, jarURL},prefixes);
                 team = (Team)loader.loadClass(Db4oTeam.class.getName()).newInstance();
             }
-            team.configure(options);
+            team.configure(options, configurations);
             if(jarName != null){
                 team.getClass().getMethod("setJarName", new Class[]{String.class}).invoke(team, jarName);
             }

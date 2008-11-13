@@ -50,13 +50,6 @@ public abstract class Team
 		return concurrent;
 	}
 
-	/**
-     * Possibility to add a switch for different configurations
-     * and to call from the outside, even throug different
-     * ClassLoaders 
-     */
-    public abstract void configure(int[] options);
-    
     public abstract String name();
     
     public abstract String description();
@@ -89,5 +82,12 @@ public abstract class Team
         vec.toArray(result);
         return result;
     }
+    
+    /**
+     * Override to apply special options and configuration settings to the test run
+     */
+	public void configure(int[] options, ConfigurationSetting[] configurations) {
+		
+	}
 
 }

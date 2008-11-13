@@ -41,11 +41,6 @@ public class JormTeam extends Team{
         DB.session().delete(Persistent.class);
     }
 
-
-    public void configure(int[] options) {
-
-    }
-
     public String name(){
 		return "GNA-JORM";
 	}
