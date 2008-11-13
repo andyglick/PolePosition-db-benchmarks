@@ -52,13 +52,13 @@ public class Db4oVersionRace extends AbstractDb4oVersionsRaceRunner{
         
         String db4oCurrentVersion = System.getProperty("polepos.db4o.current");
         if (db4oCurrentVersion != null) {
-            teamList.add(db4oTeam(db4oCurrentVersion, null));
+            teamList.add(db4oTeam(db4oCurrentVersion));
             teamList.add(db4oTeam(db4oCurrentVersion, options));
         }
         
-        teamList.add(db4oTeam(Db4oVersions.JAR63, null));
-        teamList.add(db4oTeam(Db4oVersions.JAR57, null));
-        teamList.add(db4oTeam(Db4oVersions.JAR45, null));
+        teamList.add(db4oTeam(Db4oVersions.JAR63));
+        teamList.add(db4oTeam(Db4oVersions.JAR57));
+        teamList.add(db4oTeam(Db4oVersions.JAR45));
 
         
         teamList.add(db4oTeam(Db4oVersions.JAR63, options));

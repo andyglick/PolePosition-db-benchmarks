@@ -69,10 +69,4 @@ public class HibernateTeam extends Team{
         return "http://www.hibernate.org";
     }
 
-    @Override
-    public void configure(int[] options) {
-        // TODO Auto-generated method stub
-        
-    }
-
 }

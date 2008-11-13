@@ -102,14 +102,5 @@ public class JdoTeam extends Team{
     public String website() {
         return null;
     }
-
-
-    @Override
-    public void configure(int[] options) {
-        // TODO Auto-generated method stub
-        
-    }
-
-
 	
 }

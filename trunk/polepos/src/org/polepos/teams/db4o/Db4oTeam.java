@@ -36,6 +36,8 @@ public class Db4oTeam extends Team {
     private final List<Driver> _drivers;
 
 	private int[] _options;
+	
+	private ConfigurationSetting[] _configurations;
     
     public static ObjectServer server;
     
@@ -85,7 +87,7 @@ public class Db4oTeam extends Team {
 
     @Override
     public Car[] cars(){
-		return new Car[]{ new Db4oCar(_options) };
+		return new Car[]{ new Db4oCar(_options, _configurations) };
 	}
     
     public void addDriver(Driver driver){
@@ -113,9 +115,17 @@ public class Db4oTeam extends Team {
     }
 
     @Override
-    public void configure(int[] options) {
+    public void configure(int[] options, ConfigurationSetting[] configurations) {
     	_options = options;
+    	_configurations = configurations;
         _name = db4oName();
+        
+        if(configurations != null){
+        	for (int i = 0; i < configurations.length; i++) {
+        		_name += " " + configurations[i].name();
+			}
+        }
+        
         if(options != null){
             for (int i = 0; i < options.length; i++) {
                 try{
