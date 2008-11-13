@@ -48,6 +48,10 @@ public abstract class AbstractDb4oVersionsRaceRunner extends AbstractRunner {
 		return db4oTeam(workspace(), null, drivers(), configurations);
 	}
 	
+	public Team db4oTeam(int[] options) {
+    	return db4oTeam(null, options) ;
+    }
+	
 	public Team db4oTeam(String jarName, int[] options) {
     	return db4oTeam(jarName, options, drivers(), null) ;
     }
