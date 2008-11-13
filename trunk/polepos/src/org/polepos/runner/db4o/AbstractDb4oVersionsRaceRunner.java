@@ -36,6 +36,10 @@ public abstract class AbstractDb4oVersionsRaceRunner extends AbstractRunner {
 	private String _workspace;
 	
 	
+	public Team db4oTeam(){
+		return db4oTeam(null, null);
+	}
+	
 	public Team db4oTeam(String jarName) {
 		return db4oTeam(jarName, null);
 	}
