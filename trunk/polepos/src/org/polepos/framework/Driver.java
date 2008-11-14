@@ -66,7 +66,7 @@ public abstract class Driver implements Cloneable
     /**
      * Collecting a checksum to make sure every team does a complete job  
      */
-    public void addToCheckSum(long l){
+    public synchronized void addToCheckSum(long l){
         mCheckSum += l;
     }
     
