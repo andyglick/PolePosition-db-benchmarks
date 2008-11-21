@@ -22,8 +22,16 @@ package org.polepos.teams.db4o;
 import org.polepos.circuits.imola.*;
 import org.polepos.data.*;
 
+import com.db4o.config.*;
+
 
 public class ImolaDb4o extends Db4oDriver implements ImolaDriver {
+	
+	@Override
+	public void configure(Configuration config) {
+		
+	}
+
 
     private long[] ids;
 

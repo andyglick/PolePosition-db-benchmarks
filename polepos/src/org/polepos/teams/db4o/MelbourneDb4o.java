@@ -23,6 +23,7 @@ import org.polepos.circuits.melbourne.*;
 import org.polepos.data.*;
 
 import com.db4o.*;
+import com.db4o.config.*;
 import com.db4o.query.*;
 
 
@@ -31,6 +32,11 @@ import com.db4o.query.*;
  */
 public class MelbourneDb4o extends Db4oDriver implements MelbourneDriver{
     
+	
+	@Override
+	public void configure(Configuration config) {
+		
+	}
 	
 	public void write(){
         

@@ -21,10 +21,18 @@ package org.polepos.teams.db4o;
 
 import org.polepos.circuits.sepang.*;
 
+import com.db4o.config.*;
+
 /**
  * @author Herkules
  */
 public class SepangDb4o extends Db4oDriver implements SepangDriver{
+	
+	@Override
+	public void configure(Configuration config) {
+		
+	}
+
     
     long treeRootID;
     Tree lastRead;

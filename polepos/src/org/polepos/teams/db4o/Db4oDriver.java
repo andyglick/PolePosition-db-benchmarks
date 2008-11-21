@@ -23,23 +23,28 @@ import org.polepos.framework.*;
 import org.polepos.util.*;
 
 import com.db4o.*;
+import com.db4o.config.*;
 import com.db4o.ext.*;
 import com.db4o.query.*;
 
 /**
  * @author Herkules, Andrew Zhang
  */
-public class Db4oDriver extends Driver {
+public abstract class Db4oDriver extends Driver {
 
 	private ExtObjectContainer _container;
 
-	public void takeSeatIn(Car car, TurnSetup setup)
-			throws CarMotorFailureException {
-		super.takeSeatIn(car, setup);
-	}
-
 	public void prepare() {
-		_container = ((Db4oCar) car()).createObjectContainer();
+		Configuration config = Db4o.newConfiguration();
+		configure(config);
+		_container = ((Db4oCar) car()).createObjectContainer(config);
+	}
+	
+	public abstract void configure(Configuration config);
+	
+	protected void indexField(Configuration config, Class clazz, String fieldName) {
+		ObjectClass objectClass = config.objectClass(clazz);
+		objectClass.objectField(fieldName).indexed(true);
 	}
 
 	public void backToPit() {

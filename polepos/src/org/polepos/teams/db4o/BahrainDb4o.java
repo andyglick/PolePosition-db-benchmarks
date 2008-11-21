@@ -21,9 +21,9 @@ package org.polepos.teams.db4o;
 
 import org.polepos.circuits.bahrain.*;
 import org.polepos.data.*;
-import org.polepos.framework.*;
 
 import com.db4o.*;
+import com.db4o.config.*;
 import com.db4o.query.*;
 
 
@@ -33,13 +33,10 @@ import com.db4o.query.*;
  */
 public class BahrainDb4o extends Db4oDriver implements BahrainDriver{
 		
-	
-	public void takeSeatIn(Car car, TurnSetup setup) throws CarMotorFailureException{
-
-        Db4o.configure().objectClass( Pilot.class ).objectField( "mName" ).indexed( true );
-        Db4o.configure().objectClass( Pilot.class ).objectField( "mLicenseID" ).indexed( true );
-
-        super.takeSeatIn(car, setup);
+	@Override
+	public void configure(Configuration config) {
+		indexField(config, Pilot.class , "mName");
+		indexField(config, Pilot.class , "mLicenseID");
 	}
 	
 	public void write(){

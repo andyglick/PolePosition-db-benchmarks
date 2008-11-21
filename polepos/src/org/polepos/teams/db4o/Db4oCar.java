@@ -52,9 +52,8 @@ public class Db4oCar extends Car {
     /**
      * Open database in the configured mode.
      */
-    public ExtObjectContainer createObjectContainer()
+    public ExtObjectContainer createObjectContainer(Configuration config)
     {
-    	final Configuration config = Db4o.newConfiguration();
     	configure(config);
         if (!isClientServer()) {
 			return Db4o.openFile(config, Db4oTeam.PATH).ext();

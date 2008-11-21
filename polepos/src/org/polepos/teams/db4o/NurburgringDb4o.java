@@ -21,9 +21,17 @@ package org.polepos.teams.db4o;
 
 import org.polepos.circuits.nurburgring.*;
 
+import com.db4o.config.*;
+
 
 public class NurburgringDb4o extends Db4oDriver implements NurburgringDriver{
     
+	
+	@Override
+	public void configure(Configuration config) {
+		
+	}
+
     public void write(){
         
         int numobjects = setup().getObjectCount();
