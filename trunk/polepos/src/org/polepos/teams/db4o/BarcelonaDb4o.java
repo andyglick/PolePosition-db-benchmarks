@@ -20,19 +20,19 @@ MA  02111-1307, USA. */
 package org.polepos.teams.db4o;
 
 import org.polepos.circuits.barcelona.*;
-import org.polepos.framework.*;
 
 import com.db4o.*;
+import com.db4o.config.*;
 import com.db4o.query.*;
 
 
 public class BarcelonaDb4o extends Db4oDriver implements BarcelonaDriver{
-    
-    public void takeSeatIn(Car car, TurnSetup setup) throws CarMotorFailureException{
-        Db4o.configure().objectClass( B2.class ).objectField( "b2" ).indexed( true );
-        super.takeSeatIn(car, setup);
-    }
-    
+	
+	@Override
+	public void configure(Configuration config) {
+		indexField(config, B2.class, "b2");
+	}
+
     public void write(){
         int count = setup().getObjectCount();
         begin();

@@ -22,7 +22,15 @@ package org.polepos.teams.db4o;
 
 import org.polepos.circuits.monaco.*;
 
+import com.db4o.config.*;
+
 public class MonacoDb4o extends Db4oDriver implements MonacoDriver{
+
+	
+	@Override
+	public void configure(Configuration config) {
+		
+	}
 
     public void write() {
         
