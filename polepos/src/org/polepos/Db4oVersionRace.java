@@ -56,14 +56,14 @@ public class Db4oVersionRace extends AbstractDb4oVersionsRaceRunner{
             teamList.add(db4oTeam(db4oCurrentVersion, options));
         }
         
-        teamList.add(db4oTeam(Db4oVersions.JAR63));
-        teamList.add(db4oTeam(Db4oVersions.JAR57));
-        teamList.add(db4oTeam(Db4oVersions.JAR45));
+        teamList.add(db4oTeam(Db4oVersions.JAR78));
+        teamList.add(db4oTeam(Db4oVersions.JAR74));
+        teamList.add(db4oTeam(Db4oVersions.JAR64));
 
         
-        teamList.add(db4oTeam(Db4oVersions.JAR63, options));
-        teamList.add(db4oTeam(Db4oVersions.JAR57, options));
-        teamList.add(db4oTeam(Db4oVersions.JAR45, options));
+        teamList.add(db4oTeam(Db4oVersions.JAR78, options));
+        teamList.add(db4oTeam(Db4oVersions.JAR74, options));
+        teamList.add(db4oTeam(Db4oVersions.JAR64, options));
         Team[] teams = new Team[teamList.size()];
         
         teamList.toArray(teams);
