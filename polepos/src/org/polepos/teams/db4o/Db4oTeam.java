@@ -38,8 +38,8 @@ public class Db4oTeam extends Team {
 	private int[] _options;
 	
 	private ConfigurationSetting[] _configurations;
-    
-    public static ObjectServer server;
+	
+	private static ObjectServer _server;
     
     public static final int SERVER_PORT = 4488;
     
@@ -131,7 +131,6 @@ public class Db4oTeam extends Team {
                 try{
                     switch (options[i]){
                         case Db4oOptions.NO_FLUSH:
-                            Db4o.configure().flushFileBuffers(false);
                             _name += " noflush";
                             break;
                         case Db4oOptions.CLIENT_SERVER:
@@ -143,17 +142,11 @@ public class Db4oTeam extends Team {
                             break;
                         case Db4oOptions.MEMORY_IO:
                             _name += " MemIO";
-                            Db4o.configure().io(new com.db4o.io.MemoryIoAdapter());
-                            break;
-                        case Db4oOptions.CACHED_BTREE_ROOT:
-                            Db4o.configure().bTreeCacheHeight(1);
                             break;
                         case Db4oOptions.LAZY_QUERIES:
-                        	Db4o.configure().queries().evaluationMode(QueryEvaluationMode.LAZY);
                             _name += " Q:LAZY";
                         	break;
                         case Db4oOptions.SNAPSHOT_QUERIES:
-                        	Db4o.configure().queries().evaluationMode(QueryEvaluationMode.SNAPSHOT);
                             _name += " Q:SNAP";
                         	break;
                         case Db4oOptions.NORMAL_COLLECTION:
@@ -162,13 +155,8 @@ public class Db4oTeam extends Team {
                         case Db4oOptions.P1FAST_COLLECTION:
                             _name += " P1FC";
                             break;
-                        case Db4oOptions.INDEX_FREESPACE:
-                            _name += " f:IX";
-                            Db4o.configure().freespace().useIndexSystem();
-                            break;
                         case Db4oOptions.BTREE_FREESPACE:
                             _name += " f:B";
-                            Db4o.configure().freespace().useBTreeSystem();
                             break;
                         case Db4oOptions.CONCURRENT_COUNT:
 						    _name += " threads = " + Db4oOptions.CONCURRENT_COUNT;
@@ -192,18 +180,13 @@ public class Db4oTeam extends Team {
 	protected void setUp() {
 		new File(FOLDER).mkdirs();
 	    deleteDatabaseFile();
-	    
-		if(_clientServer){
-            Db4o.configure().messageLevel(-1);
-            server = Db4o.openServer(databaseFile(), SERVER_PORT);
-            server.grantAccess(SERVER_USER, SERVER_PASSWORD);
-        }
 	}
 
 	protected void tearDown() {
-		if(_clientServer && server != null) {
-			server.close();
-		}
+    	if(_server != null){
+    		_server.close();
+    		_server = null;
+    	}
 	}
     
 	public final String databaseFile(){
@@ -220,6 +203,14 @@ public class Db4oTeam extends Team {
     
     public void setJarName(String jarName){
         _name = _name.replaceAll("db4o", jarName);
+    }
+    
+    public static ObjectServer openServer(Configuration config){
+        if(_server == null){
+	        _server = Db4o.openServer(config, Db4oTeam.PATH, SERVER_PORT);
+	        _server.grantAccess(SERVER_USER, SERVER_PASSWORD);
+        }
+        return _server;
     }
 
 }
