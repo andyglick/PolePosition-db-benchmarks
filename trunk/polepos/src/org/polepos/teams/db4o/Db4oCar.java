@@ -33,6 +33,7 @@ public class Db4oCar extends Car {
 	private int[] _options;  
 	
 	private ConfigurationSetting[] _configurations;
+	
 
 	public Db4oCar(int[] options, ConfigurationSetting[] configurations) {
 		_options = options;
@@ -52,18 +53,20 @@ public class Db4oCar extends Car {
     /**
      * Open database in the configured mode.
      */
-    public ExtObjectContainer createObjectContainer(Configuration config)
+    public ExtObjectContainer openObjectContainer(Configuration config)
     {
     	configure(config);
         if (!isClientServer()) {
 			return Db4o.openFile(config, Db4oTeam.PATH).ext();
-		}   
+		}
+        
+        ObjectServer server = Db4oTeam.openServer(config);
 
         if(isClientServerOverTcp()){
             return Db4o.openClient(config, Db4oTeam.SERVER_HOST, Db4oTeam.SERVER_PORT, Db4oTeam.SERVER_USER, Db4oTeam.SERVER_PASSWORD).ext();
         }
         // embedded client server mode
-		return Db4oTeam.server.openClient().ext();
+		return server.openClient().ext();
 	}
     
     private boolean isClientServer() {
@@ -74,9 +77,9 @@ public class Db4oCar extends Car {
 		return Db4oOptions.containsOption(_options, Db4oOptions.CLIENT_SERVER_TCP);
 	}
 	
-	
-	
     public void configure(Configuration config) {
+    	
+    	config.messageLevel(-1);
     	
     	if(_configurations != null){
     		for(ConfigurationSetting setting : _configurations){
@@ -103,9 +106,6 @@ public class Db4oCar extends Car {
                         case Db4oOptions.SNAPSHOT_QUERIES:
                         	config.queries().evaluationMode(QueryEvaluationMode.SNAPSHOT);
                         	break;
-                        case Db4oOptions.INDEX_FREESPACE:
-                            config.freespace().useIndexSystem();
-                            break;
                         case Db4oOptions.BTREE_FREESPACE:
                             config.freespace().useBTreeSystem();
                             break;
@@ -119,8 +119,6 @@ public class Db4oCar extends Car {
             }
         }
     }
-
-	
 	
 	
 }

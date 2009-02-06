@@ -37,7 +37,7 @@ public abstract class Db4oDriver extends Driver {
 	public void prepare() {
 		Configuration config = Db4o.newConfiguration();
 		configure(config);
-		_container = ((Db4oCar) car()).createObjectContainer(config);
+		_container = ((Db4oCar) car()).openObjectContainer(config);
 	}
 	
 	public abstract void configure(Configuration config);
@@ -49,6 +49,7 @@ public abstract class Db4oDriver extends Driver {
 
 	public void backToPit() {
 		_container.close();
+		
 		// give the weak reference collector thread time to end
 		ThreadUtil.sleepIgnoreInterruption(500);
 	}
