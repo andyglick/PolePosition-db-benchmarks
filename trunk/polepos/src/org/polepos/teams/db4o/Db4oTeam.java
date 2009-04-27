@@ -152,9 +152,6 @@ public class Db4oTeam extends Team {
                         case Db4oOptions.NORMAL_COLLECTION:
                         	_name += " NC";
                         	break;
-                        case Db4oOptions.P1FAST_COLLECTION:
-                            _name += " P1FC";
-                            break;
                         case Db4oOptions.BTREE_FREESPACE:
                             _name += " f:B";
                             break;

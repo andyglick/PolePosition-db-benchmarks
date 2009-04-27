@@ -13,7 +13,7 @@ public class Db4oOptions {
     public static final int SNAPSHOT_QUERIES = 7;
     public static final int CONCURRENT_COUNT = 10;
 	public static final int NORMAL_COLLECTION = 11;
-	public static final int P1FAST_COLLECTION = 12;
+	// public static final int P1FAST_COLLECTION = 12;
     public static final int INDEX_FREESPACE = 13;
     public static final int BTREE_FREESPACE = 14;
 	
