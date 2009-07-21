@@ -29,22 +29,18 @@ public class Racer implements Runnable {
     
     private final List<Team>    teams;
 
-    public Racer(List<Circuit> circuits_, List<Team> teams_) {
+
+    private final List<Reporter> reporters;
+    
+    
+    public Racer(List<Circuit> circuits_, List<Team> teams_, List<Reporter> reporters_) {
         circuits = circuits_;
         teams = teams_;
+        reporters = reporters_;
     }
-    
-    public Racer(Circuit[] circuits_, Team[] teams_) {
 
-        circuits = new ArrayList <Circuit>();
-        for(Circuit circuit : circuits_){
-            circuits.add(circuit);
-        }
-
-        teams = new ArrayList <Team>();
-        for(Team team : teams_){
-            teams.add(team);
-        }
+    public Racer(Circuit[] circuits_, Team[] teams_, Reporter[] reporters_) {
+    	this(Arrays.asList(circuits_), Arrays.asList(teams_), Arrays.asList(reporters_));
     }
 
     public void run() {
@@ -52,9 +48,6 @@ public class Racer implements Runnable {
         synchronized (this) {
 
             long start = System.currentTimeMillis();
-
-            Reporter[] reporters = new Reporter[] { new PlainTextReporter(), new PDFReporter(),
-                new CSVReporter(), new HTMLReporter()};
 
             for (Reporter reporter : reporters) {
                 reporter.startSeason();
@@ -110,8 +103,10 @@ public class Racer implements Runnable {
             System.out.println("The F1 season was run O.K. without lethal accidents.");
             System.out.println("****************************************************\n");
             System.out.println("Overall time taken: " + duration + "ms\n");
-            System.out.println("All output from this benchmark run can be found in:");
-            System.out.println(reporters[0].path());
+            System.out.println("Reporters present:");
+            for (Reporter reporter : reporters) {
+				System.out.println(reporter);
+			}
             this.notify();
         }
         

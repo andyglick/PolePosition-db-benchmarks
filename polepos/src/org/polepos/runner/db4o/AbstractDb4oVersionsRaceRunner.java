@@ -25,6 +25,7 @@ import java.lang.reflect.*;
 import java.net.*;
 
 import org.polepos.framework.*;
+import org.polepos.reporters.*;
 import org.polepos.runner.*;
 import org.polepos.teams.db4o.*;
 
@@ -60,27 +61,28 @@ public abstract class AbstractDb4oVersionsRaceRunner extends AbstractRunner {
     	return db4oTeam(jarName, options, drivers(), null) ;
     }
     
-	private Team db4oTeam(String jarName, int[] options, Driver[] drivers, ConfigurationSetting[] configurations) {
-    	return db4oTeam(workspace(), jarName, options, drivers, configurations) ;
-    }
-	
-    private Team db4oTeam(String workspace, String jarName, int[] options, Driver[] drivers, ConfigurationSetting[] configurations) {
+	@Override
+	protected Reporter[] reporters() {
+		return DefaultReporterFactory.defaultReporters();
+	}
+
+    private Team db4oTeam(String jarName, int[] options, Driver[] drivers, ConfigurationSetting[] configurations) {
         try {
             Team team = null;    
             if(jarName == null){
-                team = (Team)Class.forName(Db4oTeam.class.getName()).newInstance();
+                team = instantiateTeam((Class<? extends Team>)Class.forName(Db4oTeam.class.getName()));
             }else{
                 String[] prefixes={"com.db4o.","org.polepos.teams.db4o."};
+
+                File[] projectPaths = projectPaths();
+                URL[] urls = new URL[projectPaths.length + 1];
+                for (int projectIdx = 0; projectIdx < projectPaths.length; projectIdx++) {
+					urls[projectIdx] = new File(projectPaths[projectIdx], "bin").toURI().toURL();
+				}
+                urls[urls.length - 1] = jarURL(workspace(), jarName);
                 
-                URL poleposClassURL=new File(workspace + "/polepos/bin").toURL();
-                
-                File db4oPoleposBin = new File(workspace + "/db4opolepos/bin");
-                URL classURL= db4oPoleposBin.exists() ?  db4oPoleposBin.toURL() : poleposClassURL;
-                
-                URL jarURL = jarURL(workspace, jarName);
-                
-                ClassLoader loader=new VersionClassLoader(new URL[]{poleposClassURL, classURL, jarURL},prefixes);
-                team = (Team)loader.loadClass(Db4oTeam.class.getName()).newInstance();
+                ClassLoader loader=new VersionClassLoader(urls, prefixes);
+                team = instantiateTeam((Class<? extends Team>)loader.loadClass(Db4oTeam.class.getName()));
             }
             team.configure(options, configurations);
             if(jarName != null){
@@ -99,15 +101,18 @@ public abstract class AbstractDb4oVersionsRaceRunner extends AbstractRunner {
         }
     }
     
+    private Team instantiateTeam(Class<? extends Team> clazz) throws Exception {
+    	Constructor<? extends Team> constr = clazz.getConstructor(new Class<?>[] { Boolean.TYPE });
+    	return constr.newInstance(new Object[] { Boolean.FALSE });
+    }
+    
     private URL jarURL(String workspace, String jarName) throws MalformedURLException{
-        File file = new File(workspace + "/polepos/lib/" + jarName);
-        if( file.exists()){
-            return file.toURL();
-        }
-        file = new File(workspace + "/db4opolepos/lib/" + jarName);
-        if( file.exists()){
-            return file.toURL();
-        }
+    	for (File jarPath : libPaths()) {
+            File file = new File(jarPath, jarName);
+            if( file.exists()){
+                return file.toURL();
+            }
+		}
         return null;
     }
 
@@ -133,4 +138,20 @@ public abstract class AbstractDb4oVersionsRaceRunner extends AbstractRunner {
         method.invoke(onObject, new Object[]{param});
     }
 
+    protected File[] libPaths() {
+    	File[] projectPaths = projectPaths();
+    	File[] libPaths = new File[projectPaths.length];
+    	for (int pathIdx = 0; pathIdx < projectPaths.length; pathIdx++) {
+			libPaths[pathIdx] = new File(projectPaths[pathIdx], "lib");
+		}
+    	return libPaths;
+    }
+
+    protected File[] projectPaths() {
+    	return new File[]{ workspaceFile("polepos"), workspaceFile("db4opolepos") };
+    }
+    
+    private File workspaceFile(String path) {
+    	return new File(workspace(), path);
+    }
 }

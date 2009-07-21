@@ -26,6 +26,7 @@ import org.polepos.circuits.melbourne.Melbourne;
 import org.polepos.circuits.sepang.Sepang;
 import org.polepos.framework.Circuit;
 import org.polepos.framework.Team;
+import org.polepos.reporters.*;
 import org.polepos.runner.AbstractRunner;
 import org.polepos.teams.db4o.Db4oTeam;
 import org.polepos.teams.hibernate.HibernateTeam;
@@ -63,6 +64,11 @@ public class RunSeason extends AbstractRunner {
 				new JdbcTeam(),
 				new JdoTeam() 
 		};
+	}
+
+	@Override
+	protected Reporter[] reporters() {
+		return DefaultReporterFactory.defaultReporters();
 	}
 
 }

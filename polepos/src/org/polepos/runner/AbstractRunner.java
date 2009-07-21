@@ -20,15 +20,18 @@ MA  02111-1307, USA. */
 package org.polepos.runner;
 
 import org.polepos.framework.*;
+import org.polepos.reporters.*;
 
 public abstract class AbstractRunner {
 
 	public void run() {
-		new Racer(circuits(), teams()).run();
+		new Racer(circuits(), teams(), reporters()).run();
 	}
 
-	public abstract Circuit[] circuits();
+	protected abstract Circuit[] circuits();
 
-	public abstract Team[] teams();
+	protected abstract Team[] teams();
+
+	protected abstract Reporter[] reporters();
 
 }

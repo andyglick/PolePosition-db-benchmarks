@@ -59,11 +59,17 @@ public class Db4oTeam extends Team {
 
 	public static final String PATH = FOLDER + "/" + DB4O_FILE; 
     
-    public Db4oTeam() {
+    public Db4oTeam(boolean loadDrivers) {
         _drivers = new ArrayList<Driver>();
-        addDrivers();
+        if(loadDrivers) {
+        	addDrivers();
+        }
     }
-    
+
+    public Db4oTeam() {
+    	this(true);
+    }
+
     private void addDrivers(){
         addDriver(new MelbourneDb4o());
         addDriver(new SepangDb4o());

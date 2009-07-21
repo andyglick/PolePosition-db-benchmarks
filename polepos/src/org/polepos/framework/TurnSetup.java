@@ -32,14 +32,14 @@ public class TurnSetup implements Cloneable{
     
     private final static PropertiesHandler mProperties = new PropertiesHandler(Settings.CIRCUIT);
     
-    private final static String OBJECTCOUNT = "objects";
-    private final static String SELECTCOUNT = "selects";
-    private final static String UPDATECOUNT = "updates";
-    private final static String COMMITCOUNT = "commits";
-    private final static String TREEWIDTH = "width";
-    private final static String TREEDEPTH = "depth";
-    private final static String COMMITINTERVAL = "commitinterval";
-    private final static String OBJECTSIZE = "size";
+    public final static String OBJECTCOUNT = "objects";
+    public final static String SELECTCOUNT = "selects";
+    public final static String UPDATECOUNT = "updates";
+    public final static String COMMITCOUNT = "commits";
+    public final static String TREEWIDTH = "width";
+    public final static String TREEDEPTH = "depth";
+    public final static String COMMITINTERVAL = "commitinterval";
+    public final static String OBJECTSIZE = "size";
 
     private final static String[] AVAILABLE_SETTINGS = new String[]{
         OBJECTCOUNT,
@@ -54,6 +54,15 @@ public class TurnSetup implements Cloneable{
     
     private Map<SetupProperty, SetupProperty> mSettings = new Hashtable<SetupProperty, SetupProperty>();
     
+    public TurnSetup() {
+    }
+
+    public TurnSetup(SetupProperty... properties) {
+    	for (SetupProperty property : properties) {
+			mSettings.put(property, property);
+		}
+    }
+
     private TurnSetup deepClone(){
         TurnSetup res = null;
         try {

@@ -33,10 +33,14 @@ import org.polepos.framework.*;
 import org.polepos.util.*;
 
 
-public abstract class GraphReporter extends Reporter{
+public abstract class GraphReporter extends ReporterBase{
     
-    
-    private Map<CircuitLap,Graph> mGraphs;
+    public GraphReporter(String path) {
+		super(path);
+		
+	}
+
+	private Map<CircuitLap,Graph> mGraphs;
     private java.util.List<Circuit> mCircuits;
 	protected final DefaultCategoryDataset _overviewTimeDataset = new DefaultCategoryDataset();
 	protected final DefaultCategoryDataset _overviewMemoryDataset = new DefaultCategoryDataset();
@@ -56,12 +60,7 @@ public abstract class GraphReporter extends Reporter{
     }
     
     @Override
-    public String file() {
-        return "F1Results.txt";
-    }
-    
-    @Override
-    public void reportTaskName(int number, String name){
+    public void reportTaskNames(String[] taskNames){
         // do nothing
     }
 

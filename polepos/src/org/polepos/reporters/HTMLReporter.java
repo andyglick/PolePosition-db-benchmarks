@@ -32,6 +32,12 @@ import org.polepos.framework.*;
 
 
 public class HTMLReporter extends GraphReporter {	
+
+	public HTMLReporter(String path) {
+		super(path);
+		
+	}
+
 	public final static String ENCODING = "utf-8";
 	
 	private File outdir=null;
@@ -70,10 +76,6 @@ public class HTMLReporter extends GraphReporter {
 		renderCircuitPage();
 		renderIndexPage();
 		copyStylesheet();
-	}
-	
-	public String path() {
-	    return super.path() + "/html";
 	}
 	
 	private void setup() throws Exception {
