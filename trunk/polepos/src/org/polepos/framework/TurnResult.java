@@ -27,7 +27,7 @@ import org.polepos.reporters.*;
 /**
  * collects all the results for a turn. 
  */
-public class TurnResult
+public class TurnResult implements Iterable<Result>
 {
     private List<Result> results = new ArrayList<Result>();
 
@@ -35,21 +35,14 @@ public class TurnResult
         results.add(result);
     }
 
-    public void requestTaskNames(Reporter reporter) {
-        int num = 1;
-        Iterator i = results.iterator();
-        while(i.hasNext()){
-            Result result = (Result)i.next();
-            reporter.reportTaskName(num ++, result.getName());
-        }
-    }
-    
-    public void report(Reporter reporter) {
+    public void report(ReporterBase reporter) {
         for(Result res : results){
             reporter.reportResult(res);
         }
     }
 
-    
+    public Iterator<Result> iterator() {
+    	return results.iterator();
+    }
 	
 }

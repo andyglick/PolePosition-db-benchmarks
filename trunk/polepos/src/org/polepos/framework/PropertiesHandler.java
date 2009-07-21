@@ -19,10 +19,7 @@ MA  02111-1307, USA. */
 
 package org.polepos.framework;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -81,7 +78,14 @@ public class PropertiesHandler
             if(file.exists()){
                 _properties.load(new FileInputStream(file));
             }else{
-                _properties.load( PropertiesHandler.class.getClassLoader().getResourceAsStream( _fileName ) );
+                InputStream propertiesStream = PropertiesHandler.class.getClassLoader().getResourceAsStream( _fileName );
+                if(propertiesStream != null) {
+                	_properties.load( propertiesStream );
+                }
+                else {
+        			Log.logger.warning( "Cannot load default properties." );
+        			return false;
+                }
             }
 		}
 		catch ( IOException ioex )

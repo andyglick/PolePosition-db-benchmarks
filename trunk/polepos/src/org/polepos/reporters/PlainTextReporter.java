@@ -25,10 +25,14 @@ import java.util.*;
 import org.polepos.framework.*;
 
 
-public class PlainTextReporter extends Reporter{
+public class PlainTextReporter extends ReporterBase{
     
-    protected PrintStream mOut;
+	protected PrintStream mOut;
     private boolean mSetupReported;
+
+    public PlainTextReporter(String path) {
+		super(path);
+	}
 
     @Override
     public void startSeason() {
@@ -48,19 +52,19 @@ public class PlainTextReporter extends Reporter{
         mOut.println( "Season started at " + new Date().toString() );
         mOut.println( "===========================================================================================" );
     }
-
+    
     @Override
     public boolean append() {
         return true;
     }
 
-    @Override
-    public String file() {
+    private String file() {
         return path() + "/F1Season.log";
     }
 
     @Override
     public void noDriver(Team team, Circuit circuit) {
+    	super.noDriver(team, circuit);
         mOut.println("*** No driver for team " + team.name() + " in " + circuit.name() );
     }
     
@@ -76,8 +80,10 @@ public class PlainTextReporter extends Reporter{
     }
     
     @Override
-    public void reportTaskName(int number, String name){
-        mOut.println("[" + number + "] " + name );
+    public void reportTaskNames(String[] taskNames){
+    	for (int nameIdx = 0; nameIdx < taskNames.length; nameIdx++) {
+            mOut.println("[" + (nameIdx+1) + "] " + taskNames[nameIdx] );
+		}
     }
 
     @Override

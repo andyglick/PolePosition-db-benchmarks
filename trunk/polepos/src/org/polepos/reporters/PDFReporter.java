@@ -33,6 +33,7 @@ import com.lowagie.text.pdf.*;
 
 
 public class PDFReporter extends GraphReporter {
+
 	private Circuit _circuit;
 	private Document _document;
 	private PdfWriter _writer;
@@ -42,7 +43,12 @@ public class PDFReporter extends GraphReporter {
     private static final com.lowagie.text.Font h2Font = FontFactory.getFont(FontFactory.HELVETICA,12,Font.BOLD);
     private static final com.lowagie.text.Font bigFont = FontFactory.getFont(FontFactory.HELVETICA,10,Font.BOLD);
     private static final com.lowagie.text.Font smallFont = FontFactory.getFont(FontFactory.HELVETICA,9,Font.PLAIN);
-    
+
+	public PDFReporter(String path) {
+		super(path);
+		
+	}
+
     protected void report(Graph graph) {
     	if(_document == null) {
     		setupDocument(path());

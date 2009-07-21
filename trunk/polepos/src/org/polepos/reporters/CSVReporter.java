@@ -27,7 +27,12 @@ import org.polepos.framework.*;
 
 public class CSVReporter extends GraphReporter {
     
-    private final static String TAB = "\t";
+    public CSVReporter(String path) {
+		super(path);
+		
+	}
+
+	private final static String TAB = "\t";
 
 	protected void report(Graph graph){
         new File(path()).mkdirs();
