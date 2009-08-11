@@ -81,7 +81,7 @@ public abstract class AbstractDb4oVersionsRaceRunner extends AbstractRunner {
 				}
                 urls[urls.length - 1] = jarURL(workspace(), jarName);
                 
-                ClassLoader loader=new VersionClassLoader(urls, prefixes);
+                ClassLoader loader=new VersionClassLoader(urls, prefixes, Team.class.getClassLoader());
                 team = instantiateTeam((Class<? extends Team>)loader.loadClass(Db4oTeam.class.getName()));
             }
             team.configure(options, configurations);

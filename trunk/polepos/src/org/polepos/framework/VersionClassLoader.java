@@ -42,8 +42,8 @@ public class VersionClassLoader extends URLClassLoader {
      * @param prefixes The package prefixes to be handled without delegation 
      * to the parent classloader
      */
-    public VersionClassLoader(URL[] urls,String[] prefixes) {
-        super(urls);
+    public VersionClassLoader(URL[] urls,String[] prefixes, ClassLoader parent) {
+        super(urls, parent);
         _prefixes=prefixes;
     }
 
