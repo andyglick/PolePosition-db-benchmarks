@@ -31,7 +31,6 @@ public class MemoryWatcher implements Watcher {
 	
 	public void start() {
 		_stop = false;
-		MemoryUtil.clear();
 		_maxUsedMemory = _startUsedMemory = MemoryUtil.usedMemory();
 		new MemoryWatcherThread().start();
 	}
@@ -55,7 +54,7 @@ public class MemoryWatcher implements Watcher {
 		public void run() {
 			while(!_stop) {
 				monitorMemory();
-				ThreadUtil.sleepIgnoreInterruption(10);
+				ThreadUtil.sleepIgnoreInterruption(100);
 			}
 		}
 	}
