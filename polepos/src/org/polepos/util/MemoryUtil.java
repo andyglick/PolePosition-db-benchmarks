@@ -37,11 +37,7 @@ public class MemoryUtil {
 				System.gc();
 				System.runFinalization();
 			}
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			Thread.yield();
 			long usedMemoryAfterGC = internalUsedMemory();
 			if(usedMemoryAfterGC >= usedMemoryBeforeGC){
 				return usedMemoryBeforeGC;
