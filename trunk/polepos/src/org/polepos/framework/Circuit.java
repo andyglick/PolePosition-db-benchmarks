@@ -22,6 +22,7 @@ package org.polepos.framework;
 import java.lang.reflect.*;
 import java.util.*;
 
+import org.polepos.util.*;
 import org.polepos.watcher.*;
 
 /**
@@ -37,7 +38,9 @@ public abstract class Circuit{
 	// should start before time watcher
     private TimeWatcher _timeWatcher;
     
-    private MemoryWatcher _memoryWatcher;
+    // TODO: The effect of MemoryWatcher is too strong on the running tests.
+    //       We should investigate if we can get less intrusive results with JMX
+    // private MemoryWatcher _memoryWatcher;
     
     private FileSizeWatcher _fileSizeWatcher;
     
@@ -50,7 +53,7 @@ public abstract class Circuit{
 
 	private void initWatchers() {
 		_timeWatcher = new TimeWatcher();
-		_memoryWatcher = new MemoryWatcher();
+		// _memoryWatcher = new MemoryWatcher();
 		_fileSizeWatcher = new FileSizeWatcher();
 	}
     
@@ -193,7 +196,7 @@ public abstract class Circuit{
                 	}
                 }
                 
-                _memoryWatcher.start();
+                // _memoryWatcher.start();
                 _timeWatcher.start();
                 _fileSizeWatcher.monitorFile(team.databaseFile());
                 _fileSizeWatcher.start();
@@ -222,12 +225,13 @@ public abstract class Circuit{
 				}
                 
                 _timeWatcher.stop();
-                _memoryWatcher.stop();
+                // _memoryWatcher.stop();
                 _fileSizeWatcher.stop();
                 
                 if(lap.reportResult()){
                 	long time = (Long)_timeWatcher.value();
-                	long memory = (Long) _memoryWatcher.value();
+                	// long memory = (Long) _memoryWatcher.value();
+                	long memory = MemoryUtil.usedMemory();
                 	long databaseSize = (Long) _fileSizeWatcher.value();
                 	
                     result.report(new Result(this, team, lap, setup, index, time, memory, databaseSize, driver.checkSum()));
