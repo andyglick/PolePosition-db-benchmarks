@@ -21,36 +21,12 @@ package org.polepos.framework;
 
 import java.util.*;
 
-import org.polepos.*;
 
 
 /**
  * @author Herkules
  */
 public class TurnSetup implements Cloneable{
-    
-    
-    private final static PropertiesHandler mProperties = new PropertiesHandler(Settings.CIRCUIT);
-    
-    public final static String OBJECTCOUNT = "objects";
-    public final static String SELECTCOUNT = "selects";
-    public final static String UPDATECOUNT = "updates";
-    public final static String COMMITCOUNT = "commits";
-    public final static String TREEWIDTH = "width";
-    public final static String TREEDEPTH = "depth";
-    public final static String COMMITINTERVAL = "commitinterval";
-    public final static String OBJECTSIZE = "size";
-
-    private final static String[] AVAILABLE_SETTINGS = new String[]{
-        OBJECTCOUNT,
-        SELECTCOUNT,
-        UPDATECOUNT,
-        COMMITCOUNT,
-        TREEWIDTH,
-        TREEDEPTH,
-        COMMITINTERVAL,
-        OBJECTSIZE
-    };
     
     private Map<SetupProperty, SetupProperty> mSettings = new Hashtable<SetupProperty, SetupProperty>();
     
@@ -63,7 +39,7 @@ public class TurnSetup implements Cloneable{
 		}
     }
 
-    private TurnSetup deepClone(){
+    TurnSetup deepClone(){
         TurnSetup res = null;
         try {
             res = (TurnSetup)this.clone();
@@ -77,53 +53,6 @@ public class TurnSetup implements Cloneable{
         return res;
     }
     
-    public static TurnSetup[] read(Circuit circuit){
-        
-        Vector<TurnSetup> vec = new Vector<TurnSetup>();
-        
-        for (int i = 0; i < AVAILABLE_SETTINGS.length; i++) {
-            
-            int[] values = null;
-            
-            try{
-                values = mProperties.getIntArray(circuit.internalName() + "." + AVAILABLE_SETTINGS[i]);
-            }catch(Exception e){
-                
-            }
-            
-            if(values!= null && values.length > 0){
-                int len = values.length;
-                
-                // make sure that we have enough LapSetup objects in our vector
-                // and clone the last if we dont or create a first one
-                while(vec.size() < len){
-                    if(vec.size() > 0){
-                        vec.add((vec.get(vec.size() - 1)).deepClone());
-                    }else{
-                        vec.add(new TurnSetup());
-                    }
-                }
-                
-                // pass values to all LapSetup objects and take the last value as
-                // the default if there are more than we have values
-                int j = 0;
-                Iterator it = vec.iterator();
-                while(it.hasNext()){
-                    TurnSetup ls = (TurnSetup)it.next();
-                    SetupProperty sp =new SetupProperty(AVAILABLE_SETTINGS[i], values[j]); 
-                    ls.mSettings.put(sp, sp);
-                    if(j < values.length - 1){
-                        j++;
-                    }
-                }
-            }
-        }
-        
-        TurnSetup[] res = new TurnSetup[vec.size()];
-        vec.toArray(res);
-        
-        return res;
-    }
     
     private int getSetting(String key){
         SetupProperty p = mSettings.get(new SetupProperty(key, 0));
@@ -134,40 +63,40 @@ public class TurnSetup implements Cloneable{
     }
     
     public int getCommitInterval(){
-        return getSetting(COMMITINTERVAL);
+        return getSetting(TurnSetupConfig.COMMITINTERVAL);
     }
 
     public int getCommitCount(){
-        return getSetting(COMMITCOUNT);
+        return getSetting(TurnSetupConfig.COMMITCOUNT);
     }
 
     public int getObjectCount(){
-        return getSetting(OBJECTCOUNT);
+        return getSetting(TurnSetupConfig.OBJECTCOUNT);
     }
     
     public int getSelectCount(){
-        return getSetting(SELECTCOUNT);
+        return getSetting(TurnSetupConfig.SELECTCOUNT);
     }
     
     public int getUpdateCount(){
-        return getSetting(UPDATECOUNT);
+        return getSetting(TurnSetupConfig.UPDATECOUNT);
     }
     
     public int getTreeWidth(){
-        return getSetting(TREEWIDTH);
+        return getSetting(TurnSetupConfig.TREEWIDTH);
     }
     
     public int getTreeDepth(){
-        return getSetting(TREEDEPTH);
+        return getSetting(TurnSetupConfig.TREEDEPTH);
     }
     
     public int getObjectSize(){
-        return getSetting(OBJECTSIZE);
+        return getSetting(TurnSetupConfig.OBJECTSIZE);
     }
     
     public int getMostImportantValueForGraph(){
-        for (int i = 0; i < AVAILABLE_SETTINGS.length; i++) {
-            int val = getSetting(AVAILABLE_SETTINGS[i]);
+        for (int i = 0; i < TurnSetupConfig.AVAILABLE_SETTINGS.length; i++) {
+            int val = getSetting(TurnSetupConfig.AVAILABLE_SETTINGS[i]);
             if(val > 0){
                 return val;
             }
@@ -176,10 +105,10 @@ public class TurnSetup implements Cloneable{
     }
     
     public String getMostImportantNameForGraph(){
-        for (int i = 0; i < AVAILABLE_SETTINGS.length; i++) {
-            int val = getSetting(AVAILABLE_SETTINGS[i]);
+        for (int i = 0; i < TurnSetupConfig.AVAILABLE_SETTINGS.length; i++) {
+            int val = getSetting(TurnSetupConfig.AVAILABLE_SETTINGS[i]);
             if(val > 0){
-                return AVAILABLE_SETTINGS[i];
+                return TurnSetupConfig.AVAILABLE_SETTINGS[i];
             }
         }
         return "";
@@ -187,6 +116,10 @@ public class TurnSetup implements Cloneable{
     
     public Set<SetupProperty> properties() {
         return Collections.unmodifiableSet(mSettings.keySet());
+    }
+    
+    public void addSetting(SetupProperty setupProperty){
+    	mSettings.put(setupProperty, setupProperty);
     }
     
 }

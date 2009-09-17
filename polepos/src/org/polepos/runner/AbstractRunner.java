@@ -19,13 +19,24 @@ MA  02111-1307, USA. */
 
 package org.polepos.runner;
 
+import org.polepos.*;
 import org.polepos.framework.*;
 import org.polepos.reporters.*;
 
 public abstract class AbstractRunner {
 
 	public void run() {
-		new Racer(circuits(), teams(), reporters()).run();
+		run(Settings.CIRCUIT);
+	}
+	
+	public void run(String propertiesFileName){
+		TurnSetupConfig turnSetupConfig = new TurnSetupConfig(propertiesFileName);
+		Circuit[] circuits = circuits();
+		for(Circuit circuit: circuits){
+			TurnSetup[] turnSetups = turnSetupConfig.read(circuit);
+			circuit.setTurnSetups(turnSetups);
+		}
+		new Racer(circuits, teams(), reporters()).run();
 	}
 
 	protected abstract Circuit[] circuits();

@@ -32,7 +32,7 @@ public abstract class Circuit{
     
     private final List<Lap> mLaps;
     
-    private final TurnSetup[] mLapSetups;
+    private TurnSetup[] mLapSetups;
         
     // TODO: watcher can be installed, and should be sorted, i.e. memory watcher
 	// should start before time watcher
@@ -47,8 +47,11 @@ public abstract class Circuit{
     protected Circuit(){
         initWatchers();
         mLaps = new ArrayList<Lap>();
-        mLapSetups = TurnSetup.read(this);
         addLaps();
+    }
+    
+    public void setTurnSetups(TurnSetup[] turnSetups){
+    	mLapSetups = turnSetups;
     }
 
 	private void initWatchers() {
