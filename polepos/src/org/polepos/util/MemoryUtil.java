@@ -36,8 +36,8 @@ public class MemoryUtil {
 			for (int i = 0; i < GC_TIMES; ++i) {
 				System.gc();
 				System.runFinalization();
+				Thread.yield();
 			}
-			Thread.yield();
 			long usedMemoryAfterGC = internalUsedMemory();
 			if(usedMemoryAfterGC >= usedMemoryBeforeGC){
 				return usedMemoryBeforeGC;
