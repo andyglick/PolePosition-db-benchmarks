@@ -251,6 +251,12 @@ public abstract class Circuit{
             
             team.tearDown();
         }
+        driver.circuitCompleted();
+        if(drivers != null){
+	        for (int i = 0; i < drivers.length; i++) {
+				drivers[i].circuitCompleted();
+			}
+        }
         return results;
     }
     

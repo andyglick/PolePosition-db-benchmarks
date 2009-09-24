@@ -86,4 +86,8 @@ public abstract class Driver implements Cloneable
     public boolean canConcurrent() {
     	return true;
     }
+
+	public void circuitCompleted() {
+		// This method can be overridden to clean up state.
+	}
 }
