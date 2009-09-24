@@ -32,8 +32,12 @@ public class SepangDb4o extends Db4oDriver implements SepangDriver{
 	public void configure(Configuration config) {
 		
 	}
-
-    
+	
+	@Override
+	public void circuitCompleted() {
+		lastRead = null;
+	}
+   
     long treeRootID;
     Tree lastRead;
     

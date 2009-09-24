@@ -31,7 +31,11 @@ public class ImolaDb4o extends Db4oDriver implements ImolaDriver {
 	public void configure(Configuration config) {
 		
 	}
-
+	
+	@Override
+	public void circuitCompleted() {
+		ids = null;
+	}
 
     private long[] ids;
 
