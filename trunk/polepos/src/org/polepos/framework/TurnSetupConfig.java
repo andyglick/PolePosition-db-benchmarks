@@ -58,11 +58,7 @@ public class TurnSetupConfig {
             
             int[] values = null;
             
-            try{
-                values = mProperties.getIntArray(circuit.internalName() + "." + AVAILABLE_SETTINGS[i]);
-            }catch(Exception e){
-                
-            }
+            values = mProperties.getIntArray(circuit.internalName() + "." + AVAILABLE_SETTINGS[i]);
             
             if(values!= null && values.length > 0){
                 int len = values.length;
