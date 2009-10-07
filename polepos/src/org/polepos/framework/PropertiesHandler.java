@@ -186,7 +186,14 @@ public class PropertiesHandler
 	 */
 	public int[] getIntArray( String key ){
 		String s = get( key );
+		if(s == null) {
+			return null;
+		}
 		
+		int commentCharIdx = s.indexOf('#');
+		if(commentCharIdx >= 0) {
+			s = s.substring(0, commentCharIdx);
+		}
 		StringTokenizer tokenizer = new StringTokenizer(s, "[ \t,;]" );
 		int len = tokenizer.countTokens();
 		int[] res = new int[ len ];
