@@ -85,12 +85,16 @@ public class JdbcCar extends Car {
 	 * 
 	 */
 	public void close() {
+		if(_connection == null) {
+			return;
+		}
 		closeStatement();
 		commit();
 		closeConnection();
 	}
 
 	private void closeConnection() {
+		closeStatement();
 		try {
 			_connection.close();
 		} catch (SQLException sqlex) {

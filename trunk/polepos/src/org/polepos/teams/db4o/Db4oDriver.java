@@ -20,7 +20,7 @@
 package org.polepos.teams.db4o;
 
 import org.polepos.framework.*;
-import org.polepos.util.*;
+import org.polepos.runner.db4o.*;
 
 import com.db4o.*;
 import com.db4o.config.*;
@@ -32,12 +32,18 @@ import com.db4o.query.*;
  */
 public abstract class Db4oDriver extends Driver {
 
+	private final Db4oEngine _engine;
+	
+	protected Db4oDriver(Db4oEngine engine) {
+		_engine = engine;
+	}
+	
 	private ExtObjectContainer _container;
 
 	public void prepare() {
 		Configuration config = Db4o.newConfiguration();
 		configure(config);
-		_container = ((Db4oCar) car()).openObjectContainer(config);
+		_container = ((Db4oCar) car()).openObjectContainer(_engine, config);
 	}
 	
 	public abstract void configure(Configuration config);
@@ -48,10 +54,14 @@ public abstract class Db4oDriver extends Driver {
 	}
 
 	public void backToPit() {
+		if(_container == null || _container.ext().isClosed()) {
+			return;
+		}
 		_container.close();
 		
 		// give the weak reference collector thread time to end
-		ThreadUtil.sleepIgnoreInterruption(500);
+// TODO check whether this is really necessary, if it is, can't we somehow join on this guy?
+//		ThreadUtil.sleepIgnoreInterruption(500);
 	}
 
 	public ExtObjectContainer db() {

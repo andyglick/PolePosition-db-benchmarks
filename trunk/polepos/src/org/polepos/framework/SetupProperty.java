@@ -37,22 +37,39 @@ public class SetupProperty {
     public int value(){
         return value;
     }
-   
-    @Override
-    public boolean equals(Object obj) {
-        if(obj==this) {
-            return true;
-        }
-        if(obj==null||obj.getClass()!=getClass()) {
-            return false;
-        }
-        SetupProperty key=(SetupProperty)obj;
-        return name.equals(key.name);
-    }
-    
-    @Override
-    public int hashCode() {
-        return name.hashCode();
-    }
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + value;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		SetupProperty other = (SetupProperty) obj;
+		if (name == null) {
+			if (other.name != null) {
+				return false;
+			}
+		} else if (!name.equals(other.name)) {
+			return false;
+		}
+		if (value != other.value) {
+			return false;
+		}
+		return true;
+	}
+       
 }
