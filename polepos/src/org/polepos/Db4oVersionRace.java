@@ -83,16 +83,16 @@ public class Db4oVersionRace extends AbstractDb4oVersionsRaceRunner{
 		};
 	}
 
-	public Driver[] drivers() {
+	public Driver[] drivers(Db4oEngine engine) {
 		return new Driver [] {
-				new MelbourneDb4o(),
-		        new SepangDb4o(),
-		        new BahrainDb4o(),
-		        new ImolaDb4o(),
-		        new BarcelonaDb4o(),
-		        new MonacoDb4o(),
-		        new NurburgringDb4o(),
-		        new MontrealDb4o(),
+				new MelbourneDb4o(engine),
+		        new SepangDb4o(engine),
+		        new BahrainDb4o(engine),
+		        new ImolaDb4o(engine),
+		        new BarcelonaDb4o(engine),
+		        new MonacoDb4o(engine),
+		        new NurburgringDb4o(engine),
+		        new MontrealDb4o(engine),
 		};
 	}
     

@@ -20,6 +20,7 @@ MA  02111-1307, USA. */
 package org.polepos.teams.db4o;
 
 import org.polepos.framework.*;
+import org.polepos.runner.db4o.*;
 
 import com.db4o.*;
 import com.db4o.config.*;
@@ -53,20 +54,18 @@ public class Db4oCar extends Car {
     /**
      * Open database in the configured mode.
      */
-    public ExtObjectContainer openObjectContainer(Configuration config)
+    public ExtObjectContainer openObjectContainer(Db4oEngine engine, Configuration config)
     {
     	configure(config);
         if (!isClientServer()) {
-			return Db4o.openFile(config, Db4oTeam.PATH).ext();
+        	return engine.openFile(config);
 		}
         
-        ObjectServer server = Db4oTeam.openServer(config);
-
         if(isClientServerOverTcp()){
-            return Db4o.openClient(config, Db4oTeam.SERVER_HOST, Db4oTeam.SERVER_PORT, Db4oTeam.SERVER_USER, Db4oTeam.SERVER_PASSWORD).ext();
+        	return engine.openNetworkingClient(config);
         }
         // embedded client server mode
-		return server.openClient().ext();
+        return engine.openEmbeddedClient(config);
 	}
     
     private boolean isClientServer() {

@@ -19,66 +19,50 @@ MA  02111-1307, USA. */
 
 package org.polepos.teams.db4o;
 
-import java.io.File;
+import java.io.*;
+import java.lang.reflect.*;
 import java.util.*;
 
 import org.polepos.framework.*;
-
-import com.db4o.*;
-import com.db4o.config.*;
+import org.polepos.runner.db4o.*;
 
 public class Db4oTeam extends Team {
     
+	private final Db4oEngine _engine;
+	
     private String _name = db4oName(); 
     
-    private boolean _clientServer = false;
-
     private final List<Driver> _drivers;
 
 	private int[] _options;
 	
-	private ConfigurationSetting[] _configurations;
+	private ConfigurationSetting[] _configurations;	
 	
-	private static ObjectServer _server;
-    
-    public static final int SERVER_PORT = 4488;
-    
-    public static final String SERVER_HOST = "localhost";
-    
-    public static final String SERVER_USER = "db4o";
-    
-    public static final String SERVER_PASSWORD = "db4o";
-    
-    public static final String FOLDER;
-    
-    static {
-        FOLDER = Db4oTeam.class.getResource("/").getPath() + "data/db4o";
-    }
-
-    public static final String DB4O_FILE = "dbbench.yap";
-
-	public static final String PATH = FOLDER + "/" + DB4O_FILE; 
-    
-    public Db4oTeam(boolean loadDrivers) {
+    public Db4oTeam(Db4oEngine engine, boolean loadDrivers) {
+    	_engine = engine;
         _drivers = new ArrayList<Driver>();
         if(loadDrivers) {
-        	addDrivers();
+        	addDrivers(engine);
         }
     }
 
-    public Db4oTeam() {
-    	this(true);
+    public Db4oTeam(Db4oEngine engine) {
+    	this(engine, true);
     }
 
-    private void addDrivers(){
-        addDriver(new MelbourneDb4o());
-        addDriver(new SepangDb4o());
-        addDriver(new BahrainDb4o());
-        addDriver(new ImolaDb4o());
-        addDriver(new BarcelonaDb4o());
-        addDriver(new MonacoDb4o());
-        addDriver(new NurburgringDb4o());
-        addDriver(new MontrealDb4o());
+    public Db4oTeam() {
+    	this(new Db4oEngine());
+    }
+
+    private void addDrivers(Db4oEngine engine){
+        addDriver(new MelbourneDb4o(engine));
+        addDriver(new SepangDb4o(engine));
+        addDriver(new BahrainDb4o(engine));
+        addDriver(new ImolaDb4o(engine));
+        addDriver(new BarcelonaDb4o(engine));
+        addDriver(new MonacoDb4o(engine));
+        addDriver(new NurburgringDb4o(engine));
+        addDriver(new MontrealDb4o(engine));
     }
     
     @Override
@@ -103,7 +87,8 @@ public class Db4oTeam extends Team {
     public void addDriver(String driverName){
         try {
             Class<?> clazz = this.getClass().getClassLoader().loadClass(driverName);
-            addDriver((Driver)clazz.newInstance());
+            Constructor<?> constr = clazz.getConstructor(Db4oEngine.class);
+            addDriver((Driver)constr.newInstance(_engine));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -140,7 +125,6 @@ public class Db4oTeam extends Team {
                             _name += " noflush";
                             break;
                         case Db4oOptions.CLIENT_SERVER:
-                            _clientServer = true;
                             _name += " C/S";
                             break;
                         case Db4oOptions.CLIENT_SERVER_TCP:
@@ -181,39 +165,34 @@ public class Db4oTeam extends Team {
     }
 
 	protected void setUp() {
-		new File(FOLDER).mkdirs();
-	    deleteDatabaseFile();
+		new File(Db4oEngine.FOLDER).mkdirs();
+	    try {
+			_engine.deleteDatabaseFile();
+		} 
+	    catch (IOException e) {
+	    	throw new RuntimeException(e);
+		}
 	}
 
 	protected void tearDown() {
-    	if(_server != null){
-    		_server.close();
-    		_server = null;
-    	}
+		_engine.stopServer();
 	}
     
 	public final String databaseFile(){
-        return PATH;
+        return _engine.databaseFile();
     }
 	
     /**
      * get rid of the database file.
+     * @throws IOException 
      */
-    private void deleteDatabaseFile()
+    private void deleteDatabaseFile() throws IOException
     {
-        new File( databaseFile() ).delete();
+    	_engine.deleteDatabaseFile();
     }    
     
     public void setJarName(String jarName){
         _name = _name.replaceAll("db4o", jarName);
     }
     
-    public static ObjectServer openServer(Configuration config){
-        if(_server == null){
-	        _server = Db4o.openServer(config, Db4oTeam.PATH, SERVER_PORT);
-	        _server.grantAccess(SERVER_USER, SERVER_PASSWORD);
-        }
-        return _server;
-    }
-
 }

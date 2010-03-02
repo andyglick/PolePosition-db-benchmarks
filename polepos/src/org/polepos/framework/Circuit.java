@@ -30,7 +30,23 @@ import org.polepos.watcher.*;
  */
 public abstract class Circuit{
     
-    private final List<Lap> mLaps;
+    public static final String NUM_RUNS_PROPERTY_ID = "POLEPOS_NUM_RUNS";
+    public static final String MEMORY_USAGE_PROPERTY_ID = "POLEPOS_MEMORY_USAGE";
+
+	private final int _numRuns = Integer.parseInt(System.getProperty(NUM_RUNS_PROPERTY_ID, "1"));
+	private final MemoryUsage _memoryUsage = memoryUsage();
+
+	private static MemoryUsage memoryUsage() {
+		try {
+			return (MemoryUsage)Class.forName(System.getProperty(MEMORY_USAGE_PROPERTY_ID, SimpleMemoryUsage.class.getName())).newInstance();
+		} 
+		catch (Exception exc) {
+			exc.printStackTrace();
+			return new SimpleMemoryUsage();
+		}
+	}
+
+	private final List<Lap> mLaps;
     
     private TurnSetup[] mLapSetups;
         
@@ -111,7 +127,6 @@ public abstract class Circuit{
      * calling all the laps for all the lapSetups
      */
     public TurnResult[] race( Team team, Car car, Driver driver){
-  
         TurnResult[] results = new TurnResult[ mLapSetups.length ];
 
         int index = 0;
@@ -129,13 +144,25 @@ public abstract class Circuit{
 		}
         
         for(TurnSetup setup : mLapSetups) {
-            
-            TurnResult result = new TurnResult(); 
-            results[index++] = result;
-            
-            team.setUp();
-            
-            try {
+            results[index++] = runTurn(team, car, driver, index, drivers, concurrent, setup);
+        }
+        return results;
+    }
+
+	private TurnResult runTurn(Team team, Car car, Driver driver, int index,
+			Driver[] drivers, boolean concurrent, TurnSetup setup) {
+		
+		Map<Lap, Set<LapReading>> lapReadings = new HashMap<Lap, Set<LapReading>>();
+		for (Lap lap : laps()) {
+			if(lap.reportResult()) {
+				lapReadings.put(lap, new HashSet<LapReading>());
+			}
+		}
+		boolean warmUp = _numRuns > 1;
+		for (int runIdx = 0; runIdx < _numRuns; runIdx++) {
+			team.setUp();
+			
+			try {
 				if (concurrent) {
 					for (int i = 0; i < drivers.length; ++i) {
 						drivers[i].takeSeatIn(car, setup);
@@ -144,121 +171,175 @@ public abstract class Circuit{
 					driver.takeSeatIn(car, setup);
 				}
 			} catch (CarMotorFailureException e1) {
-				e1.printStackTrace();
-				break;
+				// FIXME reasonable exception handling
+				throw new RuntimeException("Circuit aborted", e1);
 			}
-            
-            
-            boolean first = true;
-            
-            for(Lap lap : mLaps) {
-                
-                
-                Method method = null; 
-            
-                try {
-                    method = driver.getClass().getDeclaredMethod(lap.name(), (Class[])null);
-                } catch (SecurityException e) {
-                    e.printStackTrace();
-                } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
-                }
-                
-                
-                if( ! lap.hot() ){
-                    if(first){
-                       first = false;
-                    }else{
-                    	if (concurrent) {
-							for (Driver d : drivers) {
-								d.backToPit();
-							}
-						} else {
-							driver.backToPit();
-						}
-                    }
-                    
-                    try {
-                    	if (concurrent) {
-							for (Driver d : drivers) {
-								d.prepare();
-							}
-						} else {
-							driver.prepare();
-						}
-                    } catch (CarMotorFailureException e) {
-                        e.printStackTrace();
-                    }        
-                }
-                
-                RunLapThread[] threads = null;
-                if(concurrent) {
-                	threads = new RunLapThread[drivers.length];
-                	for(int i = 0; i < drivers.length; ++i) {
-                		threads[i] = new RunLapThread(method, drivers[i]);
-                	}
-                }
-                
-                // _memoryWatcher.start();
-                _timeWatcher.start();
-                _fileSizeWatcher.monitorFile(team.databaseFile());
-                _fileSizeWatcher.start();
-                
-                try {
-                	if(concurrent) {
-						for (RunLapThread t : threads) {
-							t.start();
-						}
-					} else {
-						method.invoke(driver, (Object[]) null);
-					}
-                } catch (Exception e) {
-                    System.err.println("Exception on calling method " + method);
-                    e.printStackTrace();
-                }
-                
-                if(concurrent) {
-					for (RunLapThread t : threads) {
-						try {
-							t.join();
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-                
-                _timeWatcher.stop();
-                // _memoryWatcher.stop();
-                _fileSizeWatcher.stop();
-                
-                if(lap.reportResult()){
-                	long time = (Long)_timeWatcher.value();
-                	// long memory = (Long) _memoryWatcher.value();
-                	long memory = MemoryUtil.usedMemory();
-                	long databaseSize = (Long) _fileSizeWatcher.value();
-                	
-                    result.report(new Result(this, team, lap, setup, index, time, memory, databaseSize, driver.checkSum()));
-                }
-            }
-            
-            if(concurrent) {
+			
+			
+			for(Lap lap : mLaps) {
+			    LapReading lapReading = runLap(team, driver, drivers, concurrent, setup, lap);
+			    if(!warmUp && lap.reportResult()) {
+			    	lapReadings.get(lap).add(lapReading);
+			    }
+			}
+	
+			// FIXME
+			if(concurrent) {
 				for (Driver d : drivers) {
 					d.backToPit();
 				}
 			} else {
 				driver.backToPit();
 			}
-            
-            team.tearDown();
-        }
-        driver.circuitCompleted();
-        if(drivers != null){
-	        for (int i = 0; i < drivers.length; i++) {
+			
+			tearDownTurn(team, driver, drivers);
+			warmUp = false;
+		}
+		
+		TurnResult turnResult = new TurnResult();
+		for (Lap lap : laps()) {
+			if(!lap.reportResult()) {
+				continue;
+			}
+			long time = 0;
+			long memory = 0;
+			long fileSize = 0;
+			long checkSum = 0;
+			Set<LapReading> curReadings = lapReadings.get(lap);
+			for (LapReading curReading : curReadings) {
+				time += curReading.time;
+				memory += curReading.memory;
+				fileSize += curReading.fileSize;
+				checkSum += curReading.checkSum;
+			}
+			Result lapResult = new Result(this, team, lap, setup, index, time, memory, fileSize, checkSum);
+			turnResult.report(lapResult);
+		}
+		return turnResult;
+	}
+
+	private void tearDownTurn(Team team, Driver driver, Driver[] drivers) {
+		team.tearDown();
+		
+		driver.circuitCompleted();
+		if(drivers != null){
+			for (int i = 0; i < drivers.length; i++) {
 				drivers[i].circuitCompleted();
 			}
-        }
-        return results;
-    }
+		}
+	}
+
+	private LapReading runLap(Team team, Driver driver,
+			Driver[] drivers, boolean concurrent, TurnSetup setup, Lap lap) {
+		Method method = null; 
+         
+		try {
+		    method = driver.getClass().getDeclaredMethod(lap.name(), (Class[])null);
+		} catch (SecurityException e) {
+		    e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+		    e.printStackTrace();
+		}
+		
+		if( ! lap.hot() ){
+			if (concurrent) {
+				for (Driver d : drivers) {
+					d.backToPit();
+				}
+			} else {
+				driver.backToPit();
+			}
+		    
+		    try {
+		    	if (concurrent) {
+					for (Driver d : drivers) {
+						d.prepare();
+					}
+				} else {
+					driver.prepare();
+				}
+		    } catch (CarMotorFailureException e) {
+		        e.printStackTrace();
+		    }        
+		}
+		
+		RunLapThread[] threads = null;
+		if(concurrent) {
+			threads = new RunLapThread[drivers.length];
+			for(int i = 0; i < drivers.length; ++i) {
+				threads[i] = new RunLapThread(method, drivers[i]);
+			}
+		}
+		
+		// _memoryWatcher.start();
+		_timeWatcher.start();
+		_fileSizeWatcher.monitorFile(team.databaseFile());
+		_fileSizeWatcher.start();
+		
+		try {
+			if(concurrent) {
+				for (RunLapThread t : threads) {
+					t.start();
+				}
+			} else {
+				method.invoke(driver, (Object[]) null);
+			}
+		} catch (Exception e) {
+		    System.err.println("Exception on calling method " + method);
+		    e.printStackTrace();
+		}
+		
+		if(concurrent) {
+			for (RunLapThread t : threads) {
+				try {
+					t.join();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		_timeWatcher.stop();
+		// _memoryWatcher.stop();
+		_fileSizeWatcher.stop();
+		
+		return new LapReading(_timeWatcher.value(), _memoryUsage.usedMemory(), _fileSizeWatcher.value(), driver.checkSum());
+	}
+	
+	private final static class LapReading {
+		public final long time;
+		public final long memory;
+		public final long fileSize;
+		public final long checkSum;
+
+		public LapReading(long time, long memory, long fileSize, long checkSum) {
+			this.time = time;
+			this.memory = memory;
+			this.fileSize = fileSize;
+			this.checkSum = checkSum;
+		}
+		
+		@Override
+		public String toString() {
+			return time + " ms";
+		}
+	}
+	
+	public static interface MemoryUsage {
+		long usedMemory();
+	}
+	
+	public static class SimpleMemoryUsage implements MemoryUsage {
+		public long usedMemory() {
+			return MemoryUtil.usedMemory();
+		}
+	}
+	
+	public static class NullMemoryUsage implements MemoryUsage {
+		public long usedMemory() {
+			return 0;
+		}
+	}
     
 }
 

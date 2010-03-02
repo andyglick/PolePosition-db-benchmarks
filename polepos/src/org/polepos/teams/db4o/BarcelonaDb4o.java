@@ -20,6 +20,7 @@ MA  02111-1307, USA. */
 package org.polepos.teams.db4o;
 
 import org.polepos.circuits.barcelona.*;
+import org.polepos.runner.db4o.*;
 
 import com.db4o.*;
 import com.db4o.config.*;
@@ -28,6 +29,11 @@ import com.db4o.query.*;
 
 public class BarcelonaDb4o extends Db4oDriver implements BarcelonaDriver{
 	
+	public BarcelonaDb4o(Db4oEngine engine) {
+		super(engine);
+		
+	}
+
 	@Override
 	public void configure(Configuration config) {
 		indexField(config, B2.class, "b2");
