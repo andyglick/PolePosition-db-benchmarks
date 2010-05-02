@@ -20,7 +20,6 @@
 package org.polepos.teams.db4o;
 
 import org.polepos.framework.*;
-import org.polepos.runner.db4o.*;
 
 import com.db4o.*;
 import com.db4o.config.*;
@@ -32,18 +31,12 @@ import com.db4o.query.*;
  */
 public abstract class Db4oDriver extends Driver {
 
-	private final Db4oEngine _engine;
-	
-	protected Db4oDriver(Db4oEngine engine) {
-		_engine = engine;
-	}
-	
 	private ExtObjectContainer _container;
 
 	public void prepare() {
 		Configuration config = Db4o.newConfiguration();
 		configure(config);
-		_container = ((Db4oCar) car()).openObjectContainer(_engine, config);
+		_container = ((Db4oCar) car()).openObjectContainer(config);
 	}
 	
 	public abstract void configure(Configuration config);
