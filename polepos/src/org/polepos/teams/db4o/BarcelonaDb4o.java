@@ -29,10 +29,6 @@ import com.db4o.query.*;
 
 public class BarcelonaDb4o extends Db4oDriver implements BarcelonaDriver{
 	
-	public BarcelonaDb4o(Db4oEngine engine) {
-		super(engine);
-		
-	}
 
 	@Override
 	public void configure(Configuration config) {

@@ -29,10 +29,6 @@ import com.db4o.config.*;
  */
 public class SepangDb4o extends Db4oDriver implements SepangDriver{
 	
-	public SepangDb4o(Db4oEngine engine) {
-		super(engine);
-		
-	}
 
 	@Override
 	public void configure(Configuration config) {

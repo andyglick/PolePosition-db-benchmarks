@@ -32,7 +32,7 @@ import org.polepos.teams.db4o.*;
 
 public abstract class AbstractDb4oVersionsRaceRunner extends AbstractRunner {
 	
-	public abstract Driver[] drivers(Db4oEngine engine);
+	public abstract Driver[] drivers();
 	
 	private String _workspace;
 	
@@ -45,22 +45,21 @@ public abstract class AbstractDb4oVersionsRaceRunner extends AbstractRunner {
 		return db4oTeam(jarName, null);
 	}
 	
-	/*
-	 * ConfigurationSettings will have to be run against TRUNK only
-	 * otherwise we get ClassCastExceptions in the callback. 
-	 */
-	public Team configuredDb4oTeam(ConfigurationSetting[] configurations) {
-		Db4oEngine engine = new Db4oEngine();
-		return db4oTeam(engine, workspace(), null, drivers(engine), configurations);
+	public Team configuredDb4oTeam(ConfigurationSetting... configurations) {
+		return db4oTeam(workspace(), null, drivers(), configurations);
 	}
+	
+	public Team configuredDb4oTeam(String jarName, ConfigurationSetting... configurations) {
+		return db4oTeam(jarName, null, drivers(), configurations);
+	}
+
 	
 	public Team db4oTeam(int[] options) {
     	return db4oTeam(null, options) ;
     }
 	
 	public Team db4oTeam(String jarName, int[] options) {
-		Db4oEngine engine = new Db4oEngine();
-    	return db4oTeam(engine, jarName, options, drivers(engine), null) ;
+    	return db4oTeam(jarName, options, drivers(), null) ;
     }
     
 	@Override
@@ -68,11 +67,11 @@ public abstract class AbstractDb4oVersionsRaceRunner extends AbstractRunner {
 		return DefaultReporterFactory.defaultReporters();
 	}
 
-    private Team db4oTeam(Db4oEngine engine, String jarName, int[] options, Driver[] drivers, ConfigurationSetting[] configurations) {
+    private Team db4oTeam(String jarName, int[] options, Driver[] drivers, ConfigurationSetting[] configurations) {
         try {
             Team team = null;    
             if(jarName == null){
-                team = instantiateTeam(engine, (Class<? extends Team>)Class.forName(Db4oTeam.class.getName()));
+                team = instantiateTeam((Class<? extends Team>)Class.forName(Db4oTeam.class.getName()));
             }else{
                 String[] prefixes={"com.db4o.","org.polepos.teams.db4o."};
 
@@ -84,7 +83,7 @@ public abstract class AbstractDb4oVersionsRaceRunner extends AbstractRunner {
                 urls[urls.length - 1] = jarURL(workspace(), jarName);
                 
                 ClassLoader loader=new VersionClassLoader(urls, prefixes, Team.class.getClassLoader());
-                team = instantiateTeam(engine, (Class<? extends Team>)loader.loadClass(Db4oTeam.class.getName()));
+                team = instantiateTeam((Class<? extends Team>)loader.loadClass(Db4oTeam.class.getName()));
             }
             team.configure(options, configurations);
             if(jarName != null){
@@ -103,9 +102,9 @@ public abstract class AbstractDb4oVersionsRaceRunner extends AbstractRunner {
         }
     }
     
-    private Team instantiateTeam(Db4oEngine engine, Class<? extends Team> clazz) throws Exception {
-    	Constructor<? extends Team> constr = clazz.getConstructor(new Class<?>[] { Db4oEngine.class, Boolean.TYPE });
-    	return constr.newInstance(new Object[] { engine, Boolean.FALSE });
+    private Team instantiateTeam(Class<? extends Team> clazz) throws Exception {
+    	Constructor<? extends Team> constr = clazz.getConstructor(new Class<?>[] {});
+    	return constr.newInstance(new Object[] {});
     }
     
     private URL jarURL(String workspace, String jarName) throws MalformedURLException{

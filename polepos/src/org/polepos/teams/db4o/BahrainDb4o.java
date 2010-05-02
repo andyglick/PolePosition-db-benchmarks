@@ -34,10 +34,6 @@ import com.db4o.query.*;
  */
 public class BahrainDb4o extends Db4oDriver implements BahrainDriver{
 		
-	public BahrainDb4o(Db4oEngine engine) {
-		super(engine);
-		
-	}
 
 	@Override
 	public void configure(Configuration config) {

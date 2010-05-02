@@ -28,10 +28,6 @@ import com.db4o.config.*;
 public class NurburgringDb4o extends Db4oDriver implements NurburgringDriver{
     
 	
-	public NurburgringDb4o(Db4oEngine engine) {
-		super(engine);
-		
-	}
 
 	@Override
 	public void configure(Configuration config) {

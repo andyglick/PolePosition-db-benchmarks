@@ -32,6 +32,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/gna-jorm-runtime-05.07.jar"/>
 	<classpathentry kind="lib" path="lib/javassist.jar"/>
-	<classpathentry kind="lib" path="lib/db4o-7.13.136.14180-all-java5.jar"/>
+	<classpathentry kind="lib" path="lib/db4o-8.0.145.14388-all-java5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
