@@ -76,18 +76,20 @@ public class Db4oCar extends Car {
     /**
      * Open database in the configured mode.
      */
-    public ExtObjectContainer openObjectContainer(Configuration config)
+    public ExtObjectContainer openObjectContainer(Configuration serverConfiguration, Configuration objectContainerConfiguration)
     {
-    	configure(config);
+    	configure(serverConfiguration);
+    	configure(objectContainerConfiguration);
+    	
         if (!isClientServer()) {
-        	return openFile(config);
+        	return openFile(objectContainerConfiguration);
 		}
         
         if(isClientServerOverTcp()){
-        	return openNetworkingClient(config);
+        	return openNetworkingClient(serverConfiguration, objectContainerConfiguration);
         }
         // embedded client server mode
-        return openEmbeddedClient(config);
+        return openEmbeddedClient(serverConfiguration);
 	}
 
 	private boolean isClientServer() {
@@ -195,9 +197,9 @@ public class Db4oCar extends Car {
 		return Db4o.openFile(config(config), PATH).ext();
 	}
 
-	public ExtObjectContainer openNetworkingClient(Configuration config) {
-		startServer(config(config));
-		return Db4o.openClient(config(config), SERVER_HOST, SERVER_PORT, SERVER_USER, SERVER_PASSWORD).ext();
+	public ExtObjectContainer openNetworkingClient(Configuration serverConfiguration, Configuration objectContainerConfiguration) {
+		startServer(config(serverConfiguration));
+		return Db4o.openClient(config(objectContainerConfiguration), SERVER_HOST, SERVER_PORT, SERVER_USER, SERVER_PASSWORD).ext();
 	}
 
 	public ExtObjectContainer openEmbeddedClient(Configuration config) {

@@ -34,9 +34,11 @@ public abstract class Db4oDriver extends Driver {
 	private ExtObjectContainer _container;
 
 	public void prepare() {
-		Configuration config = Db4o.newConfiguration();
-		configure(config);
-		_container = ((Db4oCar) car()).openObjectContainer(config);
+		Configuration objectContainerConfiguration = Db4o.newConfiguration();
+		configure(objectContainerConfiguration);
+		Configuration serverConfiguration = Db4o.newConfiguration();
+		configure(serverConfiguration);
+		_container = ((Db4oCar) car()).openObjectContainer(serverConfiguration, objectContainerConfiguration);
 	}
 	
 	public abstract void configure(Configuration config);
