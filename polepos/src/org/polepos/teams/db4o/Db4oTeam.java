@@ -35,7 +35,7 @@ public class Db4oTeam extends Team {
 	
 	private ConfigurationSetting[] _configurations;
 	
-	private final Car[] _cars = new Car[]{ new Db4oCar(_options, _configurations) };
+	private Car[] _cars;
 	
     public Db4oTeam(boolean loadDrivers) {
         _drivers = new ArrayList<Driver>();
@@ -68,9 +68,14 @@ public class Db4oTeam extends Team {
     public String description() {
         return "the open source object database for Java and .NET";
     }
+    
+    
 
     @Override
     public Car[] cars(){
+    	if(_cars == null){
+    		_cars = new Car[]{ new Db4oCar(_options, _configurations) };
+    	}
 		return _cars;
 	}
     
