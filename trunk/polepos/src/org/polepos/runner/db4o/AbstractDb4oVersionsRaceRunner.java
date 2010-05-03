@@ -68,10 +68,11 @@ public abstract class AbstractDb4oVersionsRaceRunner extends AbstractRunner {
 	}
 
     private Team db4oTeam(String jarName, int[] options, Driver[] drivers, ConfigurationSetting[] configurations) {
+    	boolean loadDrivers = drivers == null || drivers.length == 0;
         try {
             Team team = null;    
             if(jarName == null){
-                team = instantiateTeam((Class<? extends Team>)Class.forName(Db4oTeam.class.getName()));
+                team = instantiateTeam((Class<? extends Team>)Class.forName(Db4oTeam.class.getName()), loadDrivers);
             }else{
                 String[] prefixes={"com.db4o.","org.polepos.teams.db4o."};
 
@@ -83,7 +84,7 @@ public abstract class AbstractDb4oVersionsRaceRunner extends AbstractRunner {
                 urls[urls.length - 1] = jarURL(workspace(), jarName);
                 
                 ClassLoader loader=new VersionClassLoader(urls, prefixes, Team.class.getClassLoader());
-                team = instantiateTeam((Class<? extends Team>)loader.loadClass(Db4oTeam.class.getName()));
+                team = instantiateTeam((Class<? extends Team>)loader.loadClass(Db4oTeam.class.getName()), loadDrivers);
             }
             team.configure(options, configurations);
             if(jarName != null){
@@ -102,9 +103,9 @@ public abstract class AbstractDb4oVersionsRaceRunner extends AbstractRunner {
         }
     }
     
-    private Team instantiateTeam(Class<? extends Team> clazz) throws Exception {
-    	Constructor<? extends Team> constr = clazz.getConstructor(new Class<?>[] {});
-    	return constr.newInstance(new Object[] {});
+    private Team instantiateTeam(Class<? extends Team> clazz, boolean loadDrivers) throws Exception {
+    	Constructor<? extends Team> constr = clazz.getConstructor(new Class<?>[] { Boolean.TYPE });
+    	return constr.newInstance(new Object[] { loadDrivers });
     }
     
     private URL jarURL(String workspace, String jarName) throws MalformedURLException{

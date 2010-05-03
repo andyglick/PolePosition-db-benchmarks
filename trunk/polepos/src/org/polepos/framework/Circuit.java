@@ -101,7 +101,7 @@ public abstract class Circuit{
     /**
      * @return the driver class needed to run on this Circuit
      */
-    public abstract Class requiredDriver();
+    public abstract Class<? extends Driver> requiredDriver();
     
     /**
      * @return the methods that are intended to be run 
