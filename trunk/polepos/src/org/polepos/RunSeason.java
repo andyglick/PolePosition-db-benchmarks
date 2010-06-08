@@ -19,25 +19,33 @@
 
 package org.polepos;
 
-import org.polepos.circuits.bahrain.Bahrain;
-import org.polepos.circuits.barcelona.Barcelona;
-import org.polepos.circuits.imola.Imola;
-import org.polepos.circuits.melbourne.Melbourne;
-import org.polepos.circuits.sepang.Sepang;
-import org.polepos.framework.Circuit;
-import org.polepos.framework.Team;
+import org.polepos.circuits.bahrain.*;
+import org.polepos.circuits.barcelona.*;
+import org.polepos.circuits.imola.*;
+import org.polepos.circuits.melbourne.*;
+import org.polepos.circuits.monaco.*;
+import org.polepos.circuits.montreal.*;
+import org.polepos.circuits.nurburgring.*;
+import org.polepos.circuits.sepang.*;
+import org.polepos.framework.*;
 import org.polepos.reporters.*;
-import org.polepos.runner.AbstractRunner;
-import org.polepos.teams.db4o.Db4oTeam;
-import org.polepos.teams.hibernate.HibernateTeam;
-import org.polepos.teams.jdbc.JdbcTeam;
-import org.polepos.teams.jdo.JdoTeam;
+import org.polepos.runner.*;
+import org.polepos.teams.cobra.*;
+import org.polepos.teams.db4o.*;
+import org.polepos.teams.hibernate.*;
+import org.polepos.teams.jdbc.*;
+import org.polepos.teams.jdo.*;
+import org.polepos.teams.jpa.*;
+import org.polepos.teams.jvi.*;
 
 /**
- * @author Herkules, Andrew Zhang
+ * This is the Main class to run PolePosition. If JDO, JPA and JVI are
+ * to be tested also, persistent classes have to be enhanced first.
  * 
- * This is the Main class to run PolePosition. If JDO is to be tested also,
- * JdoEnhance has to be run first.
+ * For your convenience you can try {@link RunSeasonAfterEnhancing#main(String[])}
+ * or you can use the Ant script to do all in one go.
+ * 
+ * 
  */
 public class RunSeason extends AbstractRunner {
 
@@ -52,7 +60,10 @@ public class RunSeason extends AbstractRunner {
 				new Sepang(), 
 				new Bahrain(),
 				new Imola(),
-				new Barcelona(), 
+				new Barcelona(),
+				new Monaco(),
+				new Montreal(),
+				new Nurburgring(),
 		};
 	}
 
@@ -60,9 +71,12 @@ public class RunSeason extends AbstractRunner {
 	public Team[] teams() {
 		return new Team[] { 
 				new Db4oTeam(), 
+				new JdoTeam(),
+				// new JviTeam(),
+				new JpaTeam(),
 				new HibernateTeam(),
 				new JdbcTeam(),
-				new JdoTeam() 
+				// new CobraTeam(),
 		};
 	}
 

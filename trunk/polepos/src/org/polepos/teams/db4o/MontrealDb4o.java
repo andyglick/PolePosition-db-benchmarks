@@ -3,7 +3,6 @@
 package org.polepos.teams.db4o;
 
 import org.polepos.circuits.montreal.*;
-import org.polepos.runner.db4o.*;
 
 import com.db4o.config.*;
 import com.db4o.query.*;

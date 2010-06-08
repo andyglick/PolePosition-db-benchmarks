@@ -26,10 +26,11 @@ import org.polepos.framework.*;
  * @author Herkules
  */
 public class JdoSettings extends RdbmsSettings{
-    
+	
+	private final static String KEY_JDO = "jdo";
     private final static String KEY_ENHANCE = "enhance";
     private final static String KEY_ENHANCER = "enhancer";
-    private final static String KEY_CONNECTURL	= "javax.jdo.option.ConnectionURL";
+    private final static String KEY_CONNECTURL = "javax.jdo.option.ConnectionURL";
 	
 	public JdoSettings(){
         super(Settings.JDO);

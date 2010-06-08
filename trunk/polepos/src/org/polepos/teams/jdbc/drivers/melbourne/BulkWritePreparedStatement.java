@@ -59,7 +59,6 @@ public class BulkWritePreparedStatement implements BulkWriteStrategy
 				savePilot(p[i], index++ );
 			}		
 			
-			// mckoi complains with an exception if the batch is empty
 			if ( count > 0 && _car.executeBatch())
 			{
 				mStmt.executeBatch();

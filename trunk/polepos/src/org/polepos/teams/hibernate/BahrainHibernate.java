@@ -21,12 +21,11 @@ package org.polepos.teams.hibernate;
 
 
 
-import java.util.Iterator;
+import java.util.*;
 
+import org.hibernate.*;
 import org.polepos.circuits.bahrain.*;
 import org.polepos.teams.hibernate.data.*;
-
-import net.sf.hibernate.*;
 
 
 /**
@@ -53,6 +52,7 @@ public class BahrainHibernate extends HibernateDriver implements BahrainDriver{
                     commitctr = 0;
                     tx.commit();
                     Log.logger.fine( "commit while writing at " + i+1 ); //NOI18N
+                    tx.begin();
                 }
                 
                 addToCheckSum(i);

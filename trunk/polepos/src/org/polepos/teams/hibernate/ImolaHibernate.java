@@ -21,11 +21,10 @@ package org.polepos.teams.hibernate;
 
 import java.io.*;
 
+import org.hibernate.*;
 import org.polepos.circuits.imola.*;
 import org.polepos.framework.*;
 import org.polepos.teams.hibernate.data.*;
-
-import net.sf.hibernate.*;
 
 public class ImolaHibernate extends HibernateDriver implements ImolaDriver {
     private final String FROM = "from org.polepos.teams.hibernate.data.HibernateIndexedPilot";
@@ -69,6 +68,7 @@ public class ImolaHibernate extends HibernateDriver implements ImolaDriver {
 		if ( isCommitPoint(idx) ){
 		    trans.commit();
 		    Log.logger.fine( "commit while writing at " + idx+1 ); //NOI18N
+		    trans.begin();
 		}
         if(idx <= setup().getSelectCount()) {
             ids[idx - 1] =  id;

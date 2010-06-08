@@ -144,6 +144,7 @@ public abstract class Circuit{
 		}
         
         for(TurnSetup setup : mLapSetups) {
+            System.out.println("*** Turn " + index);
             results[index++] = runTurn(team, car, driver, index, drivers, concurrent, setup);
         }
         return results;
@@ -154,6 +155,7 @@ public abstract class Circuit{
 		
 		Map<Lap, Set<LapReading>> lapReadings = new HashMap<Lap, Set<LapReading>>();
 		for (Lap lap : laps()) {
+			
 			if(lap.reportResult()) {
 				lapReadings.put(lap, new HashSet<LapReading>());
 			}
@@ -175,15 +177,28 @@ public abstract class Circuit{
 				throw new RuntimeException("Circuit aborted", e1);
 			}
 			
+		    try {
+		    	if (concurrent) {
+					for (Driver d : drivers) {
+						d.prepare();
+					}
+				} else {
+					driver.prepare();
+				}
+		    } catch (CarMotorFailureException e) {
+		        e.printStackTrace();
+		    }        
 			
 			for(Lap lap : mLaps) {
+				
+            	System.out.println("*** Lap " + lap.name());
+
 			    LapReading lapReading = runLap(team, driver, drivers, concurrent, setup, lap);
 			    if(!warmUp && lap.reportResult()) {
 			    	lapReadings.get(lap).add(lapReading);
 			    }
 			}
 	
-			// FIXME
 			if(concurrent) {
 				for (Driver d : drivers) {
 					d.backToPit();

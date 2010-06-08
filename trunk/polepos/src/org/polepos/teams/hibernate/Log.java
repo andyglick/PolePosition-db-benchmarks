@@ -19,7 +19,7 @@ MA  02111-1307, USA. */
 
 package org.polepos.teams.hibernate;
 
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 /**
  *

@@ -30,8 +30,9 @@ public abstract class RdbmsSettings extends PropertiesHandler{
     protected final static String     KEY_USER        = "user";
     protected final static String     KEY_HIBERNATE   = "hibernate";
     protected final static String     KEY_JDBC        = "jdbc";
-    protected final static String     KEY_JDO         = "jdo";
     protected final static String     KEY_NAME        = "name";
+    protected final static String     KEY_VENDOR      = "vendor";
+    protected final static String     KEY_VERSION     = "version";
     protected final static String     KEY_WEBSITE     = "website";
     protected final static String     KEY_BATCH		  = "executebatch";
 
@@ -105,6 +106,15 @@ public abstract class RdbmsSettings extends PropertiesHandler{
             }
         }
         return false;
+    }
+    
+    
+    public String getVersion(String dbtype) {
+        return get(dbtype + "." + KEY_VERSION);
+    }
+    
+    public String getVendor(String dbtype) {
+        return get(dbtype + "." + KEY_VENDOR);
     }
 
 }

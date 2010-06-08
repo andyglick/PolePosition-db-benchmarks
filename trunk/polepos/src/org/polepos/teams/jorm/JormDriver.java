@@ -35,7 +35,6 @@ public abstract class JormDriver extends Driver{
 
 	public void takeSeatIn( Car car, TurnSetup setup) throws CarMotorFailureException{
         super.takeSeatIn(car, setup);
-        prepare();
 	}
     
 	public void prepare(){

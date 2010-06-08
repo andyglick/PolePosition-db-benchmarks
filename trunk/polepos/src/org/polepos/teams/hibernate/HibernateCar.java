@@ -19,14 +19,22 @@ MA  02111-1307, USA. */
 
 package org.polepos.teams.hibernate;
 
-import org.polepos.framework.*;
-import org.polepos.teams.hibernate.data.*;
-import org.polepos.teams.jdbc.*;
-
-import net.sf.hibernate.*;
-import net.sf.hibernate.Session;
-import net.sf.hibernate.cfg.*;
-import net.sf.hibernate.tool.hbm2ddl.*;
+import org.hibernate.HibernateException;
+import org.hibernate.MappingException;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.classic.Session;
+import org.hibernate.tool.hbm2ddl.SchemaExport;
+import org.polepos.framework.Car;
+import org.polepos.framework.CarMotorFailureException;
+import org.polepos.teams.hibernate.data.HB0;
+import org.polepos.teams.hibernate.data.HN1;
+import org.polepos.teams.hibernate.data.HibernateIndexedPilot;
+import org.polepos.teams.hibernate.data.HibernateLightObject;
+import org.polepos.teams.hibernate.data.HibernateListHolder;
+import org.polepos.teams.hibernate.data.HibernatePilot;
+import org.polepos.teams.hibernate.data.HibernateTree;
+import org.polepos.teams.jdbc.Jdbc;
 
 /**
  *
@@ -47,7 +55,7 @@ public class HibernateCar extends Car
     }
 
     public String name(){
-        return mDBType;
+        return Jdbc.settings().getName(mDBType)+"-"+Jdbc.settings().getVersion(mDBType);
     }
     
     public void openSession() throws CarMotorFailureException{
@@ -94,7 +102,10 @@ public class HibernateCar extends Car
                     .addClass( HibernatePilot.class )
                     .addClass( HibernateTree.class )
                     .addClass( HibernateIndexedPilot.class )
-                    .addClass(HB0.class);
+                    .addClass(HB0.class)
+            		.addClass( HibernateLightObject.class)
+            		.addClass( HibernateListHolder.class)
+            		.addClass( HN1.class);
             
             try{
                 Class.forName( Jdbc.settings().getDriverClass( mDBType ) ).newInstance();
@@ -102,7 +113,8 @@ public class HibernateCar extends Car
                 ex.printStackTrace();
             }
             
-            cfg.setProperty("hibernate.connection.url", Jdbc.settings().getConnectUrl( mDBType ));
+            String connectUrl = Jdbc.settings().getConnectUrl( mDBType );
+			cfg.setProperty("hibernate.connection.url", connectUrl);
             
             String user = Jdbc.settings().getUsername( mDBType );
             if(user != null){
@@ -119,23 +131,26 @@ public class HibernateCar extends Car
                 cfg.setProperty("hibernate.dialect", dialect);    
             }
             
+            String jdbcDriverClass = Jdbc.settings().getDriverClass( mDBType );
+            if(jdbcDriverClass != null){
+                cfg.setProperty("hibernate.connection.driver_class", jdbcDriverClass);    
+            }
+            
             cfg.setProperty("hibernate.query.substitutions", "true 1, false 0, yes 'Y', no 'N'");
-            cfg.setProperty("hibernate.connection.pool_size", "1");
+            cfg.setProperty("hibernate.connection.pool_size", "20");
             cfg.setProperty("hibernate.proxool.pool_alias", "pool1");
-            cfg.setProperty("hibernate.jdbc.batch_size", "0");
+            cfg.setProperty("hibernate.jdbc.batch_size", "20");
+            cfg.setProperty("hibernate.jdbc.fetch_size", "500");
+            cfg.setProperty("hibernate.use_outer_join", "true");
             cfg.setProperty("hibernate.jdbc.batch_versioned_data", "true");
             cfg.setProperty("hibernate.jdbc.use_streams_for_binary", "true");
             cfg.setProperty("hibernate.max_fetch_depth", "1");
             cfg.setProperty("hibernate.cache.region_prefix", "hibernate.test");
             cfg.setProperty("hibernate.cache.use_query_cache", "true");
-            cfg.setProperty("hibernate.cache.provider_class", "net.sf.hibernate.cache.EhCacheProvider");
+            cfg.setProperty("hibernate.cache.provider_class", "org.hibernate.cache.EhCacheProvider");
             
             cfg.setProperty("hibernate.proxool.pool_alias", "pool1");
-            cfg.setProperty("hibernate.proxool.pool_alias", "pool1");
-            
-
-
-            
+  
             
             
             SessionFactory factory = cfg.buildSessionFactory();     

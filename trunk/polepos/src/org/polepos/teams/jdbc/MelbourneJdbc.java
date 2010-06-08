@@ -29,15 +29,17 @@ import org.polepos.data.*;
 import org.polepos.framework.*;
 import org.polepos.teams.jdbc.drivers.melbourne.*;
 
-/**
- * @author Herkules
- */
 public class MelbourneJdbc extends JdbcDriver implements MelbourneDriver
+
+
 {
 	/**
 	 * Number of pilot to be written at once.
 	 */
 	private final static int BULKSIZE = 1000;
+	
+	private static final String TABLE = "australia";
+	
 
 	
 	public void takeSeatIn(Car car, TurnSetup setup) throws CarMotorFailureException{
@@ -48,8 +50,8 @@ public class MelbourneJdbc extends JdbcDriver implements MelbourneDriver
         //
         // Create database structure
         //
-        jdbcCar().dropTable( "australia" );
-        jdbcCar().createTable( "australia", new String[]{ "ID", "Name", "FirstName", "Points", "LicenseID" }, 
+        jdbcCar().dropTable(TABLE);
+        jdbcCar().createTable(TABLE, new String[]{ "ID", "Name", "FirstName", "Points", "LicenseID" }, 
 					new Class[]{Integer.TYPE, String.class, String.class, Integer.TYPE, Integer.TYPE} );
 
         jdbcCar().close();
@@ -65,7 +67,7 @@ public class MelbourneJdbc extends JdbcDriver implements MelbourneDriver
 		int idx = 0;
         
 		//BulkWriteStrategy writer = new BulkWriteSingle();
-		BulkWriteStrategy writer = new BulkWritePreparedStatement( jdbcCar(), "australia" );
+		BulkWriteStrategy writer = new BulkWritePreparedStatement( jdbcCar(), TABLE);
 		//BulkWriteStrategy writer = new BulkWriteMultiValue();
 		
         for ( int i = 1; i <= numobjects; i++ )
@@ -74,7 +76,7 @@ public class MelbourneJdbc extends JdbcDriver implements MelbourneDriver
 			pilots[ idx++ ] = p;
 			if ( idx == BULKSIZE )
 			{
-				writer.savePilots("australia", pilots, idx, i - idx + 1 );
+				writer.savePilots(TABLE, pilots, idx, i - idx + 1 );
 				idx = 0;
 			}
             
@@ -89,7 +91,7 @@ public class MelbourneJdbc extends JdbcDriver implements MelbourneDriver
         }
 		
 		// Write the rest
-		writer.savePilots("australia", pilots, idx, numobjects - idx );
+		writer.savePilots(TABLE, pilots, idx, numobjects - idx );
 
         jdbcCar().commit();
     }
@@ -99,7 +101,7 @@ public class MelbourneJdbc extends JdbcDriver implements MelbourneDriver
         JdbcCar car = jdbcCar();
         ResultSet rs = null;
 		try{
-			rs = car.executeQuery("select * from australia");
+			rs = car.executeQuery("select * from " + TABLE);
 			for ( int i = 0; i < numobjects; i++ ){
 				rs.next();
 				Pilot p = new Pilot( rs.getString( 2 ), rs.getString( 3 ), rs.getInt( 4 ), rs.getInt( 5 ) );
@@ -118,7 +120,7 @@ public class MelbourneJdbc extends JdbcDriver implements MelbourneDriver
     }
     
 	public void delete(){
-        jdbcCar().executeSQL( "delete from australia" );
+        jdbcCar().executeSQL( "delete from " + TABLE);
         jdbcCar().commit();
 	}
 

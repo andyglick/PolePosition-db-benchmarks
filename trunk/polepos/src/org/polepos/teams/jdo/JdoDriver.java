@@ -26,16 +26,12 @@ import javax.jdo.*;
 import org.polepos.framework.*;
 
 
-/**
- * @author Herkules
- */
 public abstract class JdoDriver extends Driver{
     
 	private transient PersistenceManager mPersistenceManager;
     
 	public void takeSeatIn( Car car, TurnSetup setup) throws CarMotorFailureException{
         super.takeSeatIn(car, setup);
-        prepare();
 	}
     
 	public void prepare(){
@@ -45,9 +41,10 @@ public abstract class JdoDriver extends Driver{
 	public void backToPit(){
         Transaction tx = db().currentTransaction();
         if(tx.isActive()){
-            tx.commit();
+            tx.rollback();
         }
 		mPersistenceManager.close();
+		mPersistenceManager = null;
 	}
 	
 	protected JdoCar jdoCar(){
@@ -87,12 +84,10 @@ public abstract class JdoDriver extends Driver{
         while (itr.hasNext()){
             Object o = itr.next();
             if(o instanceof CheckSummable){
-                addToCheckSum(((CheckSummable)o).checkSum());    
+                addToCheckSum(((CheckSummable)o).checkSum());  
             }
         }
         extent.closeAll();
     }
     
-    
-
 }

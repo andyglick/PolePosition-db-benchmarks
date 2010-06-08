@@ -87,49 +87,74 @@ public class JdoEnhancer {
     }
 
     private final static Map<String, JdoEnhancer> registerEnhancers() {
-
+    	
         Map<String, JdoEnhancer> map = new HashMap<String, JdoEnhancer>();
         
-        //  tested successfully with odbfe.jar and jdo.jar in the lib folder 
-        //  Both are supplied the ObjectDB free edition downloadable from:
-        //  http://www.objectdb.com
-        JdoEnhancer objectDBEnhancer = new JdoEnhancer(
-            "com.objectdb.Enhancer", 
-            "enhance",
-            new Class[] { String.class }, 
-            new Object[] { "org.polepos.teams.jdo.data.*" }
-        );
-        map.put("objectdb", objectDBEnhancer);
-        
-        
-        JdoEnhancer voaEnhancer = new JdoEnhancer(){
-            
-            public boolean isRunnable(){
+        JdoEnhancer vodEnhancer = new JdoEnhancer(){
+ 
+        	public boolean isRunnable(){
+        		return true;
+        	}
+        	
+        	public void run(){
                 
-                // uncomment
-                return false;
-                
-            }
-            
-            public void run(){
-                
-                JdoImplementations.voaNotAvailable();
-                
-                
-//                com.versant.core.jdo.tools.enhancer.Enhancer.main(
-//                    new String[]{
-//                    "-p",
-//                    "versant.properties",
-//                });
+        		try {
+					Class enhancerClass = Class.forName("com.versant.core.jdo.tools.enhancer.Enhancer");
+					
+					Method mainMethod = enhancerClass.getMethod("main", new Class[]{String[].class});
+					
+					mainMethod.invoke(null,new Object[]{new String[]{"-p","versant.properties","-out","bin"}});
+					
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				} catch (SecurityException e) {
+					e.printStackTrace();
+				} catch (NoSuchMethodException e) {
+					e.printStackTrace();
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				}
             }
             
         };
+        map.put("vod", vodEnhancer);
         
-        map.put("voa", voaEnhancer);
-        
-        
-        // TODO: add more enhancers here and register them like above
-        
+        JdoEnhancer datanucleusEnhancer = new JdoEnhancer(){
+        	 
+        	public boolean isRunnable(){
+        		return true;
+        	}
+        	
+        	public void run(){
+                
+        		try {
+					Class enhancerClass = Class.forName("org.datanucleus.enhancer.DataNucleusEnhancer");
+					
+					Method mainMethod = enhancerClass.getMethod("main", new Class[]{String[].class});
+					
+					mainMethod.invoke(null,new Object[]{new String[]{"-v","-d","bin","bin/org/polepos/teams/jdo/data/package.jdo"}});
+					
+				} catch (ClassNotFoundException e) {
+					e.printStackTrace();
+				} catch (SecurityException e) {
+					e.printStackTrace();
+				} catch (NoSuchMethodException e) {
+					e.printStackTrace();
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					e.printStackTrace();
+				}
+            }
+            
+        };
+        map.put("datanucleus", datanucleusEnhancer);
 
         return map;
     }

@@ -29,7 +29,7 @@ public class Bahrain extends Circuit
     
     @Override
     public String description(){
-        return "write, query, update and delete simple flat objects individually";
+        return "write, query, update and delete indexed flat objects individually";
     }
 
     @Override

@@ -21,7 +21,10 @@ package org.polepos.teams.jdo;
 
 import java.util.*;
 
+import javax.jdo.*;
+
 import org.polepos.framework.*;
+import org.polepos.teams.jdo.data.*;
 
 
 public class JdoTeam extends Team{
@@ -94,7 +97,10 @@ public class JdoTeam extends Team{
             new SepangJdo(),
             new BahrainJdo(),
             new ImolaJdo(),
-            new BarcelonaJdo()
+            new BarcelonaJdo(),
+            new MonacoJdo(),
+            new MontrealJdo(),
+            new NurburgringJdo()
         };
     }
     
@@ -102,5 +108,42 @@ public class JdoTeam extends Team{
     public String website() {
         return null;
     }
-	
+
+
+	@Override
+    protected void setUp() {
+		for(int i = 0; i < mCars.length;i++){		
+			
+		    JdoCar jdoCar = (JdoCar)mCars[i];
+			PersistenceManager pm = jdoCar.getPersistenceManager();
+		    
+		    deleteAll(pm, JB0.class);
+		    deleteAll(pm, JdoIndexedPilot.class);
+		    deleteAll(pm, JdoPilot.class);
+		    deleteAll(pm, JdoTree.class);
+		    deleteAll(pm, JdoLightObject.class);
+		    deleteAll(pm, JdoListHolder.class);
+		    deleteAll(pm, JN1.class);
+	    
+		    pm.close();
+		}
+	}
+
+
+	private void deleteAll(PersistenceManager pm, Class clazz) {
+		
+		// This didn't work in in Datanucleus ....
+		
+		pm.currentTransaction().begin();
+		pm.newQuery(clazz).deletePersistentAll();
+		pm.currentTransaction().commit();
+		
+		
+		// ...so delete all again like this...
+		
+		pm.currentTransaction().begin();
+		pm.deletePersistentAll((Collection) pm.newQuery(clazz).execute());
+		pm.currentTransaction().commit();
+	}
+		
 }
