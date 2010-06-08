@@ -31,6 +31,8 @@ import org.polepos.framework.*;
  * @author Herkules
  */
 public class SepangJdbc extends JdbcDriver implements SepangDriver{
+	
+	private static final String TABLE = "malaysia";
     
     Tree lastRead;
     
@@ -44,8 +46,8 @@ public class SepangJdbc extends JdbcDriver implements SepangDriver{
 		//
 		// Create database structure
 		//
-		jdbcCar().dropTable( "malaysia" );
-		jdbcCar().createTable( "malaysia", new String[]{ "id", "preceding", "subsequent", "name", "depth" }, new Class[]{Integer.TYPE,Integer.TYPE,Integer.TYPE,String.class, Integer.TYPE} );
+		jdbcCar().dropTable( TABLE );
+		jdbcCar().createTable( TABLE, new String[]{ "id", "preceding", "subsequent", "name", "depth" }, new Class[]{Integer.TYPE,Integer.TYPE,Integer.TYPE,String.class, Integer.TYPE} );
 
 		jdbcCar().close();
 	}
@@ -55,7 +57,7 @@ public class SepangJdbc extends JdbcDriver implements SepangDriver{
         Tree tree = Tree.createTree(setup().getTreeDepth());
         Tree.traverse(tree, new TreeVisitor() {
             public void visit(Tree tree) {
-                StringBuffer s = new StringBuffer( "insert into malaysia (id, preceding, subsequent, name, depth ) values (" );
+                StringBuffer s = new StringBuffer( "insert into " + TABLE + " (id, preceding, subsequent, name, depth ) values (" );
                 s.append(tree.id);
                 s.append(",");
                 if(tree.preceding != null){
@@ -100,7 +102,7 @@ public class SepangJdbc extends JdbcDriver implements SepangDriver{
 		int precedingID, subsequentID;
 		Tree tree = null;
 		try {
-			rs = car.executeQuery("select * from malaysia where id=" + id);
+			rs = car.executeQuery("select * from " + TABLE + " where id=" + id);
 			rs.next();
 			tree = new Tree(rs.getInt(1), rs.getString(4), rs.getInt(5));
 			precedingID = rs.getInt(2);
@@ -136,7 +138,7 @@ public class SepangJdbc extends JdbcDriver implements SepangDriver{
 		ResultSet rs = null;
 		int precedingID, subsequentID;
 		try {
-			rs = car.executeQuery("select * from malaysia where id=" + id);
+			rs = car.executeQuery("select * from " + TABLE + " where id=" + id);
 			rs.next();
 			precedingID = rs.getInt(2);
 			subsequentID = rs.getInt(3);
@@ -149,7 +151,7 @@ public class SepangJdbc extends JdbcDriver implements SepangDriver{
         if(subsequentID > 0){
             delete(subsequentID);
         }
-        car.executeUpdate("delete from malaysia where id=" + id);
+        car.executeUpdate("delete from " + TABLE + " where id=" + id);
     }
 
 }

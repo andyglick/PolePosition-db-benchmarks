@@ -29,11 +29,14 @@ import org.polepos.framework.*;
  */
 public class JdbcCar extends Car {
 
-	private static Connection _connection;
-	private static Statement _statement;
+	protected Connection _connection;
+	
+	protected Statement _statement;
 
 	private final String _dbType;
+	
 	private String _name;
+	
 	private boolean _executeBatch;
 
 	private final static Map<Class, String> _colTypesMap = new HashMap<Class, String>();
@@ -71,10 +74,40 @@ public class JdbcCar extends Car {
 		try {
 			assert null == _connection : "database has to be closed before opening";
 			JdbcSettings jdbcSettings = Jdbc.settings();
-			_connection = DriverManager.getConnection(jdbcSettings
-					.getConnectUrl(_dbType), jdbcSettings.getUsername(_dbType),
-					jdbcSettings.getPassword(_dbType));
+			
+			Properties props = new Properties();
+			String username = jdbcSettings.getUsername(_dbType);
+			if(username != null){
+				props.put("user", username);
+			}
+			String password = jdbcSettings.getPassword(_dbType);
+			if(password != null){
+				props.put("password", password);
+			}
+			
+			// This setting forces HSQL databases to flush all on commit.
+			// We have to be fair to the other real databases: They all do it.
+			props.put("write_delay", "false");
+			
+			// If we don't use this setting, HSQLDB will hold all tables
+			// in memory completely, which is not what other engines do.
+			props.put("hsqldb.default_table_type", "cached");
+			
+			
+			_connection = DriverManager.getConnection(jdbcSettings.getConnectUrl(_dbType), props);
 			_connection.setAutoCommit(false);
+			
+			
+//		    public static Connection getConnection(String url, 
+//		    		java.util.Properties info) throws SQLException {
+//
+//		    	
+//		    	
+//			_connection = DriverManager.getConnection(jdbcSettings
+//					.getConnectUrl(_dbType), jdbcSettings.getUsername(_dbType),
+//					jdbcSettings.getPassword(_dbType));
+//			_connection.setAutoCommit(false);
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new CarMotorFailureException();
@@ -139,6 +172,7 @@ public class JdbcCar extends Car {
 			closeStatement();
 		}
 	}
+	
 
 	/**
 	 * Declarative statement executor
@@ -197,11 +231,39 @@ public class JdbcCar extends Car {
 		}
 	}
 
-	/**
-	 * Drop a certain table.
-	 */
 	public void dropTable(String tablename) {
-		executeSQL("drop table " + tablename);
+		
+		// TODO: "drop table if exists" is nonstandard.
+		// A better approach would be to look in the catalog and
+		// to delete a table only if it can be found there.
+		
+		String sql = "drop table if exists " + tablename;
+		
+		try {
+			_statement = _connection.createStatement();
+			_statement.executeUpdate(sql);
+			return;
+		} catch (SQLException e) {
+			System.out.println("SQL dialect not supported: 'drop table if exists'. Trying plain 'drop table'");
+		} finally {
+			closeStatement();
+		}
+		
+		sql = "drop table " + tablename;
+		
+		try {
+			_statement = _connection.createStatement();
+			_statement.executeUpdate(sql);
+		} catch (SQLException e) {
+			System.out.println("Table could not be dropped: " + tablename);
+		} finally {
+			closeStatement();
+		}
+		
+	}
+	
+	protected String createTable(){
+		return "create table";
 	}
 
 	/**
@@ -209,7 +271,7 @@ public class JdbcCar extends Car {
 	 */
 	public void createTable(String tablename, String[] colnames,
 			Class[] coltypes) {
-		String sql = "create table " + tablename + " (" + colnames[0]
+		String sql = createTable() + " " + tablename + " (" + colnames[0]
 				+ "  INTEGER NOT NULL";
 
 		for (int i = 1; i < colnames.length; i++) {

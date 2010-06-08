@@ -19,11 +19,15 @@ MA  02111-1307, USA. */
 
 package org.polepos.teams.hibernate;
 
-import java.util.*;
+import java.util.Iterator;
 
-import org.polepos.framework.*;
-
-import net.sf.hibernate.*;
+import org.hibernate.HibernateException;
+import org.hibernate.classic.Session;
+import org.polepos.framework.Car;
+import org.polepos.framework.CarMotorFailureException;
+import org.polepos.framework.CheckSummable;
+import org.polepos.framework.Driver;
+import org.polepos.framework.TurnSetup;
 
 /**
  * @author Herkules

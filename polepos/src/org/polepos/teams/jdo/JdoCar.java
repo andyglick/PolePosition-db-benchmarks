@@ -55,38 +55,7 @@ public class JdoCar extends Car {
         return mDbName != null;
     }
     
-    private void versantCreateSchema(){
-        
-        JdoImplementations.voaNotAvailable();
-        
-//        try{
-//            
-//            CreateJdbcSchemaTask t = new CreateJdbcSchemaTask();
-//            
-//            t.setDroptables("true");
-//            t.setCreatetables("true");
-//            
-//            // This is a bit of an ugly hack.
-//            // JDBC Connection information is redundant in the
-//            // versant.[dbname] files. They should be written here.
-//            t.setConfig("versant." + mDbName + ".properties");
-//            
-//            t.execute();
-//            
-//        }catch(Exception e){
-//            e.printStackTrace();
-//        }
-        
-    }
-
-    
     private void initialize() {
-        
-        if(mName.equals("voa")){
-            versantCreateSchema();
-        }
-        
-        
         
         Properties properties = new Properties();
 
@@ -95,14 +64,24 @@ public class JdoCar extends Car {
         
         properties.setProperty("javax.jdo.option.NontransactionalRead", "true");
         
+        properties.setProperty("javax.jdo.option.Optimistic", "true");
+        
+        // Versant VODJDO specific settings
         properties.setProperty("versant.metadata.0", "org/polepos/teams/jdo/data/package.jdo");
-        // properties.setProperty("versant.useClassloader", "true");
-        properties.setProperty("versant.hyperdrive", "false");
+
+        properties.setProperty("versant.allowPmfCloseWithPmHavingOpenTx","true");
+        properties.setProperty("versant.vdsSchemaEvolve","true");
         
-        // turning metric snapshots off.
+        properties.setProperty("versant.hyperdrive", "true");
+        properties.setProperty("versant.remoteAccess", "false");
+        properties.setProperty("versant.l2CacheEnabled", "true");
+        properties.setProperty("versant.l2CacheMaxObjects", "5000000");
+        properties.setProperty("versant.l2QueryCacheEnabled", "true");
+        properties.setProperty("versant.logDownloader", "none");
+        properties.setProperty("versant.logging.logEvents", "none");
         properties.setProperty("versant.metricSnapshotIntervalMs", "1000000000");
-        
-        properties.setProperty("versant.logging.logEventsToSysOut", "false");
+        properties.setProperty("versant.metricStoreCapacity", "0");
+        properties.setProperty("versant.vdsNamingPolicy", "none");
 
         if (isSQL()) {
             try {
@@ -137,21 +116,22 @@ public class JdoCar extends Car {
             if (password != null) {
                 properties.setProperty("javax.jdo.option.ConnectionPassword", password);
             }
-
-            properties.setProperty("javax.jdo.option.ConnectionUserName", "login");
-            properties.setProperty("javax.jdo.option.ConnectionPassword", "password");
         }
 
-        properties.setProperty("org.jpox.autoCreateSchema", "true");
-        properties.setProperty("org.jpox.validateTables", "false");
-        properties.setProperty("org.jpox.validateConstraints", "false");
 
-        // deleteObjectDBFile();   
-
+        properties.setProperty("datanucleus.autoCreateSchema", "true");
+        
+//        properties.setProperty("datanucleus.validateTables", "false");
+//        properties.setProperty("datanucleus.validateConstraints", "false");
+//        properties.setProperty("datanucleus.metadata.validate", "false");
+        
+        properties.setProperty("datanucleus.autoCreateConstraints", "false");
+//        properties.setProperty("datanucleus.validateColumns", "false");
+        
+        properties.setProperty("datanucleus.connectionPoolingType", "DBCP");
+        
         mFactory = JDOHelper.getPersistenceManagerFactory(properties, JDOHelper.class
             .getClassLoader());
-        
-        // mFactory = JDOHelper.getPersistenceManagerFactory(properties);
     }
 
     /**
@@ -161,31 +141,14 @@ public class JdoCar extends Car {
         return mFactory.getPersistenceManager();
     }
 
-    /**
-     * Delete the file in case of an local ObjectDB setup.
-     */
-    private void deleteObjectDBFile() {
-        String path = Jdo.settings().getConnectUrl();
-        if (!path.startsWith("objectdb://")) // only local
-        {
-            new File(path).delete();
-        }
-    }
-
     @Override
     public String name() {
-        
-        String name = mName;
-        
-        String publicName=Jdo.settings().getName(name);
-        if(publicName != null && publicName.length() > 1){
-            name = publicName;
+       
+        if(isSQL()){
+            return Jdo.settings().getName(mName) + "/" +Jdbc.settings().getName(mDbName)+"-"+Jdbc.settings().getVersion(mDbName);
         }
-        
-        if (isSQL()) {
-            return name + "/" + mDbName;
-        }
-        return name;
+        return Jdo.settings().getVendor(mName) + "/" + Jdo.settings().getName(mName)+"-"+Jdo.settings().getVersion(mName);
+
     }
 
 }

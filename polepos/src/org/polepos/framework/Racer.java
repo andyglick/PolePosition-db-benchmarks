@@ -79,9 +79,17 @@ public class Racer implements Runnable {
                         }
     
                         for (Driver driver : drivers) {
+                        	
+                            System.out.println("** On track: " + team.name() + "/" + car.name());
+                            long startTime = System.currentTimeMillis();
+
     
                             TurnSetup[] setups = circuit.lapSetups();
                             TurnResult[] results = circuit.race(team, car, driver);
+                            
+                            long stopTime = System.currentTimeMillis();
+                            long t = stopTime - startTime;
+                            System.out.println("Time[ms]: " + t);	
     
                             for (Reporter reporter : reporters) {
                                 reporter.report(team, car, setups, results);

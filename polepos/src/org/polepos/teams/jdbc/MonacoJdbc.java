@@ -27,6 +27,8 @@ import org.polepos.framework.*;
 
 
 public class MonacoJdbc extends JdbcDriver implements MonacoDriver{
+	
+	private static final String TABLE = "monaco";
 
     public void takeSeatIn(Car car, TurnSetup setup) throws CarMotorFailureException{
         
@@ -34,8 +36,8 @@ public class MonacoJdbc extends JdbcDriver implements MonacoDriver{
 
         jdbcCar().openConnection();
         
-        jdbcCar().dropTable( "monaco" );
-        jdbcCar().createTable( "monaco", new String[]{ "id", "name"}, 
+        jdbcCar().dropTable( TABLE );
+        jdbcCar().createTable( TABLE, new String[]{ "id", "name"}, 
             new Class[]{Integer.TYPE, String.class} );
         
         jdbcCar().close();
@@ -45,7 +47,7 @@ public class MonacoJdbc extends JdbcDriver implements MonacoDriver{
     public void write() {
         
         try{
-            PreparedStatement statement = jdbcCar().prepareStatement("insert into monaco (id, name) values (?,?)");
+            PreparedStatement statement = jdbcCar().prepareStatement("insert into " + TABLE + " (id, name) values (?,?)");
 
             int commitctr = 0;
             int commitInterval = 50000;
@@ -79,7 +81,7 @@ public class MonacoJdbc extends JdbcDriver implements MonacoDriver{
     
     public void commits(){
         try{
-            PreparedStatement statement = jdbcCar().prepareStatement("insert into monaco (id, name) values (?,?)");
+            PreparedStatement statement = jdbcCar().prepareStatement("insert into " + TABLE + " (id, name) values (?,?)");
 
             int idbase = setup().getObjectCount() + 1;
             int count = setup().getCommitCount();

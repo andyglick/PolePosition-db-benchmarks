@@ -50,6 +50,7 @@ public class MelbourneDb4o extends Db4oDriver implements MelbourneDriver{
             
             Pilot p =new Pilot( "Pilot_" + i, "Herkules", i, i ) ;
             store(p);
+            purge(p);
             
 			if ( commitinterval > 0  &&  ++commitctr >= commitinterval ){
 				commitctr = 0;

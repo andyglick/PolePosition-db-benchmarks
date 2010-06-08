@@ -21,10 +21,9 @@ package org.polepos.teams.hibernate;
 
 import java.util.*;
 
+import org.hibernate.*;
 import org.polepos.circuits.barcelona.*;
 import org.polepos.teams.hibernate.data.*;
-
-import net.sf.hibernate.*;
 
 
 

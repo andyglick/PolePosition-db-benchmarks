@@ -21,98 +21,73 @@ package org.polepos.teams.jdo.data;
 
 import org.polepos.framework.*;
 
-/**
- * @author Herkules
- */
-public class JdoPilot implements CheckSummable
-{
-	private		String	mName;
-	private		String	mFirstName;
-	private		int		mPoints;
-	private		int		mLicenseID;
+public class JdoPilot implements CheckSummable {
+	
+	private String mName;
+	
+	private String mFirstName;
+	
+	private int mPoints;
+	
+	private int mLicenseID;
 
-	
-	/**
-	 * Default.
-	 */
-	public JdoPilot()
-	{
+	public JdoPilot() {
 	}
-	
-	
-	/** 
-	 * Creates a new instance of Pilot.
-	 */
-	public JdoPilot(String name, int points)
-	{
-		this.mName=name;
-		this.mPoints=points;
+
+	public JdoPilot(String name, String firstName, int points, int licenseID) {
+		mName = name;
+		mFirstName = firstName;
+		mPoints = points;
+		mLicenseID = licenseID;
 	}
-	
-	/**
-	 * Full ctor.
-	 */ 
-	public JdoPilot( String name, String frontname, int points, int licenseID )
-	{
-		mName		= name;
-		mFirstName	= frontname;
-		mPoints		= points;
-		mLicenseID	= licenseID;
-	}
-	
-	
-	public int getPoints()
-	{
-		return mPoints;
-	}
-	
-	public void setPoints( int points )
-	{
+
+	public JdoPilot(String name, int points) {
+		mName = name;
 		mPoints = points;
 	}
 
-	public void addPoints(int points)
-	{
-		this.mPoints+=points;
+	public int getPoints() {
+		return mPoints;
 	}
-	
-	public String getName()
-	{
+
+	public void setPoints(int points) {
+		mPoints = points;
+	}
+
+	public void addPoints(int points) {
+		this.mPoints += points;
+	}
+
+	public String getName() {
 		return mName;
 	}
 
-	public void setName( String name )
-	{
+	public void setName(String name) {
 		mName = name;
 	}
 
-	public String getFrontName()
-	{
+	public String getFirstName() {
 		return mFirstName;
 	}
-	
-	public void setFrontName( String firstname )
-	{
+
+	public void setFirstName(String firstname) {
 		mFirstName = firstname;
 	}
-	
-	public int getLicenseID()
-	{
+
+	public int getLicenseID() {
 		return mLicenseID;
 	}
-	
-	public void setLicenseID( int id )
-	{
+
+	public void setLicenseID(int id) {
 		mLicenseID = id;
 	}
 
-	public String toString()
-	{
-		return mName+"/"+mPoints;
+	public String toString() {
+		return mName + "/" + mPoints;
 	}
-    
-    public long checkSum() {
-        return getPoints();
-    }
+
+	public long checkSum() {
+		return getPoints();
+	}
 
 }

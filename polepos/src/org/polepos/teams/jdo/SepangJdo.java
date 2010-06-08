@@ -18,8 +18,10 @@ Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA  02111-1307, USA. */
 
 package org.polepos.teams.jdo;
-import org.polepos.circuits.sepang.*;
-import org.polepos.teams.jdo.data.*;
+
+import org.polepos.circuits.sepang.SepangDriver;
+import org.polepos.teams.jdo.data.JdoTree;
+import org.polepos.teams.jdo.data.JdoTreeVisitor;
 
 
 /**

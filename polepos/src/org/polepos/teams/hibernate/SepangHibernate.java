@@ -19,10 +19,9 @@ MA  02111-1307, USA. */
 
 package org.polepos.teams.hibernate;
 
+import org.hibernate.*;
 import org.polepos.circuits.sepang.*;
 import org.polepos.teams.hibernate.data.*;
-
-import net.sf.hibernate.*;
 
 /**
  * @author Herkules

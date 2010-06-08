@@ -28,7 +28,6 @@ public class Jdbc {
      */
     private static final String[] CREATE_DIRS = new String[]{
         "data/derby",
-        "data/mckoi",
         "data/sqlite"
     };
 
@@ -38,37 +37,10 @@ public class Jdbc {
         return sSettings;
     }
 
-    //
-    // make a copy of the default mckoi.conf so that mckoi JDBC can start
-    //
     static {
         
         for(String dir : CREATE_DIRS){
             new File(dir).mkdirs();
-        }
-        
-        
-        try {
-
-            File cfg = new File("mckoi.conf");
-            if (!cfg.exists()) {
-                InputStream in = JdbcSettings.class.getClassLoader().getResourceAsStream(
-                    "mckoi.conf");
-                OutputStream out = new FileOutputStream(cfg);
-
-                // Transfer bytes from in to out
-                byte[] buf = new byte[1024];
-                int len;
-                while ((len = in.read(buf)) > 0) {
-                    out.write(buf, 0, len);
-                }
-                in.close();
-                out.close();
-            }
-        } catch (FileNotFoundException fnfex) {
-            fnfex.printStackTrace();
-        } catch (IOException ioex) {
-            ioex.printStackTrace();
         }
     }
 

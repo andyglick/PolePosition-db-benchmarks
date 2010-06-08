@@ -93,4 +93,10 @@ public abstract class Db4oDriver extends Driver {
 	protected void store(Object obj) {
 		_container.set(obj);
 	}
+	
+	protected void purge(Object obj) {
+		_container.purge(obj);
+	}
+
+
 }

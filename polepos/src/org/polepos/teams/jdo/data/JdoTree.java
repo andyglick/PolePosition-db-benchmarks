@@ -67,9 +67,13 @@ public class JdoTree {
         if(tree == null){
             return;
         }
-        traverse(tree.preceding, visitor);
-        traverse(tree.subsequent, visitor);
+        // We first write into local variables, so we don't get access
+        // to the deleted parent after deletion.
+        JdoTree preceding = tree.preceding;
+        JdoTree subsequent = tree.subsequent;
         visitor.visit(tree);
+        traverse(preceding, visitor);
+        traverse(subsequent, visitor);
     }
     
     public int getDepth(){

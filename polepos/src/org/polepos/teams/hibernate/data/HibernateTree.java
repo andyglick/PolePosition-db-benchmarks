@@ -102,8 +102,8 @@ public class HibernateTree {
         if(tree == null){
             return;
         }
-        traverse(tree.preceding, visitor);
-        traverse(tree.subsequent, visitor);
+        traverse(tree.getPreceding(), visitor);
+        traverse(tree.getSubsequent(), visitor);
         visitor.visit(tree);
     }
 

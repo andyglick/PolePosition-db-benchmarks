@@ -33,7 +33,11 @@ public class JdbcTeam extends Team{
 		
 		for( int i = 0; i < dbs.length; i++ ){
 			try {
-                mCars[i] = new JdbcCar(dbs[ i ] );
+				if(dbs[i].equals("hsqldb")){
+					mCars[i] = new HSqlJdbcCar(dbs[ i ]);
+				} else{
+					mCars[i] = new JdbcCar(dbs[ i ] );
+				}
             } catch (CarMotorFailureException e) {
                 mCars[i] = null;
             } 

@@ -110,7 +110,6 @@ public abstract class GraphReporter extends ReporterBase{
     	List<TeamCar> cars = null;
         if(mGraphs != null){
             OverViewChartBuilder overViewChartBuilder = new OverViewChartBuilder();
-            System.out.println("Checking checksums for " + getClass().getName());
             for(Circuit circuit : mCircuits){
                 for(Lap lap : circuit.laps()){
                     Graph graph =mGraphs.get(new CircuitLap(circuit, lap));
@@ -119,7 +118,6 @@ public abstract class GraphReporter extends ReporterBase{
                     	if(cars == null) {
                     		cars = graph.teamCars();
                     	}
-                        graph.compareCheckSums();
                         report(graph);
                         reportOverviewDatabaseSize(graph);
                         overViewChartBuilder.report(graph);
