@@ -285,19 +285,24 @@ public class PDFReporter extends GraphReporter {
 		try {
 			JFreeChart overviewSizeChart = createChart(_overviewSizeDataset,
 					ReporterConstants.SIZE_CHART_LEGEND);
-			renderOverviewPage(overviewSizeChart,
-					ReporterConstants.SIZE_OVERVIEW_LEGEND);
+			
 
-			JFreeChart overviewMemoryChart = createChart(
-					_overviewMemoryDataset,
-					ReporterConstants.MEMORY_CHART_LEGEND);
-			renderOverviewPage(overviewMemoryChart,
-					ReporterConstants.MEMORY_OVERVIEW_LEGEND);
-
-			JFreeChart overviewTimeChart = createChart(_overviewTimeDataset,
-					ReporterConstants.TIME_CHART_LEGEND);
-			renderOverviewPage(overviewTimeChart,
-					ReporterConstants.TIME_OVERVIEW_LEGEND);
+			// Overviews don't really look nice and useful if lots of circuits are run.  
+			
+			
+//			renderOverviewPage(overviewSizeChart,
+//					ReporterConstants.SIZE_OVERVIEW_LEGEND);
+//
+//			JFreeChart overviewMemoryChart = createChart(
+//					_overviewMemoryDataset,
+//					ReporterConstants.MEMORY_CHART_LEGEND);
+//			renderOverviewPage(overviewMemoryChart,
+//					ReporterConstants.MEMORY_OVERVIEW_LEGEND);
+//
+//			JFreeChart overviewTimeChart = createChart(_overviewTimeDataset,
+//					ReporterConstants.TIME_CHART_LEGEND);
+//			renderOverviewPage(overviewTimeChart,
+//					ReporterConstants.TIME_OVERVIEW_LEGEND);
 
 			renderFirstPage(cars);
 			

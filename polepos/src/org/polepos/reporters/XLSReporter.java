@@ -29,9 +29,7 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.polepos.framework.SetupProperty;
-import org.polepos.framework.TeamCar;
-import org.polepos.framework.TurnSetup;
+import org.polepos.framework.*;
 
 
 public class XLSReporter extends GraphReporter {
@@ -57,6 +55,9 @@ public class XLSReporter extends GraphReporter {
 			}
 		    
 			String sheetName = graph.circuit().name()+ " " +graph.lap().name();
+			
+			// Names are limited to 31 characters
+			sheetName = sheetName.replaceAll(ConcurrencyCircuit.NAME_ADD_ON + " ", "C");
 			
 			HSSFSheet sheet = workbook.getSheet(sheetName);
 			
