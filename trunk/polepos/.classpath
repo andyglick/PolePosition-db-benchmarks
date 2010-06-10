@@ -52,5 +52,6 @@
 	<classpathentry kind="lib" path="lib/graph/velocity-dep-1.4.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/jpa/geronimo-jpa_2.0_spec-1.0-PFD2.jar"/>
+	<classpathentry kind="lib" path="lib/hsqldb/hsqldb.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
