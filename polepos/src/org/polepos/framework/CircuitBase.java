@@ -116,6 +116,7 @@ public abstract class CircuitBase implements Circuit {
     
 	protected void add(Lap lap){
         mLaps.add(lap);
+        lap.circuit(this);
     }
     
     /**
