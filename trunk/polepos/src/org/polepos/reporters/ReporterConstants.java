@@ -33,7 +33,7 @@ public class ReporterConstants {
     public static final String MEMORY_OVERVIEW_LEGEND = "Memory Overview\n\n";
     public static final String SIZE_OVERVIEW_LEGEND = "Database Size Overview\n\n";
     public static final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 14);
-    public static final Font LEGEND_FONT = new Font("SansSerif", Font.PLAIN, 12);
+    public static final Font LEGEND_FONT = new Font("SansSerif", Font.PLAIN, 9);
     public static final Font VALUE_LABEL_FONT = new Font("SansSerif", Font.ITALIC, 12);
     public static final Font VALUE_TICKLABEL_FONT = new Font("SansSerif", Font.PLAIN, 10);
 	public static final Font CATEGORY_LABEL_FONT = new Font("SansSerif", Font.ITALIC, 12);
