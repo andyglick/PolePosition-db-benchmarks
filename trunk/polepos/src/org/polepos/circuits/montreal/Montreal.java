@@ -5,7 +5,7 @@ package org.polepos.circuits.montreal;
 import org.polepos.framework.*;
 
 
-public class Montreal extends Circuit{
+public class Montreal extends CircuitBase{
 
     @Override
     public String description() {

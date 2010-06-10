@@ -22,7 +22,7 @@ package org.polepos.circuits.monaco;
 import org.polepos.framework.*;
 
 
-public class Monaco extends Circuit{
+public class Monaco extends CircuitBase{
 
     @Override
     public String description() {

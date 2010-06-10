@@ -26,10 +26,7 @@ import com.db4o.config.*;
 import com.db4o.ext.*;
 import com.db4o.query.*;
 
-/**
- * @author Herkules, Andrew Zhang
- */
-public abstract class Db4oDriver extends Driver {
+public abstract class Db4oDriver extends DriverBase {
 
 	private ExtObjectContainer _container;
 
@@ -38,7 +35,11 @@ public abstract class Db4oDriver extends Driver {
 		configure(objectContainerConfiguration);
 		Configuration serverConfiguration = Db4o.newConfiguration();
 		configure(serverConfiguration);
-		_container = ((Db4oCar) car()).openObjectContainer(serverConfiguration, objectContainerConfiguration);
+		_container = db4oCar().openObjectContainer(serverConfiguration, objectContainerConfiguration);
+	}
+
+	private Db4oCar db4oCar() {
+		return ((Db4oCar) car());
 	}
 	
 	public abstract void configure(Configuration config);
@@ -49,14 +50,7 @@ public abstract class Db4oDriver extends Driver {
 	}
 
 	public void backToPit() {
-		if(_container == null || _container.ext().isClosed()) {
-			return;
-		}
-		_container.close();
-		
-		// give the weak reference collector thread time to end
-// TODO check whether this is really necessary, if it is, can't we somehow join on this guy?
-//		ThreadUtil.sleepIgnoreInterruption(500);
+		db4oCar().close(_container);
 	}
 
 	public ExtObjectContainer db() {

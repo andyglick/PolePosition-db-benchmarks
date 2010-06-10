@@ -22,7 +22,7 @@ package org.polepos.circuits.barcelona;
 import org.polepos.framework.*;
 
 
-public class Barcelona extends Circuit{
+public class Barcelona extends CircuitBase{
 
     @Override
     public String description() {
@@ -34,7 +34,7 @@ public class Barcelona extends Circuit{
         add(new Lap("write"));
         add(new Lap("read"));
         add(new Lap("query"));
-        add(new Lap("delete"));
+        add(new Lap("delete", false, true, false));
     }
     
     @Override

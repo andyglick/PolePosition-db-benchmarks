@@ -26,25 +26,25 @@ import org.hibernate.classic.Session;
 import org.polepos.framework.Car;
 import org.polepos.framework.CarMotorFailureException;
 import org.polepos.framework.CheckSummable;
-import org.polepos.framework.Driver;
+import org.polepos.framework.DriverBase;
 import org.polepos.framework.TurnSetup;
 
-/**
- * @author Herkules
- */
-public abstract class HibernateDriver extends Driver
+public abstract class HibernateDriver extends DriverBase
 {
+	
+    private Session _session;
+
 
 	public void takeSeatIn( Car car, TurnSetup setup ) throws CarMotorFailureException{
         super.takeSeatIn(car, setup);
 	}
 
 	public void prepare() throws CarMotorFailureException {
-        hibernateCar().openSession();
+        _session = hibernateCar().openSession();
 	}
 	
 	public void backToPit(){
-        hibernateCar().closeSession();
+        hibernateCar().closeSession(_session);
 	}
     
     public HibernateCar hibernateCar(){
@@ -52,7 +52,7 @@ public abstract class HibernateDriver extends Driver
     }
 		
 	public Session db(){
-		return hibernateCar().getSession();
+		return _session;
 	}
 
 	protected void doQuery(String query) {
@@ -78,9 +78,6 @@ public abstract class HibernateDriver extends Driver
             if(o instanceof CheckSummable){
                 addToCheckSum(((CheckSummable)o).checkSum());
             }
-			if(it.hasNext()) {
-				System.err.println("Multiple results, expected only one.");
-			}
 		}
 		catch ( HibernateException hex ){
 			hex.printStackTrace();

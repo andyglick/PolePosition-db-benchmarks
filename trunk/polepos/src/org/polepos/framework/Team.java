@@ -56,7 +56,7 @@ public abstract class Team
     
     public abstract Car[] cars();
     
-    public abstract Driver[] drivers();
+    public abstract DriverBase[] drivers();
     
     public abstract String website();
     
@@ -71,14 +71,14 @@ public abstract class Team
     }
     
     public Driver[] nominate(Circuit circuit) {
-        Vector <Driver> vec = new Vector <Driver> ();
-        Driver[] drivers = drivers();
+        Vector <DriverBase> vec = new Vector <DriverBase> ();
+        DriverBase[] drivers = drivers();
         for (int i = 0; i < drivers.length; i++) {
             if(circuit.requiredDriver().isInstance(drivers[i])){
                 vec.add(drivers[i]);
             }
         }
-        Driver[] result = new Driver[vec.size()];
+        DriverBase[] result = new DriverBase[vec.size()];
         vec.toArray(result);
         return result;
     }

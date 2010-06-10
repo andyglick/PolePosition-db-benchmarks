@@ -24,7 +24,7 @@ import java.util.Set;
 
 import org.polepos.framework.Car;
 import org.polepos.framework.CarMotorFailureException;
-import org.polepos.framework.Driver;
+import org.polepos.framework.DriverBase;
 import org.polepos.framework.TurnSetup;
 
 import com.versant.odbms.DataStoreLockMode;
@@ -40,7 +40,7 @@ import com.versant.odbms.query.DatastoreQuery;
 /**
  * @author Christian Ernst
  */
-public abstract class CobraDriver extends Driver{
+public abstract class CobraDriver extends DriverBase{
     
 	private transient DatastoreManager mDatastoreManager;
     private transient Set newObjects = new HashSet();

@@ -68,7 +68,6 @@ public class BahrainJdbc extends JdbcDriver implements BahrainDriver
 		Pilot[] pilots = new Pilot[ BULKSIZE ];
 		int idx = 0;
 		
-		// with a little help from Australia
 		BulkWriteStrategy writer = new BulkWritePreparedStatement(jdbcCar(), TABLE);
 	
         int commitctr = 0;
@@ -86,7 +85,6 @@ public class BahrainJdbc extends JdbcDriver implements BahrainDriver
             if ( commitInterval > 0  &&  ++commitctr >= commitInterval ){
                 commitctr = 0;
                 jdbcCar().commit();
-                Log.logger.fine( "commit while writing at " + i+1 ); //NOI18N
             }
             
             addToCheckSum(i);

@@ -29,14 +29,14 @@ import javax.persistence.Query;
 import org.polepos.framework.Car;
 import org.polepos.framework.CarMotorFailureException;
 import org.polepos.framework.CheckSummable;
-import org.polepos.framework.Driver;
+import org.polepos.framework.DriverBase;
 import org.polepos.framework.TurnSetup;
 
 
 /**
  * @author Christian Ernst
  */
-public abstract class JpaDriver extends Driver{
+public abstract class JpaDriver extends DriverBase{
     
 	private transient EntityManager mEntityManager;
     
@@ -102,6 +102,13 @@ public abstract class JpaDriver extends Driver{
         commit();
     }
     
-    
+    @Override
+	public boolean supportsConcurrency() {
+    	
+    	// Unfortunately OpenJpa has problems generating primary keys concurrently
+    	// so we failed to run OpenJpa in concurrent mode
+    	
+		return false;
+	}
 
 }

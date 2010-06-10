@@ -63,6 +63,9 @@ public class JdoCar extends Car {
             .getFactory(mName));
         
         properties.setProperty("javax.jdo.option.NontransactionalRead", "true");
+        properties.setProperty("javax.jdo.option.Multithreaded", "true");
+        
+        
         
         properties.setProperty("javax.jdo.option.Optimistic", "true");
         
@@ -134,9 +137,6 @@ public class JdoCar extends Car {
             .getClassLoader());
     }
 
-    /**
-     *
-     */
     public PersistenceManager getPersistenceManager() {
         return mFactory.getPersistenceManager();
     }

@@ -24,7 +24,7 @@ import org.polepos.framework.*;
 /**
  * @author Herkules
  */
-public class Sepang extends Circuit
+public class Sepang extends CircuitBase
 {
     
     @Override
@@ -36,8 +36,7 @@ public class Sepang extends Circuit
     protected void addLaps() {
         add(new Lap("write"));
         add(new Lap("read"));
-        add(new Lap("read_hot", true, true));
-        add(new Lap("delete"));
+        add(new Lap("delete", false, true, false));
    }
     
     @Override

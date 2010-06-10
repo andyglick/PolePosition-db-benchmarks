@@ -19,6 +19,8 @@ MA  02111-1307, USA. */
 
 package org.polepos.runner;
 
+import java.util.*;
+
 import org.polepos.*;
 import org.polepos.framework.*;
 import org.polepos.reporters.*;
@@ -31,15 +33,22 @@ public abstract class AbstractRunner {
 	
 	public void run(String propertiesFileName){
 		TurnSetupConfig turnSetupConfig = new TurnSetupConfig(propertiesFileName);
-		Circuit[] circuits = circuits();
+		List<CircuitBase> distinctCircuits = Arrays.asList(circuits());
+		List<Circuit> circuits = new ArrayList<Circuit>();
+		circuits.addAll(distinctCircuits);
+        if(turnSetupConfig.runConcurrency()){
+	        for(Circuit circuit : distinctCircuits){
+	        	circuits.add(new ConcurrencyCircuit(circuit));
+	        }
+        }
 		for(Circuit circuit: circuits){
 			TurnSetup[] turnSetups = turnSetupConfig.read(circuit);
 			circuit.setTurnSetups(turnSetups);
 		}
-		new Racer(circuits, teams(), reporters()).run();
+		new Racer( circuits, Arrays.asList(teams()), Arrays.asList(reporters())).run();
 	}
 
-	protected abstract Circuit[] circuits();
+	protected abstract CircuitBase[] circuits();
 
 	protected abstract Team[] teams();
 

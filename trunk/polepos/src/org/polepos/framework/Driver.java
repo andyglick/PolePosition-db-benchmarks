@@ -19,75 +19,26 @@ MA  02111-1307, USA. */
 
 package org.polepos.framework;
 
-/**
- * an implementation of a circuit for a team
- *
- * @author Herkules
- */
-public abstract class Driver implements Cloneable
-{
-    
-    private Car mCar;
-    
-    private TurnSetup mSetup;
-    
-    private long mCheckSum;
-	
-    public Car car(){
-        return mCar;
-    }
-    
-	/**
-	 * take a seat in a car.
-	 */
-	public void takeSeatIn( Car car, TurnSetup setup ) throws CarMotorFailureException{
-        mCar = car;
-        mSetup = setup;
-        mCheckSum = 0;
-    }
 
-	/**
-	 * Called just before one of the specific benchmark calls are issued.
-	 * Normally opens the database.
-	 */
-	public abstract void prepare() throws CarMotorFailureException;
-	
-	
-	/**
-     * Called after the lap so that the driver can clean up any files it
-     * created and close any resources it opened. 
-     */
-    public abstract void backToPit();
-    
-    public TurnSetup setup(){
-        return mSetup;
-    }
-    
-    /**
-     * Collecting a checksum to make sure every team does a complete job  
-     */
-    public synchronized void addToCheckSum(long l){
-        mCheckSum += l;
-    }
-    
-    public long checkSum(){
-        return mCheckSum; 
-    }
-    
-    public Driver clone(){
-        try{
-            return (Driver) super.clone();
-        }catch(CloneNotSupportedException e){
-            e.printStackTrace();
-        }
-        return null;
-    }
-    
-    public boolean canConcurrent() {
-    	return true;
-    }
+public abstract class Driver {
 
-	public void circuitCompleted() {
-		// This method can be overridden to clean up state.
+	public Driver() {
+		super();
 	}
+
+	public abstract void circuitCompleted();
+
+	public abstract long checkSum();
+
+	public abstract void backToPit();
+
+	public abstract void prepare() throws CarMotorFailureException;
+
+	public abstract void takeSeatIn(Car car, TurnSetup setup)
+			throws CarMotorFailureException;
+
+	public abstract Runnable prepareLap(final Lap lap);
+
+	public abstract boolean canRunLap(Lap lap);
+
 }

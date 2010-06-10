@@ -32,7 +32,7 @@ import org.polepos.teams.db4o.*;
 
 public abstract class AbstractDb4oVersionsRaceRunner extends AbstractRunner {
 	
-	public abstract Driver[] drivers();
+	public abstract DriverBase[] drivers();
 	
 	private String _workspace;
 	
@@ -67,7 +67,7 @@ public abstract class AbstractDb4oVersionsRaceRunner extends AbstractRunner {
 		return DefaultReporterFactory.defaultReporters();
 	}
 
-    private Team db4oTeam(String jarName, int[] options, Driver[] drivers, ConfigurationSetting[] configurations) {
+    private Team db4oTeam(String jarName, int[] options, DriverBase[] drivers, ConfigurationSetting[] configurations) {
     	boolean loadDrivers = drivers == null || drivers.length == 0;
         try {
             Team team = null;    

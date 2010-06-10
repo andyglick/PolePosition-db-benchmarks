@@ -23,9 +23,6 @@ import java.util.*;
 
 
 
-/**
- * @author Herkules
- */
 public class TurnSetup implements Cloneable{
     
     private Map<String, SetupProperty> mSettings = new HashMap<String, SetupProperty>();
@@ -92,6 +89,12 @@ public class TurnSetup implements Cloneable{
     }
     
     public int getMostImportantValueForGraph(){
+    	
+    	int threadCount = getThreadCount();
+    	if(threadCount > 0){
+    		return threadCount;
+    	}
+    	
         for (int i = 0; i < TurnSetupConfig.AVAILABLE_SETTINGS.length; i++) {
             int val = getSetting(TurnSetupConfig.AVAILABLE_SETTINGS[i]);
             if(val > 0){
@@ -102,6 +105,11 @@ public class TurnSetup implements Cloneable{
     }
     
     public String getMostImportantNameForGraph(){
+    	int threadCount = getThreadCount();
+    	if(threadCount > 0){
+    		return TurnSetupConfig.THREADCOUNT;
+    	}
+    	
         for (int i = 0; i < TurnSetupConfig.AVAILABLE_SETTINGS.length; i++) {
             int val = getSetting(TurnSetupConfig.AVAILABLE_SETTINGS[i]);
             if(val > 0){
@@ -148,6 +156,10 @@ public class TurnSetup implements Cloneable{
 			return false;
 		}
 		return true;
+	}
+
+	public int getThreadCount() {
+		return getSetting(TurnSetupConfig.THREADCOUNT);
 	}
     
     

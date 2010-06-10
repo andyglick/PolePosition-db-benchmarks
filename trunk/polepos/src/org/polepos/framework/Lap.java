@@ -30,6 +30,8 @@ public class Lap {
     
     private boolean mReportResult;
     
+    private boolean _concurrent = true;
+    
     public Lap(String name){
         this.mName = name;
         mHot = false;
@@ -40,6 +42,13 @@ public class Lap {
         this(name);
         this.mHot = hot;
         this.mReportResult = reportResult;
+    }
+    
+    public Lap(String name, boolean hot, boolean reportResult, boolean concurrent){
+        this(name);
+        this.mHot = hot;
+        this.mReportResult = reportResult;
+        _concurrent = concurrent;
     }
     
     public String name(){
@@ -69,6 +78,10 @@ public class Lap {
     @Override
     public int hashCode() {
         return mName.hashCode();
+    }
+    
+    public boolean concurrent(){
+    	return _concurrent;
     }
 
 }

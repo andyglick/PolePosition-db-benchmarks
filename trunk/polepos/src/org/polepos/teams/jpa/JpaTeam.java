@@ -25,7 +25,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import org.polepos.framework.Car;
-import org.polepos.framework.Driver;
+import org.polepos.framework.DriverBase;
 import org.polepos.framework.Team;
 import org.polepos.teams.jpa.data.JPB0;
 import org.polepos.teams.jpa.data.JPN1;
@@ -97,8 +97,8 @@ public class JpaTeam extends Team{
 	}
     
     @Override
-    public Driver[] drivers() {
-        return new Driver[]{
+    public DriverBase[] drivers() {
+        return new DriverBase[]{
             new MelbourneJpa(),
             new SepangJpa(),
             new BahrainJpa(),

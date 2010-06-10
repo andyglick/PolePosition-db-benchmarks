@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.polepos.framework.Car;
-import org.polepos.framework.Driver;
+import org.polepos.framework.DriverBase;
 import org.polepos.framework.Team;
 import org.polepos.teams.jvi.data.JVB0;
 import org.polepos.teams.jvi.data.JVB1;
@@ -104,8 +104,8 @@ public class JviTeam extends Team {
 	}
 
 	@Override
-	public Driver[] drivers() {
-		return new Driver[] { new MelbourneJvi(), new SepangJvi(),
+	public DriverBase[] drivers() {
+		return new DriverBase[] { new MelbourneJvi(), new SepangJvi(),
 				new BahrainJvi(), new ImolaJvi(), new BarcelonaJvi(),
 				new MonacoJvi(), new MontrealJvi(), new NurburgringJvi() };
 	}

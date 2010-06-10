@@ -21,7 +21,7 @@ package org.polepos.circuits.imola;
 
 import org.polepos.framework.*;
 
-public class Imola extends Circuit {
+public class Imola extends CircuitBase {
 
 	@Override
 	public String description() {

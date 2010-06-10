@@ -29,7 +29,7 @@ public class Db4oTeam extends Team {
     
     private String _name = db4oName(); 
     
-    private final List<Driver> _drivers;
+    private final List<DriverBase> _drivers;
 
 	private int[] _options;
 	
@@ -38,7 +38,7 @@ public class Db4oTeam extends Team {
 	private Car[] _cars;
 	
     public Db4oTeam(boolean loadDrivers) {
-        _drivers = new ArrayList<Driver>();
+        _drivers = new ArrayList<DriverBase>();
         if(loadDrivers) {
         	addDrivers();
         }
@@ -79,7 +79,7 @@ public class Db4oTeam extends Team {
 		return _cars;
 	}
     
-    public void addDriver(Driver driver){
+    public void addDriver(DriverBase driver){
         _drivers.add(driver);
     }
     
@@ -87,7 +87,7 @@ public class Db4oTeam extends Team {
         try {
             Class<?> clazz = this.getClass().getClassLoader().loadClass(driverName);
             Constructor<?> constr = clazz.getConstructor();
-            addDriver((Driver)constr.newInstance());
+            addDriver((DriverBase)constr.newInstance());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -95,8 +95,8 @@ public class Db4oTeam extends Team {
     }
 
     @Override
-    public Driver[] drivers() {
-        return _drivers.toArray(new Driver[0]);
+    public DriverBase[] drivers() {
+        return _drivers.toArray(new DriverBase[0]);
     }
 
     @Override

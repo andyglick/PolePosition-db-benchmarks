@@ -32,6 +32,8 @@ import com.db4o.io.*;
 public class Db4oCar extends Car {
 	
 	private ObjectServer _server;
+	
+	private ObjectContainer _objectContainer;
     
     public static final int SERVER_PORT = 4488;
     
@@ -172,6 +174,12 @@ public class Db4oCar extends Car {
 	}
 
 	public void stopServer() {
+		if(_objectContainer != null){
+			if(! _objectContainer.ext().isClosed()){
+				_objectContainer.close();
+			}
+			_objectContainer = null;
+		}
     	if(_server != null){
     		_server.close();
     		_server = null;
@@ -194,7 +202,15 @@ public class Db4oCar extends Car {
     }
 
 	public ExtObjectContainer openFile(Configuration config) {
-		return Db4o.openFile(config(config), PATH).ext();
+		
+		// We keep the opened ObjectContainer here to be able
+		// to create sessions on top of it in a concurrency run.
+		
+		if(_objectContainer == null){
+			_objectContainer = Db4o.openFile(config(config), PATH).ext();
+			return _objectContainer.ext();
+		}
+		return ((EmbeddedObjectContainer)_objectContainer).openSession().ext();
 	}
 
 	public ExtObjectContainer openNetworkingClient(Configuration serverConfiguration, Configuration objectContainerConfiguration) {
@@ -222,6 +238,26 @@ public class Db4oCar extends Car {
 			_storage = newStorage();
 		}
 		return _storage;
+	}
+
+	public void close(ExtObjectContainer container) {
+		if(container != null && ! container.ext().isClosed()) {
+			
+			container.close();
+			// give the weak reference collector thread time to end
+			// TODO check whether this is really necessary, if it is, can't we somehow join on this guy?
+//					ThreadUtil.sleepIgnoreInterruption(500);
+
+		}
+		
+		if(container == _objectContainer){
+			
+			// set the state to null here, otherwise we open a session 
+			// on top of it in the next open call
+			_objectContainer = null;
+			
+		}
+
 	}
 	
 }

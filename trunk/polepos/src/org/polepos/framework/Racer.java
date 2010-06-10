@@ -21,6 +21,7 @@ package org.polepos.framework;
 
 import java.util.*;
 
+
 import org.polepos.reporters.*;
 
 public class Racer implements Runnable {
@@ -29,18 +30,13 @@ public class Racer implements Runnable {
     
     private final List<Team>    teams;
 
-
     private final List<Reporter> reporters;
     
     
     public Racer(List<Circuit> circuits_, List<Team> teams_, List<Reporter> reporters_) {
-        circuits = circuits_;
+    	circuits = circuits_;
         teams = teams_;
         reporters = reporters_;
-    }
-
-    public Racer(Circuit[] circuits_, Team[] teams_, Reporter[] reporters_) {
-    	this(Arrays.asList(circuits_), Arrays.asList(teams_), Arrays.asList(reporters_));
     }
 
     public void run() {
@@ -57,9 +53,20 @@ public class Racer implements Runnable {
             for (Team team : teams) {
                 
                 for (Car car : team.cars()) {
-                    
+                	
                     for (Circuit circuit : circuits) {
 
+                    	Driver[] drivers = circuit.nominate(team);
+                    	
+                    	if (drivers == null || drivers.length == 0) {
+                    		
+                    		for (Reporter reporter : reporters) {
+                    			reporter.noDriver(team, circuit);
+                    		}
+                    		
+                    		continue;
+                    	}
+                    	
                         System.out.println("\n** Racing " + team.name() + "/"
                             + car.name() + " on " + circuit.name() + "\n");
 
@@ -67,16 +74,6 @@ public class Racer implements Runnable {
                             reporter.sendToCircuit(circuit);
                         }
 
-                        Driver[] drivers = team.nominate(circuit);
-
-                        if (drivers == null || drivers.length == 0) {
-    
-                            for (Reporter reporter : reporters) {
-                                reporter.noDriver(team, circuit);
-                            }
-                            
-                            continue;
-                        }
     
                         for (Driver driver : drivers) {
                         	
@@ -95,6 +92,7 @@ public class Racer implements Runnable {
                                 reporter.report(team, car, setups, results);
                             }
                         }
+                        
                     }
                 }
             }
