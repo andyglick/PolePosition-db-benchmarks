@@ -178,13 +178,12 @@ public class PDFReporter extends GraphReporter {
         para.add(new Chunk(lap.name()+ "\n",bigFont));
         _pdfData.add(para);
         
-        
         String code = lap.code();
         if(code != null){
         	para=new Paragraph();
+        	para.setSpacingBefore(5f);
         	para.setLeading(11f);
-        	Chunk chunk = new Chunk("\n" + code,codeFont);
-        	para.add(chunk);
+			para.add(new Chunk(code,codeFont));
         	_pdfData.add(para);
         }
         
