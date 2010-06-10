@@ -105,7 +105,6 @@ public class Lap {
 				sb.append("\n");
 			}
 			_code = sb.toString();
-			System.out.println(_code);
 			bufferedReader.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

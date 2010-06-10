@@ -119,8 +119,10 @@ public class TurnSetup implements Cloneable{
         return "";
     }
     
-    public Set<SetupProperty> properties() {
-        return Collections.unmodifiableSet(new HashSet<SetupProperty>(mSettings.values()));
+    public List<SetupProperty> properties() {
+    	List<SetupProperty> list = new ArrayList<SetupProperty>(mSettings.values());
+    	Collections.sort(list);
+    	return list;
     }
     
     public void addSetting(SetupProperty setupProperty){

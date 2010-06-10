@@ -24,7 +24,7 @@ import java.util.*;
 
 public class ConcurrencyCircuit implements Circuit {
 	
-	private final String NAME_ADD_ON = "Concurrency";
+	public static final String NAME_ADD_ON = "Concurrency";
 	
 	private final Circuit _delegate;
 	

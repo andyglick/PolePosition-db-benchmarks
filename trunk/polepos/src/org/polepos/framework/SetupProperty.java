@@ -19,7 +19,7 @@ MA  02111-1307, USA. */
 
 package org.polepos.framework;
 
-public class SetupProperty {
+public class SetupProperty implements Comparable<SetupProperty>{
     
     private final String name;
     
@@ -70,6 +70,11 @@ public class SetupProperty {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public int compareTo(SetupProperty other) {
+		return name.compareTo(other.name);
 	}
        
 }
