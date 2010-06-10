@@ -71,7 +71,6 @@ public class ImolaDb4o extends Db4oDriver implements ImolaDriver {
         }
         if (isCommitPoint(idx)) {
             commit();
-            begin();
         }
     }
 

@@ -47,8 +47,6 @@ public class HibernateCar extends Car
     
     private final String mDBType;
     
-    private Session mSession;
-    
     
     public HibernateCar(String dbType){
         mDBType = dbType;
@@ -58,38 +56,28 @@ public class HibernateCar extends Car
         return Jdbc.settings().getName(mDBType)+"-"+Jdbc.settings().getVersion(mDBType);
     }
     
-    public void openSession() throws CarMotorFailureException{
-
+    public Session openSession() throws CarMotorFailureException{
+    	
         if ( mFactory == null) {
             mFactory = getSessionFactory();
         }
-
-        assert mSession == null;
         
         try {
-            mSession = mFactory.openSession();
+            return mFactory.openSession();
         } catch (HibernateException e) {
             e.printStackTrace();
             throw new CarMotorFailureException();
         }
     }
     
-    public void closeSession(){
-        
-        if(mSession != null){
-            try {
-                mSession.close();
-            } catch (HibernateException e) {
-                e.printStackTrace();
-            }
-            mSession = null;
+    public void closeSession(Session session){
+        try {
+            session.close();
+        } catch (HibernateException e) {
+            e.printStackTrace();
         }
-        
     }
     
-    public Session getSession(){
-        return mSession;
-    }
     
     /**
      *

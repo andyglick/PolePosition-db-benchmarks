@@ -28,13 +28,15 @@ import org.polepos.teams.jdbc.drivers.melbourne.*;
 
 
 public class ImolaJdbc extends JdbcDriver implements ImolaDriver {
+	
 	private final static int BULKSIZE = 1000;
+	
     private static final String TABLE = "sanmarino";
-
+    
 	public void takeSeatIn(Car car, TurnSetup setup) throws CarMotorFailureException
 	{	
 		super.takeSeatIn(car, setup);
-
+		
         jdbcCar().openConnection();
         jdbcCar().dropTable( TABLE);
         jdbcCar().createTable( TABLE, new String[]{ "id", "Name", "FirstName", "Points", "LicenseID" }, 
@@ -56,7 +58,7 @@ public class ImolaJdbc extends JdbcDriver implements ImolaDriver {
 		for(int id=1;id<=setup().getSelectCount();id++) {
 			ids.add(id);
 		}
-		performSingleResultQuery( "select * from "+TABLE+" where id=?",ids );
+		performSingleResultQuery( "select * from " + TABLE + " where id=?",ids );
 	}
 
 	private void storePilot(Pilot[] pilots, BulkWriteStrategy writer, int idx) {
@@ -64,11 +66,9 @@ public class ImolaJdbc extends JdbcDriver implements ImolaDriver {
 		pilots[ bulkidx ] = new Pilot( "Pilot_" + idx, "Jonny_" + idx, idx , idx );
 		if ( isBulkWritePoint(idx, bulkidx)){
 			writer.savePilots(TABLE, pilots, bulkidx+1, idx - bulkidx );
-		    Log.logger.fine( "bulk write after writing at " + idx ); //NOI18N
 		}
 		if ( isCommitPoint(idx)){
 		    jdbcCar().commit();
-		    Log.logger.fine( "commit after writing at " + idx ); //NOI18N
 		}
 	}
 

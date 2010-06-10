@@ -23,7 +23,7 @@ package org.polepos.circuits.nurburgring;
 import org.polepos.framework.*;
 
 
-public class Nurburgring extends Circuit{
+public class Nurburgring extends CircuitBase{
     
     @Override
     public String description(){

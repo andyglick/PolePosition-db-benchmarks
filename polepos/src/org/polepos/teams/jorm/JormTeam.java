@@ -22,7 +22,7 @@ package org.polepos.teams.jorm;
 import de.ama.db.DB;
 import de.ama.db.Persistent;
 import org.polepos.framework.Car;
-import org.polepos.framework.Driver;
+import org.polepos.framework.DriverBase;
 import org.polepos.framework.Team;
 
 
@@ -56,8 +56,8 @@ public class JormTeam extends Team{
 	}
     
 
-    public Driver[] drivers() {
-        return new Driver[]{
+    public DriverBase[] drivers() {
+        return new DriverBase[]{
             new MelbourneJorm(),
             new SepangJorm(),
             new BahrainJorm(),

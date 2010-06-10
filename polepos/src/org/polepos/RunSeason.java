@@ -54,8 +54,8 @@ public class RunSeason extends AbstractRunner {
 	}
 
 	@Override
-	public Circuit[] circuits() {
-		return new Circuit[] { 
+	public CircuitBase[] circuits() {
+		return new CircuitBase[] { 
 				new Melbourne(), 
 				new Sepang(), 
 				new Bahrain(),
@@ -72,11 +72,11 @@ public class RunSeason extends AbstractRunner {
 		return new Team[] { 
 				new Db4oTeam(), 
 				new JdoTeam(),
-				// new JviTeam(),
+//				// new JviTeam(),
 				new JpaTeam(),
 				new HibernateTeam(),
 				new JdbcTeam(),
-				// new CobraTeam(),
+//				// new CobraTeam(),
 		};
 	}
 

@@ -23,14 +23,14 @@ import de.ama.db.DB;
 import de.ama.db.Session;
 import org.polepos.framework.Car;
 import org.polepos.framework.CarMotorFailureException;
-import org.polepos.framework.Driver;
+import org.polepos.framework.DriverBase;
 import org.polepos.framework.TurnSetup;
 
 
 /**
  * @author Andreas Marochow
  */
-public abstract class JormDriver extends Driver{
+public abstract class JormDriver extends DriverBase{
     
 
 	public void takeSeatIn( Car car, TurnSetup setup) throws CarMotorFailureException{

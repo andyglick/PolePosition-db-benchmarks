@@ -84,7 +84,6 @@ public class MelbourneJdbc extends JdbcDriver implements MelbourneDriver
             {
                 commitctr = 0;
                 jdbcCar().commit();
-                Log.logger.fine ( "commit while writing at " + i+1 ); //NOI18N
             }
             
             addToCheckSum(i);

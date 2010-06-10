@@ -91,8 +91,8 @@ public class JdoTeam extends Team{
     }
 
     @Override
-    public Driver[] drivers() {
-        return new Driver[]{
+    public DriverBase[] drivers() {
+        return new DriverBase[]{
             new MelbourneJdo(),
             new SepangJdo(),
             new BahrainJdo(),

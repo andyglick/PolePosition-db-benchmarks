@@ -21,8 +21,6 @@ package org.polepos.framework;
 
 import java.util.*;
 
-import org.polepos.*;
-
 public class TurnSetupConfig {
 	
     private final PropertiesHandler mProperties;
@@ -33,7 +31,12 @@ public class TurnSetupConfig {
 	public final static String TREEWIDTH = "width";
 	public final static String TREEDEPTH = "depth";
 	public final static String COMMITINTERVAL = "commitinterval";
+	
 	public final static String OBJECTSIZE = "size";
+	
+	private final static String CONCURRENCY = "concurrency";
+	public final static String THREADCOUNT = "threads";
+	
 	final static String[] AVAILABLE_SETTINGS = new String[]{
 	    OBJECTCOUNT,
 	    SELECTCOUNT,
@@ -48,11 +51,39 @@ public class TurnSetupConfig {
     public TurnSetupConfig(String propertiesFileName){
     	mProperties = new PropertiesHandler(propertiesFileName); 
     }
-
+    
+    public boolean runConcurrency(){
+    	return mProperties.getBoolean(CONCURRENCY);
+    }
 	
     public TurnSetup[] read(Circuit circuit){
         
         Vector<TurnSetup> vec = new Vector<TurnSetup>();
+        
+        int[] threadCount = mProperties.getIntArray(THREADCOUNT);
+        
+        if(circuit.isConcurrency()){
+        	
+        	List<SetupProperty> setupProperties = new ArrayList<SetupProperty>();
+        	
+            for (int i = 0; i < AVAILABLE_SETTINGS.length; i++) {
+                int[] values = mProperties.getIntArray(circuit.internalName() + "." + AVAILABLE_SETTINGS[i]);
+                if(values!= null && values.length > 0){
+                	setupProperties.add(new SetupProperty(AVAILABLE_SETTINGS[i], values[0]));
+                }
+            }
+        	
+        	TurnSetup[] turnSetups = new TurnSetup[threadCount.length];
+        	for (int i = 0; i < threadCount.length; i++) {
+        		turnSetups[i] = new TurnSetup();
+        		turnSetups[i].addSetting(new SetupProperty(THREADCOUNT, threadCount[i]));
+        		for (SetupProperty setupProperty : setupProperties) {
+        			turnSetups[i].addSetting(setupProperty);
+				}
+			}
+        	return turnSetups;
+        }
+        
         
         for (int i = 0; i < AVAILABLE_SETTINGS.length; i++) {
             

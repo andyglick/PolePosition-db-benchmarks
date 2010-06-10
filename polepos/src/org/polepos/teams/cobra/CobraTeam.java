@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.polepos.framework.Car;
-import org.polepos.framework.Driver;
+import org.polepos.framework.DriverBase;
 import org.polepos.framework.Team;
 
 /**
@@ -68,8 +68,8 @@ public class CobraTeam extends Team{
     }
 
     @Override
-    public Driver[] drivers() {
-        return new Driver[]{
+    public DriverBase[] drivers() {
+        return new DriverBase[]{
             new MelbourneCobra(),
             new SepangCobra()
         };

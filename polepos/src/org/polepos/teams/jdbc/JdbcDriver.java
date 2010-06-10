@@ -29,7 +29,7 @@ import org.polepos.framework.*;
 /**
  * @author Herkules
  */
-public abstract class JdbcDriver extends org.polepos.framework.Driver {
+public abstract class JdbcDriver extends org.polepos.framework.DriverBase {
     
 	public void prepare() throws CarMotorFailureException{
 		((JdbcCar)car()).openConnection();
@@ -91,7 +91,16 @@ public abstract class JdbcDriver extends org.polepos.framework.Driver {
 			}
 		}
 	}
-    
+	
+    @Override
+	public boolean supportsConcurrency() {
+    	
+    	// Actually concurrency is not a problem in the JDBC driver
+    	// it's just that the circuits were written in a way that
+    	// primary keys are not generated multithreading-safe.
+    	
+		return false;
+	}
     
 
 }

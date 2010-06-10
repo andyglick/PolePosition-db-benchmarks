@@ -21,10 +21,7 @@ package org.polepos.circuits.bahrain;
 
 import org.polepos.framework.*;
 
-/**
- * @author Herkules
- */
-public class Bahrain extends Circuit
+public class Bahrain extends CircuitBase
 {
     
     @Override
@@ -37,8 +34,8 @@ public class Bahrain extends Circuit
         add(new Lap("write"));
         add(new Lap("query_indexed_string"));
         add(new Lap("query_indexed_int"));
-        add(new Lap("update"));
-        add(new Lap("delete"));
+        add(new Lap("update", false, true, false));
+        add(new Lap("delete", false, true, false));
     }
 
     @Override

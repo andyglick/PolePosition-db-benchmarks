@@ -24,7 +24,7 @@ import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
 import org.polepos.framework.Car;
 import org.polepos.framework.CarMotorFailureException;
-import org.polepos.framework.Driver;
+import org.polepos.framework.DriverBase;
 import org.polepos.framework.Team;
 import org.polepos.teams.hibernate.data.HB4;
 import org.polepos.teams.hibernate.data.HN1;
@@ -67,8 +67,8 @@ public class HibernateTeam extends Team{
 		return mCars;
 	}
     
-    public Driver[] drivers() {
-        return new Driver[]{
+    public DriverBase[] drivers() {
+        return new DriverBase[]{
             new MelbourneHibernate(),
             new SepangHibernate(),
             new BahrainHibernate(),
@@ -87,42 +87,42 @@ public class HibernateTeam extends Team{
     
 	@Override
 	protected void setUp() {
-		for(int i = 0; i < mCars.length;i++){	
+		for(int i = 0; i < mCars.length;i++){
+			Session session = null;
 			try {
-				((HibernateCar)mCars[i]).openSession();
+				session = ((HibernateCar)mCars[i]).openSession();
 			} catch (CarMotorFailureException e) {
 				e.printStackTrace();
 			}
-			Session ses = ((HibernateCar)mCars[i]).getSession();
-			Transaction txn = ses.beginTransaction();
-			ses.delete("from " + HB4.class.getName());
+			Transaction txn = session.beginTransaction();
+			session.delete("from " + HB4.class.getName());
 			txn.commit();
 
-			txn = ses.beginTransaction();
-			ses.delete("from " + HibernateIndexedPilot.class.getName());
+			txn = session.beginTransaction();
+			session.delete("from " + HibernateIndexedPilot.class.getName());
 			txn.commit();
 			
-			txn = ses.beginTransaction();
-			ses.delete("from " + HibernatePilot.class.getName());
+			txn = session.beginTransaction();
+			session.delete("from " + HibernatePilot.class.getName());
 			txn.commit();
 			
-			txn = ses.beginTransaction();
-			ses.delete("from " + HibernateTree.class.getName());
+			txn = session.beginTransaction();
+			session.delete("from " + HibernateTree.class.getName());
 			txn.commit();
 			
-			txn = ses.beginTransaction();
-			ses.delete("from " + HibernateLightObject.class.getName());
+			txn = session.beginTransaction();
+			session.delete("from " + HibernateLightObject.class.getName());
 			txn.commit();
 			
-			txn = ses.beginTransaction();
-			ses.delete("from " + HibernateListHolder.class.getName());
+			txn = session.beginTransaction();
+			session.delete("from " + HibernateListHolder.class.getName());
 			txn.commit();
 			
-			txn = ses.beginTransaction();
-			ses.delete("from " + HN1.class.getName());
+			txn = session.beginTransaction();
+			session.delete("from " + HN1.class.getName());
 			txn.commit();
 			
-			((HibernateCar)mCars[i]).closeSession();
+			((HibernateCar)mCars[i]).closeSession(session);
 		}
 	}
 

@@ -25,13 +25,6 @@ import java.sql.SQLException;
 import org.polepos.data.*;
 import org.polepos.teams.jdbc.*;
 
-/**
- *
- * @author Herkules
- *
- * Typical:
- * 50000 objects: write 4703ms (0.09406ms/object), read 172ms (0.00344ms/object), delete 0ms (0.0ms/object)
- */
 public class BulkWritePreparedStatement implements BulkWriteStrategy
 {
 	private final PreparedStatement mStmt;

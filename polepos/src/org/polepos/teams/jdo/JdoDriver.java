@@ -26,7 +26,7 @@ import javax.jdo.*;
 import org.polepos.framework.*;
 
 
-public abstract class JdoDriver extends Driver{
+public abstract class JdoDriver extends DriverBase{
     
 	private transient PersistenceManager mPersistenceManager;
     

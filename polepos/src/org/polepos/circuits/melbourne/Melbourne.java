@@ -21,10 +21,7 @@ package org.polepos.circuits.melbourne;
 
 import org.polepos.framework.*;
 
-/**
- * @author Herkules
- */
-public class Melbourne extends Circuit
+public class Melbourne extends CircuitBase
 {
 	
     @Override
@@ -36,8 +33,7 @@ public class Melbourne extends Circuit
     protected void addLaps() {
         add(new Lap("write"));
         add(new Lap("read"));
-        add(new Lap("read_hot", true, true));
-        add(new Lap("delete"));
+        add(new Lap("delete", false, true, false));
     }
     
     @Override

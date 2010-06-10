@@ -22,7 +22,7 @@ package org.polepos.teams.jvi;
 import org.polepos.framework.Car;
 import org.polepos.framework.CarMotorFailureException;
 import org.polepos.framework.CheckSummable;
-import org.polepos.framework.Driver;
+import org.polepos.framework.DriverBase;
 import org.polepos.framework.TurnSetup;
 
 import com.versant.trans.Query;
@@ -33,7 +33,7 @@ import com.versant.trans.TransSession;
 /**
  * @author Christian Ernst
  */
-public abstract class JviDriver extends Driver{
+public abstract class JviDriver extends DriverBase{
     
 	private transient TransSession mSession;
     
