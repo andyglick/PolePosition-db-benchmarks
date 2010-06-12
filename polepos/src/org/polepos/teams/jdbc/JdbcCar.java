@@ -46,7 +46,8 @@ public class JdbcCar extends Car {
 		_colTypesMap.put(Integer.TYPE, "INTEGER");
 	}
 
-	public JdbcCar(String dbtype) throws CarMotorFailureException {
+	public JdbcCar(Team team, String dbtype) throws CarMotorFailureException {
+		super(team);
 		_dbType = dbtype;
 		JdbcSettings jdbcSettings = Jdbc.settings();
 		_website = jdbcSettings.getWebsite(dbtype);

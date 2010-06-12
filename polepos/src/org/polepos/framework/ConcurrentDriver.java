@@ -34,17 +34,18 @@ public class ConcurrentDriver extends Driver {
 	@Override
 	public void takeSeatIn(Car car, TurnSetup setup)
 			throws CarMotorFailureException {
-		
 		int threadCount = setup.getThreadCount();
-		
+		cloneMasterDriver(threadCount);
+		for(Driver driver : _drivers){
+			driver.takeSeatIn(car, setup);
+		}
+	}
+
+	private void cloneMasterDriver(int threadCount) {
 		_drivers = new DriverBase[threadCount];
 		_drivers[0] = _masterDriver;
 		for (int i = 1; i < threadCount; i++) {
 			_drivers[i] = _masterDriver.clone();
-		}
-
-		for(Driver driver : _drivers){
-			driver.takeSeatIn(car, setup);
 		}
 	}
 
@@ -83,6 +84,13 @@ public class ConcurrentDriver extends Driver {
 	}
 	
 	public Runnable prepareLap(final Lap lap) {
+		
+		lap.circuit().runLapsBefore(lap, lap.circuit().getTurnSetups()[0], _masterDriver, _masterDriver.car());
+		
+		for (int i = 1; i < _drivers.length; i++) {
+			_drivers[i].copyStateFrom(_masterDriver);
+		}
+		
 		
 		final Thread[] threads = new Thread[_drivers.length];
 		for (int i = 0; i < _drivers.length; i++) {

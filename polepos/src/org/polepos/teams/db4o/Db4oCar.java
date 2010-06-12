@@ -60,7 +60,8 @@ public class Db4oCar extends Car {
 	private ConfigurationSetting[] _configurations;
 	
 
-	public Db4oCar(int[] options, ConfigurationSetting[] configurations) {
+	public Db4oCar(Team team, int[] options, ConfigurationSetting[] configurations) {
+		super(team);
 		_options = options;
 		_configurations = configurations;
 		name = Db4o.version().substring(5);

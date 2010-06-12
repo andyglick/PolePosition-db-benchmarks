@@ -52,7 +52,7 @@ public class BahrainJorm extends JormDriver implements BahrainDriver{
     
     
  
-    public void query_indexed_string() {
+    public void queryIndexedString() {
         int count = setup().getSelectCount();
         for (int i = 1; i <= count; i++) {
             JormPilot jp = (JormPilot) db().getObject( new Query(JormPilot.class,"mName",  Query.EQ , "Pilot_"+i));
@@ -62,7 +62,7 @@ public class BahrainJorm extends JormDriver implements BahrainDriver{
     
     
             
-    public void query_string() {
+    public void queryString() {
         int count = setup().getSelectCount();
         for (int i = 1; i <= count; i++) {
             JormPilot jp = (JormPilot) db().getObject( new Query(JormPilot.class,"mFirstName",  Query.EQ , "Jonny_"+i));
@@ -70,7 +70,7 @@ public class BahrainJorm extends JormDriver implements BahrainDriver{
         }
     }
 
-    public void query_indexed_int() {
+    public void queryIndexedInt() {
         int count = setup().getSelectCount();
         for (int i = 1; i <= count; i++) {
             Query query = new Query(JormPilot.class,"mLicenseID",  Query.EQ , i);
@@ -79,7 +79,7 @@ public class BahrainJorm extends JormDriver implements BahrainDriver{
         }
     }
 
-    public void query_int() {
+    public void queryInt() {
         int count = setup().getSelectCount();
         for (int i = 1; i <= count; i++) {
             Query query = new Query(JormPilot.class,"mPoints",  Query.EQ , i);

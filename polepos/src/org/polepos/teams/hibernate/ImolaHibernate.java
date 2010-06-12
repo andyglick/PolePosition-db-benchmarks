@@ -27,9 +27,10 @@ import org.polepos.framework.*;
 import org.polepos.teams.hibernate.data.*;
 
 public class ImolaHibernate extends HibernateDriver implements ImolaDriver {
+	
     private final String FROM = "from org.polepos.teams.hibernate.data.HibernateIndexedPilot";
+    
 	private Serializable[] ids;
-	private int step;
 	
 	public void takeSeatIn(Car car, TurnSetup setup) throws CarMotorFailureException{	
 		ids=new Serializable[setup.getSelectCount()];
@@ -78,5 +79,11 @@ public class ImolaHibernate extends HibernateDriver implements ImolaDriver {
 	private boolean isCommitPoint(int idx) {
 		int commitInterval = setup().getCommitInterval();
 		return commitInterval> 0  &&  idx%commitInterval==0 && idx < setup().getObjectCount();
+	}
+	
+	@Override
+	public void copyStateFrom(DriverBase masterDriver) {
+		ImolaHibernate master = (ImolaHibernate) masterDriver;
+		ids = master.ids;
 	}
 }

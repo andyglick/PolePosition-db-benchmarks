@@ -19,7 +19,7 @@ MA  02111-1307, USA. */
 
 package org.polepos.teams.jorm;
 
-import org.polepos.framework.Car;
+import org.polepos.framework.*;
 
 
 /**
@@ -28,7 +28,8 @@ import org.polepos.framework.Car;
 public class JormCar extends Car {
 
 
-    JormCar()  {
+    JormCar(Team team)  {
+    	super(team);
         _website = "http://www.marochow.de/gna-jorm/index.html";
         _description = "java or-mapper";
     }

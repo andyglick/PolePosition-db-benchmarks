@@ -27,8 +27,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceException;
 
-import org.polepos.framework.Car;
-import org.polepos.framework.CarMotorFailureException;
+import org.polepos.framework.*;
 import org.polepos.teams.jdbc.Jdbc;
 import org.polepos.teams.jdo.Jdo;
 
@@ -42,7 +41,8 @@ public class JpaCar extends Car {
     private final String              _dbName;
     private final String              _name;
 
-    public JpaCar(String name, String dbName) throws CarMotorFailureException,  IOException{
+    public JpaCar(Team team, String name, String dbName) throws CarMotorFailureException,  IOException{
+    	super(team);
 
         _name = name;
         _dbName = dbName;

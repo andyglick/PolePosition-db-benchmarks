@@ -21,8 +21,7 @@ package org.polepos.teams.jdbc;
 
 
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 import org.polepos.circuits.melbourne.*;
 import org.polepos.data.*;
@@ -101,6 +100,7 @@ public class MelbourneJdbc extends JdbcDriver implements MelbourneDriver
         ResultSet rs = null;
 		try{
 			rs = car.executeQuery("select * from " + TABLE);
+			
 			for ( int i = 0; i < numobjects; i++ ){
 				rs.next();
 				Pilot p = new Pilot( rs.getString( 2 ), rs.getString( 3 ), rs.getInt( 4 ), rs.getInt( 5 ) );

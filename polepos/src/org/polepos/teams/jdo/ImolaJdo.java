@@ -20,6 +20,7 @@ MA  02111-1307, USA. */
 package org.polepos.teams.jdo;
 
 import org.polepos.circuits.imola.*;
+import org.polepos.framework.*;
 import org.polepos.teams.jdo.data.*;
 
 
@@ -64,6 +65,12 @@ public class ImolaJdo extends JdoDriver implements ImolaDriver{
     private boolean isCommitPoint(int idx) {
         int commitInterval=setup().getCommitInterval();
         return commitInterval> 0  &&  idx%commitInterval==0 && idx<setup().getObjectCount();
+    }
+    
+    @Override
+    public void copyStateFrom(DriverBase masterDriver) {
+    	ImolaJdo master = (ImolaJdo) masterDriver;
+    	oids = master.oids;
     }
 
 

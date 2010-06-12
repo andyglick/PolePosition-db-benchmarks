@@ -4,7 +4,7 @@ class FlatObject {
 }
 
 // OO
-db.store(new FlatObject());
+db.store(new FlatObject(string, int));
 
 // SQL
 insert into flatobject (_string, _int ) values ( ?, ? )

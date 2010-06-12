@@ -21,7 +21,7 @@ package org.polepos.teams.db4o;
 
 import org.polepos.circuits.imola.*;
 import org.polepos.data.*;
-import org.polepos.runner.db4o.*;
+import org.polepos.framework.*;
 
 import com.db4o.config.*;
 
@@ -77,5 +77,11 @@ public class ImolaDb4o extends Db4oDriver implements ImolaDriver {
     private boolean isCommitPoint(int idx) {
         int commitInterval = setup().getCommitInterval();
         return commitInterval > 0 && idx % commitInterval == 0 && idx < setup().getObjectCount();
+    }
+    
+    @Override
+    public void copyStateFrom(DriverBase masterDriver) {
+    	ImolaDb4o master = (ImolaDb4o) masterDriver;
+    	ids = master.ids;
     }
 }

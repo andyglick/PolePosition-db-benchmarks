@@ -44,7 +44,7 @@ public class HibernateTeam extends Team{
         String[] dbs = Jdbc.settings().getHibernateTypes();
         mCars = new Car[ dbs.length ];
         for( int i = 0; i < dbs.length; i++ ){
-            mCars[ i ] = new HibernateCar(dbs[ i ] );
+            mCars[ i ] = new HibernateCar(this, dbs[ i ] );
         }
     }
 
@@ -86,7 +86,7 @@ public class HibernateTeam extends Team{
     }
     
 	@Override
-	protected void setUp() {
+	public void setUp() {
 		for(int i = 0; i < mCars.length;i++){
 			Session session = null;
 			try {

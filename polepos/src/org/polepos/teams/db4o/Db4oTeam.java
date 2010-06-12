@@ -74,7 +74,7 @@ public class Db4oTeam extends Team {
     @Override
     public Car[] cars(){
     	if(_cars == null){
-    		_cars = new Car[]{ new Db4oCar(_options, _configurations) };
+    		_cars = new Car[]{ new Db4oCar(this, _options, _configurations) };
     	}
 		return _cars;
 	}
@@ -144,10 +144,6 @@ public class Db4oTeam extends Team {
                         case Db4oOptions.BTREE_FREESPACE:
                             _name += " f:B";
                             break;
-                        case Db4oOptions.CONCURRENT_COUNT:
-						    _name += " threads = " + Db4oOptions.CONCURRENT_COUNT;
-						    setConcurrentCount(Db4oOptions.CONCURRENT_COUNT);
-						    break;
                         default:
                     
                     }
@@ -163,7 +159,7 @@ public class Db4oTeam extends Team {
         return "db4o";
     }
 
-	protected void setUp() {
+	public void setUp() {
 		new File(Db4oCar.FOLDER).mkdirs();
 	    try {
 	    	defaultCar().deleteDatabaseFile(); 

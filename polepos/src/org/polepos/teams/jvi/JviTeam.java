@@ -68,14 +68,14 @@ public class JviTeam extends Team {
 				if (jdosqldbs != null && jdosqldbs.length > 0) {
 					for (String sqldb : jdosqldbs) {
 						try {
-							cars.add(new JviCar(impl, sqldb));
+							cars.add(new JviCar(this, impl, sqldb));
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
 					}
 				} else {
 					try {
-						cars.add(new JviCar(impl, null));
+						cars.add(new JviCar(this, impl, null));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -121,7 +121,7 @@ public class JviTeam extends Team {
 	}
 
 	@Override
-	protected void setUp() {
+	public void setUp() {
 
 		for (int i = 0; i < mCars.length; i++) {
 			// register schema only needed to be able to define indexes

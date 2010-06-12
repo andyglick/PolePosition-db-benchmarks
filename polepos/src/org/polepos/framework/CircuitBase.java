@@ -159,20 +159,8 @@ public abstract class CircuitBase implements Circuit {
 		}
 		boolean warmUp = _numRuns > 1;
 		for (int runIdx = 0; runIdx < _numRuns; runIdx++) {
-			team.setUp();
 			
-			try {
-				driver.takeSeatIn(car, setup);
-			} catch (CarMotorFailureException e1) {
-				// FIXME reasonable exception handling
-				throw new RuntimeException("Circuit aborted", e1);
-			}
-			
-		    try {
-		    	driver.prepare();
-		    } catch (CarMotorFailureException e) {
-		        e.printStackTrace();
-		    }        
+			prepareDriverToRunLaps(car, driver, setup);        
 			
 			for(Lap lap : mLaps) {
 				
@@ -216,6 +204,23 @@ public abstract class CircuitBase implements Circuit {
 			turnResult.report(lapResult);
 		}
 		return turnResult;
+	}
+
+	private void prepareDriverToRunLaps(Car car, Driver driver, TurnSetup setup) {
+		car.team().setUp();
+		
+		try {
+			driver.takeSeatIn(car, setup);
+		} catch (CarMotorFailureException e1) {
+			// FIXME reasonable exception handling
+			throw new RuntimeException("Circuit aborted", e1);
+		}
+		
+		try {
+			driver.prepare();
+		} catch (CarMotorFailureException e) {
+		    e.printStackTrace();
+		}
 	}
 
 	private void tearDownTurn(Team team, Driver driver) {
@@ -310,6 +315,20 @@ public abstract class CircuitBase implements Circuit {
 	@Override
 	public TurnSetup[] getTurnSetups() {
 		return _turnSetups;
+	}
+	
+	@Override
+	public void runLapsBefore(Lap lap, TurnSetup turnSetup, DriverBase driver, Car car) {
+		prepareDriverToRunLaps(car, driver, turnSetup);
+		for (Lap currentLap : mLaps) {
+			if(currentLap == lap){
+				return;
+			}
+			if(driver.canRunLap(lap)){
+			    runLap(car.team(), driver, turnSetup, currentLap);
+			}
+			
+		}
 	}
     
 }

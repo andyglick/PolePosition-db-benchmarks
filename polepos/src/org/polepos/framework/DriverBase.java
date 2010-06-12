@@ -133,5 +133,12 @@ public abstract class DriverBase extends Driver implements Cloneable
 		return true;
 	}
 
+	public void copyStateFrom(DriverBase masterDriver) {
+		// default: do nothing
+		
+		// Implement for concurrency to copy the state
+		
+	}
+
 
 }

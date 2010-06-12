@@ -60,7 +60,7 @@ public class BahrainJpa extends JpaDriver implements BahrainDriver{
     
     
  
-    public void query_indexed_string() {
+    public void queryIndexedString() {
     	begin();
         int count = setup().getSelectCount();
         String filter = "SELECT this FROM JpaIndexedPilot this WHERE this.mName = :param";
@@ -73,7 +73,7 @@ public class BahrainJpa extends JpaDriver implements BahrainDriver{
     
     
             
-    public void query_string() {
+    public void queryString() {
     	begin();
         int count = setup().getSelectCount();
         String filter = "SELECT this FROM JpaIndexedPilot this WHERE this.mFirstName = :param";
@@ -84,7 +84,7 @@ public class BahrainJpa extends JpaDriver implements BahrainDriver{
         commit();
     }
 
-    public void query_indexed_int() {
+    public void queryIndexedInt() {
     	begin();
         int count = setup().getSelectCount();
         String filter = "SELECT this FROM JpaIndexedPilot this WHERE this.mLicenseID = :param";
@@ -95,7 +95,7 @@ public class BahrainJpa extends JpaDriver implements BahrainDriver{
         commit();
     }
 
-    public void query_int() {
+    public void queryInt() {
     	 begin();
         int count = setup().getSelectCount();
         String filter = "SELECT this FROM JpaIndexedPilot this WHERE this.mPoints = :param";

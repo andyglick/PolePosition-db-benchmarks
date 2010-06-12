@@ -21,16 +21,12 @@ package org.polepos.teams.db4o;
 
 import org.polepos.circuits.melbourne.*;
 import org.polepos.data.*;
-import org.polepos.runner.db4o.*;
 
 import com.db4o.*;
 import com.db4o.config.*;
 import com.db4o.query.*;
 
 
-/**
- * @author Herkules
- */
 public class MelbourneDb4o extends Db4oDriver implements MelbourneDriver{
     
 

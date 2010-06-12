@@ -73,16 +73,28 @@ public abstract class JdoDriver extends DriverBase{
         while(it.hasNext()){
             Object o = it.next();
             if(o instanceof CheckSummable){
-                addToCheckSum(((CheckSummable)o).checkSum());
+            	try{
+            		addToCheckSum(((CheckSummable)o).checkSum());
+            	} catch(JDOFatalInternalException e){
+            		Throwable[] nestedExceptions = e.getNestedExceptions();
+            		if(nestedExceptions != null){
+            			for (int i = 0; i < nestedExceptions.length; i++) {
+            				nestedExceptions[i].printStackTrace();
+						}
+            		}
+            		
+            	}
             }
         }
     }
     
     protected void readExtent(Class clazz){
         Extent extent = db().getExtent( clazz, false );
+        int count = 0;
         Iterator itr = extent.iterator();
         while (itr.hasNext()){
             Object o = itr.next();
+            count++;
             if(o instanceof CheckSummable){
                 addToCheckSum(((CheckSummable)o).checkSum());  
             }

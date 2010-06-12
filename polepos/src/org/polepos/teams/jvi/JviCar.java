@@ -22,8 +22,7 @@ package org.polepos.teams.jvi;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.polepos.framework.Car;
-import org.polepos.framework.CarMotorFailureException;
+import org.polepos.framework.*;
 
 import com.versant.trans.TransSession;
 
@@ -36,7 +35,8 @@ public class JviCar extends Car {
     private final String              _dbName;
     private final String              _name;
 
-    public JviCar(String name, String dbName) throws CarMotorFailureException,  IOException{
+    public JviCar(Team team, String name, String dbName) throws CarMotorFailureException,  IOException{
+    	super(team);
 
         _name = name;
         _dbName = dbName;
