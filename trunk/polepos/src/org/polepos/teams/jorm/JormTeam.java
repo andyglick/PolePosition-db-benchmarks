@@ -31,7 +31,7 @@ public class JormTeam extends Team{
 	private final Car[] mCars;
     
     public JormTeam() {
-        mCars = new Car[]{new JormCar() };
+        mCars = new Car[]{new JormCar(this) };
 
         DB db = new DB("localhost", "root", "polepos_jorm","");
         db.directExecuteSqlStatement("drop database if exists polepos_jorm");
@@ -77,4 +77,9 @@ public class JormTeam extends Team{
     public String databaseFile() {
         return null;
     }
+
+	@Override
+	public void setUp() {
+		System.err.println("JormTeam#setup not implemented. It should delete all database files.");
+	}
 }

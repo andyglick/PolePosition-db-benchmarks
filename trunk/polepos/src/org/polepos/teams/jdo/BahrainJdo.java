@@ -29,6 +29,8 @@ import org.polepos.teams.jdo.data.*;
 
 
 public class BahrainJdo extends JdoDriver implements BahrainDriver{
+	
+	
     
     public void write(){
         
@@ -58,7 +60,7 @@ public class BahrainJdo extends JdoDriver implements BahrainDriver{
     
     
  
-    public void query_indexed_string() {
+    public void queryIndexedString() {
         int count = setup().getSelectCount();
         String filter = "this.mName == param";
         for (int i = 1; i <= count; i++) {
@@ -70,7 +72,7 @@ public class BahrainJdo extends JdoDriver implements BahrainDriver{
     
     
             
-    public void query_string() {
+    public void queryString() {
         int count = setup().getSelectCount();
         String filter = "this.mFirstName == param";
         for (int i = 1; i <= count; i++) {
@@ -80,7 +82,7 @@ public class BahrainJdo extends JdoDriver implements BahrainDriver{
         }
     }
 
-    public void query_indexed_int() {
+    public void queryIndexedInt() {
         int count = setup().getSelectCount();
         String filter = "this.mLicenseID == param";
         for (int i = 1; i <= count; i++) {
@@ -90,7 +92,7 @@ public class BahrainJdo extends JdoDriver implements BahrainDriver{
         }
     }
 
-    public void query_int() {
+    public void queryInt() {
         int count = setup().getSelectCount();
         String filter = "this.mPoints == param";
         for (int i = 1; i <= count; i++) {

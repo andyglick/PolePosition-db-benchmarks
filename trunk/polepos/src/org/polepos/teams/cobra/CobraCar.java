@@ -19,8 +19,7 @@ MA  02111-1307, USA. */
 
 package org.polepos.teams.cobra;
 
-import org.polepos.framework.Car;
-import org.polepos.framework.CarMotorFailureException;
+import org.polepos.framework.*;
 
 import com.versant.odbms.ConnectionInfo;
 import com.versant.odbms.ConnectionProperties;
@@ -37,7 +36,8 @@ public class CobraCar extends Car {
     private final String              mDbName;
     private final String              mName;
 
-    CobraCar(String name, String dbName) throws CarMotorFailureException {
+    CobraCar(Team team, String name, String dbName) throws CarMotorFailureException {
+    	super(team);
 
         mName = name;
         mDbName = dbName;

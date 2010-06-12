@@ -32,8 +32,8 @@ public class Bahrain extends CircuitBase
     @Override
     protected void addLaps() {
         add(new Lap("write"));
-        add(new Lap("query_indexed_string"));
-        add(new Lap("query_indexed_int"));
+        add(new Lap("queryIndexedString"));
+        add(new Lap("queryIndexedInt"));
         add(new Lap("update", false, true, false));
         add(new Lap("delete", false, true, false));
     }

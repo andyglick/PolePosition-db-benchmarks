@@ -43,7 +43,7 @@ public class BahrainJdbc extends JdbcDriver implements BahrainDriver
 	 */
 	private final static int BULKSIZE = 1000;
     
-    private static final String TABLE = "bahrain";
+    public static final String TABLE = "bahrain";
 
 	public void takeSeatIn(Car car, TurnSetup setup) throws CarMotorFailureException
 	{	
@@ -95,7 +95,7 @@ public class BahrainJdbc extends JdbcDriver implements BahrainDriver
 	}
     
     
-    public void query_indexed_string(){
+    public void queryIndexedString(){
         
         int count = setup().getSelectCount();
         
@@ -106,7 +106,7 @@ public class BahrainJdbc extends JdbcDriver implements BahrainDriver
     }
 
     
-    public void query_string(){
+    public void queryString(){
         
         int count = setup().getSelectCount();
         
@@ -117,7 +117,7 @@ public class BahrainJdbc extends JdbcDriver implements BahrainDriver
     }
     
 
-    public void query_indexed_int(){
+    public void queryIndexedInt(){
 
         int count = setup().getSelectCount();
         
@@ -128,7 +128,7 @@ public class BahrainJdbc extends JdbcDriver implements BahrainDriver
     }
 
     
-    public void query_int(){
+    public void queryInt(){
         
         int count = setup().getSelectCount();
         

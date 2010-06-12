@@ -25,8 +25,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.classic.Session;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
-import org.polepos.framework.Car;
-import org.polepos.framework.CarMotorFailureException;
+import org.polepos.framework.*;
 import org.polepos.teams.hibernate.data.HB0;
 import org.polepos.teams.hibernate.data.HN1;
 import org.polepos.teams.hibernate.data.HibernateIndexedPilot;
@@ -48,7 +47,8 @@ public class HibernateCar extends Car
     private final String mDBType;
     
     
-    public HibernateCar(String dbType){
+    public HibernateCar(Team team, String dbType){
+    	super(team);
         mDBType = dbType;
     }
 

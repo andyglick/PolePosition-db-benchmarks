@@ -20,6 +20,8 @@ MA  02111-1307, USA. */
 package org.polepos.teams.jdo;
 
 import org.polepos.circuits.sepang.SepangDriver;
+import org.polepos.framework.*;
+import org.polepos.teams.db4o.*;
 import org.polepos.teams.jdo.data.JdoTree;
 import org.polepos.teams.jdo.data.JdoTreeVisitor;
 
@@ -62,6 +64,11 @@ public class SepangJdo extends JdoDriver implements SepangDriver {
         });
 		commit();
 	}
-    
+	
+    @Override
+    public void copyStateFrom(DriverBase masterDriver) {
+    	SepangJdo master = (SepangJdo) masterDriver;
+    	oid = master.oid;
+    }
 
 }

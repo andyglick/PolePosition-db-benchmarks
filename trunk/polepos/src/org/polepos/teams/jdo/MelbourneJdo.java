@@ -26,9 +26,6 @@ import javax.jdo.Extent;
 import org.polepos.circuits.melbourne.*;
 import org.polepos.teams.jdo.data.*;
 
-/**
- * @author Herkules
- */
 public class MelbourneJdo extends JdoDriver implements MelbourneDriver{
 	
 	public void write(){

@@ -33,11 +33,7 @@ public class JdbcTeam extends Team{
 		
 		for( int i = 0; i < dbs.length; i++ ){
 			try {
-				if(dbs[i].equals("hsqldb")){
-					mCars[i] = new HSqlJdbcCar(dbs[ i ]);
-				} else{
-					mCars[i] = new JdbcCar(dbs[ i ] );
-				}
+				mCars[i] = new JdbcCar(this, dbs[ i ] );
             } catch (CarMotorFailureException e) {
                 mCars[i] = null;
             } 
@@ -80,5 +76,12 @@ public class JdbcTeam extends Team{
     	// not supported yet
     	return null;
     }
+
+	@Override
+	public void setUp() {
+		// Other teams delete all database files here.
+		// JDBC drivers do this in Driver#takeSeatIn() before each circuit.
+		
+	}
 
 }

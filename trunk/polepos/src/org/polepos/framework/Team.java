@@ -26,29 +26,6 @@ import java.util.*;
  */
 public abstract class Team 
 {
-    // whether run test concurrently, false by default
-	private boolean concurrent;
-	
-	// total concurrent thread count
-	private int concurrentCount = 0;
-    
-    public int getConcurrentCount() {
-		return concurrentCount;
-	}
-
-	public void setConcurrentCount(int concurrentCount) {
-		if (concurrentCount > 0) {
-			concurrent = true;
-			this.concurrentCount = concurrentCount;
-		} else {
-			concurrent = false;
-			this.concurrentCount = 0;
-		}
-	}
-
-	public boolean isConcurrent() {
-		return concurrent;
-	}
 
     public abstract String name();
     
@@ -62,9 +39,7 @@ public abstract class Team
     
     public abstract String databaseFile();
     
-    protected void setUp() {
-    	
-    }
+    public abstract void setUp();
     
     protected void tearDown() {
     	

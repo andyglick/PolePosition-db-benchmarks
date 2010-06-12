@@ -26,13 +26,13 @@ public interface BahrainDriver
 {
 	void write();
     
-	void query_indexed_string();
+	void queryIndexedString();
     
-	void query_string();
+	void queryString();
     
-	void query_indexed_int();
+	void queryIndexedInt();
     
-	void query_int();
+	void queryInt();
 
 	void update();
 

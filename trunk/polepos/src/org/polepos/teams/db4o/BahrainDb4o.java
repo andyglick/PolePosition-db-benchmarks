@@ -58,7 +58,7 @@ public class BahrainDb4o extends Db4oDriver implements BahrainDriver{
 		commit();
 	}
  
-    public void query_indexed_string() {
+    public void queryIndexedString() {
         int count = setup().getSelectCount();
         for (int i = 1; i <= count; i++) {
             Query q = db().query();
@@ -69,7 +69,7 @@ public class BahrainDb4o extends Db4oDriver implements BahrainDriver{
         
     }
             
-    public void query_string() {
+    public void queryString() {
         int count = setup().getSelectCount();
         for (int i = 1; i <= count; i++) {
             Query q = db().query();
@@ -79,7 +79,7 @@ public class BahrainDb4o extends Db4oDriver implements BahrainDriver{
         }
     }
 
-    public void query_indexed_int() {
+    public void queryIndexedInt() {
         int count = setup().getSelectCount();
         for (int i = 1; i <= count; i++) {
     		Query q = db().query();
@@ -89,7 +89,7 @@ public class BahrainDb4o extends Db4oDriver implements BahrainDriver{
         }
     }
 
-    public void query_int() {
+    public void queryInt() {
         int count = setup().getSelectCount();
         for (int i = 1; i <= count; i++) {
     		Query q = db().query();

@@ -60,14 +60,14 @@ public class JpaTeam extends Team{
                 if(jdosqldbs != null && jdosqldbs.length > 0){
                     for(String sqldb : jdosqldbs){
                         try {
-                            cars.add(new JpaCar(impl, sqldb));
+                            cars.add(new JpaCar(this, impl, sqldb));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
                 }else{
                     try {
-                        cars.add(new JpaCar(impl, null));
+                        cars.add(new JpaCar(this, impl, null));
                     } catch (Exception e) {
                         e.printStackTrace();
                     } 
@@ -120,7 +120,7 @@ public class JpaTeam extends Team{
     	return null;
     }
     
-    protected void setUp() {
+    public void setUp() {
 		for(int i = 0; i < mCars.length;i++){		
 			
 			EntityManager em = ((JpaCar)mCars[i]).getEntityManager();

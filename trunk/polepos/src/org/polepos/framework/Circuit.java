@@ -49,4 +49,6 @@ public interface Circuit {
 	
 	public boolean isConcurrency();
 
+	public void runLapsBefore(Lap lap, TurnSetup turnSetup, DriverBase driver, Car car);
+
 }

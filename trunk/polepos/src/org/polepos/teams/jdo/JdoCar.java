@@ -19,7 +19,6 @@ MA  02111-1307, USA. */
 
 package org.polepos.teams.jdo;
 
-import java.io.*;
 import java.util.*;
 
 
@@ -29,9 +28,6 @@ import org.polepos.framework.*;
 import org.polepos.teams.jdbc.*;
 
 
-/**
- * @author Herkules
- */
 public class JdoCar extends Car {
 
     private PersistenceManagerFactory mFactory;
@@ -39,7 +35,8 @@ public class JdoCar extends Car {
     private final String              mDbName;
     private final String              mName;
 
-    JdoCar(String name, String dbName) throws CarMotorFailureException {
+    JdoCar(Team team, String name, String dbName) throws CarMotorFailureException {
+    	super(team);
 
         mName = name;
         mDbName = dbName;
@@ -77,7 +74,10 @@ public class JdoCar extends Car {
         
         properties.setProperty("versant.hyperdrive", "true");
         properties.setProperty("versant.remoteAccess", "false");
-        properties.setProperty("versant.l2CacheEnabled", "true");
+        
+        // Turning this on can make the Concurrency tests crash.
+        properties.setProperty("versant.l2CacheEnabled", "false");
+        
         properties.setProperty("versant.l2CacheMaxObjects", "5000000");
         properties.setProperty("versant.l2QueryCacheEnabled", "true");
         properties.setProperty("versant.logDownloader", "none");
@@ -85,6 +85,10 @@ public class JdoCar extends Car {
         properties.setProperty("versant.metricSnapshotIntervalMs", "1000000000");
         properties.setProperty("versant.metricStoreCapacity", "0");
         properties.setProperty("versant.vdsNamingPolicy", "none");
+        
+        properties.setProperty("versant.remoteMaxActive", "30");
+        properties.setProperty("versant.maxActive", "30");
+        
 
         if (isSQL()) {
             try {
@@ -95,8 +99,10 @@ public class JdoCar extends Car {
 
             properties.setProperty("javax.jdo.option.ConnectionDriverName", Jdbc.settings()
                 .getDriverClass(mDbName));
-            properties.setProperty("javax.jdo.option.ConnectionURL", Jdbc.settings().getConnectUrl(
-                mDbName));
+            String connectUrl = Jdbc.settings().getConnectUrl(mDbName);
+            
+			properties.setProperty("javax.jdo.option.ConnectionURL", connectUrl);
+            
             String user = Jdbc.settings().getUsername(mDbName);
             if (user != null) {
                 properties.setProperty("javax.jdo.option.ConnectionUserName", user);

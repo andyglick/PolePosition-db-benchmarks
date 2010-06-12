@@ -69,7 +69,13 @@ public class TurnSetupConfig {
             for (int i = 0; i < AVAILABLE_SETTINGS.length; i++) {
                 int[] values = mProperties.getIntArray(circuit.internalName() + "." + AVAILABLE_SETTINGS[i]);
                 if(values!= null && values.length > 0){
+
+                	
+
+                	// For concurrency, we only use the first setup parameters.
+                	
                 	setupProperties.add(new SetupProperty(AVAILABLE_SETTINGS[i], values[0]));
+                	
                 }
             }
         	

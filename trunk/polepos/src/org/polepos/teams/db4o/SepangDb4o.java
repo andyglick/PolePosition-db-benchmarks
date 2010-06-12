@@ -20,13 +20,11 @@ MA  02111-1307, USA. */
 package org.polepos.teams.db4o;
 
 import org.polepos.circuits.sepang.*;
-import org.polepos.runner.db4o.*;
+import org.polepos.framework.*;
 
 import com.db4o.config.*;
 
-/**
- * @author Herkules
- */
+
 public class SepangDb4o extends Db4oDriver implements SepangDriver{
 	
 
@@ -34,14 +32,8 @@ public class SepangDb4o extends Db4oDriver implements SepangDriver{
 	public void configure(Configuration config) {
 		
 	}
-	
-	@Override
-	public void circuitCompleted() {
-		lastRead = null;
-	}
    
     long treeRootID;
-    Tree lastRead;
     
 	public void write(){
         begin();
@@ -52,8 +44,8 @@ public class SepangDb4o extends Db4oDriver implements SepangDriver{
 	}
 
 	public void read(){
-        lastRead = readAndActivate();
-        Tree.traverse(lastRead, new TreeVisitor() {
+        Tree tree = readAndActivate();
+        Tree.traverse(tree, new TreeVisitor() {
             public void visit(Tree tree) {
                 addToCheckSum(tree.getDepth());
             }
@@ -79,5 +71,11 @@ public class SepangDb4o extends Db4oDriver implements SepangDriver{
         Tree tree = (Tree)db().getByID(treeRootID);
         db().activate(tree, Integer.MAX_VALUE);
         return tree;
+    }
+    
+    @Override
+    public void copyStateFrom(DriverBase masterDriver) {
+    	SepangDb4o master = (SepangDb4o) masterDriver;
+    	treeRootID = master.treeRootID;
     }
 }

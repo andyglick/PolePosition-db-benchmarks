@@ -11,7 +11,7 @@ public class Db4oOptions {
     public static final int CACHED_BTREE_ROOT = 5;
     public static final int LAZY_QUERIES = 6;
     public static final int SNAPSHOT_QUERIES = 7;
-    public static final int CONCURRENT_COUNT = 10;
+    
 	public static final int NORMAL_COLLECTION = 11;
 	// public static final int P1FAST_COLLECTION = 12;
     public static final int INDEX_FREESPACE = 13;

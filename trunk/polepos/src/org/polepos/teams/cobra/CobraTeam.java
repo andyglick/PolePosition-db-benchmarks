@@ -37,7 +37,7 @@ public class CobraTeam extends Team{
         
     	Set<CobraCar> cars=new HashSet<CobraCar>();
             try {
-                cars.add(new CobraCar("Cobra", null));
+                cars.add(new CobraCar(this, "Cobra", null));
             } catch (Exception e) {
                 e.printStackTrace();
             } 
@@ -81,7 +81,17 @@ public class CobraTeam extends Team{
     }
 
 
-	protected void setUp() {
+	@Override
+    public void setUp() {
+		
+		// ??? Why is this all commented out?
+		
+		// Looks like someone has copied all the code from JDO but forgot to implement.
+		// Let's log:
+		
+		System.err.println("CobraTeam#setup not implemented. It should delete all database files.");
+		
+		
 //		for(int i = 0; i < mCars.length;i++){		
 //			
 //		    PersistenceManager pm = ((CobraCar)mCars[i]).getPersistenceManager();

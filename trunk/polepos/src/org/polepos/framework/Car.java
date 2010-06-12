@@ -26,11 +26,18 @@ package org.polepos.framework;
  * @author Herkules, Andrew Zhang
  */
 public abstract class Car{
+	
+	private final Team _team;
+	
     
     protected String _website;
     
     protected String _description;
         
+    public Car(Team team){
+    	_team = team;
+    }
+    
 	public abstract String name();
     
     public String website(){
@@ -39,5 +46,9 @@ public abstract class Car{
     
     public String description(){
         return _description;
+    }
+    
+    public Team team(){
+    	return _team;
     }
 }

@@ -23,12 +23,7 @@ import org.hibernate.*;
 import org.polepos.circuits.sepang.*;
 import org.polepos.teams.hibernate.data.*;
 
-/**
- * @author Herkules
- */
 public class SepangHibernate extends HibernateDriver implements SepangDriver{
-    
-    private long treeRootID; // TODO: get and use for findRoot
     
     public void write(){
         try{

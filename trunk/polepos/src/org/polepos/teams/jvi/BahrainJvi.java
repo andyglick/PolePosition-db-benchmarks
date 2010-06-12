@@ -59,7 +59,7 @@ public class BahrainJvi extends JviDriver implements BahrainDriver{
     
     
  
-    public void query_indexed_string() {
+    public void queryIndexedString() {
     	begin();
         int count = setup().getSelectCount();
         String filter = "SELECT selfoid FROM "+ JviIndexedPilot.class.getName()+ " WHERE mName = $param";
@@ -73,7 +73,7 @@ public class BahrainJvi extends JviDriver implements BahrainDriver{
     
     
             
-    public void query_string() {
+    public void queryString() {
     	begin();
         int count = setup().getSelectCount();
         String filter = "SELECT selfoid FROM "+ JviIndexedPilot.class.getName()+ " WHERE mFirstName = $param";
@@ -85,7 +85,7 @@ public class BahrainJvi extends JviDriver implements BahrainDriver{
         commit();
     }
 
-    public void query_indexed_int() {
+    public void queryIndexedInt() {
     	begin();
         int count = setup().getSelectCount();
         String filter = "SELECT selfoid FROM "+ JviIndexedPilot.class.getName()+ " WHERE mLicenseID = $param";
@@ -97,7 +97,7 @@ public class BahrainJvi extends JviDriver implements BahrainDriver{
         commit();
     }
 
-    public void query_int() {
+    public void queryInt() {
         int count = setup().getSelectCount();
         String filter = "SELECT selfoid FROM "+ JviIndexedPilot.class.getName()+ " WHERE mPoints = $param";
         for (int i = 1; i <= count; i++) {

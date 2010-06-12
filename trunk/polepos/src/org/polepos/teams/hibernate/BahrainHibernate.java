@@ -68,7 +68,7 @@ public class BahrainHibernate extends HibernateDriver implements BahrainDriver{
     }
 
     
-    public void query_indexed_string(){
+    public void queryIndexedString(){
         
         int count = setup().getSelectCount();
         
@@ -79,7 +79,7 @@ public class BahrainHibernate extends HibernateDriver implements BahrainDriver{
     }
 
     
-    public void query_string(){
+    public void queryString(){
         
         int count = setup().getSelectCount();
         
@@ -90,7 +90,7 @@ public class BahrainHibernate extends HibernateDriver implements BahrainDriver{
     }
 	
 
-    public void query_indexed_int(){
+    public void queryIndexedInt(){
         
         int count = setup().getSelectCount();
         
@@ -100,7 +100,7 @@ public class BahrainHibernate extends HibernateDriver implements BahrainDriver{
         
     }
 
-    public void query_int(){
+    public void queryInt(){
         
         int count = setup().getSelectCount();
         

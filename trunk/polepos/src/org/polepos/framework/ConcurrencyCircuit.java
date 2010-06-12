@@ -116,4 +116,9 @@ public class ConcurrencyCircuit implements Circuit {
 		return _turnSetups;
 	}
 
+	@Override
+	public void runLapsBefore(Lap lap, TurnSetup turnSetup, DriverBase driver, Car car) {
+		_delegate.runLapsBefore(lap, turnSetup, driver, car);
+	}
+
 }
