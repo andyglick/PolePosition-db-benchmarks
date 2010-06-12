@@ -26,7 +26,7 @@ public class Monaco extends CircuitBase{
 
     @Override
     public String description() {
-        return "tests the scalibility of commit performance";
+        return "tests the scalability of commit performance";
     }
 
     @Override
