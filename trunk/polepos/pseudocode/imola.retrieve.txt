@@ -5,4 +5,4 @@ class FlatObject {
 FlatObject flatObject = db.objectForId(id);
 
 // SQL
-select * from flatobject where id = ( ? );
+select * from flatobject where id = ?;

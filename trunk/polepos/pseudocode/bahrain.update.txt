@@ -3,4 +3,4 @@ indexedObject._str = "updated";
 db.store(indexedObject);
 
 // SQL
-update indexedobject set _str = 'updated' where id = ( ? );
+update indexedobject set _str = 'updated' where id = ?;

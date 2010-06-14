@@ -2,4 +2,4 @@
 db.delete(indexedObject);
 
 // SQL
-delete from indexedobject where id = ( ? );
+delete from indexedobject where id = ?;
