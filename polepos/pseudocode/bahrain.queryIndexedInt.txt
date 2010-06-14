@@ -6,4 +6,4 @@ db.query(new Predicate<IndexedObject>(){
 });
 
 // SQL
-select * from indexedobject where _int = ( ? ); 
+select * from indexedobject where _int = ?; 
