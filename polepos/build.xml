@@ -1,6 +1,6 @@
 <project name="poleposition" default="race" basedir=".">
 
-	<property name="polepositionversion" value="0.20" />
+	<property name="polepositionversion" value="0.30" />
 
 	<property name="jdo" value="jdo" />
 	<property name="jvi" value="jvi" />
