@@ -35,22 +35,6 @@
 		</java>
 	</target>
 					
-        <target name="jormenhance" description="enhances the classes" >
-         <java classname="de.ama.db.tools.Enhancer" fork="true">
-            <classpath>
-                <fileset dir="lib">
-                    <include name="**/*.jar"/>
-                </fileset>
-                <pathelement location="bin/"/>
-            </classpath>
-
-            <arg value="indir" />
-            <arg path="bin"/>
-            <arg value="verbose" />
-            <arg value="1" />
-         </java>
-        </target>
-
     <target name="jvienhance" description="runs the JVI enhancer" if="jvi">
         <java classname="com.versant.Enhance" fork="yes" failonerror="yes">
             <classpath>
@@ -63,7 +47,7 @@
         </java>
     </target>
 
-	<target name="race" depends="clean,compile,jdoenhance,jormenhance,jvienhance,jpaenhance" description="runs with all circuits and all teams ">
+	<target name="race" depends="clean,compile,jdoenhance,jvienhance,jpaenhance" description="runs with all circuits and all teams ">
 		<java classname="org.polepos.RunSeason" fork="true" >
 			<classpath>
 				<pathelement location="bin" />
@@ -101,6 +85,7 @@
 				<include name="doc/**" />
 				<include name="lib/**" />
 				<include name="licenses/**" />
+				<include name="pseudocode/**" />
 				<include name="settings/**" />
 				<include name="src/**" />
 				<include name="templates/**" />
