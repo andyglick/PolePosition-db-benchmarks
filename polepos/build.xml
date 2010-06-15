@@ -75,14 +75,15 @@
 
 	<target name="distribute" description="creates a zip to distribute the project">
 
-		<property name="ddir" value="poleposition-${polepositionversion}" />
-		<property name="dfile" value="poleposition-${polepositionversion}.zip" />
+		<property name="ddir" value="dist/poleposition-${polepositionversion}" />
+		<property name="dfile" value="dist/poleposition-${polepositionversion}.zip" />
 
 		<mkdir dir="${ddir}" />
 
 		<copy overwrite="true" todir="${ddir}">
 			<fileset dir=".">
-				<include name="doc/**" />
+				<include name="doc/*" />
+				<exclude name="doc/results/**" />
 				<include name="lib/**" />
 				<include name="licenses/**" />
 				<include name="pseudocode/**" />
@@ -94,14 +95,15 @@
 				<include name="build.xml" />
 				<include name="COPYING" />
 				<exclude name="**/CVS" />
+				<exclude name="**/.svn" />
 			</fileset>
 		</copy>
 
 		<delete file="${dfile}" failonerror="false" />
 
 		<zip destfile="${dfile}">
-			<fileset dir=".">
-				<include name="${ddir}/**" />
+			<fileset dir="dist">
+				<include name="poleposition-${polepositionversion}/**" />
 			</fileset>
 		</zip>
 
