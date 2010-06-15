@@ -95,39 +95,6 @@ public class JpaEnhancer {
 
         Map<String, JpaEnhancer> map = new HashMap<String, JpaEnhancer>();
         
-        JpaEnhancer vodEnhancer = new JpaEnhancer(){
- 
-        	public boolean isRunnable(){
-        		return true;
-        	}
-        	
-        	public void run(){
-                
-        		try {
-					Class enhancerClass = Class.forName("com.versant.core.jdo.tools.enhancer.Enhancer");
-					
-					Method mainMethod = enhancerClass.getMethod("main", new Class[]{String[].class});
-					
-					mainMethod.invoke(null,new Object[]{new String[]{"-p","versant.properties","-out","bin"}});
-					
-				} catch (ClassNotFoundException e) {
-					e.printStackTrace();
-				} catch (SecurityException e) {
-					e.printStackTrace();
-				} catch (NoSuchMethodException e) {
-					e.printStackTrace();
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				}
-            }
-            
-        };
-        map.put("vod", vodEnhancer);
-        
         JpaEnhancer datanucleusEnhancer = new JpaEnhancer(){
         	 
         	public boolean isRunnable(){

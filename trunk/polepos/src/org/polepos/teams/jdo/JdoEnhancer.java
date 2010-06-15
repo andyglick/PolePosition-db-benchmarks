@@ -103,7 +103,7 @@ public class JdoEnhancer {
 					
 					Method mainMethod = enhancerClass.getMethod("main", new Class[]{String[].class});
 					
-					mainMethod.invoke(null,new Object[]{new String[]{"-p","versant.properties","-out","bin"}});
+					mainMethod.invoke(null,new Object[]{new String[]{"-p","settings/versant.properties","-out","bin"}});
 					
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();

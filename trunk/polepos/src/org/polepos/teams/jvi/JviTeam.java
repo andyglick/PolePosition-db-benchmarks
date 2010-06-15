@@ -47,10 +47,25 @@ import com.versant.util.FEProfile;
  * @author Christian Ernst
  */
 public class JviTeam extends Team {
+	
+	
+	/**
+	 * return true to enable the team
+	 */
+	public static boolean enabled(){
+		return false;
+	}
 
 	private final Car[] mCars;
 
 	public JviTeam() {
+		
+		if(! enabled()){
+			String msg = "JVI team is not enabled, to omit having to run the enhancer.";
+			msg += "\r\nSimply change by returning true from the static enabled method in JviTeam.";
+			System.err.println(msg);
+			throw new RuntimeException(msg);
+		}
 
 		String[] impls = Jvi.settings().getJviImplementations();
 

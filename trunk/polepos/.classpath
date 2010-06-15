@@ -23,7 +23,6 @@
 	<classpathentry kind="lib" path="lib/db4o/db4o-8.0.145.14388-all-java5.jar"/>
 	<classpathentry kind="lib" path="lib/javadb/derby.jar"/>
 	<classpathentry kind="lib" path="lib/jms/geronimo-jms_1.1_spec-1.1.1.jar"/>
-	<classpathentry kind="lib" path="lib/jorm/gna-jorm-runtime-05.07.jar"/>
 	<classpathentry kind="lib" path="lib/jta/geronimo-jta_1.1_spec-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/log4j/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="lib/openjpa/openjpa-2.0.0-beta.jar"/>

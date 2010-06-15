@@ -19,9 +19,15 @@ MA  02111-1307, USA. */
 
 package org.polepos.enhance;
 
+import org.polepos.teams.jvi.*;
+
 public class JviEnhance extends EvilSystemExitEnhancer {
 	
 	protected void internalRunWithoutSystemExit() throws Throwable{
+		
+		if(! JviTeam.enabled()){
+			return;
+		}
 		
 		String[] args = new String[]{
 				"-config",
