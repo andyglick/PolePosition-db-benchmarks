@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="lib/datanucleus/datanucleus-cache-2.0.0-release.jar"/>
-	<classpathentry kind="lib" path="lib/datanucleus/datanucleus-connectionpool-2.0.1.jar"/>
-	<classpathentry kind="lib" path="lib/datanucleus/datanucleus-core-2.0.4.jar"/>
-	<classpathentry kind="lib" path="lib/datanucleus/datanucleus-enhancer-2.0.2.jar"/>
-	<classpathentry kind="lib" path="lib/datanucleus/datanucleus-jpa-2.0.2.jar"/>
 	<classpathentry kind="lib" path="lib/datanucleus/datanucleus-management-1.0.2.jar"/>
-	<classpathentry kind="lib" path="lib/datanucleus/datanucleus-rdbms-2.0.4.jar"/>
 	<classpathentry kind="lib" path="lib/graph/poi-3.2-FINAL-20081019.jar"/>
 	<classpathentry kind="lib" path="lib/hibernate/hibernate3.jar"/>
 	<classpathentry kind="lib" path="lib/common/antlr-2.7.7.jar"/>
@@ -40,10 +34,17 @@
 	<classpathentry kind="lib" path="lib/vod/pizza.jar"/>
 	<classpathentry kind="lib" path="lib/vod/vodjdo.jar"/>
 	<classpathentry kind="lib" path="lib/sqlite/sqlitejdbc-v056-native.jar"/>
-	<classpathentry kind="lib" path="lib/jdo/jdo2-api-2.3-ec.jar"/>
 	<classpathentry kind="lib" path="lib/mysql/mysql-connector-java-5.1.12-bin.jar"/>
 	<classpathentry kind="lib" path="lib/common/commons-dbcp-1.2.1.jar"/>
 	<classpathentry kind="lib" path="lib/jpa/geronimo-jpa_2.0_spec-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/hsqldb/hsqldb.jar"/>
+	<classpathentry kind="lib" path="lib/datanucleus/datanucleus-cache-2.1.0-release.jar"/>
+	<classpathentry kind="lib" path="lib/datanucleus/datanucleus-core-2.1.0-release.jar"/>
+	<classpathentry kind="lib" path="lib/datanucleus/datanucleus-enhancer-2.1.0-release.jar"/>
+	<classpathentry kind="lib" path="lib/datanucleus/datanucleus-jpa-2.1.0-release.jar"/>
+	<classpathentry kind="lib" path="lib/datanucleus/datanucleus-rdbms-2.1.0-release.jar"/>
+	<classpathentry kind="lib" path="lib/jdo/jdo-api-3.0.jar"/>
+	<classpathentry kind="lib" path="lib/datanucleus/datanucleus-connectionpool-2.0.3-SNAPSHOT.jar"/>
 	<classpathentry kind="var" path="JUNIT_HOME/junit.jar" sourcepath="/ECLIPSE_HOME/plugins/org.eclipse.jdt.source_3.1.0/src/org.junit_3.8.1/junitsrc.zip"/>
 	<classpathentry kind="lib" path="lib/graph/gnujaxp.jar"/>
 	<classpathentry kind="lib" path="lib/graph/itext-1.2.jar"/>
@@ -52,6 +53,5 @@
 	<classpathentry kind="lib" path="lib/graph/velocity-dep-1.4.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/jpa/geronimo-jpa_2.0_spec-1.0-PFD2.jar"/>
-	<classpathentry kind="lib" path="lib/hsqldb/hsqldb.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
