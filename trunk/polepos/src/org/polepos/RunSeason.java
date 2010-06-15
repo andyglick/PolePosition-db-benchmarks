@@ -70,13 +70,14 @@ public class RunSeason extends AbstractRunner {
 	@Override
 	public Team[] teams() {
 		return new Team[] { 
-				new Db4oTeam(), 
+				new Db4oTeam(),
+				// new Db4oClientServerTeam(),
 				new JdoTeam(),
-//				// new JviTeam(),
+				// new JviTeam(),
 				new JpaTeam(),
 				new HibernateTeam(),
 				new JdbcTeam(),
-//				// new CobraTeam(),
+				// new CobraTeam(),
 		};
 	}
 
