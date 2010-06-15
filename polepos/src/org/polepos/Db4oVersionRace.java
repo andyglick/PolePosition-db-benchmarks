@@ -47,23 +47,23 @@ public class Db4oVersionRace extends AbstractDb4oVersionsRaceRunner{
     public Team[] teams() {
         List<Team> teamList = new ArrayList<Team>();
         
-        int[] options = new int[] { Db4oOptions.CLIENT_SERVER,
+        int[] clientServerOptions = new int[] { Db4oOptions.CLIENT_SERVER,
                 Db4oOptions.CLIENT_SERVER_TCP };
         
-        String db4oCurrentVersion = System.getProperty("polepos.db4o.current");
-        if (db4oCurrentVersion != null) {
-            teamList.add(db4oTeam(db4oCurrentVersion));
-            teamList.add(db4oTeam(db4oCurrentVersion, options));
-        }
+        teamList.add(new Db4oTeam());
+        teamList.add(db4oTeam(clientServerOptions));
         
-        teamList.add(db4oTeam(Db4oVersions.JAR78));
-        teamList.add(db4oTeam(Db4oVersions.JAR74));
-        teamList.add(db4oTeam(Db4oVersions.JAR64));
-
+//        String db4oCurrentVersion = System.getProperty("polepos.db4o.current");
+//        if (db4oCurrentVersion != null) {
+//            teamList.add(db4oTeam(db4oCurrentVersion));
+//            teamList.add(db4oTeam(db4oCurrentVersion, options));
+//        }
+//        
+//        teamList.add(db4oTeam(Db4oVersions.JAR78));
+//        teamList.add(db4oTeam(Db4oVersions.JAR74));
+//        teamList.add(db4oTeam(Db4oVersions.JAR64));
+//
         
-        teamList.add(db4oTeam(Db4oVersions.JAR78, options));
-        teamList.add(db4oTeam(Db4oVersions.JAR74, options));
-        teamList.add(db4oTeam(Db4oVersions.JAR64, options));
         Team[] teams = new Team[teamList.size()];
         
         teamList.toArray(teams);
@@ -72,14 +72,14 @@ public class Db4oVersionRace extends AbstractDb4oVersionsRaceRunner{
 
 	public CircuitBase[] circuits() {
 		return new CircuitBase[] { 
-				 new Melbourne(),
-				 new Sepang(),
-				 new Bahrain(),
-				 new Imola(),
-				 new Barcelona(),
-				 new Monaco(),
-				 new Nurburgring(),
-				 new Montreal(),
+				new Melbourne(), 
+				new Sepang(), 
+				new Bahrain(),
+				new Imola(),
+				new Barcelona(),
+				new Monaco(),
+				new Montreal(),
+				new Nurburgring(),
 		};
 	}
 
