@@ -23,7 +23,6 @@ public class AllEnhance {
 	
 	public static void main(String[] args) throws Throwable {
 		JdoEnhance.main(null);
-		new JormEnhance().runWithoutSystemExit();
 		new JviEnhance().runWithoutSystemExit();
 		JpaEnhance.main(null);
 	}
