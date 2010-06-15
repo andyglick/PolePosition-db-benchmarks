@@ -33,9 +33,6 @@ import org.polepos.framework.*;
 import org.polepos.teams.jdbc.drivers.melbourne.*;
 
 
-/**
- * @author Herkules
- */
 public class BahrainJdbc extends JdbcDriver implements BahrainDriver
 {
 	/**
@@ -96,46 +93,41 @@ public class BahrainJdbc extends JdbcDriver implements BahrainDriver
     
     
     public void queryIndexedString(){
-        
         int count = setup().getSelectCount();
-        
+    	PreparedStatement stat = jdbcCar().prepareStatement("select * from bahrain where Name = ?");
         for (int i = 1; i <= count; i++) {
-            performQuery( "select * from bahrain where Name='Pilot_" + i + "'" );
+        	performPreparedQuery(stat, "Pilot_" + i);
         }
-        
+        closePreparedStatement(stat);
     }
 
-    
-    public void queryString(){
-        
+	public void queryString(){
         int count = setup().getSelectCount();
-        
+    	PreparedStatement stat = jdbcCar().prepareStatement("select * from bahrain where FirstName = ?");
         for (int i = 1; i <= count; i++) {
-            performQuery( "select * from bahrain where FirstName='Jonny_" + i + "'" );
+        	performPreparedQuery(stat, "Jonny_" + i);
         }
-        
+        closePreparedStatement(stat);
     }
     
 
     public void queryIndexedInt(){
-
         int count = setup().getSelectCount();
-        
+    	PreparedStatement stat = jdbcCar().prepareStatement("select * from bahrain where LicenseID = ?");
         for (int i = 1; i <= count; i++) {
-            performQuery( "select * from bahrain where LicenseID=" + i );
+        	performPreparedQuery(stat, new Integer(i));
         }
-        
+        closePreparedStatement(stat);
     }
 
     
     public void queryInt(){
-        
         int count = setup().getSelectCount();
-        
+    	PreparedStatement stat = jdbcCar().prepareStatement("select * from bahrain where Points = ?");
         for (int i = 1; i <= count; i++) {
-            performQuery( "select * from bahrain where Points=" + i );
+        	performPreparedQuery(stat, new Integer(i));
         }
-        
+        closePreparedStatement(stat);
     }
 	
 	/**

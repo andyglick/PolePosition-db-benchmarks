@@ -21,8 +21,7 @@ package org.polepos.teams.jdbc;
 
 
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 import org.polepos.circuits.sepang.*;
 import org.polepos.framework.*;
@@ -48,35 +47,26 @@ public class SepangJdbc extends JdbcDriver implements SepangDriver{
 		//
 		jdbcCar().dropTable( TABLE );
 		jdbcCar().createTable( TABLE, new String[]{ "id", "preceding", "subsequent", "name", "depth" }, new Class[]{Integer.TYPE,Integer.TYPE,Integer.TYPE,String.class, Integer.TYPE} );
+		jdbcCar().createIndex( TABLE, "id" );
 
 		jdbcCar().close();
 	}
 	
 	public void write(){
-        
+		final PreparedStatement statement = jdbcCar().prepareStatement("insert into " + TABLE + " (id, preceding, subsequent, name, depth ) values (?,?,?,?,?)");
         Tree tree = Tree.createTree(setup().getTreeDepth());
         Tree.traverse(tree, new TreeVisitor() {
             public void visit(Tree tree) {
-                StringBuffer s = new StringBuffer( "insert into " + TABLE + " (id, preceding, subsequent, name, depth ) values (" );
-                s.append(tree.id);
-                s.append(",");
-                if(tree.preceding != null){
-                    s.append(tree.preceding.id);
-                }else{
-                    s.append(0);
-                }
-                s.append(",");
-                if(tree.subsequent != null){
-                    s.append(tree.subsequent.id);
-                }else{
-                    s.append(0);
-                }
-                s.append(", '");
-                s.append(tree.name);
-                s.append("', ");
-                s.append(tree.depth);
-                s.append(")");
-                jdbcCar().executeSQL(s.toString());
+                try {
+					statement.setInt(1, tree.id);
+					statement.setInt(2, tree.preceding == null ? 0 : tree.preceding.id);
+					statement.setInt(3, tree.subsequent == null ? 0 : tree.subsequent.id);
+					statement.setString(4, tree.name);
+					statement.setInt(5, tree.depth);
+					statement.execute();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
             }
         });
 		jdbcCar().commit();
@@ -85,37 +75,44 @@ public class SepangJdbc extends JdbcDriver implements SepangDriver{
 	
 	public void read(){
         try {
-            lastRead = read(1);
+        	PreparedStatement preparedStatement = jdbcCar().prepareStatement("select * from " + TABLE + " where id = ?");
+            lastRead = read(preparedStatement, 1);
             Tree.traverse(lastRead, new TreeVisitor() {
                 public void visit(Tree tree) {
                     addToCheckSum(tree.getDepth());
                 }
             });
+            preparedStatement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
 	}
     
-    private Tree read(int id) throws SQLException {
+    private Tree read(PreparedStatement preparedStatement, int id) throws SQLException {
         JdbcCar car = jdbcCar();
-		ResultSet rs = null;
-		int precedingID, subsequentID;
+        
+        ResultSet rs = null;
+        
+		int precedingID;
+		int subsequentID;
+		
 		Tree tree = null;
 		try {
-			rs = car.executeQuery("select * from " + TABLE + " where id=" + id);
+			preparedStatement.setInt(1, id);
+			rs = preparedStatement.executeQuery();
 			rs.next();
 			tree = new Tree(rs.getInt(1), rs.getString(4), rs.getInt(5));
 			precedingID = rs.getInt(2);
 			subsequentID = rs.getInt(3);
 		} finally {
-			car.closeQuery(rs);
+			car.closeResultSet(rs);
 		}
 		
         if(precedingID > 0){
-            tree.preceding = read(precedingID);
+            tree.preceding = read(preparedStatement, precedingID);
         }
         if(subsequentID > 0){
-            tree.subsequent = read(subsequentID);
+            tree.subsequent = read(preparedStatement, subsequentID);
         }
         return tree;
     }

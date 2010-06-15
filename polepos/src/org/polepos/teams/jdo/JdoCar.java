@@ -19,10 +19,12 @@ MA  02111-1307, USA. */
 
 package org.polepos.teams.jdo;
 
+import java.sql.*;
 import java.util.*;
 
 
 import javax.jdo.*;
+import javax.jdo.datastore.*;
 
 import org.polepos.framework.*;
 import org.polepos.teams.jdbc.*;
@@ -30,7 +32,7 @@ import org.polepos.teams.jdbc.*;
 
 public class JdoCar extends Car {
 
-    private PersistenceManagerFactory mFactory;
+    private PersistenceManagerFactory _persistenceManagerFactory;
 
     private final String              mDbName;
     private final String              mName;
@@ -59,11 +61,9 @@ public class JdoCar extends Car {
         properties.setProperty("javax.jdo.PersistenceManagerFactoryClass", Jdo.settings()
             .getFactory(mName));
         
-        properties.setProperty("javax.jdo.option.NontransactionalRead", "true");
+        // properties.setProperty("javax.jdo.option.NontransactionalRead", "true");
+        
         properties.setProperty("javax.jdo.option.Multithreaded", "true");
-        
-        
-        
         properties.setProperty("javax.jdo.option.Optimistic", "true");
         
         // Versant VODJDO specific settings
@@ -88,7 +88,6 @@ public class JdoCar extends Car {
         
         properties.setProperty("versant.remoteMaxActive", "30");
         properties.setProperty("versant.maxActive", "30");
-        
 
         if (isSQL()) {
             try {
@@ -127,24 +126,53 @@ public class JdoCar extends Car {
             }
         }
 
-
         properties.setProperty("datanucleus.autoCreateSchema", "true");
         
 //        properties.setProperty("datanucleus.validateTables", "false");
 //        properties.setProperty("datanucleus.validateConstraints", "false");
 //        properties.setProperty("datanucleus.metadata.validate", "false");
         
+        properties.setProperty("datanucleus.connectionPool.maxIdle", "15");
+        properties.setProperty("datanucleus.connectionPool.minIdle", "5");
+        properties.setProperty("datanucleus.connectionPool.maxActive", "30");
+        
+        
         properties.setProperty("datanucleus.autoCreateConstraints", "false");
 //        properties.setProperty("datanucleus.validateColumns", "false");
         
+        
         properties.setProperty("datanucleus.connectionPoolingType", "DBCP");
         
-        mFactory = JDOHelper.getPersistenceManagerFactory(properties, JDOHelper.class
-            .getClassLoader());
+		properties.setProperty("datanucleus.persistenceByReachabilityAtCommit", "false");
+		properties.setProperty("datanucleus.manageRelationships", "false");
+         
+        
+        _persistenceManagerFactory = JDOHelper.getPersistenceManagerFactory(properties, JDOHelper.class.getClassLoader());
     }
 
     public PersistenceManager getPersistenceManager() {
-        return mFactory.getPersistenceManager();
+    	
+        PersistenceManager persistenceManager = _persistenceManagerFactory.getPersistenceManager();
+        
+        if(! "hsqldb".equals(mDbName)){
+        	return persistenceManager;
+        }
+        
+        JDOConnection dataStoreConnection = persistenceManager.getDataStoreConnection();
+        Connection connection = (Connection) dataStoreConnection.getNativeConnection();
+        
+        JdbcCar.hsqlDbWriteDelayToZero(connection);
+        try {
+        	
+        	// Closing the connection here really feels strange, but otherwise
+        	// Datanucleus hangs, probably because it runs out of JDBC connections.
+        	
+			connection.close();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return persistenceManager;
     }
 
     @Override
