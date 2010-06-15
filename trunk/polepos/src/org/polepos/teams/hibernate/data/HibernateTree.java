@@ -22,7 +22,7 @@ package org.polepos.teams.hibernate.data;
 
 public class HibernateTree {
     
-    public long id;
+    public int id;
     public HibernateTree preceding;
     public HibernateTree subsequent;
     public String name;
@@ -36,12 +36,12 @@ public class HibernateTree {
         this.depth = depth;
     }
     
-    public long getId(){
+    public int getId(){
         return id;
     }
     
-    public void setId(long id){
-        this.id = id;;
+    public void setId(int id){
+        this.id = id;
     }
 
     public HibernateTree getPreceding(){

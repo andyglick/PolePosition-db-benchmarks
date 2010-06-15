@@ -26,9 +26,6 @@ import org.polepos.data.*;
 import org.polepos.framework.*;
 
 
-/**
- * @author Herkules
- */
 public abstract class JdbcDriver extends org.polepos.framework.DriverBase {
     
 	public void prepare() throws CarMotorFailureException{
@@ -52,11 +49,7 @@ public abstract class JdbcDriver extends org.polepos.framework.DriverBase {
 		ResultSet rs = null;
 		try {
 			rs = car.executeQuery(sql);
-			while (rs.next()) {
-				Pilot p = new Pilot(rs.getString(2), rs.getString(3), rs
-						.getInt(4), rs.getInt(5));
-				addToCheckSum(p.checkSum());
-			}
+			iteratePilotResult(rs);
 		} catch (SQLException sqlex) {
 			sqlex.printStackTrace();
 		} finally {
@@ -64,6 +57,29 @@ public abstract class JdbcDriver extends org.polepos.framework.DriverBase {
 		}
 	}
 
+	protected void performPreparedQuery(PreparedStatement stat, Object arg) {
+		Log.logger.fine("starting query"); // NOI18N
+		JdbcCar car = jdbcCar();
+		ResultSet rs = null;
+		try {
+			stat.setObject(1, arg);
+			rs = stat.executeQuery();
+			iteratePilotResult(rs);
+		} catch (SQLException sqlex) {
+			sqlex.printStackTrace();
+		} finally {
+			car.closeResultSet(rs);
+		}
+	}
+
+	private void iteratePilotResult(ResultSet rs) throws SQLException {
+		while (rs.next()) {
+			Pilot p = new Pilot(rs.getString(2), rs.getString(3), rs
+					.getInt(4), rs.getInt(5));
+			addToCheckSum(p.checkSum());
+		}
+	}
+	
 	protected <Value> void performSingleResultQuery(String sql,List<Value> values) {
 	    Log.logger.fine( "starting query" ); //NOI18N
 	    PreparedStatement stat=jdbcCar().prepareStatement(sql);
@@ -91,6 +107,15 @@ public abstract class JdbcDriver extends org.polepos.framework.DriverBase {
 			}
 		}
 	}
+	
+    protected void closePreparedStatement(PreparedStatement stat) {
+    	try {
+			stat.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
 	
     @Override
 	public boolean supportsConcurrency() {

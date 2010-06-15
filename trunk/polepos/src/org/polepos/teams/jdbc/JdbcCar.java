@@ -86,10 +86,6 @@ public class JdbcCar extends Car {
 				props.put("password", password);
 			}
 			
-			// This setting forces HSQL databases to flush all on commit.
-			// We have to be fair to the other real databases: They all do it.
-			props.put("write_delay", "false");
-			
 			// If we don't use this setting, HSQLDB will hold all tables
 			// in memory completely, which is not what other engines do.
 			props.put("hsqldb.default_table_type", "cached");
@@ -98,22 +94,33 @@ public class JdbcCar extends Car {
 			_connection = DriverManager.getConnection(jdbcSettings.getConnectUrl(_dbType), props);
 			_connection.setAutoCommit(false);
 			
-			
-//		    public static Connection getConnection(String url, 
-//		    		java.util.Properties info) throws SQLException {
-//
-//		    	
-//		    	
-//			_connection = DriverManager.getConnection(jdbcSettings
-//					.getConnectUrl(_dbType), jdbcSettings.getUsername(_dbType),
-//					jdbcSettings.getPassword(_dbType));
-//			_connection.setAutoCommit(false);
+			if("hsqldb".equals(_dbType)){
+				hsqlDbWriteDelayToZero(_connection);
+			}
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new CarMotorFailureException();
 		}
 	}
+
+	public static void hsqlDbWriteDelayToZero(Connection connection) {
+		
+		// To be fair to other database engines, commits should
+		// be ACID. Especially the "D" (durable) is not satisfied
+		// if #sync() of the database file runs in a timer instead
+		// of directly after a commit call.
+		
+		try {
+			Statement statement = connection.createStatement();
+			statement.executeUpdate("SET WRITE_DELAY 0");
+			statement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 
 	/**
 	 * 
@@ -195,7 +202,7 @@ public class JdbcCar extends Car {
 		closeStatement();
 	}
 
-	private void closeResultSet(ResultSet rs) {
+	public void closeResultSet(ResultSet rs) {
 		if(rs != null) {
 			try {
 				rs.close();

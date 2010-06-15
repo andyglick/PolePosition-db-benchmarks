@@ -22,9 +22,9 @@ package org.polepos.circuits.sepang;
 
 public class Tree {
     
-    private static long idGenerator;
+    private static int idGenerator;
     
-    public long id;
+    public int id;
     public Tree preceding;
     public Tree subsequent;
     public String name;
@@ -33,7 +33,7 @@ public class Tree {
     public Tree(){
     }
     
-    public Tree(long id, String name, int depth){
+    public Tree(int id, String name, int depth){
         this.id = id;
         this.name = name;
         this.depth = depth;

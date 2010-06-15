@@ -39,6 +39,7 @@ public class ImolaJdo extends JdoDriver implements ImolaDriver{
     }
 
     public void retrieve() {
+    	beginRead();
         for(Object id: oids) {
             JdoPilot pilot=(JdoPilot)db().getObjectById(id, false);
             if(pilot==null) {

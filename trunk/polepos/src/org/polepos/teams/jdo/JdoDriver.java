@@ -54,7 +54,14 @@ public abstract class JdoDriver extends DriverBase{
 	protected PersistenceManager db(){
 		return mPersistenceManager;
 	}
-    
+	
+	public void beginRead(){
+		Transaction currentTransaction = db().currentTransaction();
+		if(! currentTransaction.isActive()){
+			currentTransaction.begin();
+		}
+	}
+	
     public void begin(){
         db().currentTransaction().begin();
     }
@@ -68,6 +75,7 @@ public abstract class JdoDriver extends DriverBase{
     }
     
     protected void doQuery( Query q, Object param){
+    	beginRead();
         Collection result = (Collection)q.execute(param);
         Iterator it = result.iterator();
         while(it.hasNext()){
@@ -89,6 +97,7 @@ public abstract class JdoDriver extends DriverBase{
     }
     
     protected void readExtent(Class clazz){
+    	beginRead();
         Extent extent = db().getExtent( clazz, false );
         int count = 0;
         Iterator itr = extent.iterator();

@@ -63,7 +63,11 @@ public class HibernateCar extends Car
         }
         
         try {
-            return mFactory.openSession();
+            Session session = mFactory.openSession();
+            if("hsqldb".equals(mDBType)){
+	            session.createSQLQuery("SET WRITE_DELAY 0").executeUpdate();
+			}
+			return session;
         } catch (HibernateException e) {
             e.printStackTrace();
             throw new CarMotorFailureException();
@@ -138,7 +142,9 @@ public class HibernateCar extends Car
             cfg.setProperty("hibernate.cache.provider_class", "org.hibernate.cache.EhCacheProvider");
             
             cfg.setProperty("hibernate.proxool.pool_alias", "pool1");
-  
+            
+            cfg.setProperty("hibernate.connection.writedelay", "0");
+ 
             
             
             SessionFactory factory = cfg.buildSessionFactory();     

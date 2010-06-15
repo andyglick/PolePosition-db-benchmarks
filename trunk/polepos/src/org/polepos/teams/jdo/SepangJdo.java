@@ -42,6 +42,7 @@ public class SepangJdo extends JdoDriver implements SepangDriver {
 	}
 
 	public void read(){
+		beginRead();
         JdoTree tree = (JdoTree)db().getObjectById(oid, false);
         JdoTree.traverse(tree, new JdoTreeVisitor() {
             public void visit(JdoTree tree) {

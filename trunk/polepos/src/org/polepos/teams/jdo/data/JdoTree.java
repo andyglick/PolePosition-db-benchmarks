@@ -22,9 +22,9 @@ package org.polepos.teams.jdo.data;
 
 public class JdoTree {
     
-    private static long idGenerator;
+    private static int idGenerator;
     
-    public long id;
+    public int id;
     public JdoTree preceding;
     public JdoTree subsequent;
     public String name;
@@ -33,7 +33,7 @@ public class JdoTree {
     public JdoTree(){
     }
     
-    public JdoTree(long id, String name, int depth){
+    public JdoTree(int id, String name, int depth){
         this.id = id;
         this.name = name;
         this.depth = depth;
@@ -67,10 +67,12 @@ public class JdoTree {
         if(tree == null){
             return;
         }
+        
         // We first write into local variables, so we don't get access
         // to the deleted parent after deletion.
         JdoTree preceding = tree.preceding;
         JdoTree subsequent = tree.subsequent;
+        
         visitor.visit(tree);
         traverse(preceding, visitor);
         traverse(subsequent, visitor);
