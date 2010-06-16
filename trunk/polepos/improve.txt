@@ -1,0 +1,16 @@
+
+
+Suggestions from Andy Jefferson:
+
+> You could also add that there are some missing aspects of 
+> configuration for DataNucleus
+> 
+> 1. You have "autoCreateSchema". This will have a major impact 
+> on performance. Any schema should exist before any benchmark.
+> 
+> 2. There is no configuration of allocation size for identity 
+> generation. This will have an impact on any tests persisting 
+> significant numbers of objects
+> 
+> 3. There is no special tuning of fetch groups (one of the key 
+> JDO selling points over competing technologies).
