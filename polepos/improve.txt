@@ -7,10 +7,33 @@ Suggestions from Andy Jefferson:
 > 
 > 1. You have "autoCreateSchema". This will have a major impact 
 > on performance. Any schema should exist before any benchmark.
+> This is present on the JPOX SVN version of PolePos - see build.xml
 > 
 > 2. There is no configuration of allocation size for identity 
 > generation. This will have an impact on any tests persisting 
-> significant numbers of objects
+> significant numbers of objects.
 > 
 > 3. There is no special tuning of fetch groups (one of the key 
 > JDO selling points over competing technologies).
+> This is present on the JPOX SVN version of PolePos
+> 
+> 4. The delete() method for Hibernate is not comparable to the
+> delete() for DataNucleus. The Hibernate method should be adapted
+> to retrieve all objects and delete one by one to be consistent.
+> This is present on the JPOX SVN version of PolePos
+>
+> 5. The schema (package.jdo) has no definition of String field
+> lengths, yet does for Hibernate hence inconsistent string lengths
+> being read.
+> 
+> 6. The schema (package.jdo) has no use of inheritance or discriminators
+> and this is essential for performance.
+> This is present on the JPOX SVN version of PolePos
+>
+> 7. Hibernate is running with EHCache yet DataNucleus is using its
+> internal L2 cache. They are not comparable.
+>
+> 8. Persistence properties should be in a separate config file
+> for modularity (like in JPOX SVN version of PolePos).
+>
+
