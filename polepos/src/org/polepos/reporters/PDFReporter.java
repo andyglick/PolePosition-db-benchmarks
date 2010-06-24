@@ -59,11 +59,16 @@ public class PDFReporter extends GraphReporter {
             _circuit = circuit;
         }
         
-        JFreeChart timeChart = createTimeChart(graph);
-        // timeChart.setBackgroundPaint(null);
+        List<JFreeChart>timeCharts = createTimeChart(graph);
         try {
 			renderTimeTable(graph);
-			_pdfData.add(renderChart(timeChart));
+			for (JFreeChart timeChart : timeCharts) {
+				
+				// white if you like
+		        // timeChart.setBackgroundPaint(null);
+				
+				_pdfData.add(renderChart(timeChart));	
+			}
 			_pdfData.add(new NewPageLabel());
 		} catch (Exception e) {
 			e.printStackTrace();

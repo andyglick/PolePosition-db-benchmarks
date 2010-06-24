@@ -132,9 +132,12 @@ public abstract class GraphReporter extends ReporterBase{
 	protected abstract void report(Graph graph);
 	protected abstract void finish(List <TeamCar> cars);
 
-	protected JFreeChart createTimeChart(Graph graph) {
-		CategoryDataset dataset = createTimeDataset(graph);
-		return createChart(dataset, ReporterConstants.TIME_CHART_LEGEND);
+	protected List<JFreeChart> createTimeChart(Graph graph) {
+		List<JFreeChart> list = new ArrayList<JFreeChart>();
+		// list.add(createChart(createInverseLogTimeDataset(graph), ReporterConstants.OLD_LOGARITHMIC_TIME_CHART_LEGEND));
+		list.add(createOrderOfMagnitudeChart(createBaseLineTimeDataset(graph, true), ReporterConstants.TIME_CHART_LEGEND));
+		// list.add(createChart(createBaseLineTimeDataset(graph, false), ReporterConstants.TIME_CHART_LEGEND));
+		return list;
 	}
 	
 	protected JFreeChart createMemoryChart(Graph graph) {
@@ -142,7 +145,7 @@ public abstract class GraphReporter extends ReporterBase{
 		return createChart(dataset, ReporterConstants.MEMORY_CHART_LEGEND);
 	}
 	
-	public CategoryDataset createTimeDataset(Graph graph) {
+	public CategoryDataset createInverseLogTimeDataset(Graph graph) {
 		DefaultCategoryDataset dataset=new DefaultCategoryDataset();
 		int currentTimeIndex = timeIndex;
 		for(TeamCar teamCar : graph.teamCars()) {
@@ -157,6 +160,50 @@ public abstract class GraphReporter extends ReporterBase{
 	        }
 	    }
 		return dataset;
+	}
+	
+	public CategoryDataset createBaseLineTimeDataset(final Graph graph, boolean bestOnTop) {
+		DefaultCategoryDataset dataset=new DefaultCategoryDataset();
+		
+		int setupCount = graph.setups().size();
+		double[] averages = new double[setupCount];
+		
+		int i = 0;
+		for(TurnSetup setup : graph.setups()) {
+			double sum = 0;
+			for(TeamCar teamCar : graph.teamCars()) {
+	            double time = graph.timeFor(teamCar,setup);
+	            sum+=time;
+	        }
+			averages[i] = sum/graph.teamCars().size();
+			i++;
+	    }
+		
+		for(TeamCar teamCar : graph.teamCars()) {
+			i = 0;
+			for(TurnSetup setup : graph.setups()) {
+				String legend = "" + setup.getMostImportantValueForGraph();
+	            double time = graph.timeFor(teamCar,setup);
+	            double graphValue = logarithmicMagnitudeGraphValue(averages[i], time, bestOnTop);
+	            dataset.addValue(graphValue,teamCar.toString(),legend);
+	            i++;
+	        }
+	    }
+		return dataset;
+	}
+	
+	double logarithmicMagnitudeGraphValue(double average, double time, boolean bestOnTop){
+		if(average == time){
+			return 0;
+		}
+		if(time > average){
+			double magnitude = time / average;
+			magnitude = Math.log10(magnitude);
+			return bestOnTop ? -magnitude : magnitude;
+		}
+		double magnitude = average / time;
+		magnitude = Math.log10(magnitude);
+		return bestOnTop ? magnitude : -magnitude;
 	}
 
 	private CategoryDataset createMemoryDataset(Graph graph) {
@@ -208,4 +255,27 @@ public abstract class GraphReporter extends ReporterBase{
 		chart.setLegend(legend);
 		return chart;
 	}
+	
+	public JFreeChart createOrderOfMagnitudeChart(CategoryDataset dataset, String legendText) {
+		CategoryAxis categoryAxis = new CategoryAxis("");
+		categoryAxis.setLabelFont(ReporterConstants.CATEGORY_LABEL_FONT);
+		categoryAxis.setTickLabelFont(ReporterConstants.CATEGORY_TICKLABEL_FONT);
+		String yLegendText =  legendText;
+		ValueAxis valueAxis = new NumberAxis(yLegendText);
+		valueAxis.setLabelFont(ReporterConstants.VALUE_LABEL_FONT);
+		valueAxis.setTickLabelFont(ReporterConstants.VALUE_TICKLABEL_FONT);
+		LineAndShapeRenderer renderer = new LineAndShapeRenderer(true, false);
+		CategoryPlot plot = new CategoryPlot(dataset, categoryAxis, valueAxis, renderer);
+		plot.setOrientation(PlotOrientation.VERTICAL);
+		plot.getRangeAxis().centerRange(0);
+		plot.getRangeAxis().setRange(-3, 3);
+		JFreeChart chart = new JFreeChart("", ReporterConstants.TITLE_FONT, plot, false);
+		StandardLegend legend = new StandardLegend();
+		legend.setItemFont(ReporterConstants.LEGEND_FONT);
+		legend.setMargin(new RectangleInsets(1.0, 1.0, 1.0, 1.0));
+		legend.setBackgroundPaint(Color.white);
+		chart.setLegend(legend);
+		return chart;
+	}
+
 }

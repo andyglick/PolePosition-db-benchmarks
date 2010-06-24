@@ -35,26 +35,24 @@ public class BarcelonaJdbc extends JdbcDriver implements BarcelonaDriver {
         "barcelona3",
         "barcelona4",
     };
-	private boolean _executeBatch;
     
     public void takeSeatIn(Car car, TurnSetup setup) throws CarMotorFailureException{
         
         super.takeSeatIn(car, setup);
-        _executeBatch = jdbcCar().executeBatch();
-        jdbcCar().openConnection();
+        openConnection();
         
         int i = 0;
         for(String table : TABLES){
-            jdbcCar().dropTable( table);
-            jdbcCar().createTable( table, new String[]{ "id", "parent", "b" + i}, 
+            dropTable( table);
+            createTable( table, new String[]{ "id", "parent", "b" + i}, 
                         new Class[]{Integer.TYPE, Integer.TYPE, Integer.TYPE} );
-            jdbcCar().createIndex( table, "parent" );
+            createIndex( table, "parent" );
             if(i == 2){
-                jdbcCar().createIndex( table, "b2" );
+                createIndex( table, "b2" );
             }
             i++;
         }
-        jdbcCar().close();
+        close();
 
     }
 
@@ -64,7 +62,7 @@ public class BarcelonaJdbc extends JdbcDriver implements BarcelonaDriver {
         try{
             PreparedStatement[] statements = new PreparedStatement[5];
             for (int i = 0; i < 5; i++) {
-                statements[i] = jdbcCar().prepareStatement("insert into " + TABLES[i] + " (id, parent, b" + i + ") values (?,?,?)");
+                statements[i] = prepareStatement("insert into " + TABLES[i] + " (id, parent, b" + i + ") values (?,?,?)");
             }
             
             int count = setup().getObjectCount();
@@ -75,22 +73,16 @@ public class BarcelonaJdbc extends JdbcDriver implements BarcelonaDriver {
 					statements[j].setInt(1, i);
 					statements[j].setInt(2, i);
 					statements[j].setInt(3, b4.getBx(j));
-					if (_executeBatch) {
-						statements[j].addBatch();
-					} else {
-						statements[j].execute();
-					}
+					statements[j].addBatch();
 				}
-				if (_executeBatch) {
-					statements[j].executeBatch();
-				}
+				statements[j].executeBatch();
 				statements[j].close();
 			}
 		} catch (SQLException sqlex) {
 			sqlex.printStackTrace();
 		}
         
-        jdbcCar().commit();     
+        commit();     
         
     }
 
@@ -119,7 +111,7 @@ public class BarcelonaJdbc extends JdbcDriver implements BarcelonaDriver {
         
         PreparedStatement[] statements = new PreparedStatement[5];
         for (int i = 0; i < 5; i++) {
-            statements[i] = jdbcCar().prepareStatement("delete from " + TABLES[i] + " where id=?");
+            statements[i] = prepareStatement("delete from " + TABLES[i] + " where id=?");
         }
         
         try {
@@ -127,22 +119,16 @@ public class BarcelonaJdbc extends JdbcDriver implements BarcelonaDriver {
 				for (int i = 1; i <= count; i++) {
 					statements[j].setInt(1, i);
 					addToCheckSum(1);
-					if (_executeBatch) {
-						statements[j].addBatch();
-					} else {
-						statements[j].execute();
-					}
+					statements[j].addBatch();
 				}
-				if(_executeBatch) {
-					statements[j].executeBatch();
-				}
+				statements[j].executeBatch();
 				statements[j].close();
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
         
-        jdbcCar().commit();     
+        commit();     
     }
     
     private StringBuffer select(){
@@ -164,7 +150,7 @@ public class BarcelonaJdbc extends JdbcDriver implements BarcelonaDriver {
     }
     
     private void query(String sql, int count){
-        PreparedStatement statement = jdbcCar().prepareStatement(sql.toString());
+        PreparedStatement statement = prepareStatement(sql.toString());
         
         try {
             for(int i = 1 ; i <= count; i++) {

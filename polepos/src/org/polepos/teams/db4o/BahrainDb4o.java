@@ -45,13 +45,11 @@ public class BahrainDb4o extends Db4oDriver implements BahrainDriver{
         int commitctr = 0;
         int count = setup().getObjectCount();
         int commitInterval = setup().getCommitInterval();
-        begin();
 		for ( int i = 1; i <= count; i++ ){
 			store( new Pilot( "Pilot_" + i, "Jonny_" + i, i , i ) );
             if ( commitInterval> 0  &&  ++commitctr >= commitInterval ){
                 commitctr = 0;
                 commit();
-                begin();
             }
             addToCheckSum(i);
 		}
@@ -114,11 +112,17 @@ public class BahrainDb4o extends Db4oDriver implements BahrainDriver{
 	}
 	
     public void delete() {
+    	int commitInterval = setup().getCommitInterval();
+        int commitctr = 0;
     	Query q = db().query();
     	q.constrain( Pilot.class );
     	ObjectSet deleteset = q.execute();
     	while ( deleteset.hasNext() ){
     		db().delete( deleteset.next() );
+            if ( commitInterval> 0  &&  ++commitctr >= commitInterval ){
+                commitctr = 0;
+                commit();
+            }
             addToCheckSum(1);
     	}
     	db().commit();

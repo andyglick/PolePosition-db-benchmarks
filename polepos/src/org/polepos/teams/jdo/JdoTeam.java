@@ -93,6 +93,7 @@ public class JdoTeam extends Team{
     @Override
     public DriverBase[] drivers() {
         return new DriverBase[]{
+        	new FlatObjectJdo(),
             new MelbourneJdo(),
             new SepangJdo(),
             new BahrainJdo(),
@@ -118,12 +119,18 @@ public class JdoTeam extends Team{
 			PersistenceManager pm = jdoCar.getPersistenceManager();
 		    
 		    deleteAll(pm, JB0.class);
+		    deleteAll(pm, JB1.class);
+		    deleteAll(pm, JB2.class);
+		    deleteAll(pm, JB3.class);
+		    deleteAll(pm, JB4.class);
 		    deleteAll(pm, JdoIndexedPilot.class);
 		    deleteAll(pm, JdoPilot.class);
 		    deleteAll(pm, JdoTree.class);
 		    deleteAll(pm, JdoLightObject.class);
 		    deleteAll(pm, JdoListHolder.class);
 		    deleteAll(pm, JN1.class);
+		    
+		    deleteAll(pm, JdoIndexedObject.class);
 	    
 		    pm.close();
 		}
@@ -132,18 +139,45 @@ public class JdoTeam extends Team{
 
 	private void deleteAll(PersistenceManager pm, Class clazz) {
 		
-		// This didn't work in in Datanucleus ....
+		// Added after getting OutOfMemory issues with
+		// 3 million objects per extent.
+		if(true){
+			deleteAllBatched(pm, clazz);
+			return;
+		}
+		
+		
+		// This didn't work in Datanucleus ....
 		
 		pm.currentTransaction().begin();
 		pm.newQuery(clazz).deletePersistentAll();
 		pm.currentTransaction().commit();
-		
 		
 		// ...so delete all again like this...
 		
 		pm.currentTransaction().begin();
 		pm.deletePersistentAll((Collection) pm.newQuery(clazz).execute());
 		pm.currentTransaction().commit();
+	}
+
+
+	private void deleteAllBatched(PersistenceManager pm, Class clazz) {
+		pm.currentTransaction().begin();
+		int batchSize = 10000;
+        int commitctr = 0;
+        Extent extent = pm.getExtent(clazz, false);
+        Iterator it = extent.iterator();
+        while(it.hasNext()){
+            pm.deletePersistent(it.next());
+            if ( batchSize > 0  &&  ++commitctr >= batchSize){
+                commitctr = 0;
+                pm.currentTransaction().commit();
+                pm.currentTransaction().begin();
+            }
+        }
+        extent.closeAll();
+        pm.currentTransaction().commit();
+		
 	}
 		
 }

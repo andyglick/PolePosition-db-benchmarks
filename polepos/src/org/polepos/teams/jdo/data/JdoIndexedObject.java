@@ -18,36 +18,42 @@ Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA  02111-1307, USA. */
 
 
-package org.polepos.util;
+package org.polepos.teams.jdo.data;
 
+import org.polepos.data.*;
+import org.polepos.framework.*;
 
-public class MemoryUtil {
-
-	private static final int GC_TIMES = 5;
-	private static Runtime _runtime = Runtime.getRuntime();
-
-	private static long internalUsedMemory() {
-		return _runtime.totalMemory() - _runtime.freeMemory();
-	}
-
-	public static long usedMemory() {
-		long usedMemoryBeforeGC = internalUsedMemory();
-		while(true){
-			for (int i = 0; i < GC_TIMES; ++i) {
-				System.gc();
-				System.runFinalization();
-				Thread.yield();
-			}
-			long usedMemoryAfterGC = internalUsedMemory();
-			if(usedMemoryAfterGC >= usedMemoryBeforeGC){
-				return usedMemoryBeforeGC;
-			}
-			usedMemoryBeforeGC = usedMemoryAfterGC;
-		}
+public class JdoIndexedObject implements CheckSummable{
+	
+	public int _int;
+	
+	public String _string;
+	
+	public JdoIndexedObject(){
+		
 	}
 	
-	public static void gc() {
-		usedMemory();
+	public JdoIndexedObject(int int_, String str){
+		_int = int_;
+		_string = str;
+	}
+	
+	public JdoIndexedObject(int int_){
+		this(int_, IndexedObject.queryString(int_));
+	}
+
+	@Override
+	public long checkSum() {
+		return _string.length();
+	}
+
+	public void updateString() {
+		_string = _string.toUpperCase();
+	}
+	
+	@Override
+	public String toString() {
+		return "JdoIndexedObject _int:" + _int + " _string:" + _string;
 	}
 	
 }

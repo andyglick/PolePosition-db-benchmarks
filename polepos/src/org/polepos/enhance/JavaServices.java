@@ -28,6 +28,10 @@ public class JavaServices {
     public static String java(String className) throws IOException, InterruptedException{
         return IOServices.exec(javaExecutable(), javaRunArguments(className));
     }
+    
+    public static String java(String className, String[] args) throws IOException, InterruptedException{
+        return IOServices.exec(javaExecutable(), javaRunArguments(className, args));
+    }
 
     public static ProcessRunner startJava(String className, String[] args) throws IOException {
         return IOServices.start(javaExecutable(), javaRunArguments(className, args));

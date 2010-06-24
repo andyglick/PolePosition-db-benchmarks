@@ -29,15 +29,15 @@ public class BulkWritePreparedStatement implements BulkWriteStrategy
 {
 	private final PreparedStatement mStmt;
 	
-	private final JdbcCar _car;
+	private final JdbcDriver _driver;
 
 	/** 
 	 * Creates a new instance of BulkWriteSingle.
 	 */
-	public BulkWritePreparedStatement( JdbcCar car, String tablename )
+	public BulkWritePreparedStatement( JdbcDriver driver, String tablename )
 	{
-		_car = car;
-		mStmt = car.prepareStatement( "insert into " + tablename + " (id,Name,FirstName,Points,LicenseID) values (?,?,?,?,?)" );
+		_driver = driver;
+		mStmt = driver.prepareStatement( "insert into " + tablename + " (id,Name,FirstName,Points,LicenseID) values (?,?,?,?,?)" );
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class BulkWritePreparedStatement implements BulkWriteStrategy
 				savePilot(p[i], index++ );
 			}		
 			
-			if ( count > 0 && _car.executeBatch())
+			if ( count > 0 )
 			{
 				mStmt.executeBatch();
 			}
@@ -75,10 +75,6 @@ public class BulkWritePreparedStatement implements BulkWriteStrategy
 		mStmt.setString(	3, p.getFirstName() );
 		mStmt.setInt(		4, p.getPoints() );
 		mStmt.setInt(		5, p.getPoints() );
-		if(_car.executeBatch()) {
-			mStmt.addBatch();
-		} else {
-			mStmt.execute();
-		}
+		mStmt.addBatch();
     }
 }

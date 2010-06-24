@@ -28,7 +28,7 @@ public class Graph {
     
     private final List<TeamCar>teamCars;
 	private final List<TurnSetup> setups;
-    private final Map<ResultsKey,Result> results;
+    private final Map<TurnCombination,Result> results;
 	
     private final Circuit circuit;
     private final Lap lap;
@@ -36,14 +36,14 @@ public class Graph {
     public Graph(Result result){
         teamCars= new ArrayList<TeamCar>();
         setups=new ArrayList<TurnSetup>();
-		results=new HashMap<ResultsKey,Result>();
+		results=new HashMap<TurnCombination,Result>();
         circuit = result.getCircuit();
         lap = result.getLap(); 
     }
 
     public void addResult(TeamCar teamCar, Result result) {
         TurnSetup setup = result.getSetup();
-        results.put(new ResultsKey(teamCar,setup),result);
+        results.put(new TurnCombination(teamCar,setup),result);
 		if(!teamCars.contains(teamCar)) {
 			teamCars.add(teamCar);
 		}
@@ -70,13 +70,13 @@ public class Graph {
             for (TeamCar teamCar: teamCars()){
                 
                 if(first){
-                    Result res = results.get(new ResultsKey(teamCar,setup)); 
+                    Result res = results.get(new TurnCombination(teamCar,setup)); 
                     if(res != null){
                         checkSum = res.getCheckSum();
                         first = false;
                     }
                 } else{
-                    Result res = results.get(new ResultsKey(teamCar,setup));
+                    Result res = results.get(new TurnCombination(teamCar,setup));
                     if(res != null){
                         if(checkSum != res.getCheckSum()){
                             System.err.println("Inconsistent checksum for " + res.getTeam().name() + " in " + circuit.name() + ":" + lap.name());
@@ -97,7 +97,11 @@ public class Graph {
 	}
 	
 	public final long timeFor(TeamCar teamCar, TurnSetup setup) {
-        Result res = results.get(new ResultsKey(teamCar,setup));
+		return timeFor(new TurnCombination(teamCar,setup));
+	}
+	
+	public final long timeFor(TurnCombination turnCombination) {
+        Result res = results.get(turnCombination);
         if(res == null){
             return Integer.MAX_VALUE;
         }
@@ -105,7 +109,7 @@ public class Graph {
 	}
 	
 	public final long memoryFor(TeamCar teamCar, TurnSetup setup) {
-	    Result res = results.get(new ResultsKey(teamCar,setup));
+	    Result res = results.get(new TurnCombination(teamCar,setup));
         if(res == null){
             return Integer.MAX_VALUE;
         }
@@ -113,19 +117,19 @@ public class Graph {
 	}
 	
 	public final long sizeFor(TeamCar teamCar, TurnSetup setup) {
-	    Result res = results.get(new ResultsKey(teamCar,setup));
+	    Result res = results.get(new TurnCombination(teamCar,setup));
         if(res == null){
             return Integer.MAX_VALUE;
         }
 		return res.getDatabaseSize();
 	}
 	
-	private class ResultsKey {
+	class TurnCombination {
         
         final TeamCar teamCar;
         final TurnSetup setup;
 		
-		public ResultsKey(TeamCar teamCar, TurnSetup setup) {
+		public TurnCombination(TeamCar teamCar, TurnSetup setup) {
 			this.teamCar = teamCar;
 			this.setup = setup;
 		}
@@ -138,7 +142,7 @@ public class Graph {
 			if(obj==null||obj.getClass()!=getClass()) {
 				return false;
 			}
-			ResultsKey key=(ResultsKey)obj;
+			TurnCombination key=(TurnCombination)obj;
 			return teamCar.equals(key.teamCar) && setup.equals(key.setup);
 		}
 		
@@ -146,5 +150,13 @@ public class Graph {
 		public int hashCode() {
 			return teamCar.hashCode() + setup.hashCode();
 		}
+	}
+
+	public void forEachTurnCombination(CodeBlock<TurnCombination> codeBlock) {
+		for(TeamCar teamCar : teamCars()) {
+			for(TurnSetup setup : setups()) {
+				codeBlock.apply(new TurnCombination(teamCar, setup));
+	        }
+	    }
 	}
 }

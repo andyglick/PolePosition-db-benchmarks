@@ -36,24 +36,16 @@ public class SepangJdbc extends JdbcDriver implements SepangDriver{
     Tree lastRead;
     
 	public void takeSeatIn(Car car, TurnSetup setup) throws CarMotorFailureException{
-		
 		super.takeSeatIn(car, setup);
-		
-		// Open database
-		jdbcCar().openConnection();
-        
-		//
-		// Create database structure
-		//
-		jdbcCar().dropTable( TABLE );
-		jdbcCar().createTable( TABLE, new String[]{ "id", "preceding", "subsequent", "name", "depth" }, new Class[]{Integer.TYPE,Integer.TYPE,Integer.TYPE,String.class, Integer.TYPE} );
-		jdbcCar().createIndex( TABLE, "id" );
-
-		jdbcCar().close();
+		openConnection();
+		dropTable( TABLE );
+		createTable( TABLE, new String[]{ "id", "preceding", "subsequent", "name", "depth" }, new Class[]{Integer.TYPE,Integer.TYPE,Integer.TYPE,String.class, Integer.TYPE} );
+		createIndex( TABLE, "id" );
+		close();
 	}
 	
 	public void write(){
-		final PreparedStatement statement = jdbcCar().prepareStatement("insert into " + TABLE + " (id, preceding, subsequent, name, depth ) values (?,?,?,?,?)");
+		final PreparedStatement statement = prepareStatement("insert into " + TABLE + " (id, preceding, subsequent, name, depth ) values (?,?,?,?,?)");
         Tree tree = Tree.createTree(setup().getTreeDepth());
         Tree.traverse(tree, new TreeVisitor() {
             public void visit(Tree tree) {
@@ -69,13 +61,13 @@ public class SepangJdbc extends JdbcDriver implements SepangDriver{
 				}
             }
         });
-		jdbcCar().commit();
+		commit();
 	}
 
 	
 	public void read(){
         try {
-        	PreparedStatement preparedStatement = jdbcCar().prepareStatement("select * from " + TABLE + " where id = ?");
+        	PreparedStatement preparedStatement = prepareStatement("select * from " + TABLE + " where id = ?");
             lastRead = read(preparedStatement, 1);
             Tree.traverse(lastRead, new TreeVisitor() {
                 public void visit(Tree tree) {
@@ -89,8 +81,6 @@ public class SepangJdbc extends JdbcDriver implements SepangDriver{
 	}
     
     private Tree read(PreparedStatement preparedStatement, int id) throws SQLException {
-        JdbcCar car = jdbcCar();
-        
         ResultSet rs = null;
         
 		int precedingID;
@@ -105,7 +95,7 @@ public class SepangJdbc extends JdbcDriver implements SepangDriver{
 			precedingID = rs.getInt(2);
 			subsequentID = rs.getInt(3);
 		} finally {
-			car.closeResultSet(rs);
+			closeResultSet(rs);
 		}
 		
         if(precedingID > 0){
@@ -124,23 +114,23 @@ public class SepangJdbc extends JdbcDriver implements SepangDriver{
 	public void delete(){
 		try{
 			delete(1);
-            jdbcCar().commit();
+            commit();
 		}catch ( SQLException sqlex ){ 
             sqlex.printStackTrace(); 
         }
 	}
     
     private void delete(int id) throws SQLException{
-        JdbcCar car = jdbcCar();
-		ResultSet rs = null;
+		ResultSetStatement resultSetStatement = null;
 		int precedingID, subsequentID;
 		try {
-			rs = car.executeQuery("select * from " + TABLE + " where id=" + id);
+			resultSetStatement = executeQuery("select * from " + TABLE + " where id=" + id);
+			ResultSet rs = resultSetStatement._resultSet;
 			rs.next();
 			precedingID = rs.getInt(2);
 			subsequentID = rs.getInt(3);
 		} finally {
-			car.closeQuery(rs);
+			closeQuery(resultSetStatement);
 		}
         if(precedingID > 0){
             delete(precedingID);
@@ -148,7 +138,7 @@ public class SepangJdbc extends JdbcDriver implements SepangDriver{
         if(subsequentID > 0){
             delete(subsequentID);
         }
-        car.executeUpdate("delete from " + TABLE + " where id=" + id);
+        executeUpdate("delete from " + TABLE + " where id=" + id);
     }
 
 }

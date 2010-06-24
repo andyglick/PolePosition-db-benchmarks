@@ -31,7 +31,15 @@ public abstract class DriverBase extends Driver implements Cloneable
     
     private TurnSetup mSetup;
     
-    private long mCheckSum;
+    private long _checkSum;
+
+	private int _bulkId;
+	
+	private int _testId;
+
+	private int _objectCount;
+	
+	private int _commitInterval;
 	
     protected final Car car(){
         return mCar;
@@ -44,7 +52,7 @@ public abstract class DriverBase extends Driver implements Cloneable
 	public void takeSeatIn( Car car, TurnSetup setup ) throws CarMotorFailureException{
         mCar = car;
         mSetup = setup;
-        mCheckSum = 0;
+        _checkSum = 0;
     }
 
 	/**
@@ -66,17 +74,21 @@ public abstract class DriverBase extends Driver implements Cloneable
 	protected TurnSetup setup(){
         return mSetup;
     }
+	
+	public void addToCheckSum(CheckSummable checkSummable){
+		addToCheckSum(checkSummable.checkSum());
+	}
     
     /**
      * Collecting a checksum to make sure every team does a complete job  
      */
     public synchronized void addToCheckSum(long l){
-        mCheckSum += l;
+        _checkSum += l;
     }
     
     @Override
 	public long checkSum(){
-        return mCheckSum; 
+        return _checkSum; 
     }
     
     public DriverBase clone(){
@@ -140,5 +152,51 @@ public abstract class DriverBase extends Driver implements Cloneable
 		
 	}
 
+	public void bulkId(int id) {
+		_bulkId = id;
+	}
+	
+	protected void initializeTestId(int count) {
+		_objectCount = count;
+		_testId = _bulkId * count;
+		_commitInterval = setup().getCommitInterval();
+	}
+	
+	protected void initializeTestIdD(int count) {
+		_objectCount = count;
+		_testId = _bulkId * count;
+		_commitInterval = setup().getCommitInterval();
+	}
+
+	
+	protected int nextTestId(){
+		_objectCount--;
+		if(_objectCount < 0) {
+			outOfObjectCount();
+		}
+		return ++_testId;
+	}
+
+	private void outOfObjectCount() {
+		throw new IllegalStateException(" Out of _objectCount. Did you call initializeTestId ?");
+	}
+	
+	protected int objectCount() {
+		return setup().getObjectCount();
+	}
+	
+	protected boolean doCommit(){
+		if(_objectCount == 0){
+			return true;
+		}
+		if(_objectCount < 0){
+			outOfObjectCount();
+		}
+		return (_objectCount % _commitInterval) == 0;
+	}
+
+	protected boolean hasMoreTestIds() {
+		return _objectCount > 0;
+	}
 
 }

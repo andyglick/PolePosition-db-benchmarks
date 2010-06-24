@@ -46,17 +46,14 @@ public class BahrainJdbc extends JdbcDriver implements BahrainDriver
 	{	
 		super.takeSeatIn(car, setup);
 
-        jdbcCar().openConnection();
-		//
-        // Create database structure
-        //
-        jdbcCar().dropTable( TABLE);
-        jdbcCar().createTable( TABLE, new String[]{ "id", "Name", "FirstName", "Points", "LicenseID" }, 
+        openConnection();
+        dropTable( TABLE);
+        createTable( TABLE, new String[]{ "id", "Name", "FirstName", "Points", "LicenseID" }, 
 					new Class[]{Integer.TYPE, String.class, String.class, Integer.TYPE, Integer.TYPE} );
-        jdbcCar().createIndex( TABLE, "Name" );
-        jdbcCar().createIndex( TABLE, "LicenseID" );
+        createIndex( TABLE, "Name" );
+        createIndex( TABLE, "LicenseID" );
 
-        jdbcCar().close();
+        close();
 	}
 	
 	
@@ -65,7 +62,7 @@ public class BahrainJdbc extends JdbcDriver implements BahrainDriver
 		Pilot[] pilots = new Pilot[ BULKSIZE ];
 		int idx = 0;
 		
-		BulkWriteStrategy writer = new BulkWritePreparedStatement(jdbcCar(), TABLE);
+		BulkWriteStrategy writer = new BulkWritePreparedStatement(this, TABLE);
 	
         int commitctr = 0;
         int count = setup().getObjectCount();
@@ -81,20 +78,20 @@ public class BahrainJdbc extends JdbcDriver implements BahrainDriver
             
             if ( commitInterval > 0  &&  ++commitctr >= commitInterval ){
                 commitctr = 0;
-                jdbcCar().commit();
+                commit();
             }
             
             addToCheckSum(i);
             
 		}
 		
-        jdbcCar().commit();
+        commit();
 	}
     
     
     public void queryIndexedString(){
         int count = setup().getSelectCount();
-    	PreparedStatement stat = jdbcCar().prepareStatement("select * from bahrain where Name = ?");
+    	PreparedStatement stat = prepareStatement("select * from bahrain where Name = ?");
         for (int i = 1; i <= count; i++) {
         	performPreparedQuery(stat, "Pilot_" + i);
         }
@@ -103,7 +100,7 @@ public class BahrainJdbc extends JdbcDriver implements BahrainDriver
 
 	public void queryString(){
         int count = setup().getSelectCount();
-    	PreparedStatement stat = jdbcCar().prepareStatement("select * from bahrain where FirstName = ?");
+    	PreparedStatement stat = prepareStatement("select * from bahrain where FirstName = ?");
         for (int i = 1; i <= count; i++) {
         	performPreparedQuery(stat, "Jonny_" + i);
         }
@@ -113,7 +110,7 @@ public class BahrainJdbc extends JdbcDriver implements BahrainDriver
 
     public void queryIndexedInt(){
         int count = setup().getSelectCount();
-    	PreparedStatement stat = jdbcCar().prepareStatement("select * from bahrain where LicenseID = ?");
+    	PreparedStatement stat = prepareStatement("select * from bahrain where LicenseID = ?");
         for (int i = 1; i <= count; i++) {
         	performPreparedQuery(stat, new Integer(i));
         }
@@ -123,7 +120,7 @@ public class BahrainJdbc extends JdbcDriver implements BahrainDriver
     
     public void queryInt(){
         int count = setup().getSelectCount();
-    	PreparedStatement stat = jdbcCar().prepareStatement("select * from bahrain where Points = ?");
+    	PreparedStatement stat = prepareStatement("select * from bahrain where Points = ?");
         for (int i = 1; i <= count; i++) {
         	performPreparedQuery(stat, new Integer(i));
         }
@@ -147,7 +144,7 @@ public class BahrainJdbc extends JdbcDriver implements BahrainDriver
         
         int count = setup().getObjectCount();
         
-        PreparedStatement statement = jdbcCar().prepareStatement("delete from bahrain where id=?");
+        PreparedStatement statement = prepareStatement("delete from bahrain where id=?");
         
         try {
             for (int i = 1; i <= count; i++) {
@@ -159,7 +156,7 @@ public class BahrainJdbc extends JdbcDriver implements BahrainDriver
             e.printStackTrace();
         }
         
-        jdbcCar().commit();		
+        commit();		
     }
 	
 	/**
@@ -189,12 +186,12 @@ public class BahrainJdbc extends JdbcDriver implements BahrainDriver
 	 */
 	private void updateIndexedStringStmt(int updateCount) {
 		JdbcCar car = jdbcCar();
-		ResultSet rs = null;
+		ResultSetStatement resultSetStatement = null;
 		try {
-			PreparedStatement stmt = car.prepareStatement(
-					"update bahrain set Name=? where ID=?");
+			PreparedStatement stmt = prepareStatement("update bahrain set Name=? where ID=?");
 			try {
-				rs = car.executeQuery("select ID, Name from bahrain");
+				resultSetStatement = executeQuery("select ID, Name from bahrain");
+				ResultSet rs = resultSetStatement._resultSet;
 				for (int i = 0; i < updateCount; i++) {
 					rs.next();
 					int id = rs.getInt(1);
@@ -205,14 +202,14 @@ public class BahrainJdbc extends JdbcDriver implements BahrainDriver
 					addToCheckSum(1);
 				}
 			} finally {
-				car.closeQuery(rs);
+				closeQuery(resultSetStatement);
 			}
 			stmt.executeBatch();
 			stmt.close();
 		} catch (SQLException sqlex) {
 			sqlex.printStackTrace();
 		}
-		car.commit();
+		commit();
 	}
 
 	

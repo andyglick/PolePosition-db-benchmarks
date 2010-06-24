@@ -44,16 +44,12 @@ public class MelbourneJdbc extends JdbcDriver implements MelbourneDriver
 	public void takeSeatIn(Car car, TurnSetup setup) throws CarMotorFailureException{
 		super.takeSeatIn(car, setup);
 		
-		jdbcCar().openConnection();
+		openConnection();
         
-        //
-        // Create database structure
-        //
-        jdbcCar().dropTable(TABLE);
-        jdbcCar().createTable(TABLE, new String[]{ "ID", "Name", "FirstName", "Points", "LicenseID" }, 
+        dropTable(TABLE);
+        createTable(TABLE, new String[]{ "ID", "Name", "FirstName", "Points", "LicenseID" }, 
 					new Class[]{Integer.TYPE, String.class, String.class, Integer.TYPE, Integer.TYPE} );
-
-        jdbcCar().close();
+        close();
 	}
 	
 	public void write(){
@@ -65,9 +61,7 @@ public class MelbourneJdbc extends JdbcDriver implements MelbourneDriver
 		Pilot[] pilots = new Pilot[ BULKSIZE ];
 		int idx = 0;
         
-		//BulkWriteStrategy writer = new BulkWriteSingle();
-		BulkWriteStrategy writer = new BulkWritePreparedStatement( jdbcCar(), TABLE);
-		//BulkWriteStrategy writer = new BulkWriteMultiValue();
+		BulkWriteStrategy writer = new BulkWritePreparedStatement(this, TABLE);
 		
         for ( int i = 1; i <= numobjects; i++ )
         {
@@ -82,7 +76,7 @@ public class MelbourneJdbc extends JdbcDriver implements MelbourneDriver
             if ( commitintervall > 0  &&  ++commitctr >= commitintervall )
             {
                 commitctr = 0;
-                jdbcCar().commit();
+                commit();
             }
             
             addToCheckSum(i);
@@ -91,16 +85,16 @@ public class MelbourneJdbc extends JdbcDriver implements MelbourneDriver
 		// Write the rest
 		writer.savePilots(TABLE, pilots, idx, numobjects - idx );
 
-        jdbcCar().commit();
+        commit();
     }
     
 	public void read(){      
         int numobjects = setup().getObjectCount();
         JdbcCar car = jdbcCar();
-        ResultSet rs = null;
+        ResultSetStatement resultSetStatement = null;
 		try{
-			rs = car.executeQuery("select * from " + TABLE);
-			
+			resultSetStatement = executeQuery("select * from " + TABLE);
+			ResultSet rs = resultSetStatement._resultSet;
 			for ( int i = 0; i < numobjects; i++ ){
 				rs.next();
 				Pilot p = new Pilot( rs.getString( 2 ), rs.getString( 3 ), rs.getInt( 4 ), rs.getInt( 5 ) );
@@ -110,7 +104,7 @@ public class MelbourneJdbc extends JdbcDriver implements MelbourneDriver
 		catch ( SQLException sqlex ){
 			sqlex.printStackTrace();
 		} finally {
-			car.closeQuery(rs);
+			closeQuery(resultSetStatement);
 		}
 	}
     
@@ -119,8 +113,8 @@ public class MelbourneJdbc extends JdbcDriver implements MelbourneDriver
     }
     
 	public void delete(){
-        jdbcCar().executeSQL( "delete from " + TABLE);
-        jdbcCar().commit();
+        executeSQL( "delete from " + TABLE);
+        commit();
 	}
 
 }

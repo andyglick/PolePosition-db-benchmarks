@@ -27,39 +27,49 @@ import org.polepos.framework.*;
 
 
 public abstract class JdbcDriver extends org.polepos.framework.DriverBase {
-    
+	
+	protected Connection _connection;
+	
 	public void prepare() throws CarMotorFailureException{
-		((JdbcCar)car()).openConnection();
+		openConnection();
 	}
 	
 	public void backToPit(){
-        ((JdbcCar)car()).close();
+        close();
 	}
     
     public JdbcCar jdbcCar(){
         return (JdbcCar)car();
     }
-
-	/**
-	 * Helper: perform any query
-	 */
+    
 	protected void performQuery(String sql) {
 		Log.logger.fine("starting query"); // NOI18N
-		JdbcCar car = jdbcCar();
-		ResultSet rs = null;
+		ResultSetStatement resultSetStatement = null;
 		try {
-			rs = car.executeQuery(sql);
-			iteratePilotResult(rs);
+			resultSetStatement = executeQuery(sql);
+			iteratePilotResult(resultSetStatement._resultSet);
 		} catch (SQLException sqlex) {
 			sqlex.printStackTrace();
 		} finally {
-			car.closeQuery(rs);
+			closeQuery(resultSetStatement);
+		}
+	}
+	
+	protected void performIndexedObjectQuery(PreparedStatement stat, Object arg) {
+		ResultSet rs = null;
+		try {
+			stat.setObject(1, arg);
+			rs = stat.executeQuery();
+			iterateIndexedObjectResult(rs);
+		} catch (SQLException sqlex) {
+			sqlex.printStackTrace();
+		} finally {
+			closeResultSet(rs);
 		}
 	}
 
 	protected void performPreparedQuery(PreparedStatement stat, Object arg) {
 		Log.logger.fine("starting query"); // NOI18N
-		JdbcCar car = jdbcCar();
 		ResultSet rs = null;
 		try {
 			stat.setObject(1, arg);
@@ -68,7 +78,14 @@ public abstract class JdbcDriver extends org.polepos.framework.DriverBase {
 		} catch (SQLException sqlex) {
 			sqlex.printStackTrace();
 		} finally {
-			car.closeResultSet(rs);
+			closeResultSet(rs);
+		}
+	}
+	
+	private void iterateIndexedObjectResult(ResultSet rs) throws SQLException {
+		while (rs.next()) {
+			IndexedObject indexedObject = new IndexedObject(rs.getInt(FlatObjectJdbc.INT), rs.getString(FlatObjectJdbc.STRING));
+			addToCheckSum(indexedObject);
 		}
 	}
 
@@ -82,7 +99,7 @@ public abstract class JdbcDriver extends org.polepos.framework.DriverBase {
 	
 	protected <Value> void performSingleResultQuery(String sql,List<Value> values) {
 	    Log.logger.fine( "starting query" ); //NOI18N
-	    PreparedStatement stat=jdbcCar().prepareStatement(sql);
+	    PreparedStatement stat=prepareStatement(sql);
 		try {
 			for(Value val : values) {
 				stat.setObject(1,val);
@@ -127,5 +144,222 @@ public abstract class JdbcDriver extends org.polepos.framework.DriverBase {
 		return false;
 	}
     
+	
+	public void openConnection() throws CarMotorFailureException {
+
+		try {
+			assert null == _connection : "database has to be closed before opening";
+			JdbcSettings jdbcSettings = Jdbc.settings();
+			
+			Properties props = new Properties();
+			String username = jdbcSettings.getUsername(jdbcCar()._dbType);
+			if(username != null){
+				props.put("user", username);
+			}
+			String password = jdbcSettings.getPassword(jdbcCar()._dbType);
+			if(password != null){
+				props.put("password", password);
+			}
+			
+			// If we don't use this setting, HSQLDB will hold all tables
+			// in memory completely, which is not what other engines do.
+			props.put("hsqldb.default_table_type", "cached");
+			
+			
+			_connection = DriverManager.getConnection(jdbcSettings.getConnectUrl(jdbcCar()._dbType), props);
+			_connection.setAutoCommit(false);
+			
+			if(isHsqlDb()){
+				JdbcCar.hsqlDbWriteDelayToZero(_connection);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new CarMotorFailureException();
+		}
+	}
+
+	private boolean isHsqlDb() {
+		return "hsqldb".equals(jdbcCar()._dbType);
+	}
+	
+	private boolean isPostgres() {
+		return "postgresql".equals(jdbcCar()._dbType);
+	}
+	
+	public void close() {
+		if(_connection == null) {
+			return;
+		}
+		commit();
+		closeConnection();
+	}
+
+	private void closeConnection() {
+		try {
+			_connection.close();
+		} catch (SQLException sqlex) {
+			sqlex.printStackTrace();
+		}
+		_connection = null;
+	}
+
+	public void commit() {
+		try {
+			_connection.commit();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+	}
+
+	public void executeSQL(String sql) {
+		Statement statement = null;
+		try {
+			statement = _connection.createStatement();
+			statement.execute(sql);
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			closeStatement(statement);
+		}
+	}
+	public ResultSetStatement executeQuery(String sql) {
+		Log.logger.fine(sql);
+		try {
+			Statement statement = _connection.createStatement();
+			return new ResultSetStatement(statement, statement.executeQuery(sql)) ;
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			throw new RuntimeException(ex);
+		}
+	}
+	
+	public void closeQuery(ResultSetStatement resultSetStatement) {
+		if(resultSetStatement != null){
+			resultSetStatement.close();
+		}
+	}
+
+	public void closeResultSet(ResultSet rs) {
+		if(rs != null) {
+			try {
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void executeUpdate(String sql) {
+		Statement statement = null;
+		try {
+			statement = _connection.createStatement();
+			statement.executeUpdate(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			closeStatement(statement);
+		}
+	}
+
+	private void closeStatement(Statement statement) {
+		if(statement == null){
+			return;
+		}
+		try {
+			statement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void dropTable(String tablename) {
+		
+		// TODO: "drop table if exists" is nonstandard.
+		// A better approach would be to look in the catalog and
+		// to delete a table only if it can be found there.
+		
+		Statement statement = null;
+		String sql = "drop table if exists " + tablename;
+		
+		try {
+			statement = _connection.createStatement(); 
+			statement.executeUpdate(sql);
+			return;
+		} catch (SQLException e) {
+			System.out.println("SQL dialect not supported: 'drop table if exists'. Trying plain 'drop table'");
+		} finally {
+			closeStatement(statement);
+		}
+		
+		sql = "drop table " + tablename;
+		
+		try {
+			statement = _connection.createStatement();
+			statement.executeUpdate(sql);
+		} catch (SQLException e) {
+			System.out.println("Table could not be dropped: " + tablename);
+		} finally {
+			closeStatement(statement);
+		}
+		
+	}
+	
+	public void createTable(String tablename, String[] colnames, Class[] coltypes) {
+		String sql = "create table " + tablename + " (" + colnames[0]
+				+ "  INTEGER NOT NULL";
+
+		for (int i = 1; i < colnames.length; i++) {
+			sql += ", " + colnames[i] + " " + JdbcCar.colTypesMap.get(coltypes[i]);
+		}
+		sql += ", PRIMARY KEY(" + colnames[0] + "))";
+		executeSQL(sql);
+	}
+	
+	public void dropIndex(String tablename, String colname){
+		Statement statement = null;
+		
+		String sql = isPostgres() 
+			?
+			"DROP INDEX " + indexName(tablename, colname) + " CASCADE"
+			:
+			"DROP INDEX " + indexName(tablename, colname) + " ON " + tablename;
+		
+		try {
+			statement = _connection.createStatement(); 
+			statement.executeUpdate(sql);
+			return;
+		} catch (SQLException e) {
+			System.out.println(e.getSQLState());
+		} finally {
+			closeStatement(statement);
+		}
+	}
+
+	public void createIndex(String tablename, String colname) {
+		// The maximum length for index names is 18 for Derby.
+		
+		String indexName = indexName(tablename, colname);
+		
+		String sql = "CREATE INDEX " + indexName + " ON "
+				+ tablename + " (" + colname + ")";
+		executeSQL(sql);
+	}
+
+	private String indexName(String tablename, String colname) {
+		return "X" + tablename + "_" + colname;
+	}
+
+	public PreparedStatement prepareStatement(String sql) {
+		PreparedStatement stmt = null;
+		try {
+			stmt = _connection.prepareStatement(sql);
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+		return stmt;
+	}
+
+
 
 }

@@ -77,7 +77,7 @@ public class ConcurrencyCircuit implements Circuit {
 	}
 
 	@Override
-	public Class<? extends DriverBase> requiredDriver() {
+	public Class<?> requiredDriver() {
 		return _delegate.requiredDriver();
 	}
 
