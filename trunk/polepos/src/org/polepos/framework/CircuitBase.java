@@ -45,7 +45,7 @@ public abstract class CircuitBase implements Circuit {
 		}
 	}
 
-	private final List<Lap> mLaps;
+	private List<Lap> _laps;
     
     private TurnSetup[] _turnSetups;
         
@@ -63,8 +63,6 @@ public abstract class CircuitBase implements Circuit {
     
     protected CircuitBase(){
         initWatchers();
-        mLaps = new ArrayList<Lap>();
-        addLaps();
     }
     
     @Override
@@ -82,7 +80,7 @@ public abstract class CircuitBase implements Circuit {
      * public official name for reporting
 	 */
     @Override
-	public final String name(){
+	public String name(){
         String name = internalName();
         return name.substring(0,1).toUpperCase() + name.substring(1);
     }
@@ -91,11 +89,19 @@ public abstract class CircuitBase implements Circuit {
      * internal name for BenchmarkSettings.properties
      */
     @Override
-	public final String internalName(){
-        String name = this.getClass().getName();
+	public String internalName(){
+        String name = className();
         int pos = name.lastIndexOf(".");
         return name.substring(pos + 1).toLowerCase();
     }
+
+	protected String className() {
+		return circuitClass().getName();
+	}
+
+	protected Class<?> circuitClass() {
+		return this.getClass();
+	}
     
     /**
      * describes the intent of this circuit, what it wants to test
@@ -107,7 +113,7 @@ public abstract class CircuitBase implements Circuit {
      * @return the driver class needed to run on this Circuit
      */
     @Override
-	public abstract Class<? extends DriverBase> requiredDriver();
+	public abstract Class<?> requiredDriver();
     
     /**
      * @return the methods that are intended to be run 
@@ -115,7 +121,7 @@ public abstract class CircuitBase implements Circuit {
     protected abstract void addLaps();
     
 	protected void add(Lap lap){
-        mLaps.add(lap);
+        _laps.add(lap);
         lap.circuit(this);
     }
     
@@ -129,7 +135,11 @@ public abstract class CircuitBase implements Circuit {
     
     @Override
 	public List<Lap> laps() {
-        return Collections.unmodifiableList(mLaps);
+    	if(_laps == null){
+    		_laps = new ArrayList<Lap>();
+    		addLaps();
+    	}
+        return _laps;
     }
     
     /**
@@ -162,7 +172,7 @@ public abstract class CircuitBase implements Circuit {
 			
 			prepareDriverToRunLaps(car, driver, setup);        
 			
-			for(Lap lap : mLaps) {
+			for(Lap lap : laps()) {
 				
 				if(driver.canRunLap(lap)){
 					
@@ -242,6 +252,8 @@ public abstract class CircuitBase implements Circuit {
 		    }        
 		}
 		
+		MemoryUtil.gc();
+		
 		// _memoryWatcher.start();
 		
 		_timeWatcher.start();
@@ -320,7 +332,7 @@ public abstract class CircuitBase implements Circuit {
 	@Override
 	public void runLapsBefore(Lap lap, TurnSetup turnSetup, DriverBase driver, Car car) {
 		prepareDriverToRunLaps(car, driver, turnSetup);
-		for (Lap currentLap : mLaps) {
+		for (Lap currentLap : laps()) {
 			if(currentLap == lap){
 				return;
 			}

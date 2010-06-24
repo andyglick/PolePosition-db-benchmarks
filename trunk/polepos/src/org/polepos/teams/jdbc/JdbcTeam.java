@@ -58,6 +58,7 @@ public class JdbcTeam extends Team{
     @Override
     public DriverBase[] drivers() {
         return new DriverBase[]{
+        	new FlatObjectJdbc(),
             new MelbourneJdbc(),
             new SepangJdbc(),
             new BahrainJdbc(),

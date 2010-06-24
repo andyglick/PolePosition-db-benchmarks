@@ -21,6 +21,7 @@ package org.polepos;
 
 import org.polepos.circuits.bahrain.*;
 import org.polepos.circuits.barcelona.*;
+import org.polepos.circuits.flatobject.*;
 import org.polepos.circuits.imola.*;
 import org.polepos.circuits.melbourne.*;
 import org.polepos.circuits.monaco.*;
@@ -55,7 +56,8 @@ public class RunSeason extends AbstractRunner {
 
 	@Override
 	public CircuitBase[] circuits() {
-		return new CircuitBase[] { 
+		return new CircuitBase[] {
+				// new ReflectiveCircuitBase(FlatObject.class),
 				new Melbourne(), 
 				new Sepang(), 
 				new Bahrain(),
@@ -66,17 +68,20 @@ public class RunSeason extends AbstractRunner {
 				new Nurburgring(),
 		};
 	}
+	
+	
 
 	@Override
 	public Team[] teams() {
 		return new Team[] { 
 				new Db4oTeam(),
-				// new Db4oClientServerTeam(),
 				new JdoTeam(),
-				// new JviTeam(),
-				new JpaTeam(),
-				new HibernateTeam(),
+//				new Db4oClientServerTeam(),
 				new JdbcTeam(),
+				new HibernateTeam(),
+				new JpaTeam(),
+				
+				// new JviTeam(),
 				// new CobraTeam(),
 		};
 	}

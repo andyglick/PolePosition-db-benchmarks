@@ -46,6 +46,7 @@ public class ConcurrentDriver extends Driver {
 		_drivers[0] = _masterDriver;
 		for (int i = 1; i < threadCount; i++) {
 			_drivers[i] = _masterDriver.clone();
+			_drivers[i].bulkId(i);
 		}
 	}
 

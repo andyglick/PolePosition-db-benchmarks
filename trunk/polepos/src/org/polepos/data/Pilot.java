@@ -21,10 +21,6 @@ package org.polepos.data;
 
 import org.polepos.framework.*;
 
-/**
- *
- * @author Herkules
- */
 public class Pilot implements CheckSummable
 {
 	private		String	mName;		
@@ -33,9 +29,6 @@ public class Pilot implements CheckSummable
 	private		int		mLicenseID;
 
 	
-	/**
-	 * Default.
-	 */
 	public Pilot()
 	{
 	}

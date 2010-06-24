@@ -37,20 +37,20 @@ public class ImolaJdbc extends JdbcDriver implements ImolaDriver {
 	{	
 		super.takeSeatIn(car, setup);
 		
-        jdbcCar().openConnection();
-        jdbcCar().dropTable( TABLE);
-        jdbcCar().createTable( TABLE, new String[]{ "id", "Name", "FirstName", "Points", "LicenseID" }, 
+        openConnection();
+        dropTable( TABLE);
+        createTable( TABLE, new String[]{ "id", "Name", "FirstName", "Points", "LicenseID" }, 
 					new Class[]{Integer.TYPE, String.class, String.class, Integer.TYPE, Integer.TYPE} );
-        jdbcCar().close();
+        close();
 	}
 
 	public void store() {
 		Pilot[] pilots = new Pilot[ BULKSIZE ];		
-		BulkWriteStrategy writer = new BulkWritePreparedStatement(jdbcCar(), TABLE);
+		BulkWriteStrategy writer = new BulkWritePreparedStatement(this, TABLE);
         for ( int i = 0; i < setup().getObjectCount(); i++ ){
 			storePilot(pilots, writer, i+1);
 		}
-        jdbcCar().commit();
+        commit();
 	}
 	
 	public void retrieve() {
@@ -68,7 +68,7 @@ public class ImolaJdbc extends JdbcDriver implements ImolaDriver {
 			writer.savePilots(TABLE, pilots, bulkidx+1, idx - bulkidx );
 		}
 		if ( isCommitPoint(idx)){
-		    jdbcCar().commit();
+		    commit();
 		}
 	}
 

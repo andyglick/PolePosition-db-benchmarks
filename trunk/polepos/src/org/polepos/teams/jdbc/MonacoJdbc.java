@@ -34,20 +34,20 @@ public class MonacoJdbc extends JdbcDriver implements MonacoDriver{
         
         super.takeSeatIn(car, setup);
 
-        jdbcCar().openConnection();
+        openConnection();
         
-        jdbcCar().dropTable( TABLE );
-        jdbcCar().createTable( TABLE, new String[]{ "id", "name"}, 
+        dropTable( TABLE );
+        createTable( TABLE, new String[]{ "id", "name"}, 
             new Class[]{Integer.TYPE, String.class} );
         
-        jdbcCar().close();
+        close();
 
     }
     
     public void write() {
         
         try{
-            PreparedStatement statement = jdbcCar().prepareStatement("insert into " + TABLE + " (id, name) values (?,?)");
+            PreparedStatement statement = prepareStatement("insert into " + TABLE + " (id, name) values (?,?)");
 
             int commitctr = 0;
             int commitInterval = 50000;
@@ -63,7 +63,7 @@ public class MonacoJdbc extends JdbcDriver implements MonacoDriver{
                     
                     if ( commitInterval> 0  &&  ++commitctr >= commitInterval ){
                         commitctr = 0;
-                        jdbcCar().commit();
+                        commit();
                     }
 
                 }
@@ -71,7 +71,7 @@ public class MonacoJdbc extends JdbcDriver implements MonacoDriver{
                 statement.close();
             }
             
-            jdbcCar().commit();     
+            commit();     
 
         }catch ( SQLException sqlex ){
             sqlex.printStackTrace();
@@ -81,7 +81,7 @@ public class MonacoJdbc extends JdbcDriver implements MonacoDriver{
     
     public void commits(){
         try{
-            PreparedStatement statement = jdbcCar().prepareStatement("insert into " + TABLE + " (id, name) values (?,?)");
+            PreparedStatement statement = prepareStatement("insert into " + TABLE + " (id, name) values (?,?)");
 
             int idbase = setup().getObjectCount() + 1;
             int count = setup().getCommitCount();
@@ -92,7 +92,7 @@ public class MonacoJdbc extends JdbcDriver implements MonacoDriver{
                     statement.setInt(1, idbase + i);
                     statement.setString(2, m1.getName());
                     statement.execute();
-                    jdbcCar().commit();
+                    commit();
                 }
                 
                 statement.close();

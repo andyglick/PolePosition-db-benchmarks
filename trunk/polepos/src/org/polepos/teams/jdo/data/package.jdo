@@ -30,6 +30,10 @@
         	</field>
         </class>
         <class name="JN1"/>
+		<class name="JdoIndexedObject">
+          <field name = "_int" indexed = "true"/>
+          <field name = "_string"  indexed = "true"/>
+        </class>
     </package>    
 </jdo>    
 

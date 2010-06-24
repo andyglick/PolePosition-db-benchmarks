@@ -21,7 +21,7 @@ package org.polepos.teams.hibernate;
 
 import java.util.Iterator;
 
-import org.hibernate.HibernateException;
+import org.hibernate.*;
 import org.hibernate.classic.Session;
 import org.polepos.framework.Car;
 import org.polepos.framework.CarMotorFailureException;
@@ -29,11 +29,9 @@ import org.polepos.framework.CheckSummable;
 import org.polepos.framework.DriverBase;
 import org.polepos.framework.TurnSetup;
 
-public abstract class HibernateDriver extends DriverBase
-{
+public abstract class HibernateDriver extends DriverBase{
 	
     private Session _session;
-
 
 	public void takeSeatIn( Car car, TurnSetup setup ) throws CarMotorFailureException{
         super.takeSeatIn(car, setup);
@@ -76,11 +74,24 @@ public abstract class HibernateDriver extends DriverBase
 			Iterator it = db().iterate( query );
 			Object o = (Object) it.next();
             if(o instanceof CheckSummable){
-                addToCheckSum(((CheckSummable)o).checkSum());
+                addToCheckSum((CheckSummable)o);
             }
 		}
 		catch ( HibernateException hex ){
 			hex.printStackTrace();
 		}		
 	}
+	
+	protected Transaction begin() {
+		return db().beginTransaction();
+	}
+	
+    protected void store(Object obj) {
+    	db().save(obj);
+	}
+    
+    protected void delete(Object obj) {
+    	db().delete(obj);
+	}
+
 }

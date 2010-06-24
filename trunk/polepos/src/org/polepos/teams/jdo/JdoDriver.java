@@ -111,4 +111,8 @@ public abstract class JdoDriver extends DriverBase{
         extent.closeAll();
     }
     
+	protected void delete(Object obj) {
+		db().deletePersistent(obj);
+	}
+    
 }

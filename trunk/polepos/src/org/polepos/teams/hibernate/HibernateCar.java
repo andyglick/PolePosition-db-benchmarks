@@ -26,13 +26,6 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.classic.Session;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.polepos.framework.*;
-import org.polepos.teams.hibernate.data.HB0;
-import org.polepos.teams.hibernate.data.HN1;
-import org.polepos.teams.hibernate.data.HibernateIndexedPilot;
-import org.polepos.teams.hibernate.data.HibernateLightObject;
-import org.polepos.teams.hibernate.data.HibernateListHolder;
-import org.polepos.teams.hibernate.data.HibernatePilot;
-import org.polepos.teams.hibernate.data.HibernateTree;
 import org.polepos.teams.jdbc.Jdbc;
 
 /**
@@ -90,14 +83,10 @@ public class HibernateCar extends Car
     {
         try
         {
-            Configuration cfg = new Configuration()
-                    .addClass( HibernatePilot.class )
-                    .addClass( HibernateTree.class )
-                    .addClass( HibernateIndexedPilot.class )
-                    .addClass(HB0.class)
-            		.addClass( HibernateLightObject.class)
-            		.addClass( HibernateListHolder.class)
-            		.addClass( HN1.class);
+            Configuration cfg = new Configuration();
+			for (Class clazz : HibernateTeam.persistentClasses()) {
+				cfg.addClass(clazz);
+			}
             
             try{
                 Class.forName( Jdbc.settings().getDriverClass( mDBType ) ).newInstance();
@@ -145,8 +134,6 @@ public class HibernateCar extends Car
             
             cfg.setProperty("hibernate.connection.writedelay", "0");
  
-            
-            
             SessionFactory factory = cfg.buildSessionFactory();     
             new SchemaExport(cfg).create(true, true);
             return factory;         

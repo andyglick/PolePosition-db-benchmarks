@@ -85,12 +85,18 @@ public abstract class Db4oDriver extends DriverBase {
 	}
 
 	protected void store(Object obj) {
+		// The new db4o interface is ObjectContainer#store();
+		// We use #set() here for compatibility with old db4o
+		// versions so we can also run against these.
 		_container.set(obj);
 	}
 	
 	protected void purge(Object obj) {
 		_container.purge(obj);
 	}
-
+	
+	protected void delete(Object obj) {
+		_container.delete(obj);
+	}
 
 }

@@ -29,7 +29,7 @@ public interface Circuit {
 
 	public TurnSetup[] lapSetups();
 
-	public Class<? extends DriverBase> requiredDriver();
+	public Class<?> requiredDriver();
 
 	public String description();
 

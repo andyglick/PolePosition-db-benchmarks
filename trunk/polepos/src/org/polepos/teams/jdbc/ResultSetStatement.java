@@ -18,36 +18,28 @@ Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA  02111-1307, USA. */
 
 
-package org.polepos.util;
+package org.polepos.teams.jdbc;
 
+import java.sql.*;
 
-public class MemoryUtil {
-
-	private static final int GC_TIMES = 5;
-	private static Runtime _runtime = Runtime.getRuntime();
-
-	private static long internalUsedMemory() {
-		return _runtime.totalMemory() - _runtime.freeMemory();
+public class ResultSetStatement {
+	
+	public final ResultSet _resultSet;
+	
+	private final Statement _statement;
+	
+	public ResultSetStatement(Statement statement, ResultSet resultSet){
+		_statement = statement;
+		_resultSet = resultSet;
 	}
-
-	public static long usedMemory() {
-		long usedMemoryBeforeGC = internalUsedMemory();
-		while(true){
-			for (int i = 0; i < GC_TIMES; ++i) {
-				System.gc();
-				System.runFinalization();
-				Thread.yield();
-			}
-			long usedMemoryAfterGC = internalUsedMemory();
-			if(usedMemoryAfterGC >= usedMemoryBeforeGC){
-				return usedMemoryBeforeGC;
-			}
-			usedMemoryBeforeGC = usedMemoryAfterGC;
+	
+	public void close(){
+		try {
+			_resultSet.close();
+			_statement.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
-	
-	public static void gc() {
-		usedMemory();
-	}
-	
+
 }

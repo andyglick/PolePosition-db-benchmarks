@@ -38,21 +38,16 @@ public class BahrainJdo extends JdoDriver implements BahrainDriver{
         
         int numobjects = setup().getObjectCount();
         int commitinterval = setup().getCommitInterval();
-        
         int commitctr = 0;
         for ( int i = 1; i <= numobjects; i++ ){
-            
-             
             JdoIndexedPilot p = new JdoIndexedPilot( "Pilot_" + i, "Jonny_" + i, i , i );
             db().makePersistent( p );
-            
+            addToCheckSum(i);
             if ( commitinterval > 0  &&  ++commitctr >= commitinterval ){
                 commitctr = 0;
                 commit();
                 begin();
-                Log.logger.fine( "commit while writing at " + i+1 ); //NOI18N
             }
-            addToCheckSum(i);
         }
         
         commit();
@@ -102,28 +97,35 @@ public class BahrainJdo extends JdoDriver implements BahrainDriver{
         }
     }
 
-    public void update() {
-        
-        begin();
-        int updateCount = setup().getUpdateCount();
-        Extent extent = db().getExtent(JdoIndexedPilot.class, false);
-        Iterator it = extent.iterator();
-        for (int i = 1; i <= updateCount; i++) {
-            JdoIndexedPilot p = (JdoIndexedPilot)it.next();
-            p.setName( p.getName().toUpperCase() );
-            addToCheckSum(1);
-        }
-        extent.closeAll();
-        commit();
-    }
+	public void update() {
+		PersistenceManager pm = db();
+	    int updateCount = setup().getUpdateCount();
+	    pm.currentTransaction().begin();
+	    Extent extent = pm.getExtent(JdoIndexedPilot.class, false);
+	    Iterator it = extent.iterator();
+	    for (int i = 1; i <= updateCount; i++) {
+	        JdoIndexedPilot p = (JdoIndexedPilot)it.next();
+	        p.setName( p.getName().toUpperCase() );
+	        addToCheckSum(1);
+	    }
+	    extent.closeAll();
+	    pm.currentTransaction().commit();
+	}
     
     public void delete() {
         begin();
+        int commitinterval = setup().getCommitInterval();
+        int commitctr = 0;
         Extent extent = db().getExtent(JdoIndexedPilot.class, false);
         Iterator it = extent.iterator();
         while(it.hasNext()){
             db().deletePersistent(it.next());
             addToCheckSum(1);
+            if ( commitinterval > 0  &&  ++commitctr >= commitinterval ){
+                commitctr = 0;
+                commit();
+                begin();
+            }
         }
         extent.closeAll();
         commit();
