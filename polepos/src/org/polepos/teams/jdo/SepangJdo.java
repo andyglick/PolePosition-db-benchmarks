@@ -26,9 +26,6 @@ import org.polepos.teams.jdo.data.JdoTree;
 import org.polepos.teams.jdo.data.JdoTreeVisitor;
 
 
-/**
- * @author Herkules
- */
 public class SepangJdo extends JdoDriver implements SepangDriver {
     
     private Object oid;
@@ -51,10 +48,6 @@ public class SepangJdo extends JdoDriver implements SepangDriver {
         });
 	}
     
-    public void read_hot() {
-        read();
-    }
-
 	public void delete(){
 		begin();
         JdoTree tree = (JdoTree)db().getObjectById(oid, false);

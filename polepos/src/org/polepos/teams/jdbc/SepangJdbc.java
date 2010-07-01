@@ -26,14 +26,9 @@ import java.sql.*;
 import org.polepos.circuits.sepang.*;
 import org.polepos.framework.*;
 
-/**
- * @author Herkules
- */
 public class SepangJdbc extends JdbcDriver implements SepangDriver{
 	
 	private static final String TABLE = "malaysia";
-    
-    Tree lastRead;
     
 	public void takeSeatIn(Car car, TurnSetup setup) throws CarMotorFailureException{
 		super.takeSeatIn(car, setup);
@@ -68,8 +63,8 @@ public class SepangJdbc extends JdbcDriver implements SepangDriver{
 	public void read(){
         try {
         	PreparedStatement preparedStatement = prepareStatement("select * from " + TABLE + " where id = ?");
-            lastRead = read(preparedStatement, 1);
-            Tree.traverse(lastRead, new TreeVisitor() {
+            Tree root = read(preparedStatement, 1);
+            Tree.traverse(root, new TreeVisitor() {
                 public void visit(Tree tree) {
                     addToCheckSum(tree.getDepth());
                 }
@@ -107,38 +102,44 @@ public class SepangJdbc extends JdbcDriver implements SepangDriver{
         return tree;
     }
     
-    public void read_hot() {
-        read();
-    }   
-	
 	public void delete(){
 		try{
-			delete(1);
-            commit();
+			PreparedStatement selectStatement = prepareStatement("select * from " + TABLE + " where id=?");
+			PreparedStatement deleteStatement = prepareStatement("delete from " + TABLE + " where id=?");
+			try{
+				delete(1, selectStatement, deleteStatement);
+				commit();
+			}
+			finally{
+				selectStatement.close();
+				deleteStatement.close();
+			}
 		}catch ( SQLException sqlex ){ 
             sqlex.printStackTrace(); 
         }
 	}
     
-    private void delete(int id) throws SQLException{
-		ResultSetStatement resultSetStatement = null;
-		int precedingID, subsequentID;
+    private void delete(int id, PreparedStatement selectStatement, PreparedStatement deleteStatement) throws SQLException{
+		ResultSet rs = null;
+		int precedingID;
+		int subsequentID;
 		try {
-			resultSetStatement = executeQuery("select * from " + TABLE + " where id=" + id);
-			ResultSet rs = resultSetStatement._resultSet;
+			selectStatement.setInt(1, id);
+			rs = selectStatement.executeQuery();
 			rs.next();
 			precedingID = rs.getInt(2);
 			subsequentID = rs.getInt(3);
 		} finally {
-			closeQuery(resultSetStatement);
+			closeResultSet(rs);
 		}
         if(precedingID > 0){
-            delete(precedingID);
+            delete(precedingID, selectStatement, deleteStatement);
         }
         if(subsequentID > 0){
-            delete(subsequentID);
+            delete(subsequentID, selectStatement, deleteStatement);
         }
-        executeUpdate("delete from " + TABLE + " where id=" + id);
+        deleteStatement.setInt(1, id);
+        deleteStatement.executeUpdate();
     }
 
 }

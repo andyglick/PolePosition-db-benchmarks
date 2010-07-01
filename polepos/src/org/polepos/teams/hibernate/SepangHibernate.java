@@ -60,10 +60,6 @@ public class SepangHibernate extends HibernateDriver implements SepangDriver{
 		}		
 	}
     
-    public void read_hot() {
-        read();
-    }
-	
 	public void delete(){
 		try{
 			Transaction tx = db().beginTransaction();

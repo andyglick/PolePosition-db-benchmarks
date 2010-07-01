@@ -48,12 +48,11 @@ public class PDFReporter extends GraphReporter {
 	public PDFReporter(String path) {
 		super(path);
 		
+		// Fail early if the document is still open in Acrobat Reader and can't be written to. 
+		setupDocument(path);
 	}
 
     protected void report(Graph graph) {
-    	if(_document == null) {
-    		setupDocument(path());
-    	}
         Circuit circuit = graph.circuit();
         if(! circuit.equals(_circuit)){
             _circuit = circuit;
@@ -136,6 +135,9 @@ public class PDFReporter extends GraphReporter {
     
 
 	private void setupDocument(String path) {
+		if(_document != null){
+			return;
+		}
 		String fileName = path + "/" + "PolePosition.pdf";
 		File file = new File(fileName);
 		file.delete();
@@ -144,8 +146,8 @@ public class PDFReporter extends GraphReporter {
 			_writer = PdfWriter.getInstance(_document, new FileOutputStream(file));
 			_document.open();
 		} catch (Exception exc) {
-			exc.printStackTrace();
 			_document=null;
+			throw new RuntimeException(exc);
 		}
 	}
 
