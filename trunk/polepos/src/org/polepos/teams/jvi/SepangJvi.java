@@ -49,10 +49,6 @@ public class SepangJvi extends JviDriver implements SepangDriver {
         commit();
 	}
     
-    public void read_hot() {
-        read();
-    }
-
 	public void delete(){
 		begin();
 		JviTree tree = (JviTree)(Object)db().loidToJod((Long)oid);

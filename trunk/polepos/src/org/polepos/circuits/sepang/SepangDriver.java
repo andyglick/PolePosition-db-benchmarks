@@ -19,17 +19,12 @@ MA  02111-1307, USA. */
 
 package org.polepos.circuits.sepang;
 
-/**
- * @author Herkules
- */
 public interface SepangDriver
 {
     
 	void write();
     
     void read ();
-    
-    void read_hot ();
     
 	void delete ();
     

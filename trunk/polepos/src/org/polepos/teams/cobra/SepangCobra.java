@@ -132,10 +132,6 @@ public class SepangCobra extends CobraDriver implements SepangDriver {
 		readTree(tree);
 	}
     
-    public void read_hot() {
-        read();
-    }
-
     private void deleteTree(DatastoreObject tree){
     	
     	DatastoreManager dm = db();

@@ -52,10 +52,6 @@ public class SepangDb4o extends Db4oDriver implements SepangDriver{
         });
 	}
 
-    public void read_hot() {
-        read();
-    }
-
     public void delete() {
         begin();
         Tree tree = readAndActivate();

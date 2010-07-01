@@ -54,10 +54,6 @@ public class SepangJpa extends JpaDriver implements SepangDriver {
         commit();
 	}
     
-    public void read_hot() {
-        read();
-    }
-
 	public void delete(){
 		begin();
         JpaTree tree = (JpaTree)db().find(JpaTree.class,oid);
