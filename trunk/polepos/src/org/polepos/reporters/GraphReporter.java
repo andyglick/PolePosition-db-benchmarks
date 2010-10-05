@@ -135,8 +135,11 @@ public abstract class GraphReporter extends ReporterBase{
 	protected List<JFreeChart> createTimeChart(Graph graph) {
 		List<JFreeChart> list = new ArrayList<JFreeChart>();
 		// list.add(createChart(createInverseLogTimeDataset(graph), ReporterConstants.OLD_LOGARITHMIC_TIME_CHART_LEGEND));
-		list.add(createOrderOfMagnitudeChart(createBaseLineTimeDataset(graph, true), ReporterConstants.TIME_CHART_LEGEND));
-		// list.add(createChart(createBaseLineTimeDataset(graph, false), ReporterConstants.TIME_CHART_LEGEND));
+		
+		boolean bestOnTop = false;
+		String legendText = bestOnTop ? ReporterConstants.TIME_CHART_LEGEND_BEST_ON_TOP : ReporterConstants.TIME_CHART_LEGEND_BEST_BELOW;   
+		list.add(createOrderOfMagnitudeChart(createBaseLineTimeDataset(graph, bestOnTop), legendText, bestOnTop));
+		
 		return list;
 	}
 	
@@ -256,7 +259,7 @@ public abstract class GraphReporter extends ReporterBase{
 		return chart;
 	}
 	
-	public JFreeChart createOrderOfMagnitudeChart(CategoryDataset dataset, String legendText) {
+	public JFreeChart createOrderOfMagnitudeChart(CategoryDataset dataset, String legendText, boolean bestOnTop) {
 		CategoryAxis categoryAxis = new CategoryAxis("");
 		categoryAxis.setLabelFont(ReporterConstants.CATEGORY_LABEL_FONT);
 		categoryAxis.setTickLabelFont(ReporterConstants.CATEGORY_TICKLABEL_FONT);
