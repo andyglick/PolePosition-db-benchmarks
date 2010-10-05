@@ -69,18 +69,17 @@ public class NestedListsDb4o extends Db4oDriver implements NestedLists {
 	@Override
 	public void delete() throws Throwable {
 		ListHolder root = root();
-		root.accept(new Visitor<ListHolder>(){
-			public void visit(ListHolder listHolder){
-				delete(listHolder);
+		addToCheckSum(root.delete(depth(), 0,  updateCount(), new Procedure<Object>() {
+			@Override
+			public void apply(Object obj) {
+				delete(obj);
 			}
-		});
+		}));
 	}
 	
 	@Override
 	public void configure(Configuration config) {
 		
-		
 	}
-	
 
 }

@@ -101,7 +101,9 @@ public class ListHolder implements CheckSummable {
 			return 0;
 		}
 		int updatedCount = 1;
-		_name = "updated " + _name;
+		if(depth > 0){
+			_name = "updated " + _name;
+		}
 		if(_list != null){
 			for (int i = 0; i < updateCount; i++) {
 				if(i < _list.size()){
@@ -115,6 +117,24 @@ public class ListHolder implements CheckSummable {
 		}
 		storeProcedure.apply(this);
 		return updatedCount;
+	}
+
+
+	public int delete(int maxDepth, int depth, int updateCount, Procedure<Object> deleteProcedure) {
+		if(depth > maxDepth){
+			return 0;
+		}
+		int deletedCount = 1;
+		if(_list != null){
+			for (int i = 0; i < updateCount; i++) {
+				if(i < _list.size()){
+					ListHolder child = _list.get(i);
+					deletedCount += child.delete(maxDepth, depth +  1, updateCount, deleteProcedure);
+				}
+			}
+		}
+		deleteProcedure.apply(this);
+		return deletedCount;
 	}
 	
 
