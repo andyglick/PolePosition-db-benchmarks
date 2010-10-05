@@ -41,7 +41,7 @@ public class SepangJdbc extends JdbcDriver implements SepangDriver{
 	
 	public void write(){
 		final PreparedStatement statement = prepareStatement("insert into " + TABLE + " (id, preceding, subsequent, name, depth ) values (?,?,?,?,?)");
-        Tree tree = Tree.createTree(setup().getTreeDepth());
+        Tree tree = Tree.createTree(setup().getDepth());
         Tree.traverse(tree, new TreeVisitor() {
             public void visit(Tree tree) {
                 try {

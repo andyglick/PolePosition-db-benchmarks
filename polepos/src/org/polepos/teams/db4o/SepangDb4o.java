@@ -37,7 +37,7 @@ public class SepangDb4o extends Db4oDriver implements SepangDriver{
     
 	public void write(){
         begin();
-        Tree tree = Tree.createTree(setup().getTreeDepth());
+        Tree tree = Tree.createTree(setup().getDepth());
         store(tree);
         treeRootID = db().getID(tree);
 		commit();

@@ -17,20 +17,24 @@ License along with this program; if not, write to the Free
 Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA  02111-1307, USA. */
 
-package org.polepos.enhance;
 
-public class AllEnhance {
+package org.polepos.circuits.nestedlists;
+
+import org.polepos.framework.*;
+
+@CircuitDescription("write and read nested lists")
+public interface NestedLists {
 	
-	public static void main(String[] args) throws Throwable {
-
-//      Call Versant's enhancer directly.		
-		VodEnhancer.main(null);
-		
-//		JdoEnhance.main(null);
-		
-//		new JviEnhance().runWithoutSystemExit();
-		
-//		JpaEnhance.main(null);
-	}
+	@Order(1)
+	void create() throws Throwable;
+    
+	@Order(2)
+	void read() throws Throwable;
+	
+	@Order(3)
+	void update() throws Throwable;
+	
+	@Order(4)
+	void delete() throws Throwable;
 
 }

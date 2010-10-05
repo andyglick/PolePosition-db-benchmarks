@@ -32,7 +32,7 @@ public class SepangJvi extends JviDriver implements SepangDriver {
     
 	public void write(){
 		begin();
-        JviTree tree = JviTree.createTree(setup().getTreeDepth());
+        JviTree tree = JviTree.createTree(setup().getDepth());
         db().makePersistent(tree);
         oid = db().getOidAsLong(tree);
 		commit();

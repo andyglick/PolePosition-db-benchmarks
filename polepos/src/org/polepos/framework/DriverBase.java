@@ -185,6 +185,18 @@ public abstract class DriverBase extends Driver implements Cloneable
 		return setup().getObjectCount();
 	}
 	
+	protected int updateCount() {
+		return setup().getUpdateCount();
+	}
+	
+	protected int depth(){
+		return setup().getDepth();
+	}
+	
+	protected int reuse() {
+		return setup().getReuse();
+	}
+	
 	protected boolean doCommit(){
 		if(_objectCount == 0){
 			return true;

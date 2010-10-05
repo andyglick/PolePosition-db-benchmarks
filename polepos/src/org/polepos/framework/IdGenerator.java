@@ -17,20 +17,17 @@ License along with this program; if not, write to the Free
 Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA  02111-1307, USA. */
 
-package org.polepos.enhance;
 
-public class AllEnhance {
+package org.polepos.framework;
+
+import java.util.concurrent.atomic.*;
+
+public class IdGenerator {
 	
-	public static void main(String[] args) throws Throwable {
-
-//      Call Versant's enhancer directly.		
-		VodEnhancer.main(null);
-		
-//		JdoEnhance.main(null);
-		
-//		new JviEnhance().runWithoutSystemExit();
-		
-//		JpaEnhance.main(null);
+	private AtomicLong _atomicLong = new AtomicLong(0);
+	
+	public long nextId(){
+		return _atomicLong.getAndIncrement();
 	}
 
 }

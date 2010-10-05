@@ -120,7 +120,7 @@ public class SepangCobra extends CobraDriver implements SepangDriver {
     
 	public void write(){
 		begin();
-        DatastoreObject tree = writeTree(setup().getTreeDepth());
+        DatastoreObject tree = writeTree(setup().getDepth());
         oid = tree.getLOID();
 		commit();
 	}

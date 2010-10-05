@@ -68,6 +68,10 @@ public class TurnSetup implements Cloneable{
         return getSetting(TurnSetupConfig.OBJECTCOUNT);
     }
     
+    public int getReuse(){
+        return getSetting(TurnSetupConfig.REUSE);
+    }
+    
     public int getSelectCount(){
         return getSetting(TurnSetupConfig.SELECTCOUNT);
     }
@@ -80,8 +84,8 @@ public class TurnSetup implements Cloneable{
         return getSetting(TurnSetupConfig.TREEWIDTH);
     }
     
-    public int getTreeDepth(){
-        return getSetting(TurnSetupConfig.TREEDEPTH);
+    public int getDepth(){
+        return getSetting(TurnSetupConfig.DEPTH);
     }
     
     public int getObjectSize(){

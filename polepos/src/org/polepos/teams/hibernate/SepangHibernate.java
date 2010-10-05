@@ -28,7 +28,7 @@ public class SepangHibernate extends HibernateDriver implements SepangDriver{
     public void write(){
         try{
             Transaction tx = db().beginTransaction();
-            HibernateTree tree = HibernateTree.createTree(setup().getTreeDepth());
+            HibernateTree tree = HibernateTree.createTree(setup().getDepth());
             HibernateTree.traverse(tree, new HibernateTreeVisitor() {
                 public void visit(HibernateTree tree) {
                     try {

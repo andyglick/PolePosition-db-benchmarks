@@ -43,5 +43,10 @@ public class Sepang extends CircuitBase
     public Class requiredDriver() {
 		return SepangDriver.class;
 	}
+    
+    @Override
+    public String name() {
+    	return "Tree";
+    }
 
 }

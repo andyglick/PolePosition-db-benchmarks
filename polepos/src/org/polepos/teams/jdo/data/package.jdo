@@ -12,11 +12,14 @@
         </class>
         <class name="JB4" persistence-capable-superclass="org.polepos.teams.jdo.data.JB3">
         </class>
-        <class name="JdoTree">
-            <fetch-group name="tree">
-        		<field name="subsequent" recursion-depth="16"/>
-    		</fetch-group>
-    	</class>
+    <class name="JdoTree">
+        <fetch-group name="subsequent">
+    		<field name="subsequent" recursion-depth="16"/>
+		</fetch-group>
+		<fetch-group name="preceding">
+    		<field name="preceding" recursion-depth="16"/>
+		</fetch-group>
+	</class>
         <class name="JdoPilot" />
         
         <class name="JdoIndexedPilot">
