@@ -26,6 +26,7 @@ import org.polepos.circuits.imola.*;
 import org.polepos.circuits.melbourne.*;
 import org.polepos.circuits.monaco.*;
 import org.polepos.circuits.montreal.*;
+import org.polepos.circuits.nestedlists.*;
 import org.polepos.circuits.nurburgring.*;
 import org.polepos.circuits.sepang.*;
 import org.polepos.framework.*;
@@ -57,7 +58,10 @@ public class RunSeason extends AbstractRunner {
 	@Override
 	public CircuitBase[] circuits() {
 		return new CircuitBase[] {
+				
 				// new ReflectiveCircuitBase(FlatObject.class),
+				// new ReflectiveCircuitBase(NestedLists.class),
+				
 				new Melbourne(), 
 				new Sepang(), 
 				new Bahrain(),

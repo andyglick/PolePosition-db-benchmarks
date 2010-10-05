@@ -24,12 +24,13 @@ import java.util.*;
 public class TurnSetupConfig {
 	
     private final PropertiesHandler mProperties;
+    public final static String REUSE = "reuse";
 	public final static String OBJECTCOUNT = "objects";
 	public final static String SELECTCOUNT = "selects";
 	public final static String UPDATECOUNT = "updates";
 	public final static String COMMITCOUNT = "commits";
 	public final static String TREEWIDTH = "width";
-	public final static String TREEDEPTH = "depth";
+	public final static String DEPTH = "depth";
 	public final static String COMMITINTERVAL = "commitinterval";
 	
 	public final static String OBJECTSIZE = "size";
@@ -38,12 +39,13 @@ public class TurnSetupConfig {
 	public final static String THREADCOUNT = "threads";
 	
 	final static String[] AVAILABLE_SETTINGS = new String[]{
+		REUSE,
 	    OBJECTCOUNT,
 	    SELECTCOUNT,
 	    UPDATECOUNT,
 	    COMMITCOUNT,
 	    TREEWIDTH,
-	    TREEDEPTH,
+	    DEPTH,
 	    COMMITINTERVAL,
 	    OBJECTSIZE
 	};

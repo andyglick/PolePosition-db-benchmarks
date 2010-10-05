@@ -32,7 +32,7 @@ public class SepangJdo extends JdoDriver implements SepangDriver {
     
 	public void write(){
 		begin();
-        JdoTree tree = JdoTree.createTree(setup().getTreeDepth());
+        JdoTree tree = JdoTree.createTree(setup().getDepth());
         db().makePersistent(tree);
         oid = db().getObjectId(tree);
 		commit();

@@ -32,7 +32,7 @@ public class SepangJpa extends JpaDriver implements SepangDriver {
     
 	public void write(){
 		begin();
-        JpaTree tree = JpaTree.createTree(setup().getTreeDepth());
+        JpaTree tree = JpaTree.createTree(setup().getDepth());
         db().persist(tree);
 //        JpaTree.traverse(tree, new JpaTreeVisitor() {
 //            public void visit(JpaTree tree) {

@@ -78,6 +78,9 @@ public class JdoCar extends Car {
         // Turning this on can make the Concurrency tests crash.
         properties.setProperty("versant.l2CacheEnabled", "false");
         
+        // Reduces RPC calls for VOD for optimistic read from 3 to 1 
+        properties.setProperty("versant.retainConnectionInOptTx", "true");
+        
         properties.setProperty("versant.l2CacheMaxObjects", "5000000");
         properties.setProperty("versant.l2QueryCacheEnabled", "true");
         properties.setProperty("versant.logDownloader", "none");
@@ -85,6 +88,9 @@ public class JdoCar extends Car {
         properties.setProperty("versant.metricSnapshotIntervalMs", "1000000000");
         properties.setProperty("versant.metricStoreCapacity", "0");
         properties.setProperty("versant.vdsNamingPolicy", "none");
+        
+        
+        
         
         properties.setProperty("versant.remoteMaxActive", "30");
         properties.setProperty("versant.maxActive", "30");

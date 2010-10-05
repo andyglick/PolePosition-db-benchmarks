@@ -41,6 +41,11 @@ public class Barcelona extends CircuitBase{
     public Class requiredDriver() {
 		return BarcelonaDriver.class;
 	}
+    
+    @Override
+    public String name() {
+    	return "Inheritance Hierarchy";
+    }
 
 
 }
