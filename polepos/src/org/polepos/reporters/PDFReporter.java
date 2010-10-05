@@ -147,6 +147,7 @@ public class PDFReporter extends GraphReporter {
 			_document.open();
 		} catch (Exception exc) {
 			_document=null;
+			System.err.println("*****************************************************\nError writing PDF document. Do you have an open copy?\n*****************************************************");
 			throw new RuntimeException(exc);
 		}
 	}
