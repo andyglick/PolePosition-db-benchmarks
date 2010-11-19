@@ -94,6 +94,7 @@ public class JdoTeam extends Team{
     public DriverBase[] drivers() {
         return new DriverBase[]{
         	new FlatObjectJdo(),
+        	new NestedListsJdo(),
             new MelbourneJdo(),
             new SepangJdo(),
             new BahrainJdo(),
@@ -131,6 +132,8 @@ public class JdoTeam extends Team{
 		    deleteAll(pm, JN1.class);
 		    
 		    deleteAll(pm, JdoIndexedObject.class);
+		    
+		    deleteAll(pm, ListHolder.class);
 	    
 		    pm.close();
 		}

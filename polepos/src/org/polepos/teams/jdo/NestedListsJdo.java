@@ -18,28 +18,28 @@ Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA  02111-1307, USA. */
 
 
-package org.polepos.teams.db4o;
+package org.polepos.teams.jdo;
+
+import java.util.*;
+
+import javax.jdo.Query;
 
 import org.polepos.circuits.nestedlists.*;
-import org.polepos.data.*;
 import org.polepos.framework.*;
+import org.polepos.teams.jdo.data.ListHolder;
 
-import com.db4o.*;
-import com.db4o.config.*;
-import com.db4o.query.*;
-
-public class NestedListsDb4o extends Db4oDriver implements NestedLists {
+public class NestedListsJdo extends JdoDriver implements NestedLists {
 
 	@Override
 	public void create() throws Throwable {
+		begin();
 		store(ListHolder.generate(depth(), objectCount(), reuse()));
 		commit();
 	}
 	
 	@Override
 	public void read() throws Throwable {
-		ListHolder root = root();
-		root.accept(new Visitor<ListHolder>(){
+		root().accept(new Visitor<ListHolder>(){
 			public void visit(ListHolder listHolder){
 				addToCheckSum(listHolder);
 			}
@@ -47,16 +47,19 @@ public class NestedListsDb4o extends Db4oDriver implements NestedLists {
 	}
 
 	private ListHolder root() {
-		Query query = db().query();
-		query.constrain(ListHolder.class);
-		query.descend("_name").constrain(ListHolder.ROOT_NAME);
-		ObjectSet<Object> objectSet = query.execute();
-		ListHolder root = (ListHolder) objectSet.next();
-		return root;
+		beginRead();
+        Query query = db().newQuery(ListHolder.class, "this._name == '" + ListHolder.ROOT_NAME + "'");
+        Collection<ListHolder> result = (Collection<ListHolder>)query.execute();
+        if(result.size() != 1){
+        	throw new IllegalStateException();
+        }
+        Iterator<ListHolder> it = result.iterator();
+        return it.next();
 	}
 	
 	@Override
 	public void update() throws Throwable {
+		begin();
 		ListHolder root = root();
 		addToCheckSum(root.update(depth(), 0,  updateCount(), new Procedure<Object>() {
 			@Override
@@ -64,10 +67,12 @@ public class NestedListsDb4o extends Db4oDriver implements NestedLists {
 				store(obj);
 			}
 		}));
+		commit();
 	}
 
 	@Override
 	public void delete() throws Throwable {
+		begin();
 		ListHolder root = root();
 		addToCheckSum(root.delete(depth(), 0,  updateCount(), new Procedure<Object>() {
 			@Override
@@ -75,11 +80,7 @@ public class NestedListsDb4o extends Db4oDriver implements NestedLists {
 				delete(obj);
 			}
 		}));
-	}
-	
-	@Override
-	public void configure(Configuration config) {
-		
+		commit();
 	}
 
 }

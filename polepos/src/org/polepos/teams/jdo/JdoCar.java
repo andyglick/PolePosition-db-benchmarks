@@ -76,6 +76,8 @@ public class JdoCar extends Car {
         properties.setProperty("versant.remoteAccess", "false");
         
         // Turning this on can make the Concurrency tests crash.
+        // Versant reports this is fixed. 
+        // TODO: Test again against the latest VOD release 
         properties.setProperty("versant.l2CacheEnabled", "false");
         
         // Reduces RPC calls for VOD for optimistic read from 3 to 1 
