@@ -18,7 +18,7 @@ Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA  02111-1307, USA. */
 
 
-package org.polepos.data;
+package org.polepos.teams.jdo.data;
 
 import java.util.*;
 
@@ -43,37 +43,38 @@ public class ListHolder implements CheckSummable {
 		return root;
 	}
 	
-	public static ListHolder generate(List<ListHolder> flatList, int depth, int leafs, int reuse){
+	
+	private static ListHolder generate(List<ListHolder> flatList, int depth, int leafs, int reuse){
 		if(depth == 0){
 			return null;
 		}
 		ListHolder listHolder = new ListHolder();
-		listHolder._id = _idGenerator.nextId();
+		listHolder.setId(_idGenerator.nextId());
 		
 		flatList.add(listHolder);
 		if(depth == 1){
 			return listHolder;
 		}
-		listHolder._list = new ArrayList<ListHolder>();
+		listHolder.setList(new ArrayList<ListHolder>());
 		int childDepth = depth -1;
 		for (int i = leafs -1; i >= 0; i--) {
 			if(i < reuse){
 				int indexInList = (flatList.size() - i) / 2;
-				listHolder._list.add(flatList.get(indexInList) );
+				listHolder.getList().add(flatList.get(indexInList) );
 			} else {
 				ListHolder child = generate(flatList, childDepth, leafs, reuse);
 				child._name = "child:" + depth + ":" + i;
-				listHolder._list.add(child);
+				listHolder.getList().add(child);
 			}
 		}
 		return listHolder;
 	}
-	
+
 	@Override
 	public long checkSum() {
-		return name().hashCode();
+		return _name.hashCode();
 	}
-	
+
 	public void accept(Visitor<ListHolder> visitor) {
 		Set<ListHolder> visited = new HashSet<ListHolder>();
 		acceptInternal(visited, visitor);
@@ -85,15 +86,16 @@ public class ListHolder implements CheckSummable {
 		}
 		visitor.visit(this);
 		visited.add(this);
-		if(_list == null){
+		if(getList() == null){
 			return;
 		}
-		Iterator<ListHolder> i = _list.iterator();
+		Iterator<ListHolder> i = getList().iterator();
 		while(i.hasNext()){
 			ListHolder child = i.next();
 			child.acceptInternal(visited, visitor);
 		}
 	}
+
 
 	public int update(int maxDepth, int depth, int updateCount, Procedure<Object> storeProcedure) {
 		if(depth > maxDepth){
@@ -101,17 +103,17 @@ public class ListHolder implements CheckSummable {
 		}
 		int updatedCount = 1;
 		if(depth > 0){
-			_name = "updated " + name();
+			_name = "updated " + _name;
 		}
-		if(_list != null){
+		if(getList() != null){
 			for (int i = 0; i < updateCount; i++) {
-				if(i < _list.size()){
-					ListHolder child = _list.get(i);
+				if(i < getList().size()){
+					ListHolder child = getList().get(i);
 					updatedCount += child.update(maxDepth, depth +  1, updateCount, storeProcedure);
 				}
 			}
-			if(_list.size() > 1){
-				_list.remove(_list.size() - 1);
+			if(getList().size() > 1){
+				getList().remove(getList().size() - 1);
 			}
 		}
 		storeProcedure.apply(this);
@@ -124,10 +126,10 @@ public class ListHolder implements CheckSummable {
 			return 0;
 		}
 		int deletedCount = 1;
-		if(_list != null){
+		if(getList() != null){
 			for (int i = 0; i < updateCount; i++) {
-				if(i < _list.size()){
-					ListHolder child = _list.get(i);
+				if(i < getList().size()){
+					ListHolder child = getList().get(i);
 					deletedCount += child.delete(maxDepth, depth +  1, updateCount, deleteProcedure);
 				}
 			}
@@ -136,31 +138,24 @@ public class ListHolder implements CheckSummable {
 		return deletedCount;
 	}
 
-	public String name() {
-		return _name;
+	private void setId(long id) {
+		_id = id;
 	}
 
-	public List<ListHolder> list() {
-		return _list;
-	}
-	
-	public long id(){
+
+	public long getId() {
 		return _id;
 	}
-	
-	public void name(String name) {
-		this._name = name;
-	}
 
-	public void list(List<ListHolder> list) {
-		this._list = list;
-	}
-	
-	public void id(long id){
-		this._id = id;
+
+	private void setList(List<ListHolder> list) {
+		_list = list;
 	}
 
 
+	private List<ListHolder> getList() {
+		return _list;
+	}
 	
 
 }

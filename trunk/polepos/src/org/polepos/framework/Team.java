@@ -53,6 +53,9 @@ public abstract class Team
                 vec.add(drivers[i]);
             }
         }
+        if(vec.size() == 0){
+        	System.err.println("No driver for " + circuit.name() + " found for team " + name() );
+        }
         DriverBase[] result = new DriverBase[vec.size()];
         vec.toArray(result);
         return result;

@@ -37,6 +37,7 @@
           <field name = "_int" indexed = "true"/>
           <field name = "_string"  indexed = "true"/>
         </class>
+        <class name="ListHolder"/>
     </package>    
 </jdo>    
 
