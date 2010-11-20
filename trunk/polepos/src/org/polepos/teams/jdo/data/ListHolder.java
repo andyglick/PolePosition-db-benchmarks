@@ -157,5 +157,24 @@ public class ListHolder implements CheckSummable {
 		return _list;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj){
+			return true;
+		}
+		if(obj == null){
+			return false;
+		}
+		if(obj.getClass() != this.getClass()){
+			return false;
+		}
+		ListHolder other = (ListHolder) obj;
+		return _id == other._id;
+	}
+	
+	@Override
+	public int hashCode() {
+		return (int)_id;
+	}
 
 }
