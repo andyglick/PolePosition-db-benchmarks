@@ -56,7 +56,9 @@ public class NestedListsJdbc extends JdbcDriver implements NestedLists {
         
         createTable(LIST_TABLE, 
         		new String[]{ "id", "item"}, 
-                new Class[] {Integer.TYPE, Integer.TYPE,} );
+                new Class[] {Integer.TYPE, Integer.TYPE,},
+                null);
+        createIndex(LIST_TABLE, "id");
         
         close();
 
@@ -107,7 +109,8 @@ public class NestedListsJdbc extends JdbcDriver implements NestedLists {
 	public void read() throws Throwable {
 		PreparedStatement listHolderStatement = prepareStatement("select * from listholder where id = ?");
 		PreparedStatement listStatement = prepareStatement("select * from list where id = ?");
-		ListHolder root = recurseRead(listHolderStatement, listStatement, _rootId);
+		Set<ListHolder> found = new HashSet<ListHolder>();
+		ListHolder root = recurseRead(listHolderStatement, listStatement, _rootId, found);
 		root.accept(new Visitor<ListHolder>(){
 			public void visit(ListHolder listHolder){
 				addToCheckSum(listHolder);
@@ -117,13 +120,17 @@ public class NestedListsJdbc extends JdbcDriver implements NestedLists {
 
 
 	private ListHolder recurseRead(PreparedStatement listHolderStatement,
-			PreparedStatement listStatement, int id) throws SQLException {
+			PreparedStatement listStatement, int id, Set<ListHolder> found) throws SQLException {
 		
 		listHolderStatement.setInt(ID, id);
 		ResultSet listHolderResultSet = listHolderStatement.executeQuery();
 		listHolderResultSet.next();
 		ListHolder listHolder = new ListHolder();
 		listHolder.id(id);
+		if(found.contains(listHolder)){
+			return listHolder;
+		}
+		found.add(listHolder);
 		listHolder.name(listHolderResultSet.getString(NAME));
 		listStatement.setInt(ID, id);
 		
@@ -132,7 +139,7 @@ public class NestedListsJdbc extends JdbcDriver implements NestedLists {
 			List <ListHolder> list = new ArrayList<ListHolder>();
 			listHolder.list(list);
 			do{
-				list.add(recurseRead(listHolderStatement, listStatement, listResultSet.getInt(ITEM)));
+				list.add(recurseRead(listHolderStatement, listStatement, listResultSet.getInt(ITEM), found));
 			} while(listResultSet.next());
 		}
 		return listHolder;

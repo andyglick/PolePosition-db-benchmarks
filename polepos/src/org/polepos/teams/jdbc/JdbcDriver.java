@@ -306,15 +306,24 @@ public abstract class JdbcDriver extends org.polepos.framework.DriverBase {
 	}
 	
 	public void createTable(String tablename, String[] colnames, Class[] coltypes) {
+		createTable(tablename, colnames, coltypes, colnames[0]);
+	}
+	
+	public void createTable(String tablename, String[] colnames, Class[] coltypes, String primaryKey) {
 		String sql = "create table " + tablename + " (" + colnames[0]
 				+ "  INTEGER NOT NULL";
 
 		for (int i = 1; i < colnames.length; i++) {
 			sql += ", " + colnames[i] + " " + JdbcCar.colTypesMap.get(coltypes[i]);
 		}
-		sql += ", PRIMARY KEY(" + colnames[0] + "))";
+		if(primaryKey != null){
+			sql += ", PRIMARY KEY(" + primaryKey + ")";
+		} 
+		sql += ")";
+		
 		executeSQL(sql);
 	}
+
 	
 	public void dropIndex(String tablename, String colname){
 		Statement statement = null;
