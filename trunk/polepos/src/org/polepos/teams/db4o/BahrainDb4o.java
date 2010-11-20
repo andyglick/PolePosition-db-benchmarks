@@ -105,7 +105,7 @@ public class BahrainDb4o extends Db4oDriver implements BahrainDriver{
         for (int i = 1; i <= updateCount; i++) {
             Pilot p = (Pilot)set.next();
             p.setName( p.getName().toUpperCase() );
-            db().set(p);
+            store(p);
             addToCheckSum(1);
         }
     	db().commit();

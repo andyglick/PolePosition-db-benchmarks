@@ -20,7 +20,6 @@
 	<classpathentry kind="lib" path="lib/common/serp-1.13.1.jar"/>
 	<classpathentry kind="lib" path="lib/common/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="lib/common/xml-apis.jar"/>
-	<classpathentry kind="lib" path="lib/db4o/db4o-8.0.145.14388-all-java5.jar"/>
 	<classpathentry kind="lib" path="lib/javadb/derby.jar"/>
 	<classpathentry kind="lib" path="lib/jms/geronimo-jms_1.1_spec-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/jta/geronimo-jta_1.1_spec-1.1.jar"/>
@@ -44,6 +43,7 @@
 	<classpathentry kind="lib" path="lib/datanucleus/datanucleus-rdbms-2.1.0-release.jar"/>
 	<classpathentry kind="lib" path="lib/jdo/jdo-api-3.0.jar"/>
 	<classpathentry kind="lib" path="lib/datanucleus/datanucleus-connectionpool-2.0.3-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="lib/db4o/db4o-8.0.174.15231-all-java5.jar"/>
 	<classpathentry kind="var" path="JUNIT_HOME/junit.jar" sourcepath="/ECLIPSE_HOME/plugins/org.eclipse.jdt.source_3.1.0/src/org.junit_3.8.1/junitsrc.zip"/>
 	<classpathentry kind="lib" path="lib/graph/gnujaxp.jar"/>
 	<classpathentry kind="lib" path="lib/graph/itext-1.2.jar"/>

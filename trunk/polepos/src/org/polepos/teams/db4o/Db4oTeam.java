@@ -124,9 +124,6 @@ public class Db4oTeam extends Team {
             for (int i = 0; i < options.length; i++) {
                 try{
                     switch (options[i]){
-                        case Db4oOptions.NO_FLUSH:
-                            _name += " noflush";
-                            break;
                         case Db4oOptions.CLIENT_SERVER:
                             _name += " C/S";
                             break;
