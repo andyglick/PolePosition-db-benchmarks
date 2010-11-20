@@ -131,9 +131,6 @@ public class Db4oCar extends Car {
             for (int i = 0; i < _options.length; i++) {
                 try{
                     switch (_options[i]){
-                        case Db4oOptions.NO_FLUSH:
-                            config.flushFileBuffers(false);
-                            break;
                         case Db4oOptions.MEMORY_IO:
                             config.io(new com.db4o.io.MemoryIoAdapter());
                             break;
@@ -211,7 +208,7 @@ public class Db4oCar extends Car {
 			_objectContainer = Db4o.openFile(config(config), PATH).ext();
 			return _objectContainer.ext();
 		}
-		return ((EmbeddedObjectContainer)_objectContainer).openSession().ext();
+		return _objectContainer.ext().openSession().ext();
 	}
 
 	public ExtObjectContainer openNetworkingClient(Configuration serverConfiguration, Configuration objectContainerConfiguration) {

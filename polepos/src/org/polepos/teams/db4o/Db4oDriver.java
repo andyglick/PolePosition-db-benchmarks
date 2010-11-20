@@ -19,6 +19,8 @@
 
 package org.polepos.teams.db4o;
 
+import java.lang.reflect.*;
+
 import org.polepos.framework.*;
 
 import com.db4o.*;
@@ -27,6 +29,8 @@ import com.db4o.ext.*;
 import com.db4o.query.*;
 
 public abstract class Db4oDriver extends DriverBase {
+	
+	private StoreAdapter _storeAdapter;
 
 	private ExtObjectContainer _container;
 
@@ -85,10 +89,13 @@ public abstract class Db4oDriver extends DriverBase {
 	}
 
 	protected void store(Object obj) {
-		// The new db4o interface is ObjectContainer#store();
-		// We use #set() here for compatibility with old db4o
-		// versions so we can also run against these.
-		_container.set(obj);
+		// using a storeAdapter to be compatible with old db4o versions
+		// new syntax: ObjectContainer#store()
+		// old syntax prior to 7.1: ObjectContainer#set()
+		if(_storeAdapter == null){
+			_storeAdapter = StoreAdapter.forObjectContainer(_container);
+		}
+		_storeAdapter.store(_container, obj);
 	}
 	
 	protected void purge(Object obj) {
@@ -98,5 +105,50 @@ public abstract class Db4oDriver extends DriverBase {
 	protected void delete(Object obj) {
 		_container.delete(obj);
 	}
+	
+	private static abstract class StoreAdapter{
+		
+		abstract void store(ObjectContainer container, Object obj);
+
+		public static StoreAdapter forObjectContainer(ObjectContainer container) {
+			Class clazz = container.getClass();
+			try {
+				clazz.getMethod("store", new Class[]{Object.class});
+			} catch (NoSuchMethodException nsme) {
+				Method method = null;
+				try {
+					method = clazz.getMethod("set", new Class[]{Object.class});
+				} catch (Exception ex) {
+					throw new RuntimeException(ex);
+				}
+				return new StoreAdapter70(method);
+			}
+			return new StoreAdapter80();
+		}
+	}
+	
+	private static class StoreAdapter80 extends StoreAdapter{
+		void store(ObjectContainer container, Object obj){
+			container.store(obj);
+		}
+	}
+	
+	private static class StoreAdapter70 extends StoreAdapter{
+		
+		private Method _method;
+		
+		StoreAdapter70(Method method){
+			_method = method;
+		}
+		
+		void store(ObjectContainer container, Object obj){
+			try {
+				_method.invoke(container, obj);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			} 
+		}
+	}
+	
 
 }
