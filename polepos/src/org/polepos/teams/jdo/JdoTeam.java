@@ -165,6 +165,7 @@ public class JdoTeam extends Team{
 
 
 	private void deleteAllBatched(PersistenceManager pm, Class clazz) {
+		
 		pm.currentTransaction().begin();
 		int batchSize = 10000;
         int commitctr = 0;

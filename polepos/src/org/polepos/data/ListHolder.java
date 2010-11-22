@@ -117,11 +117,9 @@ public class ListHolder implements CheckSummable {
 			_name = "updated " + name();
 		}
 		if(_list != null){
-			for (int i = 0; i < updateCount; i++) {
-				if(i < _list.size()){
-					ListHolder child = _list.get(i);
-					updatedCount += child.updateInternal(visited, maxDepth, depth +  1, updateCount, storeProcedure);
-				}
+			for (int i = 0; i < _list.size(); i++) {
+				ListHolder child = _list.get(i);
+				updatedCount += child.updateInternal(visited, maxDepth, depth +  1, updateCount, storeProcedure);
 			}
 		}
 		storeProcedure.apply(this);
@@ -143,11 +141,9 @@ public class ListHolder implements CheckSummable {
 		}
 		int deletedCount = 1;
 		if(_list != null){
-			for (int i = 0; i < updateCount; i++) {
-				if(i < _list.size()){
-					ListHolder child = _list.get(i);
-					deletedCount += child.deleteInternal(visited, maxDepth, depth +  1, updateCount, deleteProcedure);
-				}
+			for (int i = 0; i < _list.size(); i++) {
+				ListHolder child = _list.get(i);
+				deletedCount += child.deleteInternal(visited, maxDepth, depth +  1, updateCount, deleteProcedure);
 			}
 		}
 		deleteProcedure.apply(this);

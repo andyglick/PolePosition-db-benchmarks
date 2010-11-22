@@ -84,7 +84,7 @@ public class NestedListsDb4o extends Db4oDriver implements NestedLists {
 	
 	@Override
 	public void configure(Configuration config) {
-		
+		config.objectClass(ListHolder.class).objectField("_name").indexed(true);
 	}
 
 }

@@ -37,7 +37,13 @@
           <field name = "_int" indexed = "true"/>
           <field name = "_string"  indexed = "true"/>
         </class>
-        <class name="ListHolder"/>
+        <class name="ListHolder">
+        	<field name="_id" indexed = "true" />
+        	<field name="_name" indexed = "true"/>
+        	<field name = "_list">
+        		<collection element-type="ListHolder"/>
+        	</field>
+        </class>
     </package>    
 </jdo>    
 
