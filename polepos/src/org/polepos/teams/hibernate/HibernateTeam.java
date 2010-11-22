@@ -30,13 +30,13 @@ import org.polepos.teams.jdbc.Jdbc;
 
 public class HibernateTeam extends Team {
 
-	private final Car[] mCars;
+	private final Car[] _cars;
 
 	public HibernateTeam() {
 		String[] dbs = Jdbc.settings().getHibernateTypes();
-		mCars = new Car[dbs.length];
+		_cars = new Car[dbs.length];
 		for (int i = 0; i < dbs.length; i++) {
-			mCars[i] = new HibernateCar(this, dbs[i]);
+			_cars[i] = new HibernateCar(this, dbs[i]);
 		}
 	}
 
@@ -50,17 +50,18 @@ public class HibernateTeam extends Team {
 	}
 
 	public String databaseFile() {
-		// not supported yet
+		// not needed
 		return null;
 	}
 
 	public Car[] cars() {
-		return mCars;
+		return _cars;
 	}
 
 	public DriverBase[] drivers() {
 		return new DriverBase[] {
 				new FlatObjectHibernate(),
+				new NestedListsHibernate(),
 				new MelbourneHibernate(),
 				new SepangHibernate(), 
 				new BahrainHibernate(),
@@ -79,17 +80,17 @@ public class HibernateTeam extends Team {
 
 	@Override
 	public void setUp() {
-		for(int i = 0; i < mCars.length;i++){
+		for(int i = 0; i < _cars.length;i++){
 			Session session = null;
 			try {
-				session = ((HibernateCar)mCars[i]).openSession();
+				session = ((HibernateCar)_cars[i]).openSession();
 			} catch (CarMotorFailureException e) {
 				e.printStackTrace();
 			}
 			for (Class clazz : persistentClasses()) {
 				deleteExtent(session, clazz);	
 			}
-			((HibernateCar)mCars[i]).closeSession(session);
+			((HibernateCar)_cars[i]).closeSession(session);
 		}
 	}
 
@@ -101,14 +102,15 @@ public class HibernateTeam extends Team {
 
 	public static final Class[] persistentClasses() {
 		return new Class[] { 
-				HibernateIndexedObject.class,
-				HibernatePilot.class, 
-				HibernateTree.class,
-				HibernateIndexedPilot.class, 
-				HB0.class,
-				HibernateLightObject.class, 
-				HibernateListHolder.class,
-				HN1.class, 
+			HibernateIndexedObject.class,
+			HibernatePilot.class, 
+			HibernateTree.class,
+			HibernateIndexedPilot.class, 
+			HB0.class,
+			HibernateLightObject.class, 
+			HibernateListHolder.class,
+			HN1.class, 
+			ListHolder.class,
 		};
 	}
 

@@ -22,11 +22,7 @@ package org.polepos;
 
 public class Settings {
     
-    /**
-     * This variable is not final, to prevent inlining by the compiler, 
-     * so it get's printed to System.out when it is accessed.
-     */
-    private static boolean DEBUG = true;
+    public static boolean DEBUG = true;
     
     public static final String CIRCUIT = DEBUG ? "settings/DebugCircuits.properties" : "settings/Circuits.properties" ;
     

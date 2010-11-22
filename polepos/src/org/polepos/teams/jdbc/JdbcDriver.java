@@ -347,13 +347,13 @@ public abstract class JdbcDriver extends org.polepos.framework.DriverBase {
 
 	public void createIndex(String tablename, String colname) {
 		// The maximum length for index names is 18 for Derby.
-		
 		String indexName = indexName(tablename, colname);
-		
+		indexName = indexName.replace(',', '_');
 		String sql = "CREATE INDEX " + indexName + " ON "
 				+ tablename + " (" + colname + ")";
 		executeSQL(sql);
 	}
+	
 
 	private String indexName(String tablename, String colname) {
 		return "X" + tablename + "_" + colname;
@@ -368,7 +368,5 @@ public abstract class JdbcDriver extends org.polepos.framework.DriverBase {
 		}
 		return stmt;
 	}
-
-
 
 }
