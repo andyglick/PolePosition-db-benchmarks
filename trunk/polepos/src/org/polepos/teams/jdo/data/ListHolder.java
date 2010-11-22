@@ -115,12 +115,11 @@ public class ListHolder implements CheckSummable {
 		if(depth > 0){
 			_name = "updated " + _name;
 		}
-		if(getList() != null){
-			for (int i = 0; i < updateCount; i++) {
-				if(i < getList().size()){
-					ListHolder child = getList().get(i);
-					updatedCount += child.updateInternal(visited, maxDepth, depth +  1, updateCount, storeProcedure);
-				}
+		
+		if(_list != null){
+			for (int i = 0; i < _list.size(); i++) {
+				ListHolder child = _list.get(i);
+				updatedCount += child.updateInternal(visited, maxDepth, depth +  1, updateCount, storeProcedure);
 			}
 		}
 		storeProcedure.apply(this);
@@ -128,25 +127,24 @@ public class ListHolder implements CheckSummable {
 	}
 
 	public int delete(int maxDepth, int depth, int updateCount, Procedure<ListHolder> deleteProcedure) {
-		Set<ListHolder> visited = new HashSet<ListHolder>();
+		// We use an IdentityHashMap here so hashCode is not called on deleted items.
+		Map<ListHolder, ListHolder> visited = new IdentityHashMap<ListHolder, ListHolder>();
 		return deleteInternal(visited, maxDepth, depth, updateCount, deleteProcedure);
 	}
 
-	public int deleteInternal(Set<ListHolder> visited, int maxDepth, int depth, int updateCount, Procedure<ListHolder> deleteProcedure) {
-		if(visited.contains(this)){
+	public int deleteInternal(Map<ListHolder, ListHolder> visited, int maxDepth, int depth, int updateCount, Procedure<ListHolder> deleteProcedure) {
+		if(visited.containsKey(this)){
 			return 0;
 		}
-		visited.add(this);
+		visited.put(this, this);
 		if(depth > maxDepth){
 			return 0;
 		}
 		int deletedCount = 1;
-		if(getList() != null){
-			for (int i = 0; i < updateCount; i++) {
-				if(i < getList().size()){
-					ListHolder child = getList().get(i);
-					deletedCount += child.deleteInternal(visited, maxDepth, depth +  1, updateCount, deleteProcedure);
-				}
+		if(_list != null){
+			for (int i = 0; i < _list.size(); i++) {
+				ListHolder child = getList().get(i);
+				deletedCount += child.deleteInternal(visited, maxDepth, depth +  1, updateCount, deleteProcedure);
 			}
 		}
 		deleteProcedure.apply(this);
@@ -190,6 +188,11 @@ public class ListHolder implements CheckSummable {
 	@Override
 	public int hashCode() {
 		return (int)_id;
+	}
+
+	@Override
+	public String toString() {
+		return "ListHolder [_id=" + _id + "]";
 	}
 
 }
