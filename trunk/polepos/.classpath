@@ -44,6 +44,7 @@
 	<classpathentry kind="lib" path="lib/jdo/jdo-api-3.0.jar"/>
 	<classpathentry kind="lib" path="lib/datanucleus/datanucleus-connectionpool-2.0.3-SNAPSHOT.jar"/>
 	<classpathentry kind="lib" path="lib/db4o/db4o-8.0.174.15231-all-java5.jar"/>
+	<classpathentry kind="lib" path="lib/hibernate/javassist-3.12.0.GA.jar"/>
 	<classpathentry kind="var" path="JUNIT_HOME/junit.jar" sourcepath="/ECLIPSE_HOME/plugins/org.eclipse.jdt.source_3.1.0/src/org.junit_3.8.1/junitsrc.zip"/>
 	<classpathentry kind="lib" path="lib/graph/gnujaxp.jar"/>
 	<classpathentry kind="lib" path="lib/graph/itext-1.2.jar"/>

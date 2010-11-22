@@ -18,23 +18,22 @@ Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA  02111-1307, USA. */
 
 
-package org.polepos.teams.jdo;
+package org.polepos.teams.hibernate;
 
-import java.util.*;
-
-import javax.jdo.Query;
-
+import org.hibernate.*;
 import org.polepos.circuits.nestedlists.*;
 import org.polepos.framework.*;
-import org.polepos.teams.jdo.data.ListHolder;
+import org.polepos.teams.hibernate.data.*;
 
-public class NestedListsJdo extends JdoDriver implements NestedLists {
+public class NestedListsHibernate extends HibernateDriver implements NestedLists {
+	
+    private final String FROM = "from org.polepos.teams.hibernate.data.ListHolder";
 
 	@Override
 	public void create() throws Throwable {
-		begin();
+		Transaction tx = begin();
 		store(ListHolder.generate(depth(), objectCount(), reuse()));
-		commit();
+		tx.commit();
 	}
 	
 	@Override
@@ -48,19 +47,12 @@ public class NestedListsJdo extends JdoDriver implements NestedLists {
 	}
 	
 	private ListHolder root() {
-		beginRead();
-        Query query = db().newQuery(ListHolder.class, "this._name == '" + ListHolder.ROOT_NAME + "'");
-        Collection<ListHolder> result = (Collection<ListHolder>)query.execute();
-        if(result.size() != 1){
-        	throw new IllegalStateException();
-        }
-        Iterator<ListHolder> it = result.iterator();
-        return it.next();
+		return (ListHolder) queryForSingle(FROM + " where name='root'");
 	}
 	
 	@Override
 	public void update() throws Throwable {
-		begin();
+		Transaction tx = begin();
 		ListHolder root = root();
 		addToCheckSum(root.update(depth(), 0,  updateCount(), new Procedure<ListHolder>() {
 			@Override
@@ -68,12 +60,12 @@ public class NestedListsJdo extends JdoDriver implements NestedLists {
 				store(obj);
 			}
 		}));
-		commit();
+		tx.commit();
 	}
 
 	@Override
 	public void delete() throws Throwable {
-		begin();
+		Transaction tx = begin();
 		ListHolder root = root();
 		addToCheckSum(root.delete(depth(), 0,  updateCount(), new Procedure<ListHolder>() {
 			@Override
@@ -81,7 +73,7 @@ public class NestedListsJdo extends JdoDriver implements NestedLists {
 				delete(listHolder);
 			}
 		}));
-		commit();
+		tx.commit();
 	}
 
 }

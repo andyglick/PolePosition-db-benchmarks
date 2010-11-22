@@ -83,6 +83,10 @@ public abstract class Db4oDriver extends DriverBase {
 		// db4o always works in a transaction so a begin call
 		// is not needed.
 	}
+	
+	protected void activate(Object obj, int depth) {
+		_container.activate(obj, depth);
+	}
 
 	protected void commit() {
 		_container.commit();

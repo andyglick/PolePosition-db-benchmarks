@@ -82,6 +82,18 @@ public abstract class HibernateDriver extends DriverBase{
 		}		
 	}
 	
+	protected <T> T queryForSingle(String query) {
+		Iterator<T> it = db().iterate( query );
+		if(! it.hasNext()){
+			throw new RuntimeException("none found");
+		}
+		T res = it.next();
+		if(it.hasNext()){
+			throw new RuntimeException("more than one found");
+		}
+		return res;
+	}
+	
 	protected Transaction begin() {
 		return db().beginTransaction();
 	}

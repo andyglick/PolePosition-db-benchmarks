@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.*;
 
 public class IdGenerator {
 	
-	private AtomicLong _atomicLong = new AtomicLong(0);
+	private AtomicLong _atomicLong = new AtomicLong(1);
 	
 	public long nextId(){
 		return _atomicLong.getAndIncrement();

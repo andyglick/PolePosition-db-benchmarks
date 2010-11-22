@@ -28,7 +28,7 @@ public class ListHolder implements CheckSummable {
 	
 	public static final String ROOT_NAME = "root";
 	
-	private static IdGenerator _idGenerator;
+	private static IdGenerator _idGenerator = new IdGenerator();
 	
 	private long _id;
 
@@ -38,6 +38,7 @@ public class ListHolder implements CheckSummable {
 	
 	public static ListHolder generate(int depth, int leafs, int reuse){
 		_idGenerator = new IdGenerator();
+
 		ListHolder root = generate(new ArrayList<ListHolder>(), depth, leafs, reuse);
 		root._name = ROOT_NAME;
 		return root;
@@ -59,6 +60,9 @@ public class ListHolder implements CheckSummable {
 		for (int i = leafs -1; i >= 0; i--) {
 			if(i < reuse){
 				int indexInList = (flatList.size() - i) / 2;
+				if(indexInList < 0){
+					indexInList = 0;
+				}
 				listHolder._list.add(flatList.get(indexInList) );
 			} else {
 				ListHolder child = generate(flatList, childDepth, leafs, reuse);
@@ -94,8 +98,17 @@ public class ListHolder implements CheckSummable {
 			child.acceptInternal(visited, visitor);
 		}
 	}
+	
+	public int update(int maxDepth, int depth, int updateCount, Procedure<ListHolder> storeProcedure) {
+		Set<ListHolder> visited = new HashSet<ListHolder>();
+		return updateInternal(visited, maxDepth, depth, updateCount, storeProcedure);
+	}
 
-	public int update(int maxDepth, int depth, int updateCount, Procedure<Object> storeProcedure) {
+	public int updateInternal(Set<ListHolder> visited, int maxDepth, int depth, int updateCount, Procedure<ListHolder> storeProcedure) {
+		if(visited.contains(this)){
+			return 0;
+		}
+		visited.add(this);
 		if(depth > maxDepth){
 			return 0;
 		}
@@ -107,19 +120,24 @@ public class ListHolder implements CheckSummable {
 			for (int i = 0; i < updateCount; i++) {
 				if(i < _list.size()){
 					ListHolder child = _list.get(i);
-					updatedCount += child.update(maxDepth, depth +  1, updateCount, storeProcedure);
+					updatedCount += child.updateInternal(visited, maxDepth, depth +  1, updateCount, storeProcedure);
 				}
-			}
-			if(_list.size() > 1){
-				_list.remove(_list.size() - 1);
 			}
 		}
 		storeProcedure.apply(this);
 		return updatedCount;
 	}
+	
+	public int delete(int maxDepth, int depth, int updateCount, Procedure<ListHolder> deleteProcedure) {
+		Set<ListHolder> visited = new HashSet<ListHolder>();
+		return deleteInternal(visited, maxDepth, depth, updateCount, deleteProcedure);
+	}
 
-
-	public int delete(int maxDepth, int depth, int updateCount, Procedure<Object> deleteProcedure) {
+	public int deleteInternal(Set<ListHolder> visited, int maxDepth, int depth, int updateCount, Procedure<ListHolder> deleteProcedure) {
+		if(visited.contains(this)){
+			return 0;
+		}
+		visited.add(this);
 		if(depth > maxDepth){
 			return 0;
 		}
@@ -128,7 +146,7 @@ public class ListHolder implements CheckSummable {
 			for (int i = 0; i < updateCount; i++) {
 				if(i < _list.size()){
 					ListHolder child = _list.get(i);
-					deletedCount += child.delete(maxDepth, depth +  1, updateCount, deleteProcedure);
+					deletedCount += child.deleteInternal(visited, maxDepth, depth +  1, updateCount, deleteProcedure);
 				}
 			}
 		}
@@ -178,6 +196,11 @@ public class ListHolder implements CheckSummable {
 	@Override
 	public int hashCode() {
 		return (int)_id;
+	}
+	
+	@Override
+	public String toString() {
+		return "ListHolder " + _id;
 	}
 	
 }

@@ -18,7 +18,7 @@ Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA  02111-1307, USA. */
 
 
-package org.polepos.teams.jdo.data;
+package org.polepos.teams.hibernate.data;
 
 import java.util.*;
 
@@ -30,15 +30,15 @@ public class ListHolder implements CheckSummable {
 	
 	private static IdGenerator _idGenerator = new IdGenerator();
 	
-	private long _id;
+	private long id;
 
-	private String _name;
+	private String name;
 	
-	private List<ListHolder> _list;
+	private List<ListHolder> list;
 	
 	public static ListHolder generate(int depth, int leafs, int reuse){
 		ListHolder root = generate(new ArrayList<ListHolder>(), depth, leafs, reuse);
-		root._name = ROOT_NAME;
+		root.name = ROOT_NAME;
 		return root;
 	}
 	
@@ -64,7 +64,7 @@ public class ListHolder implements CheckSummable {
 				listHolder.getList().add(flatList.get(indexInList) );
 			} else {
 				ListHolder child = generate(flatList, childDepth, leafs, reuse);
-				child._name = "child:" + depth + ":" + i;
+				child.name = "child:" + depth + ":" + i;
 				listHolder.getList().add(child);
 			}
 		}
@@ -73,7 +73,7 @@ public class ListHolder implements CheckSummable {
 
 	@Override
 	public long checkSum() {
-		return _name.hashCode();
+		return name.hashCode();
 	}
 
 	public void accept(Visitor<ListHolder> visitor) {
@@ -113,7 +113,7 @@ public class ListHolder implements CheckSummable {
 		}
 		int updatedCount = 1;
 		if(depth > 0){
-			_name = "updated " + _name;
+			name = "updated " + name;
 		}
 		if(getList() != null){
 			for (int i = 0; i < updateCount; i++) {
@@ -153,23 +153,31 @@ public class ListHolder implements CheckSummable {
 		return deletedCount;
 	}
 
-	private void setId(long id) {
-		_id = id;
+	public void setId(long id) {
+		this.id = id;
 	}
 
 
 	public long getId() {
-		return _id;
+		return id;
 	}
 
 
-	private void setList(List<ListHolder> list) {
-		_list = list;
+	public void setList(List<ListHolder> list) {
+		this.list = list;
 	}
 
 
-	private List<ListHolder> getList() {
-		return _list;
+	public List<ListHolder> getList() {
+		return list;
+	}
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	@Override
@@ -184,12 +192,12 @@ public class ListHolder implements CheckSummable {
 			return false;
 		}
 		ListHolder other = (ListHolder) obj;
-		return _id == other._id;
+		return id == other.id;
 	}
 	
 	@Override
 	public int hashCode() {
-		return (int)_id;
+		return (int)id;
 	}
 
 }

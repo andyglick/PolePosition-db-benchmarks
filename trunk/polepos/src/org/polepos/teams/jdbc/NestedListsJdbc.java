@@ -39,6 +39,9 @@ public class NestedListsJdbc extends JdbcDriver implements NestedLists {
     
     public static final int ITEM = 2;
     
+    public static final int ELEMENT = 3;
+    
+    
     private int _rootId;
 
 
@@ -55,10 +58,11 @@ public class NestedListsJdbc extends JdbcDriver implements NestedLists {
                 new Class[] {Integer.TYPE, String.class} );
         
         createTable(LIST_TABLE, 
-        		new String[]{ "id", "item"}, 
-                new Class[] {Integer.TYPE, Integer.TYPE,},
+        		new String[]{ "id", "item", "element"}, 
+                new Class[] {Integer.TYPE, Integer.TYPE, Integer.TYPE},
                 null);
         createIndex(LIST_TABLE, "id");
+        createIndex(LIST_TABLE, "id,element");
         
         close();
 
@@ -72,7 +76,7 @@ public class NestedListsJdbc extends JdbcDriver implements NestedLists {
 			prepareStatement("insert into listholder (id, name) values (?,?)");
 		
 		final PreparedStatement listStatement = 
-			prepareStatement("insert into list (id, item) values (?,?)");
+			prepareStatement("insert into list (id, item, element) values (?,?,?)");
 
 		ListHolder root = ListHolder.generate(depth(), objectCount(), reuse());
 		_rootId = (int) root.id();
@@ -87,9 +91,11 @@ public class NestedListsJdbc extends JdbcDriver implements NestedLists {
 					listHolderStatement.addBatch();
 					List<ListHolder> list = listHolder.list();
 					if(list != null && ! list.isEmpty()){
+						int position = 0;
 						for (ListHolder child : list) {
 							listStatement.setInt(ID, listHolderId);
 							listStatement.setInt(ITEM, (int) child.id());
+							listStatement.setInt(ELEMENT, position++);
 							listStatement.addBatch();
 						}
 					}
@@ -107,10 +113,7 @@ public class NestedListsJdbc extends JdbcDriver implements NestedLists {
 	
 	@Override
 	public void read() throws Throwable {
-		PreparedStatement listHolderStatement = prepareStatement("select * from listholder where id = ?");
-		PreparedStatement listStatement = prepareStatement("select * from list where id = ?");
-		Set<ListHolder> found = new HashSet<ListHolder>();
-		ListHolder root = recurseRead(listHolderStatement, listStatement, _rootId, found);
+		ListHolder root = root();
 		root.accept(new Visitor<ListHolder>(){
 			public void visit(ListHolder listHolder){
 				addToCheckSum(listHolder);
@@ -118,6 +121,13 @@ public class NestedListsJdbc extends JdbcDriver implements NestedLists {
 		});
 	}
 
+	private ListHolder root() throws SQLException {
+		PreparedStatement listHolderStatement = prepareStatement("select * from listholder where id = ?");
+		PreparedStatement listStatement = prepareStatement("select * from list where id = ? order by element");
+		Set<ListHolder> found = new HashSet<ListHolder>();
+		ListHolder root = recurseRead(listHolderStatement, listStatement, _rootId, found);
+		return root;
+	}
 
 	private ListHolder recurseRead(PreparedStatement listHolderStatement,
 			PreparedStatement listStatement, int id, Set<ListHolder> found) throws SQLException {
@@ -147,11 +157,41 @@ public class NestedListsJdbc extends JdbcDriver implements NestedLists {
 
 	@Override
 	public void update() throws Throwable {
-		
+		ListHolder root = root();
+		final PreparedStatement statement = prepareStatement("update listholder set name = ? where id = ?");
+		addToCheckSum(root.update(depth(), 0,  updateCount(), new Procedure<ListHolder>() {
+			@Override
+			public void apply(ListHolder obj) {
+				try {
+					statement.setString(1, obj.name());
+					statement.setInt(2, (int)obj.id());
+					statement.addBatch();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}));
+		statement.executeBatch();
+		commit();
 	}
 
 	@Override
 	public void delete() throws Throwable {
+		ListHolder root = root();
+		final PreparedStatement statement = prepareStatement("delete from listholder where id = ?");
+		addToCheckSum(root.delete(depth(), 0,  updateCount(), new Procedure<ListHolder>() {
+			@Override
+			public void apply(ListHolder obj) {
+				try {
+					statement.setInt(1, (int)obj.id());
+					statement.addBatch();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}));
+		statement.executeBatch();
+		commit();
 		
 	}
 

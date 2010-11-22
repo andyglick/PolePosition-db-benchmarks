@@ -39,6 +39,7 @@ public class NestedListsDb4o extends Db4oDriver implements NestedLists {
 	@Override
 	public void read() throws Throwable {
 		ListHolder root = root();
+		activate(root, Integer.MAX_VALUE);
 		root.accept(new Visitor<ListHolder>(){
 			public void visit(ListHolder listHolder){
 				addToCheckSum(listHolder);
@@ -58,23 +59,27 @@ public class NestedListsDb4o extends Db4oDriver implements NestedLists {
 	@Override
 	public void update() throws Throwable {
 		ListHolder root = root();
-		addToCheckSum(root.update(depth(), 0,  updateCount(), new Procedure<Object>() {
+		activate(root, Integer.MAX_VALUE);
+		addToCheckSum(root.update(depth(), 0,  updateCount(), new Procedure<ListHolder>() {
 			@Override
-			public void apply(Object obj) {
+			public void apply(ListHolder obj) {
 				store(obj);
 			}
 		}));
+		commit();
 	}
 
 	@Override
 	public void delete() throws Throwable {
 		ListHolder root = root();
-		addToCheckSum(root.delete(depth(), 0,  updateCount(), new Procedure<Object>() {
+		activate(root, Integer.MAX_VALUE);
+		addToCheckSum(root.delete(depth(), 0,  updateCount(), new Procedure<ListHolder>() {
 			@Override
-			public void apply(Object obj) {
+			public void apply(ListHolder obj) {
 				delete(obj);
 			}
 		}));
+		commit();
 	}
 	
 	@Override

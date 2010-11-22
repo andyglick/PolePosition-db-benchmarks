@@ -21,6 +21,8 @@ package org.polepos.framework;
 
 import java.lang.reflect.*;
 
+import org.polepos.*;
+
 /**
  * an implementation of a circuit for a team
  */
@@ -118,7 +120,9 @@ public abstract class DriverBase extends Driver implements Cloneable
 				try {
 					method.invoke(DriverBase.this, (Object[]) null);
 				} catch (Exception e) {
-				    System.err.println("Exception on calling method " + method);
+				    if(Settings.DEBUG){
+				    	throw new RuntimeException(e);
+				    }
 				    e.printStackTrace();
 				}
 			}
@@ -126,9 +130,10 @@ public abstract class DriverBase extends Driver implements Cloneable
 			private Method prepareMethod(){
 				try{
 					return DriverBase.this.getClass().getDeclaredMethod(lap.name(), (Class[])null);
-				} catch (SecurityException e) {
-				    e.printStackTrace();
-				} catch (NoSuchMethodException e) {
+				} catch (Exception e) {
+				    if(Settings.DEBUG){
+				    	throw new RuntimeException(e);
+				    }
 				    e.printStackTrace();
 				}
 				return null;
