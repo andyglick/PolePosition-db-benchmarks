@@ -95,6 +95,7 @@ public class JdoTeam extends Team{
         return new DriverBase[]{
         	new FlatObjectJdo(),
         	new NestedListsJdo(),
+        	new InheritanceHierarchyJdo(),
             new MelbourneJdo(),
             new SepangJdo(),
             new BahrainJdo(),
@@ -118,12 +119,22 @@ public class JdoTeam extends Team{
 			
 		    JdoCar jdoCar = (JdoCar)mCars[i];
 			PersistenceManager pm = jdoCar.getPersistenceManager();
+			
+		    deleteAll(pm, JdoIndexedObject.class);
+		    deleteAll(pm, ListHolder.class);
+		    
+		    deleteAll(pm, InheritanceHierarchy0.class);
+		    deleteAll(pm, InheritanceHierarchy1.class);
+		    deleteAll(pm, InheritanceHierarchy2.class);
+		    deleteAll(pm, InheritanceHierarchy3.class);
+		    deleteAll(pm, InheritanceHierarchy4.class);
 		    
 		    deleteAll(pm, JB0.class);
 		    deleteAll(pm, JB1.class);
 		    deleteAll(pm, JB2.class);
 		    deleteAll(pm, JB3.class);
 		    deleteAll(pm, JB4.class);
+		    
 		    deleteAll(pm, JdoIndexedPilot.class);
 		    deleteAll(pm, JdoPilot.class);
 		    deleteAll(pm, JdoTree.class);
@@ -131,9 +142,6 @@ public class JdoTeam extends Team{
 		    deleteAll(pm, JdoListHolder.class);
 		    deleteAll(pm, JN1.class);
 		    
-		    deleteAll(pm, JdoIndexedObject.class);
-		    
-		    deleteAll(pm, ListHolder.class);
 	    
 		    pm.close();
 		}

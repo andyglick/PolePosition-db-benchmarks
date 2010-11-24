@@ -20,31 +20,51 @@ MA  02111-1307, USA. */
 
 package org.polepos.teams.hibernate.data;
 
-import org.polepos.data.*;
 import org.polepos.framework.*;
 
-public class HibernateIndexedObject implements CheckSummable{
+public class IndexedObject implements CheckSummable{
+	
+	private static final int STRING_LENGTH = 20;
+	
+	private static final String UNDERSCORES = underscores();
+
 	
 	public int _int;
 	
 	public String _string;
 	
-	public HibernateIndexedObject(){
+	public IndexedObject(){
 		
 	}
 	
-	public HibernateIndexedObject(int int_, String str){
+	public IndexedObject(int int_, String str){
 		_int = int_;
 		_string = str;
 	}
 	
-	public HibernateIndexedObject(int int_){
-		this(int_, IndexedObject.queryString(int_));
+	public IndexedObject(int int_){
+		this(int_, queryString(int_));
 	}
 
 	@Override
 	public long checkSum() {
 		return _string.length();
+	}
+	
+	public static String queryString(int int_){
+		StringBuffer sb = new StringBuffer();
+		sb.append("str");
+		sb.append(int_);
+		sb.append(UNDERSCORES);
+		return sb.substring(0, STRING_LENGTH);
+	}
+	
+	private static String underscores() {
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < STRING_LENGTH; i++) {
+			sb.append("_");
+		}
+		return sb.toString();
 	}
 
 	public void updateString() {
@@ -53,7 +73,7 @@ public class HibernateIndexedObject implements CheckSummable{
 	
 	@Override
 	public String toString() {
-		return "JdoIndexedObject _int:" + _int + " _string:" + _string;
+		return "IndexedObject _int:" + _int + " _string:" + _string;
 	}
 
 	public int getInt() {

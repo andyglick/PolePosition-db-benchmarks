@@ -23,6 +23,7 @@ import org.polepos.circuits.bahrain.*;
 import org.polepos.circuits.barcelona.*;
 import org.polepos.circuits.flatobject.*;
 import org.polepos.circuits.imola.*;
+import org.polepos.circuits.inheritancehierarchy.*;
 import org.polepos.circuits.melbourne.*;
 import org.polepos.circuits.monaco.*;
 import org.polepos.circuits.montreal.*;
@@ -61,6 +62,7 @@ public class RunSeason extends AbstractRunner {
 				
 				// new ReflectiveCircuitBase(FlatObject.class),
 				// new ReflectiveCircuitBase(NestedLists.class),
+				// new ReflectiveCircuitBase(InheritanceHierarchy.class),
 				
 				new Melbourne(), 
 				new Sepang(), 
@@ -80,10 +82,12 @@ public class RunSeason extends AbstractRunner {
 		return new Team[] { 
 				new Db4oTeam(),
 				new JdoTeam(),
+				
 //				new Db4oClientServerTeam(),
+				
 				new JdbcTeam(),
 				new HibernateTeam(),
-				new JpaTeam(),
+//				new JpaTeam(),
 				
 				// new JviTeam(),
 				// new CobraTeam(),

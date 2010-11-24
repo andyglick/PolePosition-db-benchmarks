@@ -19,23 +19,20 @@ MA  02111-1307, USA. */
 
 package org.polepos.teams.hibernate;
 
-
-
 import org.hibernate.*;
 import org.polepos.circuits.flatobject.*;
-import org.polepos.data.*;
 import org.polepos.teams.hibernate.data.*;
 
 
 public class FlatObjectHibernate extends HibernateDriver implements FlatObject{
      
-    private final String FROM = "from org.polepos.teams.hibernate.data.HibernateIndexedObject";
+    private final String FROM = "from org.polepos.teams.hibernate.data.IndexedObject";
     
 	public void write(){
 		Transaction tx = begin();
         initializeTestId(objectCount());
 		while ( hasMoreTestIds()){
-			HibernateIndexedObject indexedObject = new HibernateIndexedObject(nextTestId());
+			IndexedObject indexedObject = new IndexedObject(nextTestId());
 			store(indexedObject);
 			if(doCommit()){
 				tx.commit();
@@ -67,7 +64,7 @@ public class FlatObjectHibernate extends HibernateDriver implements FlatObject{
     	Transaction tx = begin();
         initializeTestIdD(setup().getUpdateCount());
         while(hasMoreTestIds()) {
-			HibernateIndexedObject indexedObject = (HibernateIndexedObject) db().iterate(selectFromNextTestId()).next();
+			IndexedObject indexedObject = (IndexedObject) db().iterate(selectFromNextTestId()).next();
 			indexedObject.updateString();
         	store(indexedObject);
             addToCheckSum(indexedObject);
@@ -79,7 +76,7 @@ public class FlatObjectHibernate extends HibernateDriver implements FlatObject{
     	Transaction tx = begin();
         initializeTestId(setup().getUpdateCount());
         while(hasMoreTestIds()) {
-			HibernateIndexedObject indexedObject = (HibernateIndexedObject) db().iterate(selectFromNextTestId()).next();
+			IndexedObject indexedObject = (IndexedObject) db().iterate(selectFromNextTestId()).next();
 			addToCheckSum(indexedObject);
         	delete(indexedObject);
         }

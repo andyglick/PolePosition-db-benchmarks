@@ -62,7 +62,7 @@ public class NestedListsJdo extends JdoDriver implements NestedLists {
 	public void update() throws Throwable {
 		begin();
 		ListHolder root = root();
-		addToCheckSum(root.update(depth(), 0,  updateCount(), new Procedure<ListHolder>() {
+		addToCheckSum(root.update(depth(), new Procedure<ListHolder>() {
 			@Override
 			public void apply(ListHolder obj) {
 				store(obj);
@@ -75,7 +75,7 @@ public class NestedListsJdo extends JdoDriver implements NestedLists {
 	public void delete() throws Throwable {
 		begin();
 		ListHolder root = root();
-		addToCheckSum(root.delete(depth(), 0,  updateCount(), new Procedure<ListHolder>() {
+		addToCheckSum(root.delete(depth(), new Procedure<ListHolder>() {
 			@Override
 			public void apply(ListHolder listHolder) {
 				delete(listHolder);

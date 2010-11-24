@@ -60,6 +60,7 @@ public class JdbcTeam extends Team{
         return new DriverBase[]{
         	new FlatObjectJdbc(),
         	new NestedListsJdbc(),
+        	new InheritanceHierarchyJdbc(),
             new MelbourneJdbc(),
             new SepangJdbc(),
             new BahrainJdbc(),

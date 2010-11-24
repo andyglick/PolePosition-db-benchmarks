@@ -49,10 +49,9 @@ public class Db4oTeam extends Team {
     }
 
     private void addDrivers(){
-    	
     	addDriver(new FlatObjectDb4o());
     	addDriver(new NestedListsDb4o());
-    	
+    	addDriver(new InheritanceHierarchyDb4o());
         addDriver(new MelbourneDb4o());
         addDriver(new SepangDb4o());
         addDriver(new BahrainDb4o());

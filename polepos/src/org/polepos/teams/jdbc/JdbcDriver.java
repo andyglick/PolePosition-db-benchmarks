@@ -22,13 +22,14 @@ package org.polepos.teams.jdbc;
 import java.sql.*;
 import java.util.*;
 
+import org.polepos.*;
 import org.polepos.data.*;
 import org.polepos.framework.*;
 
 
 public abstract class JdbcDriver extends org.polepos.framework.DriverBase {
 	
-	protected Connection _connection;
+	private Connection _connection;
 	
 	public void prepare() throws CarMotorFailureException{
 		openConnection();
@@ -120,7 +121,7 @@ public abstract class JdbcDriver extends org.polepos.framework.DriverBase {
 			try {
 				stat.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				handleException(e);
 			}
 		}
 	}
@@ -129,8 +130,15 @@ public abstract class JdbcDriver extends org.polepos.framework.DriverBase {
     	try {
 			stat.close();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			handleException(e);
 		}
+	}
+
+	private void handleException(Exception e) {
+		if(Settings.DEBUG){
+			throw new RuntimeException(e);
+		}
+		e.printStackTrace();
 	}
 
 	
@@ -199,7 +207,7 @@ public abstract class JdbcDriver extends org.polepos.framework.DriverBase {
 		try {
 			_connection.close();
 		} catch (SQLException sqlex) {
-			sqlex.printStackTrace();
+			handleException(sqlex);
 		}
 		_connection = null;
 	}
@@ -208,7 +216,7 @@ public abstract class JdbcDriver extends org.polepos.framework.DriverBase {
 		try {
 			_connection.commit();
 		} catch (SQLException ex) {
-			ex.printStackTrace();
+			handleException(ex);
 		}
 	}
 
@@ -218,10 +226,9 @@ public abstract class JdbcDriver extends org.polepos.framework.DriverBase {
 			statement = _connection.createStatement();
 			statement.execute(sql);
 		} catch (SQLException ex) {
-			ex.printStackTrace();
-		} finally {
-			closeStatement(statement);
-		}
+			handleException(ex);
+		} 
+		closeStatement(statement);
 	}
 	public ResultSetStatement executeQuery(String sql) {
 		Log.logger.fine(sql);
@@ -245,7 +252,7 @@ public abstract class JdbcDriver extends org.polepos.framework.DriverBase {
 			try {
 				rs.close();
 			} catch (SQLException e) {
-				e.printStackTrace();
+				handleException(e);
 			}
 		}
 	}
@@ -311,7 +318,7 @@ public abstract class JdbcDriver extends org.polepos.framework.DriverBase {
 	
 	public void createTable(String tablename, String[] colnames, Class[] coltypes, String primaryKey) {
 		String sql = "create table " + tablename + " (" + colnames[0]
-				+ "  INTEGER NOT NULL";
+				+ " INTEGER NOT NULL";
 
 		for (int i = 1; i < colnames.length; i++) {
 			sql += ", " + colnames[i] + " " + JdbcCar.colTypesMap.get(coltypes[i]);
@@ -320,8 +327,8 @@ public abstract class JdbcDriver extends org.polepos.framework.DriverBase {
 			sql += ", PRIMARY KEY(" + primaryKey + ")";
 		} 
 		sql += ")";
-		
 		executeSQL(sql);
+		commit();
 	}
 
 	
