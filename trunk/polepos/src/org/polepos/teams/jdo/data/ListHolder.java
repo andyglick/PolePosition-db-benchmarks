@@ -97,20 +97,17 @@ public class ListHolder implements CheckSummable {
 		}
 	}
 	
-	public int update(int maxDepth, int depth, int updateCount, Procedure<ListHolder> storeProcedure) {
+	public int update(int maxDepth, Procedure<ListHolder> storeProcedure) {
 		Set<ListHolder> visited = new HashSet<ListHolder>();
-		return updateInternal(visited, maxDepth, depth, updateCount, storeProcedure);
+		return updateInternal(visited, maxDepth, 0, storeProcedure);
 	}
 
 
-	public int updateInternal(Set<ListHolder> visited, int maxDepth, int depth, int updateCount, Procedure<ListHolder> storeProcedure) {
+	public int updateInternal(Set<ListHolder> visited, int maxDepth, int depth, Procedure<ListHolder> storeProcedure) {
 		if(visited.contains(this)){
 			return 0;
 		}
 		visited.add(this);
-		if(depth > maxDepth){
-			return 0;
-		}
 		int updatedCount = 1;
 		if(depth > 0){
 			_name = "updated " + _name;
@@ -119,32 +116,29 @@ public class ListHolder implements CheckSummable {
 		if(_list != null){
 			for (int i = 0; i < _list.size(); i++) {
 				ListHolder child = _list.get(i);
-				updatedCount += child.updateInternal(visited, maxDepth, depth +  1, updateCount, storeProcedure);
+				updatedCount += child.updateInternal(visited, maxDepth, depth +  1, storeProcedure);
 			}
 		}
 		storeProcedure.apply(this);
 		return updatedCount;
 	}
 
-	public int delete(int maxDepth, int depth, int updateCount, Procedure<ListHolder> deleteProcedure) {
+	public int delete(int maxDepth, Procedure<ListHolder> deleteProcedure) {
 		// We use an IdentityHashMap here so hashCode is not called on deleted items.
 		Map<ListHolder, ListHolder> visited = new IdentityHashMap<ListHolder, ListHolder>();
-		return deleteInternal(visited, maxDepth, depth, updateCount, deleteProcedure);
+		return deleteInternal(visited, maxDepth, 0, deleteProcedure);
 	}
 
-	public int deleteInternal(Map<ListHolder, ListHolder> visited, int maxDepth, int depth, int updateCount, Procedure<ListHolder> deleteProcedure) {
+	public int deleteInternal(Map<ListHolder, ListHolder> visited, int maxDepth, int depth, Procedure<ListHolder> deleteProcedure) {
 		if(visited.containsKey(this)){
 			return 0;
 		}
 		visited.put(this, this);
-		if(depth > maxDepth){
-			return 0;
-		}
 		int deletedCount = 1;
 		if(_list != null){
 			for (int i = 0; i < _list.size(); i++) {
 				ListHolder child = getList().get(i);
-				deletedCount += child.deleteInternal(visited, maxDepth, depth +  1, updateCount, deleteProcedure);
+				deletedCount += child.deleteInternal(visited, maxDepth, depth +  1, deleteProcedure);
 			}
 		}
 		deleteProcedure.apply(this);

@@ -53,16 +53,20 @@ public class NestedListsJdbc extends JdbcDriver implements NestedLists {
         dropTable(LISTHOLDER_TABLE);
         dropTable(LIST_TABLE);
         
+        commit();
+        
         createTable(LISTHOLDER_TABLE, 
-        		new String[]{ "id", "name"}, 
+        		new String[]{ "fid", "fname"}, 
                 new Class[] {Integer.TYPE, String.class} );
         
         createTable(LIST_TABLE, 
-        		new String[]{ "id", "item", "element"}, 
+        		new String[]{ "fid", "fitem", "felement"}, 
                 new Class[] {Integer.TYPE, Integer.TYPE, Integer.TYPE},
                 null);
-        createIndex(LIST_TABLE, "id");
-        createIndex(LIST_TABLE, "id,element");
+
+        createIndex(LIST_TABLE, "fid");
+        createIndex(LIST_TABLE, "fid,felement");
+        commit();
         
         close();
 
@@ -73,10 +77,10 @@ public class NestedListsJdbc extends JdbcDriver implements NestedLists {
 	public void create() throws Throwable {
 		
 		final PreparedStatement listHolderStatement = 
-			prepareStatement("insert into listholder (id, name) values (?,?)");
+			prepareStatement("insert into listholder (fid, fname) values (?,?)");
 		
 		final PreparedStatement listStatement = 
-			prepareStatement("insert into list (id, item, element) values (?,?,?)");
+			prepareStatement("insert into list (fid, fitem, felement) values (?,?,?)");
 
 		ListHolder root = ListHolder.generate(depth(), objectCount(), reuse());
 		_rootId = (int) root.id();
@@ -107,6 +111,8 @@ public class NestedListsJdbc extends JdbcDriver implements NestedLists {
     	
     	listStatement.executeBatch();
     	listHolderStatement.executeBatch();
+    	listStatement.close();
+    	listHolderStatement.close();
     	commit();
 
 	}
@@ -122,16 +128,17 @@ public class NestedListsJdbc extends JdbcDriver implements NestedLists {
 	}
 
 	private ListHolder root() throws SQLException {
-		PreparedStatement listHolderStatement = prepareStatement("select * from listholder where id = ?");
-		PreparedStatement listStatement = prepareStatement("select * from list where id = ? order by element");
+		PreparedStatement listHolderStatement = prepareStatement("select * from listholder where fid = ?");
+		PreparedStatement listStatement = prepareStatement("select * from list where fid = ? order by felement");
 		Set<ListHolder> found = new HashSet<ListHolder>();
 		ListHolder root = recurseRead(listHolderStatement, listStatement, _rootId, found);
+		closePreparedStatement(listHolderStatement);
+		closePreparedStatement(listStatement);
 		return root;
 	}
 
 	private ListHolder recurseRead(PreparedStatement listHolderStatement,
 			PreparedStatement listStatement, int id, Set<ListHolder> found) throws SQLException {
-		
 		listHolderStatement.setInt(ID, id);
 		ResultSet listHolderResultSet = listHolderStatement.executeQuery();
 		listHolderResultSet.next();
@@ -142,15 +149,21 @@ public class NestedListsJdbc extends JdbcDriver implements NestedLists {
 		}
 		found.add(listHolder);
 		listHolder.name(listHolderResultSet.getString(NAME));
+		listHolderResultSet.close();
 		listStatement.setInt(ID, id);
 		
 		ResultSet listResultSet = listStatement.executeQuery();
+		List<Integer> ids = new ArrayList<Integer>(); 
 		if(listResultSet.next()){
-			List <ListHolder> list = new ArrayList<ListHolder>();
-			listHolder.list(list);
 			do{
-				list.add(recurseRead(listHolderStatement, listStatement, listResultSet.getInt(ITEM), found));
+				ids.add(listResultSet.getInt(ITEM));
 			} while(listResultSet.next());
+			listResultSet.close();
+			List <ListHolder> list = new ArrayList<ListHolder>();
+			for (Integer childId : ids) {
+				list.add(recurseRead(listHolderStatement, listStatement, childId, found));
+			}
+			listHolder.list(list);
 		}
 		return listHolder;
 	}
@@ -158,8 +171,8 @@ public class NestedListsJdbc extends JdbcDriver implements NestedLists {
 	@Override
 	public void update() throws Throwable {
 		ListHolder root = root();
-		final PreparedStatement statement = prepareStatement("update listholder set name = ? where id = ?");
-		addToCheckSum(root.update(depth(), 0,  updateCount(), new Procedure<ListHolder>() {
+		final PreparedStatement statement = prepareStatement("update listholder set fname=? where fid=?");
+		addToCheckSum(root.update(depth(), 0,  new Procedure<ListHolder>() {
 			@Override
 			public void apply(ListHolder obj) {
 				try {
@@ -172,14 +185,15 @@ public class NestedListsJdbc extends JdbcDriver implements NestedLists {
 			}
 		}));
 		statement.executeBatch();
+		statement.close();
 		commit();
 	}
 
 	@Override
 	public void delete() throws Throwable {
 		ListHolder root = root();
-		final PreparedStatement statement = prepareStatement("delete from listholder where id = ?");
-		addToCheckSum(root.delete(depth(), 0,  updateCount(), new Procedure<ListHolder>() {
+		final PreparedStatement statement = prepareStatement("delete from listholder where fid=?");
+		addToCheckSum(root.delete(depth(), 0, new Procedure<ListHolder>() {
 			@Override
 			public void apply(ListHolder obj) {
 				try {
@@ -191,8 +205,8 @@ public class NestedListsJdbc extends JdbcDriver implements NestedLists {
 			}
 		}));
 		statement.executeBatch();
+		statement.close();
 		commit();
-		
 	}
 
 }

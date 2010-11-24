@@ -79,7 +79,7 @@ public class Graph {
                     Result res = results.get(new TurnCombination(teamCar,setup));
                     if(res != null){
                         if(checkSum != res.getCheckSum()){
-                            System.err.println("Inconsistent checksum for " + res.getTeam().name() + " in " + circuit.name() + ":" + lap.name());
+                        	System.err.println("Inconsistent checksum for " + teamCar.getTeam().name() + "/" + teamCar.getCar().name() + " in " + circuit.name() + ":" + lap.name());
                         }
                     }
                 }

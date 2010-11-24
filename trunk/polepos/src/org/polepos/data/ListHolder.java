@@ -37,8 +37,6 @@ public class ListHolder implements CheckSummable {
 	private List<ListHolder> _list;
 	
 	public static ListHolder generate(int depth, int leafs, int reuse){
-		_idGenerator = new IdGenerator();
-
 		ListHolder root = generate(new ArrayList<ListHolder>(), depth, leafs, reuse);
 		root._name = ROOT_NAME;
 		return root;
@@ -99,19 +97,16 @@ public class ListHolder implements CheckSummable {
 		}
 	}
 	
-	public int update(int maxDepth, int depth, int updateCount, Procedure<ListHolder> storeProcedure) {
+	public int update(int maxDepth, int depth, Procedure<ListHolder> storeProcedure) {
 		Set<ListHolder> visited = new HashSet<ListHolder>();
-		return updateInternal(visited, maxDepth, depth, updateCount, storeProcedure);
+		return updateInternal(visited, maxDepth, depth,storeProcedure);
 	}
 
-	public int updateInternal(Set<ListHolder> visited, int maxDepth, int depth, int updateCount, Procedure<ListHolder> storeProcedure) {
+	public int updateInternal(Set<ListHolder> visited, int maxDepth, int depth, Procedure<ListHolder> storeProcedure) {
 		if(visited.contains(this)){
 			return 0;
 		}
 		visited.add(this);
-		if(depth > maxDepth){
-			return 0;
-		}
 		int updatedCount = 1;
 		if(depth > 0){
 			_name = "updated " + name();
@@ -119,31 +114,28 @@ public class ListHolder implements CheckSummable {
 		if(_list != null){
 			for (int i = 0; i < _list.size(); i++) {
 				ListHolder child = _list.get(i);
-				updatedCount += child.updateInternal(visited, maxDepth, depth +  1, updateCount, storeProcedure);
+				updatedCount += child.updateInternal(visited, maxDepth, depth +  1, storeProcedure);
 			}
 		}
 		storeProcedure.apply(this);
 		return updatedCount;
 	}
 	
-	public int delete(int maxDepth, int depth, int updateCount, Procedure<ListHolder> deleteProcedure) {
+	public int delete(int maxDepth, int depth, Procedure<ListHolder> deleteProcedure) {
 		Set<ListHolder> visited = new HashSet<ListHolder>();
-		return deleteInternal(visited, maxDepth, depth, updateCount, deleteProcedure);
+		return deleteInternal(visited, maxDepth, depth, deleteProcedure);
 	}
 
-	public int deleteInternal(Set<ListHolder> visited, int maxDepth, int depth, int updateCount, Procedure<ListHolder> deleteProcedure) {
+	public int deleteInternal(Set<ListHolder> visited, int maxDepth, int depth, Procedure<ListHolder> deleteProcedure) {
 		if(visited.contains(this)){
 			return 0;
 		}
 		visited.add(this);
-		if(depth > maxDepth){
-			return 0;
-		}
 		int deletedCount = 1;
 		if(_list != null){
 			for (int i = 0; i < _list.size(); i++) {
 				ListHolder child = _list.get(i);
-				deletedCount += child.deleteInternal(visited, maxDepth, depth +  1, updateCount, deleteProcedure);
+				deletedCount += child.deleteInternal(visited, maxDepth, depth +  1, deleteProcedure);
 			}
 		}
 		deleteProcedure.apply(this);

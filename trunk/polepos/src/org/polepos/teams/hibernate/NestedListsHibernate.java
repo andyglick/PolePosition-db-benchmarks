@@ -54,7 +54,7 @@ public class NestedListsHibernate extends HibernateDriver implements NestedLists
 	public void update() throws Throwable {
 		Transaction tx = begin();
 		ListHolder root = root();
-		addToCheckSum(root.update(depth(), 0,  updateCount(), new Procedure<ListHolder>() {
+		addToCheckSum(root.update(depth(), new Procedure<ListHolder>() {
 			@Override
 			public void apply(ListHolder obj) {
 				store(obj);
@@ -67,7 +67,7 @@ public class NestedListsHibernate extends HibernateDriver implements NestedLists
 	public void delete() throws Throwable {
 		Transaction tx = begin();
 		ListHolder root = root();
-		addToCheckSum(root.delete(depth(), 0,  updateCount(), new Procedure<ListHolder>() {
+		addToCheckSum(root.delete(depth(), new Procedure<ListHolder>() {
 			@Override
 			public void apply(ListHolder listHolder) {
 				delete(listHolder);
