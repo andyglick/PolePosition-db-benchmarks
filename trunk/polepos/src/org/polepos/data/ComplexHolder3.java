@@ -28,4 +28,9 @@ public class ComplexHolder3 extends ComplexHolder2 {
 		return _i3 + super.internalCheckSum();
 	}
 
+	protected void setSpecial(int value) {
+		super.setSpecial(value);
+		_i3 = value;
+	}
+
 }

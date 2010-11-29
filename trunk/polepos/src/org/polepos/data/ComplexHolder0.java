@@ -69,6 +69,7 @@ public class ComplexHolder0 implements CheckSummable {
 					curChild._name = String.valueOf(holderIdx);
 					curChild._previous = previous;
 					curChild._array = createArray(holderIdx);
+					curChild.setSpecial(holderIdx);
 					curParent.addChild(curChild);
 					childLevel.add(curChild);
 					previous = curChild;
@@ -167,5 +168,6 @@ public class ComplexHolder0 implements CheckSummable {
 		return _name.hashCode();
 	}
 
-
+	protected void setSpecial(int value) {
+	}
 }

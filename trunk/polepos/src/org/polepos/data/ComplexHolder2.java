@@ -22,10 +22,15 @@ package org.polepos.data;
 
 public class ComplexHolder2 extends ComplexHolder1 {
 	
-	private int _i2;
+	public int _i2;
 	
 	protected long internalCheckSum() {
 		return _i2 + super.internalCheckSum();
+	}
+
+	protected void setSpecial(int value) {
+		super.setSpecial(value);
+		_i2 = value;
 	}
 
 }
