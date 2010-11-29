@@ -20,6 +20,12 @@ MA  02111-1307, USA. */
 
 package org.polepos.data;
 
-public class ComplexHolder4 {
+public class ComplexHolder4 extends ComplexHolder3 {
+
+	private int _i4;
+	
+	protected long internalCheckSum() {
+		return _i4 + super.internalCheckSum();
+	}
 
 }

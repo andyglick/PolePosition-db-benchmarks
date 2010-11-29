@@ -23,22 +23,27 @@ package org.polepos.teams.db4o;
 import org.polepos.circuits.complex.*;
 import org.polepos.data.*;
 
+import com.db4o.*;
 import com.db4o.config.*;
 
 public class ComplexDb4o extends Db4oDriver implements Complex {
 	
 	@Override
 	public void write() {
-		
 		ComplexHolder0 root = ComplexHolder0.generate(depth(), objectCount());
-		store(root);
-		
+		store(new ComplexRoot(root));
+		addToCheckSum(root);
 	}
 
 	@Override
 	public void read() {
-		// TODO Auto-generated method stub
-		
+		ObjectSet<ComplexRoot> result = db().query(ComplexRoot.class);
+		if(result.size() != 1) {
+			throw new IllegalStateException();
+		}
+		ComplexHolder0 holder = result.get(0)._holder;
+		db().activate(holder, Integer.MAX_VALUE);
+		addToCheckSum(holder);
 	}
 
 	@Override
