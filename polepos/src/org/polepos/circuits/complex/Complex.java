@@ -22,6 +22,7 @@ package org.polepos.circuits.complex;
 
 import org.polepos.framework.*;
 
+@CircuitDescription("write, read, query, update and delete complex object graph")
 public interface Complex {
 	
     @Order(1)

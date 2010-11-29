@@ -22,78 +22,150 @@ package org.polepos.data;
 
 import java.util.*;
 
+import org.polepos.framework.*;
+
 import com.db4o.foundation.*;
 
-public class ComplexHolder0 {
+public class ComplexHolder0 implements CheckSummable {
 	
-	private ComplexHolder0 _child;
+	private ComplexHolder0 _previous;
 	
 	private String _name;
 	
-	private List<ComplexHolder0> _children;
+	private List<ComplexHolder0> _children = new ArrayList<ComplexHolder0>();
 	
 	private ComplexHolder0[] _array;
 	
+	public static void main(String[] args) {
+		ComplexHolder0 root = generate(10, 1);
+		System.out.println(root.checkSum());
+	}
 	
 	public static ComplexHolder0 generate(int depth, int leafs){
 		ComplexHolder0 complexHolder = new ComplexHolder0();
-		complexHolder._children = new ArrayList<ComplexHolder0>();
 		complexHolder._name = "root";
-		complexHolder._child = new ComplexHolder0();
-		createChildren(depth -1, leafs);
+		complexHolder._previous = complexHolder;
+		createChildren(complexHolder, depth -1, leafs);
 		return complexHolder;
 	}
 	
 	
-	private static void createChildren(int depth, int leafs) {
+	private static void createChildren(ComplexHolder0 root, int depth, int numChildren) {
 		if(depth < 1){
 			return;
 		}
-		// _array = new ComplexHolder0[depth];
 		
-		
+		int factoryIdx = 0;
+		int holderIdx = 0;
+		List<ComplexHolder0> parentLevel = Arrays.asList(root);
 		for (int i = 0; i < depth; i++) {
+			Closure4<ComplexHolder0> curFactory = FACTORIES[factoryIdx];
+			List<ComplexHolder0> childLevel = new ArrayList<ComplexHolder0>();
+
+			ComplexHolder0 previous = null;
+			for (ComplexHolder0 curParent : parentLevel) {
+				for (int childIdx = 0; childIdx < numChildren; childIdx++) {
+					ComplexHolder0 curChild = curFactory.run();
+					curChild._name = String.valueOf(holderIdx);
+					curChild._previous = previous;
+					curChild._array = createArray(holderIdx);
+					curParent.addChild(curChild);
+					childLevel.add(curChild);
+					previous = curChild;
+					holderIdx++;
+				}
+			}
+
+			parentLevel = childLevel;
 			
-			
-			
+			factoryIdx++;
+			if(factoryIdx == FACTORIES.length) {
+				factoryIdx = 0;
+			}
 		}
-		// TODO Auto-generated method stub
 		
+	}
+
+	private static ComplexHolder0[] createArray(int holderIdx) {
+		ComplexHolder0[] holders = new ComplexHolder0[] {
+			new ComplexHolder0(),
+			new ComplexHolder1(),
+			new ComplexHolder2(),
+			new ComplexHolder3(),
+			new ComplexHolder4(),
+		};
+		for (int i = 0; i < holders.length; i++) {
+			holders[i]._name = "a" + holderIdx + "_" + i;
+		}
+		return holders;
+	}
+
+	private void addChild(ComplexHolder0 child) {
+		_children.add(child);
 	}
 
 
 	private static final Closure4[] FACTORIES = {
-		new Closure4(){
+		new Closure4<ComplexHolder0>(){
 			@Override
-			public Object run() {
+			public ComplexHolder0 run() {
 				return new ComplexHolder0();
 			}
 		},
-		new Closure4(){
+		new Closure4<ComplexHolder0>(){
 			@Override
-			public Object run() {
+			public ComplexHolder0 run() {
 				return new ComplexHolder1();
 			}
 		},
-		new Closure4(){
+		new Closure4<ComplexHolder0>(){
 			@Override
-			public Object run() {
+			public ComplexHolder0 run() {
 				return new ComplexHolder2();
 			}
 		},
-		new Closure4(){
+		new Closure4<ComplexHolder0>(){
 			@Override
-			public Object run() {
+			public ComplexHolder0 run() {
 				return new ComplexHolder3();
 			}
 		},
-		new Closure4(){
+		new Closure4<ComplexHolder0>(){
 			@Override
-			public Object run() {
+			public ComplexHolder0 run() {
 				return new ComplexHolder4();
 			}
 		}
 	};
+
+	@Override
+	public long checkSum() {
+		return internalCheckSum(new IdentityHashMap<ComplexHolder0, ComplexHolder0>());
+	}
+
+	private long internalCheckSum(IdentityHashMap<ComplexHolder0, ComplexHolder0> visited) {
+		if(visited.containsKey(this)) {
+			return 0;
+		}
+		visited.put(this, this);
+		long checkSum = internalCheckSum();
+		for (ComplexHolder0 child : _children) {
+			checkSum += child.internalCheckSum(visited);
+		}
+		if(_array != null) {
+			for (ComplexHolder0 child : _array) {
+				checkSum += child.internalCheckSum(visited);
+			}
+		}
+		if(_previous != null) {
+			checkSum += _previous.internalCheckSum(visited);
+		}
+		return checkSum;
+	}
+
+	protected long internalCheckSum() {
+		return _name.hashCode();
+	}
 
 
 }
