@@ -105,7 +105,7 @@ public class ComplexHolder0 implements CheckSummable {
 	}
 
 
-	private static final Closure4[] FACTORIES = {
+	public static final Closure4[] FACTORIES = {
 		new Closure4<ComplexHolder0>(){
 			@Override
 			public ComplexHolder0 run() {
@@ -147,7 +147,8 @@ public class ComplexHolder0 implements CheckSummable {
 			
 			@Override
 			public void visit(ComplexHolder0 holder) {
-				checkSum = holder.ownCheckSum();
+				checkSum += Math.abs(holder.ownCheckSum());
+				System.out.println(holder._name + " " + Math.abs(holder.ownCheckSum()));
 			}
 		}
 		CheckSumVisitor visitor = new CheckSumVisitor();
@@ -209,6 +210,14 @@ public class ComplexHolder0 implements CheckSummable {
 	
 	public ComplexHolder0[] getArray() {
 		return _array;
+	}
+
+	public void setArray(ComplexHolder0[] array) {
+		_array = array;
+	}
+
+	public void setChildren(List<ComplexHolder0> children) {
+		_children = children;
 	}
 
 }
