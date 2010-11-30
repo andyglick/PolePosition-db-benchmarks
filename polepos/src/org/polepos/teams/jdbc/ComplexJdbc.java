@@ -27,6 +27,9 @@ import org.polepos.circuits.complex.*;
 import org.polepos.data.*;
 import org.polepos.framework.*;
 
+import com.db4o.*;
+import com.db4o.query.*;
+
 public class ComplexJdbc extends JdbcDriver implements Complex {
 	
 	private static final int ROOT_ID = 1; 
@@ -115,7 +118,7 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 		final PreparedStatement childrenStat = prepareStatement("insert into children (parent, child, pos) values (?,?,?)");
 		final Map<ComplexHolder0,Integer> ids = new HashMap<ComplexHolder0, Integer>();
 		ComplexHolder0 holder = ComplexHolder0.generate(depth(), objectCount());
-		// addToCheckSum(holder);
+		addToCheckSum(holder);
 		holder.traverse(new Visitor<ComplexHolder0>() {
 			@Override
 			public void visit(ComplexHolder0 holder) {
@@ -283,6 +286,7 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 		
 		holder.setName(resultSet0.getString(NAME));
 		int previousId = resultSet0.getInt(PREVIOUS);
+		close(resultSet0);
 		if(previousId> 0){
 			holder.setPrevious(
 				readHolder(
@@ -368,7 +372,7 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 		}
 		childrenResultSet.close();
 		
-		close(resultSet0);
+		
 		return holder;
 	}
 
@@ -390,7 +394,43 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 
 	@Override
 	public void query() {
-		// TODO Auto-generated method stub
+		int selectCount = selectCount();
+		int firstInt = objectCount() * objectCount() + objectCount();
+		int lastInt = firstInt + (objectCount() * objectCount() * objectCount()) - 1;
+		int currentInt = firstInt;
+		for (int run = 0; run < selectCount; run++) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("select * from complexHolder0 ");
+			sb.append("INNER JOIN complexHolder1 ");
+			sb.append("on complexHolder0.id = complexHolder1.id ");
+			sb.append("INNER JOIN complexHolder2 ");
+			sb.append("on complexHolder0.id = complexHolder2.id ");
+			PreparedStatement joinStat = prepareStatement(sb.toString());
+			
+			try {
+				joinStat.executeQuery();
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new RuntimeException(e); 
+			}
+			
+//			Query query = db().query();
+//			query.constrain(ComplexHolder2.class);
+//			query.descend("_i2").constrain(currentInt);
+//			ObjectSet<ComplexHolder2> result = query.execute();
+//			if(result.size() != 1) {
+//				throw new IllegalStateException("" + result.size());
+//			}
+//			ComplexHolder2 holder = result.get(0);
+//			db().activate(holder, Integer.MAX_VALUE);
+//			addToCheckSum(holder);
+//			
+//			currentInt++;
+//			if(currentInt > lastInt){
+//				currentInt = firstInt;
+//			}
+		}
+		
 		
 	}
 

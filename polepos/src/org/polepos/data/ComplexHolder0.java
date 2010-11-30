@@ -148,7 +148,6 @@ public class ComplexHolder0 implements CheckSummable {
 			@Override
 			public void visit(ComplexHolder0 holder) {
 				checkSum += Math.abs(holder.ownCheckSum());
-				System.out.println(holder._name + " " + Math.abs(holder.ownCheckSum()));
 			}
 		}
 		CheckSumVisitor visitor = new CheckSumVisitor();
