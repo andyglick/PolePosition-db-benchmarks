@@ -54,7 +54,6 @@ public class ComplexHolder0 implements CheckSummable {
 		if(depth < 1){
 			return;
 		}
-		
 		int factoryIdx = 0;
 		int holderIdx = 0;
 		List<ComplexHolder0> parentLevel = Arrays.asList(root);
@@ -101,7 +100,7 @@ public class ComplexHolder0 implements CheckSummable {
 		return holders;
 	}
 
-	private void addChild(ComplexHolder0 child) {
+	public void addChild(ComplexHolder0 child) {
 		_children.add(child);
 	}
 
@@ -141,33 +140,75 @@ public class ComplexHolder0 implements CheckSummable {
 
 	@Override
 	public long checkSum() {
-		return internalCheckSum(new IdentityHashMap<ComplexHolder0, ComplexHolder0>());
+		
+		class CheckSumVisitor implements Visitor<ComplexHolder0> {
+			
+			long checkSum;
+			
+			@Override
+			public void visit(ComplexHolder0 holder) {
+				checkSum = holder.ownCheckSum();
+			}
+		}
+		CheckSumVisitor visitor = new CheckSumVisitor();
+		traverse(visitor, new NullVisitor<ComplexHolder0>());
+		return visitor.checkSum;
 	}
 
-	private long internalCheckSum(IdentityHashMap<ComplexHolder0, ComplexHolder0> visited) {
+	public void traverse(Visitor<ComplexHolder0> preVisitor, Visitor<ComplexHolder0> postVisitor) {
+		internalTraverse(new IdentityHashMap<ComplexHolder0, ComplexHolder0>(), preVisitor, postVisitor);
+	}
+
+	private void internalTraverse(IdentityHashMap<ComplexHolder0, ComplexHolder0> visited, Visitor<ComplexHolder0> preVisitor, Visitor<ComplexHolder0> postVisitor) {
 		if(visited.containsKey(this)) {
-			return 0;
+			return;
 		}
 		visited.put(this, this);
-		long checkSum = internalCheckSum();
+		preVisitor.visit(this);
 		for (ComplexHolder0 child : _children) {
-			checkSum += child.internalCheckSum(visited);
+			child.internalTraverse(visited, preVisitor, postVisitor);
 		}
 		if(_array != null) {
 			for (ComplexHolder0 child : _array) {
-				checkSum += child.internalCheckSum(visited);
+				child.internalTraverse(visited, preVisitor, postVisitor);
 			}
 		}
 		if(_previous != null) {
-			checkSum += _previous.internalCheckSum(visited);
+			_previous.internalTraverse(visited, preVisitor, postVisitor);
 		}
-		return checkSum;
+		postVisitor.visit(this);
 	}
+	
 
-	protected long internalCheckSum() {
+	public long ownCheckSum() {
 		return _name.hashCode();
 	}
 
 	protected void setSpecial(int value) {
 	}
+	
+	public String getName() {
+		return _name;
+	}
+
+	public void setPrevious(ComplexHolder0 holder) {
+		_previous = holder;
+	}
+
+	public void setName(String name) {
+		_name = name;
+	}
+
+	public List<ComplexHolder0> getChildren() {
+		return _children;
+	}
+
+	public ComplexHolder0 getPrevious() {
+		return _previous;
+	}
+	
+	public ComplexHolder0[] getArray() {
+		return _array;
+	}
+
 }

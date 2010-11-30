@@ -18,21 +18,13 @@ Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA  02111-1307, USA. */
 
 
-package org.polepos.data;
+package org.polepos.framework;
 
-public class ComplexHolder1 extends ComplexHolder0 {
-	
-	public int _i1;
-	
-	@Override
-	public long ownCheckSum() {
-		return _i1 + super.ownCheckSum();
-	}
+public class NullVisitor<T> implements Visitor<T>{
 
 	@Override
-	protected void setSpecial(int value) {
-		super.setSpecial(value);
-		_i1 = value;
+	public void visit(T t) {
+		// do nothing
 	}
-	
+
 }
