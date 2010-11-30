@@ -186,6 +186,10 @@ public abstract class DriverBase extends Driver implements Cloneable
 		throw new IllegalStateException(" Out of _objectCount. Did you call initializeTestId ?");
 	}
 	
+	protected int selectCount(){
+		return setup().getSelectCount();
+	}
+	
 	protected int objectCount() {
 		return setup().getObjectCount();
 	}

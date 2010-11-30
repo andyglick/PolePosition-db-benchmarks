@@ -49,7 +49,7 @@ public class FlatObjectDb4o extends Db4oDriver implements FlatObject{
 	}
 
     public void queryIndexedString() {
-        initializeTestId(setup().getSelectCount());
+        initializeTestId(selectCount());
         while(hasMoreTestIds()) {
             Query q = db().query();
             q.constrain( IndexedObject.class );
@@ -59,7 +59,7 @@ public class FlatObjectDb4o extends Db4oDriver implements FlatObject{
     }
 
     public void queryIndexedInt() {
-        initializeTestId(setup().getSelectCount());
+        initializeTestId(selectCount());
         while(hasMoreTestIds()) {
     		Query q = db().query();
     		q.constrain( IndexedObject.class );
@@ -69,7 +69,7 @@ public class FlatObjectDb4o extends Db4oDriver implements FlatObject{
     }
 
     public void update() {
-        initializeTestId(setup().getUpdateCount());
+        initializeTestId(updateCount());
         while(hasMoreTestIds()) {
             Query q = db().query();
         	q.constrain( IndexedObject.class );
@@ -84,7 +84,7 @@ public class FlatObjectDb4o extends Db4oDriver implements FlatObject{
 	}
 	
     public void delete() {
-        initializeTestId(setup().getUpdateCount());
+        initializeTestId(updateCount());
         while(hasMoreTestIds()) {
             Query q = db().query();
         	q.constrain( IndexedObject.class );

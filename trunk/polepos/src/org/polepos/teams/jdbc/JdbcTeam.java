@@ -61,6 +61,7 @@ public class JdbcTeam extends Team{
         	new FlatObjectJdbc(),
         	new NestedListsJdbc(),
         	new InheritanceHierarchyJdbc(),
+        	new ComplexJdbc(),
             new MelbourneJdbc(),
             new SepangJdbc(),
             new BahrainJdbc(),

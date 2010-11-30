@@ -24,13 +24,16 @@ public class ComplexHolder2 extends ComplexHolder1 {
 	
 	public int _i2;
 	
-	protected long internalCheckSum() {
-		return _i2 + super.internalCheckSum();
+	@Override
+	public long ownCheckSum() {
+		return _i2 + super.ownCheckSum();
 	}
 
+	@Override
 	protected void setSpecial(int value) {
 		super.setSpecial(value);
 		_i2 = value;
 	}
+
 
 }
