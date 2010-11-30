@@ -24,10 +24,18 @@ import java.util.concurrent.atomic.*;
 
 public class IdGenerator {
 	
-	private AtomicLong _atomicLong = new AtomicLong(1);
+	private AtomicLong _atomicLong;
 	
+	public IdGenerator(int start){
+		_atomicLong = new AtomicLong(start);
+	}
+	
+	public IdGenerator(){
+		this(1);
+	}
+
 	public long nextId(){
 		return _atomicLong.getAndIncrement();
 	}
-
+	
 }

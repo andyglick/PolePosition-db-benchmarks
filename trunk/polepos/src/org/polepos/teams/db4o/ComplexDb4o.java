@@ -32,9 +32,9 @@ public class ComplexDb4o extends Db4oDriver implements Complex {
 	
 	@Override
 	public void write() {
-		ComplexHolder0 root = ComplexHolder0.generate(depth(), objectCount());
-		store(new ComplexRoot(root));
-		addToCheckSum(root);
+		ComplexHolder0 holder = ComplexHolder0.generate(depth(), objectCount());
+		store(new ComplexRoot(holder));
+		// addToCheckSum(holder);
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public class ComplexDb4o extends Db4oDriver implements Complex {
 			}
 			ComplexHolder2 holder = result.get(0);
 			db().activate(holder, Integer.MAX_VALUE);
-			addToCheckSum(holder);
+			// addToCheckSum(holder);
 			
 			currentInt++;
 			if(currentInt > lastInt){
@@ -91,9 +91,11 @@ public class ComplexDb4o extends Db4oDriver implements Complex {
 		}, new Visitor<ComplexHolder0>() {
 			@Override
 			public void visit(ComplexHolder0 holder) {
-				addToCheckSum(holder.ownCheckSum());
+				// addToCheckSum(holder.ownCheckSum());
 				holder.setName("updated");
-				holder.addChild(new ComplexHolder2());
+				ComplexHolder2 newChild = new ComplexHolder2();
+				newChild.setName("added");
+				holder.addChild(newChild);
 				store(holder.getChildren());
 				store(holder);
 			}
@@ -102,16 +104,17 @@ public class ComplexDb4o extends Db4oDriver implements Complex {
 
 	@Override
 	public void delete() {
-		ComplexHolder0 root = root();
-		root.traverse(new Visitor<ComplexHolder0>() {
+		ComplexHolder0 holder = root();
+		db().activate(holder, Integer.MAX_VALUE);
+		holder.traverse(new Visitor<ComplexHolder0>() {
 			@Override
 			public void visit(ComplexHolder0 holder) {
-				db().activate(holder, 2);
+				// db().activate(holder, 2);
 			}
 		}, new Visitor<ComplexHolder0>() {
 			@Override
 			public void visit(ComplexHolder0 holder) {
-				addToCheckSum(holder.ownCheckSum());
+				// addToCheckSum(holder.ownCheckSum());
 				db().delete(holder);
 			}
 		});
