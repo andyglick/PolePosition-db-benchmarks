@@ -28,6 +28,9 @@ import com.db4o.foundation.*;
 
 public class ComplexHolder0 implements CheckSummable {
 	
+	// makes JDBC coding easier, not used for object databases (db4o , VOD )
+	private transient int _id;
+	
 	private ComplexHolder0 _previous;
 	
 	private String _name;
@@ -217,6 +220,14 @@ public class ComplexHolder0 implements CheckSummable {
 
 	public void setChildren(List<ComplexHolder0> children) {
 		_children = children;
+	}
+	
+	public void setId(int id){
+		_id = id;
+	}
+	
+	public int getId(){
+		return _id;
 	}
 
 }
