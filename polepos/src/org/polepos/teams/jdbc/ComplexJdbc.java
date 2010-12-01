@@ -405,33 +405,41 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 			sb.append("on complexHolder0.id = complexHolder1.id ");
 			sb.append("INNER JOIN complexHolder2 ");
 			sb.append("on complexHolder0.id = complexHolder2.id ");
-			PreparedStatement joinStat = prepareStatement(sb.toString());
+			sb.append("LEFT OUTER JOIN complexHolder3 ");
+			sb.append("on complexHolder0.id = complexHolder3.id ");
+			sb.append("LEFT OUTER JOIN complexHolder4 ");
+			sb.append("on complexHolder0.id = complexHolder4.id ");
+			sb.append("where complexHolder2.i2 = ?");
+			PreparedStatement stat = prepareStatement(sb.toString());
 			
 			try {
-				joinStat.executeQuery();
+				stat.setInt(1, currentInt);
+				ResultSet resultSet = executeQuery(stat);
+				int type = resultSet.getInt("type");
+				ComplexHolder2 holder = (ComplexHolder2) ComplexHolder0.FACTORIES[type].run();
+				holder.setName(resultSet.getString("name"));
+				holder._i1 = resultSet.getInt("i1");
+				holder._i2 = resultSet.getInt("i2");
+				if(holder instanceof ComplexHolder3){
+					ComplexHolder3 complexHolder3 = (ComplexHolder3) holder;
+					complexHolder3._i3 = resultSet.getInt("i3");
+				}
+				if(holder instanceof ComplexHolder4){
+					ComplexHolder4 complexHolder4 = (ComplexHolder4) holder;
+					complexHolder4._i4 = resultSet.getInt("i4");
+				}
+				addToCheckSum(holder.ownCheckSum());
+				close(resultSet);
+				stat.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw new RuntimeException(e); 
 			}
-			
-//			Query query = db().query();
-//			query.constrain(ComplexHolder2.class);
-//			query.descend("_i2").constrain(currentInt);
-//			ObjectSet<ComplexHolder2> result = query.execute();
-//			if(result.size() != 1) {
-//				throw new IllegalStateException("" + result.size());
-//			}
-//			ComplexHolder2 holder = result.get(0);
-//			db().activate(holder, Integer.MAX_VALUE);
-//			addToCheckSum(holder);
-//			
-//			currentInt++;
-//			if(currentInt > lastInt){
-//				currentInt = firstInt;
-//			}
+			currentInt++;
+			if(currentInt > lastInt){
+				currentInt = firstInt;
+			}
 		}
-		
-		
 	}
 
 	@Override

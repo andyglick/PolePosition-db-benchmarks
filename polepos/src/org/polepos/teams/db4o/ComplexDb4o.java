@@ -69,8 +69,8 @@ public class ComplexDb4o extends Db4oDriver implements Complex {
 				throw new IllegalStateException("" + result.size());
 			}
 			ComplexHolder2 holder = result.get(0);
-			db().activate(holder, Integer.MAX_VALUE);
-			addToCheckSum(holder);
+			db().activate(holder, 1);
+			addToCheckSum(holder.ownCheckSum());
 			
 			currentInt++;
 			if(currentInt > lastInt){
