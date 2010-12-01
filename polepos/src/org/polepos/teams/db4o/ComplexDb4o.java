@@ -82,18 +82,17 @@ public class ComplexDb4o extends Db4oDriver implements Complex {
 	
 	@Override
 	public void update() {
-		ComplexHolder0 root = root();
-		root.traverse(new Visitor<ComplexHolder0>() {
-			@Override
-			public void visit(ComplexHolder0 holder) {
-				db().activate(holder, 2);
-			}
-		}, new Visitor<ComplexHolder0>() {
+		ComplexHolder0 holder = root();
+		db().activate(holder, Integer.MAX_VALUE);
+		holder.traverse(new NullVisitor(),
+				new Visitor<ComplexHolder0>() {
 			@Override
 			public void visit(ComplexHolder0 holder) {
 				addToCheckSum(holder.ownCheckSum());
 				holder.setName("updated");
 				ComplexHolder2 newChild = new ComplexHolder2();
+				newChild._i1 = 1;
+				newChild._i2 = 2;
 				newChild.setName("added");
 				holder.addChild(newChild);
 				store(holder.getChildren());

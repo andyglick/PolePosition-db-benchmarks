@@ -61,6 +61,8 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
     
     private static final int POS = 3;
     
+    private IdGenerator _idGenerator = new IdGenerator(ROOT_ID);
+    
     public void takeSeatIn(Car car, TurnSetup setup) throws CarMotorFailureException{
         
         super.takeSeatIn(car, setup);
@@ -105,8 +107,9 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
     
 	@Override
 	public void write() {
-		final IdGenerator idGenerator = new IdGenerator(ROOT_ID);
+		
 		final Stack<Integer> parentIds = new Stack<Integer>();
+		
 		final PreparedStatement complexHolder0Stat = prepareStatement("insert into complexHolder0 (id, previous, name, type) values (?,?,?,?)");
 		final PreparedStatement[] complexHolderStats = new PreparedStatement[4];
 		for (int i = 0; i < complexHolderStats.length; i++) {
@@ -116,13 +119,14 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 		}
 		final PreparedStatement arrayStat = prepareStatement("insert into tarray (parent, child, pos) values (?,?,?)");
 		final PreparedStatement childrenStat = prepareStatement("insert into children (parent, child, pos) values (?,?,?)");
+		
 		final Map<ComplexHolder0,Integer> ids = new HashMap<ComplexHolder0, Integer>();
 		ComplexHolder0 holder = ComplexHolder0.generate(depth(), objectCount());
 		addToCheckSum(holder);
 		holder.traverse(new Visitor<ComplexHolder0>() {
 			@Override
 			public void visit(ComplexHolder0 holder) {
-				int id = (int) idGenerator.nextId();
+				int id = (int) _idGenerator.nextId();
 				ids.put(holder, id);
 				try {
 					int type = 0;
@@ -228,10 +232,17 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 			throw new RuntimeException(e);		
 		}
 		
+		commit();
+		
 	}
 
 	@Override
 	public void read() {
+		addToCheckSum(readRootInternal());
+	}
+
+	private ComplexHolder0 readRootInternal() {
+		ComplexHolder0 holder = null;
 		try {
 			final PreparedStatement complexHolder0Stat = 
 				prepareStatement("select * from complexHolder0 where id=?");
@@ -245,16 +256,14 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 			final PreparedStatement arrayStat = prepareStatement("select * from " + ARRAY_TABLE + " where parent=? order by pos");
 			final PreparedStatement childrenStat = prepareStatement("select * from " + CHILDREN_TABLE + " where parent=? order by pos");
 
-			Map<Integer, ComplexHolder0> read = new HashMap<Integer, ComplexHolder0>();
-			ComplexHolder0 holder = readHolder(
-					read, 
+			Map<Integer, ComplexHolder0> idToInstance = new HashMap<Integer, ComplexHolder0>();
+			holder = readHolder(
+					idToInstance, 
 					complexHolder0Stat, 
 					complexHolderStats,
 					arrayStat,
 					childrenStat,
 					ROOT_ID);
-			
-			addToCheckSum(holder.checkSum());
 			
 			complexHolder0Stat.close();
 			for (int i = 0; i < complexHolderStats.length; i++) {
@@ -264,6 +273,7 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+		return holder;
 	}
 
 	private ComplexHolder0 readHolder(
@@ -282,6 +292,7 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 		ResultSet resultSet0 = executeQuery(complexHolder0Stat);
 		int type = resultSet0.getInt(TYPE);
 		ComplexHolder0 holder = (ComplexHolder0) ComplexHolder0.FACTORIES[type].run();
+		holder.setId(id);
 		read.put(id, holder);
 		
 		holder.setName(resultSet0.getString(NAME));
@@ -371,9 +382,8 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 			}
 		}
 		childrenResultSet.close();
-		
-		
 		return holder;
+		
 	}
 
 	private void close(ResultSet resultSet) throws SQLException {
@@ -444,13 +454,116 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
+		final PreparedStatement nameStat = prepareStatement("update complexholder0 set name=? where id=?");
+		final PreparedStatement complexHolder0Stat = prepareStatement("insert into complexHolder0 (id, previous, name, type) values (?,?,?,?)");
+		final PreparedStatement[] complexHolderStats = new PreparedStatement[2];
+		for (int i = 0; i < complexHolderStats.length; i++) {
+			int idx = i + 1;
+			String table = "complexHolder" + idx;
+			complexHolderStats[i] = prepareStatement("insert into " + table + "(id, i" +  idx + ") values (?,?)"); 
+		}
+		final PreparedStatement childrenStat = prepareStatement("insert into children (parent, child, pos) values (?,?,?)");
+		ComplexHolder0 holder = readRootInternal();
+		holder.traverse(new NullVisitor(),
+			new Visitor<ComplexHolder0>(){
+				@Override
+				public void visit(ComplexHolder0 holder) {
+					addToCheckSum(holder.ownCheckSum());
+					try {
+						nameStat.setString(1, "updated");
+						nameStat.setInt(2, holder.getId());
+						nameStat.addBatch();
+						
+						ComplexHolder2 newChild = new ComplexHolder2();
+						newChild.setName("added");
+						holder.addChild(newChild);
+						int childId = (int) _idGenerator.nextId();
+						
+						complexHolder0Stat.setInt(1, childId);
+						complexHolder0Stat.setInt(2, 0);
+						complexHolder0Stat.setString(3, "added");
+						complexHolder0Stat.setInt(4, 2);
+						complexHolder0Stat.addBatch();
+						
+						for (int i = 0; i < complexHolderStats.length; i++) {
+							complexHolderStats[i].setInt(1, childId);
+							complexHolderStats[i].setInt(2, i + 1);
+							complexHolderStats[i].addBatch();
+						}
+						
+						childrenStat.setInt(1, holder.getId());
+						childrenStat.setInt(2, childId);
+						childrenStat.setInt(3, holder.getChildren().size());
+						childrenStat.addBatch();
+						
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					}
+					
+				}
+		});
+		try {
+			nameStat.executeBatch();
+			nameStat.close();
+			complexHolder0Stat.executeBatch();
+			complexHolder0Stat.close();
+			for (int i = 0; i < complexHolderStats.length; i++) {
+				complexHolderStats[i].executeBatch();
+				complexHolderStats[i].close(); 
+			}
+			childrenStat.executeBatch();
+			childrenStat.close();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		commit();
 		
 	}
 
 	@Override
 	public void delete() {
-		// TODO Auto-generated method stub
+		final PreparedStatement[] complexHolderStats = new PreparedStatement[5];
+		for (int i = 0; i < complexHolderStats.length; i++) {
+			String table = "complexHolder" + i;
+			complexHolderStats[i] = prepareStatement("delete from " + table + " where id=?"); 
+		}
+		final PreparedStatement arrayStat = prepareStatement("delete from " + ARRAY_TABLE + " where parent=?");
+		final PreparedStatement childrenStat = prepareStatement("delete from " + CHILDREN_TABLE + " where parent=?");
+
+		ComplexHolder0 holder = readRootInternal();
+		holder.traverse(new NullVisitor(),
+			new Visitor<ComplexHolder0>(){
+				@Override
+				public void visit(ComplexHolder0 holder) {
+					addToCheckSum(holder.ownCheckSum());
+					try {
+						int id = holder.getId();
+						for (int i = 0; i < complexHolderStats.length; i++) {
+							complexHolderStats[i].setInt(1, id);
+							complexHolderStats[i].addBatch();
+						}
+						arrayStat.setInt(1, id);
+						arrayStat.addBatch();
+						childrenStat.setInt(1, id);
+						childrenStat.addBatch();
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					}
+				}
+		});
+		try {
+			for (int i = 0; i < complexHolderStats.length; i++) {
+				complexHolderStats[i].executeBatch();
+				complexHolderStats[i].close(); 
+			}
+			arrayStat.executeBatch();
+			arrayStat.close();
+			childrenStat.executeBatch();
+			childrenStat.close();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		commit();
 		
 	}
 
