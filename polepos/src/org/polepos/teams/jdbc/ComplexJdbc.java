@@ -49,11 +49,9 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
     
     private static final int ID = 1;
     
-    private static final int PREVIOUS = 2;
+    private static final int NAME = 2;
     
-    private static final int NAME = 3;
-    
-    private static final int TYPE = 4;
+    private static final int TYPE = 3;
     
     private static final int INT_FIELD = 2;
     
@@ -72,8 +70,8 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
         dropTable(CHILDREN_TABLE);
         dropTable(ARRAY_TABLE);
         
-        createTable( HOLDER_TABLE0, new String[]{ "id", "previous", "name", "type" }, 
-                new Class[]{Integer.TYPE, Integer.TYPE, String.class, Integer.TYPE} );
+        createTable( HOLDER_TABLE0, new String[]{ "id", "name", "type" }, 
+                new Class[]{Integer.TYPE, String.class, Integer.TYPE} );
         
         createTable(CHILDREN_TABLE, 
         		new String[]{ "parent", "child", "pos"}, 
@@ -110,7 +108,7 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 		_idGenerator = new IdGenerator(ROOT_ID);
 		final Stack<Integer> parentIds = new Stack<Integer>();
 		
-		final PreparedStatement complexHolder0Stat = prepareStatement("insert into complexHolder0 (id, previous, name, type) values (?,?,?,?)");
+		final PreparedStatement complexHolder0Stat = prepareStatement("insert into complexHolder0 (id, name, type) values (?,?,?)");
 		final PreparedStatement[] complexHolderStats = new PreparedStatement[4];
 		for (int i = 0; i < complexHolderStats.length; i++) {
 			int idx = i + 1;
@@ -163,10 +161,9 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 						complexHolderStats[3].addBatch();
 					}
 					
-					complexHolder0Stat.setInt(1, id);
-					complexHolder0Stat.setInt(2, holder.getPrevious() == null ? 0 : ids.get(holder.getPrevious()));
-					complexHolder0Stat.setString(3, holder.getName());
-					complexHolder0Stat.setInt(4, type);
+					complexHolder0Stat.setInt(ID, id);
+					complexHolder0Stat.setString(NAME, holder.getName());
+					complexHolder0Stat.setInt(TYPE, type);
 					complexHolder0Stat.addBatch();
 
 
@@ -296,18 +293,7 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 		read.put(id, holder);
 		
 		holder.setName(resultSet0.getString(NAME));
-		int previousId = resultSet0.getInt(PREVIOUS);
 		close(resultSet0);
-		if(previousId> 0){
-			holder.setPrevious(
-				readHolder(
-						read, 
-						complexHolder0Stat,
-						complexHolderStats, 
-						arrayStat, 
-						childrenStat, 
-						previousId));
-		}
 		
 		if(holder instanceof ComplexHolder1){
 			ComplexHolder1 complexHolder1 = (ComplexHolder1) holder; 
@@ -455,7 +441,7 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 	@Override
 	public void update() {
 		final PreparedStatement nameStat = prepareStatement("update complexholder0 set name=? where id=?");
-		final PreparedStatement complexHolder0Stat = prepareStatement("insert into complexHolder0 (id, previous, name, type) values (?,?,?,?)");
+		final PreparedStatement complexHolder0Stat = prepareStatement("insert into complexHolder0 (id, name, type) values (?,?,?)");
 		final PreparedStatement[] complexHolderStats = new PreparedStatement[2];
 		for (int i = 0; i < complexHolderStats.length; i++) {
 			int idx = i + 1;
@@ -479,10 +465,9 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 						holder.addChild(newChild);
 						int childId = (int) _idGenerator.nextId();
 						
-						complexHolder0Stat.setInt(1, childId);
-						complexHolder0Stat.setInt(2, 0);
-						complexHolder0Stat.setString(3, "added");
-						complexHolder0Stat.setInt(4, 2);
+						complexHolder0Stat.setInt(ID, childId);
+						complexHolder0Stat.setString(NAME, "added");
+						complexHolder0Stat.setInt(TYPE, 2);
 						complexHolder0Stat.addBatch();
 						
 						for (int i = 0; i < complexHolderStats.length; i++) {

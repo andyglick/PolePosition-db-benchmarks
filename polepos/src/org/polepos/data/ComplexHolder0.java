@@ -31,23 +31,15 @@ public class ComplexHolder0 implements CheckSummable {
 	// makes JDBC coding easier, not used for object databases (db4o , VOD )
 	private transient int _id;
 	
-	private ComplexHolder0 _previous;
-	
 	private String _name;
 	
 	private List<ComplexHolder0> _children = new ArrayList<ComplexHolder0>();
 	
 	private ComplexHolder0[] _array;
 	
-	public static void main(String[] args) {
-		ComplexHolder0 root = generate(10, 1);
-		System.out.println(root.checkSum());
-	}
-	
 	public static ComplexHolder0 generate(int depth, int leafs){
 		ComplexHolder0 complexHolder = new ComplexHolder0();
 		complexHolder._name = "root";
-		complexHolder._previous = complexHolder;
 		createChildren(complexHolder, depth -1, leafs);
 		return complexHolder;
 	}
@@ -69,7 +61,6 @@ public class ComplexHolder0 implements CheckSummable {
 				for (int childIdx = 0; childIdx < numChildren; childIdx++) {
 					ComplexHolder0 curChild = curFactory.run();
 					curChild._name = String.valueOf(holderIdx);
-					curChild._previous = previous;
 					curChild._array = createArray(holderIdx);
 					curChild.setSpecial(holderIdx);
 					curParent.addChild(curChild);
@@ -176,9 +167,6 @@ public class ComplexHolder0 implements CheckSummable {
 				child.internalTraverse(visited, preVisitor, postVisitor);
 			}
 		}
-		if(_previous != null) {
-			_previous.internalTraverse(visited, preVisitor, postVisitor);
-		}
 		postVisitor.visit(this);
 	}
 	
@@ -194,10 +182,6 @@ public class ComplexHolder0 implements CheckSummable {
 		return _name;
 	}
 
-	public void setPrevious(ComplexHolder0 holder) {
-		_previous = holder;
-	}
-
 	public void setName(String name) {
 		_name = name;
 	}
@@ -206,10 +190,6 @@ public class ComplexHolder0 implements CheckSummable {
 		return _children;
 	}
 
-	public ComplexHolder0 getPrevious() {
-		return _previous;
-	}
-	
 	public ComplexHolder0[] getArray() {
 		return _array;
 	}
