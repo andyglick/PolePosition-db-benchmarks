@@ -63,6 +63,7 @@ public class HibernateTeam extends Team {
 				new FlatObjectHibernate(),
 				new NestedListsHibernate(),
 				new InheritanceHierarchyHibernate(),
+				new ComplexHibernate(),
 				new MelbourneHibernate(),
 				new SepangHibernate(), 
 				new BahrainHibernate(),
@@ -103,17 +104,18 @@ public class HibernateTeam extends Team {
 
 	public static final Class[] persistentClasses() {
 		return new Class[] { 
-			IndexedObject.class,
-			ListHolder.class,
-			InheritanceHierarchy0.class,
-			HibernatePilot.class, 
-			HibernateTree.class,
-			HibernateIndexedPilot.class, 
+			ComplexHolder0.class,
+			ComplexRoot.class,
 			HB0.class,
+			HibernateIndexedPilot.class, 
 			HibernateLightObject.class, 
 			HibernateListHolder.class,
-			HN1.class, 
-			
+			HibernatePilot.class, 
+			HibernateTree.class,
+			HN1.class,
+			IndexedObject.class,
+			InheritanceHierarchy0.class,
+			ListHolder.class,
 		};
 	}
 

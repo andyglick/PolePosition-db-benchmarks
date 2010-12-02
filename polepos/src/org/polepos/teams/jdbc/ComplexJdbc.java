@@ -61,7 +61,7 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
     
     private static final int POS = 3;
     
-    private IdGenerator _idGenerator = new IdGenerator(ROOT_ID);
+    private IdGenerator _idGenerator;
     
     public void takeSeatIn(Car car, TurnSetup setup) throws CarMotorFailureException{
         
@@ -107,7 +107,7 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
     
 	@Override
 	public void write() {
-		
+		_idGenerator = new IdGenerator(ROOT_ID);
 		final Stack<Integer> parentIds = new Stack<Integer>();
 		
 		final PreparedStatement complexHolder0Stat = prepareStatement("insert into complexHolder0 (id, previous, name, type) values (?,?,?,?)");
