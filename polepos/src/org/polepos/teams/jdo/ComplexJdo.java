@@ -18,59 +18,70 @@ Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA  02111-1307, USA. */
 
 
-package org.polepos.teams.db4o;
+package org.polepos.teams.jdo;
+
+import java.util.*;
+
+import javax.jdo.Query;
 
 import org.polepos.circuits.complex.*;
-import org.polepos.data.*;
 import org.polepos.framework.*;
+import org.polepos.teams.jdo.data.*;
 
-import com.db4o.*;
-import com.db4o.config.*;
-import com.db4o.query.*;
 
-public class ComplexDb4o extends Db4oDriver implements Complex {
+public class ComplexJdo extends JdoDriver implements Complex {
 	
 	@Override
 	public void write() {
+		begin();
 		ComplexHolder0 holder = ComplexHolder0.generate(depth(), objectCount());
-		store(new ComplexRoot(holder));
 		addToCheckSum(holder);
+		store(new ComplexRoot(holder));
+		commit();
 	}
 
 	@Override
 	public void read() {
+		beginRead();
 		ComplexHolder0 holder = root();
-		db().activate(holder, Integer.MAX_VALUE);
 		addToCheckSum(holder);
 	}
 
 	private ComplexHolder0 root() {
-		ObjectSet<ComplexRoot> result = db().query(ComplexRoot.class);
-		if(result.size() != 1) {
-			throw new IllegalStateException();
+        Query query = db().newQuery(ComplexRoot.class);
+        Collection result = (Collection) query.execute();
+		Iterator it = result.iterator();
+		if(! it.hasNext()){
+			throw new IllegalStateException("no ComplexRoot found");
 		}
-		return result.get(0)._holder;
+		ComplexRoot root = (ComplexRoot) it.next();
+		if(it.hasNext()){
+			throw new IllegalStateException("More than one ComplexRoot found");
+		}
+		return root.getHolder();
 	}
 
 	@Override
 	public void query() {
+		beginRead();
 		int selectCount = selectCount();
 		int firstInt = objectCount() * objectCount() + objectCount();
 		int lastInt = firstInt + (objectCount() * objectCount() * objectCount()) - 1;
 		int currentInt = firstInt;
 		for (int run = 0; run < selectCount; run++) {
-			
-			Query query = db().query();
-			query.constrain(ComplexHolder2.class);
-			query.descend("_i2").constrain(currentInt);
-			ObjectSet<ComplexHolder2> result = query.execute();
-			if(result.size() != 1) {
-				throw new IllegalStateException("" + result.size());
+	        String filter = "this.i2 == param";
+	        Query query = db().newQuery(ComplexHolder2.class, filter);
+	        query.declareParameters("int param");
+	        Collection result = (Collection) query.execute(currentInt);
+			Iterator it = result.iterator();
+			if(! it.hasNext()){
+				throw new IllegalStateException("no ComplexHolder2 found");
 			}
-			ComplexHolder2 holder = result.get(0);
-			db().activate(holder, 1);
+			ComplexHolder2 holder = (ComplexHolder2) it.next();
 			addToCheckSum(holder.ownCheckSum());
-			
+			if(it.hasNext()){
+				throw new IllegalStateException("More than one ComplexHolder2 found");
+			}
 			currentInt++;
 			if(currentInt > lastInt){
 				currentInt = firstInt;
@@ -81,44 +92,38 @@ public class ComplexDb4o extends Db4oDriver implements Complex {
 	
 	@Override
 	public void update() {
+		begin();
 		ComplexHolder0 holder = root();
-		db().activate(holder, Integer.MAX_VALUE);
-		holder.traverse(new NullVisitor(),
+		holder.traverse(new NullVisitor<ComplexHolder0>(),
 				new Visitor<ComplexHolder0>() {
 			@Override
 			public void visit(ComplexHolder0 holder) {
 				addToCheckSum(holder.ownCheckSum());
 				holder.setName("updated");
 				ComplexHolder2 newChild = new ComplexHolder2();
-				newChild._i1 = 1;
-				newChild._i2 = 2;
+				newChild.setI1(1);
+				newChild.setI2(2);
 				newChild.setName("added");
 				holder.addChild(newChild);
-				store(holder.getChildren());
-				store(holder);
 			}
 		});
+		commit();
 	}
 
 	@Override
 	public void delete() {
+		begin();
 		ComplexHolder0 holder = root();
-		db().activate(holder, Integer.MAX_VALUE);
 		holder.traverse(
-			new NullVisitor(),
+			new NullVisitor<ComplexHolder0>(),
 			new Visitor<ComplexHolder0>() {
 			@Override
 			public void visit(ComplexHolder0 holder) {
 				addToCheckSum(holder.ownCheckSum());
-				db().delete(holder);
+				delete(holder);
 			}
 		});
-	}
-
-	@Override
-	public void configure(Configuration config) {
-		config.objectClass(ComplexHolder2.class).objectField("_i2").indexed(true);
-		config.activationDepth(1);
+		commit();
 	}
 
 }

@@ -96,6 +96,7 @@ public class JdoTeam extends Team{
         	new FlatObjectJdo(),
         	new NestedListsJdo(),
         	new InheritanceHierarchyJdo(),
+        	new ComplexJdo(),
             new MelbourneJdo(),
             new SepangJdo(),
             new BahrainJdo(),
@@ -122,6 +123,12 @@ public class JdoTeam extends Team{
 			
 		    deleteAll(pm, JdoIndexedObject.class);
 		    deleteAll(pm, ListHolder.class);
+		    deleteAll(pm, ComplexHolder0.class);
+		    deleteAll(pm, ComplexHolder1.class);
+		    deleteAll(pm, ComplexHolder2.class);
+		    deleteAll(pm, ComplexHolder3.class);
+		    deleteAll(pm, ComplexHolder4.class);
+		    deleteAll(pm, ComplexRoot.class);
 		    
 		    deleteAll(pm, InheritanceHierarchy0.class);
 		    deleteAll(pm, InheritanceHierarchy1.class);
