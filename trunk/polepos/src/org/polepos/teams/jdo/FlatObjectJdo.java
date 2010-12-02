@@ -41,6 +41,7 @@ public class FlatObjectJdo extends JdoDriver implements FlatObject {
 			}
             addToCheckSum(indexedObject);
 		}
+		commit();
 	}
  
     public void queryIndexedString() {

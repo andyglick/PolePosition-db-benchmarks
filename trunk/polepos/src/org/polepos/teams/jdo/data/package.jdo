@@ -13,6 +13,23 @@
         		<collection element-type="ListHolder"/>
         	</field>
         </class>
+        <class name="ComplexRoot" />
+        <class name="ComplexHolder0">
+        	<field name="name" />
+        	<field name="array" />
+            <field name="children">
+        		<collection element-type="ComplexHolder0"/>
+        	</field>
+        
+        </class>
+        <class name="ComplexHolder1" persistence-capable-superclass="org.polepos.teams.jdo.data.ComplexHolder0" />
+        <class name="ComplexHolder2" persistence-capable-superclass="org.polepos.teams.jdo.data.ComplexHolder1">
+	        <field name = "i2" indexed = "true"/>
+        </class> 
+        <class name="ComplexHolder3" persistence-capable-superclass="org.polepos.teams.jdo.data.ComplexHolder2" />
+        <class name="ComplexHolder4" persistence-capable-superclass="org.polepos.teams.jdo.data.ComplexHolder3" />
+        
+        
         <class name="InheritanceHierarchy0" />
         <class name="InheritanceHierarchy1" persistence-capable-superclass="org.polepos.teams.jdo.data.InheritanceHierarchy0" />
         <class name="InheritanceHierarchy2" persistence-capable-superclass="org.polepos.teams.jdo.data.InheritanceHierarchy1">
