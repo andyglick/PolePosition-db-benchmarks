@@ -3,9 +3,8 @@
 
 <hibernate-mapping package="org.polepos.teams.hibernate.data">
 	<class name="ComplexHolder0" table="tComplexHolder0">
-		<id name="id" column="fid" type="int" />
-		<many-to-one name="previous" column="fprevious"  cascade="all"/>
-		<property name="name"		column="fname"		type="string"/>
+		<id name="id" column="fid" type="long" />
+		<property name="name" column="fname" type="string"/>
 		<list name="children" access="field" cascade="all">
 			<key column="parentId" />
 			<index column="elementIndex"/>

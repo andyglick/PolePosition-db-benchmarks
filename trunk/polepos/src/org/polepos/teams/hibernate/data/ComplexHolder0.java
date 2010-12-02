@@ -28,9 +28,7 @@ import com.db4o.foundation.*;
 
 public class ComplexHolder0 implements CheckSummable {
 	
-	private int id;
-	
-	private ComplexHolder0 previous;
+	private long id;
 	
 	private String name;
 	
@@ -41,22 +39,15 @@ public class ComplexHolder0 implements CheckSummable {
 	private static IdGenerator _idGenerator = new IdGenerator();
 	
 	public ComplexHolder0() {
-		id = (int) _idGenerator.nextId();
-	}
-	
-	public static void main(String[] args) {
-		ComplexHolder0 root = generate(10, 1);
-		System.out.println(root.checkSum());
+		id = _idGenerator.nextId();
 	}
 	
 	public static ComplexHolder0 generate(int depth, int leafs){
 		ComplexHolder0 complexHolder = new ComplexHolder0();
 		complexHolder.name = "root";
-		complexHolder.previous = complexHolder;
 		createChildren(complexHolder, depth -1, leafs);
 		return complexHolder;
 	}
-	
 	
 	private static void createChildren(ComplexHolder0 root, int depth, int numChildren) {
 		if(depth < 1){
@@ -69,17 +60,14 @@ public class ComplexHolder0 implements CheckSummable {
 			Closure4<ComplexHolder0> curFactory = FACTORIES[factoryIdx];
 			List<ComplexHolder0> childLevel = new ArrayList<ComplexHolder0>();
 
-			ComplexHolder0 previous = null;
 			for (ComplexHolder0 curParent : parentLevel) {
 				for (int childIdx = 0; childIdx < numChildren; childIdx++) {
 					ComplexHolder0 curChild = curFactory.run();
 					curChild.name = String.valueOf(holderIdx);
-					curChild.previous = previous;
 					curChild.array = createArray(holderIdx);
 					curChild.setSpecial(holderIdx);
 					curParent.addChild(curChild);
 					childLevel.add(curChild);
-					previous = curChild;
 					holderIdx++;
 				}
 			}
@@ -155,7 +143,6 @@ public class ComplexHolder0 implements CheckSummable {
 			
 			@Override
 			public void visit(ComplexHolder0 holder) {
-				System.err.println(holder.getName() + holder.ownCheckSum());
 				checkSum += Math.abs(holder.ownCheckSum());
 			}
 		}
@@ -170,11 +157,8 @@ public class ComplexHolder0 implements CheckSummable {
 
 	private void internalTraverse(IdentityHashMap<ComplexHolder0, ComplexHolder0> visited, Visitor<ComplexHolder0> preVisitor, Visitor<ComplexHolder0> postVisitor) {
 		if(visited.containsKey(this)) {
-			System.err.println("already found " + getName() + " " + System.identityHashCode(this));
-			
 			return;
 		}
-		System.err.println("Adding " + getName() + " " + System.identityHashCode(this));
 		visited.put(this, this);
 		preVisitor.visit(this);
 		for (ComplexHolder0 child : getChildren()) {
@@ -184,9 +168,6 @@ public class ComplexHolder0 implements CheckSummable {
 			for (ComplexHolder0 child : getArray()) {
 				child.internalTraverse(visited, preVisitor, postVisitor);
 			}
-		}
-		if(getPrevious() != null) {
-			getPrevious().internalTraverse(visited, preVisitor, postVisitor);
 		}
 		postVisitor.visit(this);
 	}
@@ -207,14 +188,6 @@ public class ComplexHolder0 implements CheckSummable {
 		this.name = name;
 	}
 
-	public ComplexHolder0 getPrevious() {
-		return previous;
-	}
-	
-	public void setPrevious(ComplexHolder0 holder) {
-		previous = holder;
-	}
-
 	public List<ComplexHolder0> getChildren() {
 		return children;
 	}
@@ -231,11 +204,11 @@ public class ComplexHolder0 implements CheckSummable {
 		this.array = array;
 	}
 	
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
