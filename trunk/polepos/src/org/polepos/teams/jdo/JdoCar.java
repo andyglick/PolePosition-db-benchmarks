@@ -67,7 +67,7 @@ public class JdoCar extends Car {
         properties.setProperty("javax.jdo.option.Optimistic", "true");
         
         // Versant VODJDO specific settings
-        properties.setProperty("versant.metadata.0", "org/polepos/teams/jdo/data/package.jdo");
+        properties.setProperty("versant.metadata.0", "org/polepos/teams/jdo/data/vod.jdo");
 
         properties.setProperty("versant.allowPmfCloseWithPmHavingOpenTx","true");
         properties.setProperty("versant.vdsSchemaEvolve","true");

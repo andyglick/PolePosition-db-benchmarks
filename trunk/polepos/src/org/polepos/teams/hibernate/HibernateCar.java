@@ -43,16 +43,23 @@ public class HibernateCar extends Car {
     
     public Session openSession() throws CarMotorFailureException{
     	
-        if ( _sessionFactory == null) {
-            _sessionFactory = getSessionFactory();
-        }
-        
+    	if(_sessionFactory == null){
+    		_sessionFactory = getSessionFactory();
+    	}
+                
         Session session = _sessionFactory.openSession();
         if("hsqldb".equals(_dbType)){
             session.createSQLQuery("SET WRITE_DELAY 0").executeUpdate();
 		}
 		return session;
     }
+    
+	public void recreateSessionFactory() {
+		if(_sessionFactory != null){
+			_sessionFactory.close();
+		}
+		_sessionFactory = getSessionFactory();
+	}
     
     public void closeSession(Session session){
     	session.close();
@@ -115,5 +122,7 @@ public class HibernateCar extends Car {
         new SchemaExport(cfg).create(true, true);
         return factory;         
     }
+
+
 
 }

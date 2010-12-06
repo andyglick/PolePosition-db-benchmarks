@@ -24,10 +24,12 @@ import java.util.*;
 
 import org.hibernate.*;
 import org.polepos.circuits.complex.*;
+import org.polepos.framework.*;
 import org.polepos.teams.hibernate.data.*;
 
 
 public class ComplexHibernate extends HibernateDriver implements Complex {
+	
 	
 	@Override
 	public void write() {
@@ -45,8 +47,8 @@ public class ComplexHibernate extends HibernateDriver implements Complex {
 	}
 
 	private ComplexHolder0 root() {
-		String from = "from org.polepos.teams.hibernate.data.ComplexRoot";
-		Iterator it = db().iterate(from);
+		String query = "from org.polepos.teams.hibernate.data.ComplexRoot";
+		Iterator it = db().iterate(query);
 		if(! it.hasNext()){
 			throw new IllegalStateException("no ComplexRoot found");
 		}
@@ -54,70 +56,66 @@ public class ComplexHibernate extends HibernateDriver implements Complex {
 		if(it.hasNext()){
 			throw new IllegalStateException("More than one ComplexRoot found");
 		}
-		ComplexHolder0 holder = root.getHolder();
-		return holder;
+		return root.getHolder();
 	}
 
 	@Override
 	public void query() {
-//		int selectCount = selectCount();
-//		int firstInt = objectCount() * objectCount() + objectCount();
-//		int lastInt = firstInt + (objectCount() * objectCount() * objectCount()) - 1;
-//		int currentInt = firstInt;
-//		for (int run = 0; run < selectCount; run++) {
-//			
-//			Query query = null;
-//			query.constrain(ComplexHolder2.class);
-//			query.descend("_i2").constrain(currentInt);
-//			ObjectSet<ComplexHolder2> result = query.execute();
-//			if(result.size() != 1) {
-//				throw new IllegalStateException("" + result.size());
-//			}
-//			ComplexHolder2 holder = result.get(0);
-//			
-//			addToCheckSum(holder.ownCheckSum());
-//			
-//			currentInt++;
-//			if(currentInt > lastInt){
-//				currentInt = firstInt;
-//			}
-//		}
-//		
+		int selectCount = selectCount();
+		int firstInt = objectCount() * objectCount() + objectCount();
+		int lastInt = firstInt + (objectCount() * objectCount() * objectCount()) - 1;
+		int currentInt = firstInt;
+		for (int run = 0; run < selectCount; run++) {
+			String query = "from org.polepos.teams.hibernate.data.ComplexHolder2 where i2=" + currentInt;
+			Iterator it = db().iterate(query);
+			if(! it.hasNext()){
+				throw new IllegalStateException("no ComplexHolder2 found");
+			}
+			ComplexHolder2 holder = (ComplexHolder2) it.next();
+			addToCheckSum(holder.ownCheckSum());
+			if(it.hasNext()){
+				throw new IllegalStateException("More than one ComplexHolder2 found");
+			}
+			currentInt++;
+			if(currentInt > lastInt){
+				currentInt = firstInt;
+			}
+		}
 	}
 	
 	@Override
 	public void update() {
-//		ComplexHolder0 holder = root();
-//		holder.traverse(new NullVisitor(),
-//				new Visitor<ComplexHolder0>() {
-//			@Override
-//			public void visit(ComplexHolder0 holder) {
-//				addToCheckSum(holder.ownCheckSum());
-//				holder.setName("updated");
-//				ComplexHolder2 newChild = new ComplexHolder2();
-//				newChild._i1 = 1;
-//				newChild._i2 = 2;
-//				newChild.setName("added");
-//				holder.addChild(newChild);
-//				store(holder.getChildren());
-//				store(holder);
-//			}
-//		});
+		Transaction tx = begin();
+		ComplexHolder0 holder = root();
+		holder.traverse(new NullVisitor<ComplexHolder0>(),
+				new Visitor<ComplexHolder0>() {
+			@Override
+			public void visit(ComplexHolder0 holder) {
+				addToCheckSum(holder.ownCheckSum());
+				holder.setName("updated");
+				ComplexHolder2 newChild = new ComplexHolder2();
+				newChild.setI1(1);
+				newChild.setI2(2);
+				newChild.setName("added");
+				holder.addChild(newChild);
+				store(holder);
+			}
+		});
+		tx.commit();
 	}
 
 	@Override
 	public void delete() {
-//		ComplexHolder0 holder = root();
-//		
-//		holder.traverse(
-//			new NullVisitor(),
-//			new Visitor<ComplexHolder0>() {
-//			@Override
-//			public void visit(ComplexHolder0 holder) {
-//				addToCheckSum(holder.ownCheckSum());
-//				db().delete(holder);
-//			}
-//		});
+		ComplexHolder0 holder = root();
+		holder.traverse(
+			new NullVisitor<ComplexHolder0>(),
+			new Visitor<ComplexHolder0>() {
+			@Override
+			public void visit(ComplexHolder0 holder) {
+				addToCheckSum(holder.ownCheckSum());
+				db().delete(holder);
+			}
+		});
 	}
 
 }

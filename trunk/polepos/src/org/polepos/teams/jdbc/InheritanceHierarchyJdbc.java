@@ -31,11 +31,11 @@ import org.polepos.framework.*;
 public class InheritanceHierarchyJdbc extends JdbcDriver implements InheritanceHierarchy {
     
     private static final String[] TABLES = new String[]{
-        "inheritanceHierarchy0",
-        "inheritanceHierarchy1",
-        "inheritanceHierarchy2",
-        "inheritanceHierarchy3",
-        "inheritanceHierarchy4",
+        "inheritanceHierarchyJdbc0",
+        "inheritanceHierarchyJdbc1",
+        "inheritanceHierarchyJdbc2",
+        "inheritanceHierarchyJdbc3",
+        "inheritanceHierarchyJdbc4",
     };
     
     public void takeSeatIn(Car car, TurnSetup setup) throws CarMotorFailureException{
@@ -43,17 +43,17 @@ public class InheritanceHierarchyJdbc extends JdbcDriver implements InheritanceH
         super.takeSeatIn(car, setup);
         openConnection();
         
-        int i = 0;
-        for(String table : TABLES){
-            dropTable( table);
-            createTable( table, new String[]{ "id", "parent", "i" + i}, 
-                        new Class[]{Integer.TYPE, Integer.TYPE, Integer.TYPE} );
-            createIndex( table, "parent" );
-            if(i == 2){
-                createIndex( table, "i2" );
-            }
-            i++;
-        }
+        for (int i = TABLES.length - 1; i >= 0; i--) {
+        	String table = TABLES[i];
+        	dropTable( table);
+        	createTable( table, new String[]{ "id", "parent", "i" + i}, 
+        			new Class[]{Integer.TYPE, Integer.TYPE, Integer.TYPE} );
+        	createIndex( table, "parent" );
+        	if(i == 2){
+        		createIndex( table, "i2" );
+        	}
+		}
+        
         close();
 
     }

@@ -51,14 +51,20 @@ public class ReflectiveCircuitBase extends CircuitBase {
 		}
 		
 	}
+	
+	@Override
+	public boolean isConcurrency() {
+		Concurrent concurrent = _driverClass.getAnnotation(Concurrent.class);
+		return concurrent != null;
+	}
 
 	@Override
 	public String description() {
-		CircuitDescription annotation = _driverClass.getAnnotation(CircuitDescription.class);
-		if(annotation == null){
+		CircuitDescription description = _driverClass.getAnnotation(CircuitDescription.class);
+		if(description == null){
 			throw new IllegalStateException("Class " + _driverClass.getName()+ " has to be annotated with " + CircuitDescription.class.getName());
 		}
-		return annotation.value();
+		return description.value();
 	}
 
 	@Override

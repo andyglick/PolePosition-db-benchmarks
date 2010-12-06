@@ -19,8 +19,11 @@
 
 package org.polepos;
 
+import java.io.*;
+
 import org.polepos.circuits.bahrain.*;
 import org.polepos.circuits.barcelona.*;
+import org.polepos.circuits.complex.*;
 import org.polepos.circuits.flatobject.*;
 import org.polepos.circuits.imola.*;
 import org.polepos.circuits.inheritancehierarchy.*;
@@ -51,7 +54,7 @@ import org.polepos.teams.jvi.*;
  * 
  */
 public class RunSeason extends AbstractRunner {
-
+	
 	public static void main(String[] args) {
 		new RunSeason().run();
 	}
@@ -60,9 +63,10 @@ public class RunSeason extends AbstractRunner {
 	public CircuitBase[] circuits() {
 		return new CircuitBase[] {
 				
-				// new ReflectiveCircuitBase(FlatObject.class),
-				// new ReflectiveCircuitBase(NestedLists.class),
-				// new ReflectiveCircuitBase(InheritanceHierarchy.class),
+//				new ReflectiveCircuitBase(FlatObject.class),
+//				new ReflectiveCircuitBase(NestedLists.class),
+//				new ReflectiveCircuitBase(InheritanceHierarchy.class),
+//				new ReflectiveCircuitBase(Complex.class),
 				
 				new Melbourne(), 
 				new Sepang(), 

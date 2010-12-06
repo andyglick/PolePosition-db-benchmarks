@@ -34,13 +34,13 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 	
 	private static final int ROOT_ID = 1; 
 	
-	private static final String HOLDER_TABLE0 = "complexHolder0";
+	private static final String HOLDER_TABLE0 = "complexHolderJdbc0";
 	
     private static final String[] HOLDER_TABLES = new String[]{
-        "complexHolder1",
-        "complexHolder2",
-        "complexHolder3",
-        "complexHolder4",
+        "complexHolderJdbc1",
+        "complexHolderJdbc2",
+        "complexHolderJdbc3",
+        "complexHolderJdbc4",
     };
     
     private static final String CHILDREN_TABLE = "children";
@@ -108,11 +108,11 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 		_idGenerator = new IdGenerator(ROOT_ID);
 		final Stack<Integer> parentIds = new Stack<Integer>();
 		
-		final PreparedStatement complexHolder0Stat = prepareStatement("insert into complexHolder0 (id, name, type) values (?,?,?)");
+		final PreparedStatement complexHolder0Stat = prepareStatement("insert into " + HOLDER_TABLE0 + " (id, name, type) values (?,?,?)");
 		final PreparedStatement[] complexHolderStats = new PreparedStatement[4];
 		for (int i = 0; i < complexHolderStats.length; i++) {
+			String table = HOLDER_TABLES[i];
 			int idx = i + 1;
-			String table = "complexHolder" + idx;
 			complexHolderStats[i] = prepareStatement("insert into " + table + "(id, i" +  idx + ") values (?,?)"); 
 		}
 		final PreparedStatement arrayStat = prepareStatement("insert into tarray (parent, child, pos) values (?,?,?)");
@@ -241,13 +241,11 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 	private ComplexHolder0 readRootInternal() {
 		ComplexHolder0 holder = null;
 		try {
-			final PreparedStatement complexHolder0Stat = 
-				prepareStatement("select * from complexHolder0 where id=?");
-			
+			final PreparedStatement complexHolder0Stat = prepareStatement("select * from " + HOLDER_TABLE0 + " where id=?");
 			final PreparedStatement[] complexHolderStats = new PreparedStatement[4];
 			for (int i = 0; i < complexHolderStats.length; i++) {
 				int idx = i + 1;
-				String table = "complexHolder" + idx;
+				String table = HOLDER_TABLES[i];
 				complexHolderStats[i] = prepareStatement("select * from " + table + " where id=?"); 
 			}
 			final PreparedStatement arrayStat = prepareStatement("select * from " + ARRAY_TABLE + " where parent=? order by pos");
@@ -396,16 +394,16 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 		int currentInt = firstInt;
 		for (int run = 0; run < selectCount; run++) {
 			StringBuilder sb = new StringBuilder();
-			sb.append("select * from complexHolder0 ");
-			sb.append("INNER JOIN complexHolder1 ");
-			sb.append("on complexHolder0.id = complexHolder1.id ");
-			sb.append("INNER JOIN complexHolder2 ");
-			sb.append("on complexHolder0.id = complexHolder2.id ");
-			sb.append("LEFT OUTER JOIN complexHolder3 ");
-			sb.append("on complexHolder0.id = complexHolder3.id ");
-			sb.append("LEFT OUTER JOIN complexHolder4 ");
-			sb.append("on complexHolder0.id = complexHolder4.id ");
-			sb.append("where complexHolder2.i2 = ?");
+			sb.append("select * from " + HOLDER_TABLE0);
+			sb.append(" INNER JOIN " + HOLDER_TABLES[0]);
+			sb.append(" on " + HOLDER_TABLE0 + ".id = " + HOLDER_TABLES[0] + ".id ");
+			sb.append(" INNER JOIN " + HOLDER_TABLES[1]);
+			sb.append(" on " + HOLDER_TABLE0 + ".id = " + HOLDER_TABLES[1] + ".id ");
+			sb.append(" LEFT OUTER JOIN " + HOLDER_TABLES[2]);
+			sb.append(" on " + HOLDER_TABLE0 + ".id = " + HOLDER_TABLES[2] + ".id ");
+			sb.append(" LEFT OUTER JOIN " + HOLDER_TABLES[3]);
+			sb.append(" on " + HOLDER_TABLE0 + ".id = " + HOLDER_TABLES[3] + ".id ");
+			sb.append(" where " + HOLDER_TABLES[1] + ".i2 = ?");
 			PreparedStatement stat = prepareStatement(sb.toString());
 			
 			try {
@@ -440,12 +438,12 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 
 	@Override
 	public void update() {
-		final PreparedStatement nameStat = prepareStatement("update complexholder0 set name=? where id=?");
-		final PreparedStatement complexHolder0Stat = prepareStatement("insert into complexHolder0 (id, name, type) values (?,?,?)");
+		final PreparedStatement nameStat = prepareStatement("update " + HOLDER_TABLE0 + " set name=? where id=?");
+		final PreparedStatement complexHolder0Stat = prepareStatement("insert into " + HOLDER_TABLE0 + " (id, name, type) values (?,?,?)");
 		final PreparedStatement[] complexHolderStats = new PreparedStatement[2];
 		for (int i = 0; i < complexHolderStats.length; i++) {
 			int idx = i + 1;
-			String table = "complexHolder" + idx;
+			String table = HOLDER_TABLES[i];
 			complexHolderStats[i] = prepareStatement("insert into " + table + "(id, i" +  idx + ") values (?,?)"); 
 		}
 		final PreparedStatement childrenStat = prepareStatement("insert into children (parent, child, pos) values (?,?,?)");
@@ -508,8 +506,9 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 	@Override
 	public void delete() {
 		final PreparedStatement[] complexHolderStats = new PreparedStatement[5];
-		for (int i = 0; i < complexHolderStats.length; i++) {
-			String table = "complexHolder" + i;
+		complexHolderStats[0] = prepareStatement("delete from " + HOLDER_TABLE0 + " where id=?");
+		for (int i = 1; i < complexHolderStats.length; i++) {
+			String table = HOLDER_TABLES[i - 1];
 			complexHolderStats[i] = prepareStatement("delete from " + table + " where id=?"); 
 		}
 		final PreparedStatement arrayStat = prepareStatement("delete from " + ARRAY_TABLE + " where parent=?");

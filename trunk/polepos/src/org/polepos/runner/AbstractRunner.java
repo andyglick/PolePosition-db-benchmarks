@@ -38,7 +38,9 @@ public abstract class AbstractRunner {
 		circuits.addAll(distinctCircuits);
         if(turnSetupConfig.runConcurrency()){
 	        for(Circuit circuit : distinctCircuits){
-	        	circuits.add(new ConcurrencyCircuit(circuit));
+	        	if(circuit.isConcurrency()){
+	        		circuits.add(new ConcurrencyCircuit(circuit));
+	        	}
 	        }
         }
 		for(Circuit circuit: circuits){
