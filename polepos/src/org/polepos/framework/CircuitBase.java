@@ -222,7 +222,6 @@ public abstract class CircuitBase implements Circuit {
 		try {
 			driver.takeSeatIn(car, setup);
 		} catch (CarMotorFailureException e1) {
-			// FIXME reasonable exception handling
 			throw new RuntimeException("Circuit aborted", e1);
 		}
 		

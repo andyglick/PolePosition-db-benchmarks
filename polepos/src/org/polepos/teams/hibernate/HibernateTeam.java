@@ -83,16 +83,7 @@ public class HibernateTeam extends Team {
 	@Override
 	public void setUp() {
 		for(int i = 0; i < _cars.length;i++){
-			Session session = null;
-			try {
-				session = ((HibernateCar)_cars[i]).openSession();
-			} catch (CarMotorFailureException e) {
-				e.printStackTrace();
-			}
-			for (Class clazz : persistentClasses()) {
-				deleteExtent(session, clazz);	
-			}
-			((HibernateCar)_cars[i]).closeSession(session);
+			((HibernateCar)_cars[i]).recreateSessionFactory();
 		}
 	}
 

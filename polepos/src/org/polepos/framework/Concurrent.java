@@ -17,19 +17,12 @@ License along with this program; if not, write to the Free
 Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA  02111-1307, USA. */
 
-package org.polepos.enhance;
 
-public class AllEnhance {
-	
-	public static void main(String[] args) throws Throwable {
+package org.polepos.framework;
 
-//		VodEnhancer.main(null);
-		
-		JdoEnhance.main(null);
-		
-//		new JviEnhance().runWithoutSystemExit();
-		
-//		JpaEnhance.main(null);
-	}
+import java.lang.annotation.*;
+
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Concurrent {
 
 }

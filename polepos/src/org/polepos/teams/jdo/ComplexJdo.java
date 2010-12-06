@@ -43,12 +43,16 @@ public class ComplexJdo extends JdoDriver implements Complex {
 	@Override
 	public void read() {
 		beginRead();
-		ComplexHolder0 holder = root();
+		ComplexHolder0 holder = rootHolder();
 		addToCheckSum(holder);
 	}
 
-	private ComplexHolder0 root() {
-        Query query = db().newQuery(ComplexRoot.class);
+	private ComplexHolder0 rootHolder() {
+        return root().getHolder();
+	}
+
+	private ComplexRoot root() {
+		Query query = db().newQuery(ComplexRoot.class);
         Collection result = (Collection) query.execute();
 		Iterator it = result.iterator();
 		if(! it.hasNext()){
@@ -58,7 +62,7 @@ public class ComplexJdo extends JdoDriver implements Complex {
 		if(it.hasNext()){
 			throw new IllegalStateException("More than one ComplexRoot found");
 		}
-		return root.getHolder();
+		return root;
 	}
 
 	@Override
@@ -93,7 +97,7 @@ public class ComplexJdo extends JdoDriver implements Complex {
 	@Override
 	public void update() {
 		begin();
-		ComplexHolder0 holder = root();
+		ComplexHolder0 holder = rootHolder();
 		holder.traverse(new NullVisitor<ComplexHolder0>(),
 				new Visitor<ComplexHolder0>() {
 			@Override
@@ -113,7 +117,9 @@ public class ComplexJdo extends JdoDriver implements Complex {
 	@Override
 	public void delete() {
 		begin();
-		ComplexHolder0 holder = root();
+		ComplexRoot root = root();
+		ComplexHolder0 holder = root.getHolder();		
+		delete(root);
 		holder.traverse(
 			new NullVisitor<ComplexHolder0>(),
 			new Visitor<ComplexHolder0>() {
