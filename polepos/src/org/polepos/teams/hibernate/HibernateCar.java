@@ -41,7 +41,7 @@ public class HibernateCar extends Car {
         return Jdbc.settings().getName(_dbType)+"-"+Jdbc.settings().getVersion(_dbType);
     }
     
-    public Session openSession() throws CarMotorFailureException{
+    public Session openSession() {
     	
     	if(_sessionFactory == null){
     		_sessionFactory = getSessionFactory();
