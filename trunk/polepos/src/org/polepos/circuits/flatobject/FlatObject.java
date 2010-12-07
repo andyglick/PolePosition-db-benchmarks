@@ -22,7 +22,6 @@ package org.polepos.circuits.flatobject;
 import org.polepos.framework.*;
 
 @CircuitDescription("write, query, update and delete indexed flat objects")
-@Concurrent
 public interface FlatObject
 {
 	@Order(1)

@@ -22,7 +22,7 @@ package org.polepos;
 
 public class Settings {
     
-    public static boolean DEBUG = true;
+    public static boolean DEBUG = false;
     
     public static final String CIRCUIT = DEBUG ? "settings/DebugCircuits.properties" : "settings/Circuits.properties" ;
     
