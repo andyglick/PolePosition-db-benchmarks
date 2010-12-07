@@ -119,7 +119,7 @@ public class HibernateCar extends Car {
         cfg.setProperty("hibernate.connection.writedelay", "0");
  
         SessionFactory factory = cfg.buildSessionFactory();     
-        new SchemaExport(cfg).create(true, true);
+        new SchemaExport(cfg).create(false, true);
         return factory;         
     }
 
