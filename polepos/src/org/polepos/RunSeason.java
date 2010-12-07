@@ -63,19 +63,22 @@ public class RunSeason extends AbstractRunner {
 	public CircuitBase[] circuits() {
 		return new CircuitBase[] {
 				
-//				new ReflectiveCircuitBase(FlatObject.class),
-//				new ReflectiveCircuitBase(NestedLists.class),
-//				new ReflectiveCircuitBase(InheritanceHierarchy.class),
-//				new ReflectiveCircuitBase(Complex.class),
+				new ReflectiveCircuitBase(FlatObject.class),
+				new ReflectiveCircuitBase(NestedLists.class),
+				new ReflectiveCircuitBase(InheritanceHierarchy.class),
+				new ReflectiveCircuitBase(Complex.class),
 				
-				new Melbourne(), 
-				new Sepang(), 
-				new Bahrain(),
-				new Imola(),
-				new Barcelona(),
-				new Monaco(),
-				new Montreal(),
-				new Nurburgring(),
+// Old Circuits
+// Most usecases are covered by the 4 new circuits
+				
+//				new Melbourne(), 
+//				new Sepang(), 
+//				new Bahrain(),
+//				new Imola(),
+//				new Barcelona(),
+//				new Monaco(),
+//				new Montreal(),
+//				new Nurburgring(),
 		};
 	}
 	
@@ -89,7 +92,7 @@ public class RunSeason extends AbstractRunner {
 				
 //				new Db4oClientServerTeam(),
 				
-				new JdbcTeam(),
+ 				new JdbcTeam(),
 				new HibernateTeam(),
 //				new JpaTeam(),
 				
