@@ -83,7 +83,18 @@ public class HibernateTeam extends Team {
 	@Override
 	public void setUp() {
 		for(int i = 0; i < _cars.length;i++){
-			((HibernateCar)_cars[i]).recreateSessionFactory();
+			HibernateCar hibernateCar = (HibernateCar)_cars[i];
+			
+			hibernateCar.recreateSessionFactory();
+			
+			// The following fails with the Complex circuit enabled:
+			
+//			Session session = hibernateCar.openSession();
+//			Class[] classes = persistentClasses();
+//			for (int j = 0; j < classes.length; j++) {
+//				deleteExtent(session, classes[j]);
+//			}
+//			session.close();
 		}
 	}
 
