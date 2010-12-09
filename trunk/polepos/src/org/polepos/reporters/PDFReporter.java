@@ -173,7 +173,7 @@ public class PDFReporter extends GraphReporter {
 		renderTable(ReporterConstants.MEMORY, graph, unitsLegend);
 	}
 
-	private void renderTable(int type, Graph graph, String unitsLegend) throws BadElementException, DocumentException {
+	private void renderTable(int type, final Graph graph, String unitsLegend) throws BadElementException, DocumentException {
 		Paragraph para=new Paragraph();
         Circuit circuit = graph.circuit();
         Lap lap = graph.lap();
@@ -197,7 +197,7 @@ public class PDFReporter extends GraphReporter {
         
         para=new Paragraph();
 		List<TeamCar> teamCars=graph.teamCars();
-		List<TurnSetup> setups=graph.setups();
+		final List<TurnSetup> setups=graph.setups();
 		Table table = setupTable(graph);
         addTableCell(table, 0, 0, 2, unitsLegend , null,false,true, Element.ALIGN_LEFT);
         int idx=2;
@@ -221,6 +221,27 @@ public class PDFReporter extends GraphReporter {
 		}
 		table.endHeaders();
 		int vidx=1;
+		
+		teamCars = new ArrayList<TeamCar>(teamCars);
+		Collections.sort(teamCars, new Comparator<TeamCar>() {
+			@Override
+			public int compare(TeamCar team1, TeamCar team2) {
+				long time1 = 0;
+				long time2 = 0;
+				for(TurnSetup setup : setups) {
+					time1 += graph.timeFor(team1, setup);
+					time2 += graph.timeFor(team2, setup);
+				}
+				if(time1 > time2){
+					return 1;
+				}
+				if(time1 < time2){
+					return - 1;
+				}
+				return 0;
+			}
+		});
+		
 		for(TeamCar teamCar : teamCars) {
 			addTableCell(table,0,vidx,2, teamCar.toString(),teamCar.website(),true,false, Element.ALIGN_LEFT);
 			int hidx=2;
@@ -235,7 +256,7 @@ public class PDFReporter extends GraphReporter {
         para.add(new Chunk("\n",bigFont));
         _pdfData.add(para);
 	}
-
+	
 	private String reportText(int type, Graph graph, TeamCar teamCar, TurnSetup setup) {
 		String text = null;
 		switch (type) {

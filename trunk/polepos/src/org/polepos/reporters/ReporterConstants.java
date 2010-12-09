@@ -29,6 +29,7 @@ public class ReporterConstants {
 	public static final String OLD_LOGARITHMIC_TIME_CHART_LEGEND = " 1  /  log(t + 2)                     better >";
     public static final String TIME_CHART_LEGEND_BEST_ON_TOP = "  10 ^ x              average               better >";
     public static final String TIME_CHART_LEGEND_BEST_BELOW =  "  < better            average               10 ^ x ";
+    public static final String BEST_AS_BASELINE_CHART_LEGEND =  "  < better      order of magnitude         10 ^ x ";
     public static final String MEMORY_CHART_LEGEND = " 1  /  log(m + 2)                     better >";
     public static final String SIZE_CHART_LEGEND = " 1  /  log(b + 2)                     better >";
     public static final String TIME_OVERVIEW_LEGEND = "Time Overview\n\n";
