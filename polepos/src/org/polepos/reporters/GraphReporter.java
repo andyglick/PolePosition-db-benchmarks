@@ -136,9 +136,16 @@ public abstract class GraphReporter extends ReporterBase{
 		List<JFreeChart> list = new ArrayList<JFreeChart>();
 		// list.add(createChart(createInverseLogTimeDataset(graph), ReporterConstants.OLD_LOGARITHMIC_TIME_CHART_LEGEND));
 		
-		boolean bestOnTop = false;
-		String legendText = bestOnTop ? ReporterConstants.TIME_CHART_LEGEND_BEST_ON_TOP : ReporterConstants.TIME_CHART_LEGEND_BEST_BELOW;   
-		list.add(createOrderOfMagnitudeChart(createBaseLineTimeDataset(graph, bestOnTop), legendText, bestOnTop));
+		boolean bestOnTop = true;
+		String legendText = bestOnTop ? ReporterConstants.TIME_CHART_LEGEND_BEST_ON_TOP : ReporterConstants.TIME_CHART_LEGEND_BEST_BELOW;
+		
+		// list.add(createOrderOfMagnitudeChart(createBaseLineTimeDataset(graph, bestOnTop), legendText, bestOnTop));
+		
+		list.add(
+			createBestAsBaseLineChart(
+					createBestAsBaseLineTimeDataset(graph, bestOnTop), 
+					ReporterConstants.BEST_AS_BASELINE_CHART_LEGEND, 
+					bestOnTop));
 		
 		return list;
 	}
@@ -194,6 +201,38 @@ public abstract class GraphReporter extends ReporterBase{
 	    }
 		return dataset;
 	}
+	
+	public CategoryDataset createBestAsBaseLineTimeDataset(final Graph graph, boolean bestOnTop) {
+		DefaultCategoryDataset dataset=new DefaultCategoryDataset();
+		
+		int setupCount = graph.setups().size();
+		double[] best = new double[setupCount];
+		
+		int i = 0;
+		for(TurnSetup setup : graph.setups()) {
+			best[i] = Double.MAX_VALUE;
+			for(TeamCar teamCar : graph.teamCars()) {
+	            double time = graph.timeFor(teamCar,setup);
+	            if(time < best[i]){
+	            	best[i] = time;
+	            }
+	        }
+			i++;
+	    }
+		
+		for(TeamCar teamCar : graph.teamCars()) {
+			i = 0;
+			for(TurnSetup setup : graph.setups()) {
+				String legend = "" + setup.getMostImportantValueForGraph();
+	            double time = graph.timeFor(teamCar,setup);
+	            double graphValue = logarithmicMagnitudeGraphValue(best[i], time, bestOnTop);
+	            dataset.addValue(graphValue,teamCar.toString(),legend);
+	            i++;
+	        }
+	    }
+		return dataset;
+	}
+
 	
 	double logarithmicMagnitudeGraphValue(double average, double time, boolean bestOnTop){
 		if(average == time){
@@ -280,5 +319,30 @@ public abstract class GraphReporter extends ReporterBase{
 		chart.setLegend(legend);
 		return chart;
 	}
+	
+	public JFreeChart createBestAsBaseLineChart(CategoryDataset dataset, String legendText, boolean bestOnTop) {
+		CategoryAxis categoryAxis = new CategoryAxis("");
+		categoryAxis.setLabelFont(ReporterConstants.CATEGORY_LABEL_FONT);
+		categoryAxis.setTickLabelFont(ReporterConstants.CATEGORY_TICKLABEL_FONT);
+		
+		String yLegendText =  legendText;
+		ValueAxis valueAxis = new NumberAxis(yLegendText);
+		valueAxis.setLabelFont(ReporterConstants.VALUE_LABEL_FONT);
+		valueAxis.setTickLabelFont(ReporterConstants.VALUE_TICKLABEL_FONT);
+		LineAndShapeRenderer renderer = new LineAndShapeRenderer(true, false);
+		CategoryPlot plot = new CategoryPlot(dataset, categoryAxis, valueAxis, renderer);
+		plot.setOrientation(PlotOrientation.VERTICAL);
+		plot.getRangeAxis().centerRange(-2);
+		plot.getRangeAxis().setRange(-4, 1);
+		
+		JFreeChart chart = new JFreeChart("", ReporterConstants.TITLE_FONT, plot, false);
+		StandardLegend legend = new StandardLegend();
+		legend.setItemFont(ReporterConstants.LEGEND_FONT);
+		legend.setMargin(new RectangleInsets(1.0, 1.0, 1.0, 1.0));
+		legend.setBackgroundPaint(Color.white);
+		chart.setLegend(legend);
+		return chart;
+	}
+
 
 }
