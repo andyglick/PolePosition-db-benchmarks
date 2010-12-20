@@ -285,8 +285,28 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 		}
 		complexHolder0Stat.setInt(1, id); 
 		ResultSet resultSet0 = executeQuery(complexHolder0Stat);
+		ComplexHolder0 holder = null;
 		int type = resultSet0.getInt(TYPE);
-		ComplexHolder0 holder = (ComplexHolder0) ComplexHolder0.FACTORIES[type].run();
+		switch (type){
+			case 0:
+				holder = new ComplexHolder0();
+				break;
+			case 1:
+				holder = new ComplexHolder1();
+				break;
+			case 2:
+				holder = new ComplexHolder2();
+				break;
+			case 3:
+				holder = new ComplexHolder3();
+				break;
+			case 4:
+				holder = new ComplexHolder4();
+				break;
+			default:
+				throw new IllegalStateException("Valid type int 0 to 4 expected. Found:" + type);
+		
+		}
 		holder.setId(id);
 		read.put(id, holder);
 		
@@ -439,14 +459,7 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 	@Override
 	public void update() {
 		final PreparedStatement nameStat = prepareStatement("update " + HOLDER_TABLE0 + " set name=? where id=?");
-		final PreparedStatement complexHolder0Stat = prepareStatement("insert into " + HOLDER_TABLE0 + " (id, name, type) values (?,?,?)");
-		final PreparedStatement[] complexHolderStats = new PreparedStatement[2];
-		for (int i = 0; i < complexHolderStats.length; i++) {
-			int idx = i + 1;
-			String table = HOLDER_TABLES[i];
-			complexHolderStats[i] = prepareStatement("insert into " + table + "(id, i" +  idx + ") values (?,?)"); 
-		}
-		final PreparedStatement childrenStat = prepareStatement("insert into children (parent, child, pos) values (?,?,?)");
+		final PreparedStatement arrayDeleteStat = prepareStatement("delete from " + ARRAY_TABLE + " where parent = ?");
 		ComplexHolder0 holder = readRootInternal();
 		holder.traverse(new NullVisitor(),
 			new Visitor<ComplexHolder0>(){
@@ -457,45 +470,18 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 						nameStat.setString(1, "updated");
 						nameStat.setInt(2, holder.getId());
 						nameStat.addBatch();
-						
-						ComplexHolder2 newChild = new ComplexHolder2();
-						newChild.setName("added");
-						holder.addChild(newChild);
-						int childId = (int) _idGenerator.nextId();
-						
-						complexHolder0Stat.setInt(ID, childId);
-						complexHolder0Stat.setString(NAME, "added");
-						complexHolder0Stat.setInt(TYPE, 2);
-						complexHolder0Stat.addBatch();
-						
-						for (int i = 0; i < complexHolderStats.length; i++) {
-							complexHolderStats[i].setInt(1, childId);
-							complexHolderStats[i].setInt(2, i + 1);
-							complexHolderStats[i].addBatch();
-						}
-						
-						childrenStat.setInt(1, holder.getId());
-						childrenStat.setInt(2, childId);
-						childrenStat.setInt(3, holder.getChildren().size());
-						childrenStat.addBatch();
-						
+						arrayDeleteStat.setInt(1, holder.getId());
+						arrayDeleteStat.addBatch();
 					} catch (Exception e) {
 						throw new RuntimeException(e);
 					}
-					
 				}
 		});
 		try {
 			nameStat.executeBatch();
 			nameStat.close();
-			complexHolder0Stat.executeBatch();
-			complexHolder0Stat.close();
-			for (int i = 0; i < complexHolderStats.length; i++) {
-				complexHolderStats[i].executeBatch();
-				complexHolderStats[i].close(); 
-			}
-			childrenStat.executeBatch();
-			childrenStat.close();
+			arrayDeleteStat.executeBatch();
+			arrayDeleteStat.close();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

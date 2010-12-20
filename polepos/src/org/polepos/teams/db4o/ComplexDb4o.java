@@ -89,12 +89,7 @@ public class ComplexDb4o extends Db4oDriver implements Complex {
 			public void visit(ComplexHolder0 holder) {
 				addToCheckSum(holder.ownCheckSum());
 				holder.setName("updated");
-				ComplexHolder2 newChild = new ComplexHolder2();
-				newChild._i1 = 1;
-				newChild._i2 = 2;
-				newChild.setName("added");
-				holder.addChild(newChild);
-				store(holder.getChildren());
+				holder.setArray(null);
 				store(holder);
 			}
 		});
