@@ -93,11 +93,7 @@ public class ComplexHibernate extends HibernateDriver implements Complex {
 			public void visit(ComplexHolder0 holder) {
 				addToCheckSum(holder.ownCheckSum());
 				holder.setName("updated");
-				ComplexHolder2 newChild = new ComplexHolder2();
-				newChild.setI1(1);
-				newChild.setI2(2);
-				newChild.setName("added");
-				holder.addChild(newChild);
+				holder.setArray(null);
 				store(holder);
 			}
 		});
