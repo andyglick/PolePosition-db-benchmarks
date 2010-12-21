@@ -20,6 +20,8 @@ MA  02111-1307, USA. */
 
 package org.polepos.teams.db4o;
 
+import java.util.*;
+
 import org.polepos.circuits.complex.*;
 import org.polepos.data.*;
 import org.polepos.framework.*;
@@ -68,9 +70,16 @@ public class ComplexDb4o extends Db4oDriver implements Complex {
 				throw new IllegalStateException("" + result.size());
 			}
 			ComplexHolder2 holder = result.get(0);
-			db().activate(holder, 1);
+			db().activate(holder, 3);
 			addToCheckSum(holder.ownCheckSum());
-			
+			List<ComplexHolder0> children = holder.getChildren();
+			for (ComplexHolder0 child : children) {
+				addToCheckSum(child.ownCheckSum());
+			}
+			ComplexHolder0[] array = holder.getArray();
+			for (ComplexHolder0 arrayElement : array) {
+				addToCheckSum(arrayElement.ownCheckSum());
+			}
 			currentInt++;
 			if(currentInt > lastInt){
 				currentInt = firstInt;
@@ -89,7 +98,12 @@ public class ComplexDb4o extends Db4oDriver implements Complex {
 			public void visit(ComplexHolder0 holder) {
 				addToCheckSum(holder.ownCheckSum());
 				holder.setName("updated");
-				holder.setArray(null);
+				List<ComplexHolder0> children = holder.getChildren();
+				ComplexHolder0[] array = new ComplexHolder0[children.size()];
+				for (int i = 0; i < array.length; i++) {
+					array[i] = children.get(i);
+				}
+				holder.setArray(array);
 				store(holder);
 			}
 		});
