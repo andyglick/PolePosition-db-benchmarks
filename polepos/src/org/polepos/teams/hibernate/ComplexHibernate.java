@@ -76,6 +76,14 @@ public class ComplexHibernate extends HibernateDriver implements Complex {
 			if(it.hasNext()){
 				throw new IllegalStateException("More than one ComplexHolder2 found");
 			}
+			List<ComplexHolder0> children = holder.getChildren();
+			for (ComplexHolder0 child : children) {
+				addToCheckSum(child.ownCheckSum());
+			}
+			ComplexHolder0[] array = holder.getArray();
+			for (ComplexHolder0 arrayElement : array) {
+				addToCheckSum(arrayElement.ownCheckSum());
+			}
 			currentInt++;
 			if(currentInt > lastInt){
 				currentInt = firstInt;
@@ -93,7 +101,12 @@ public class ComplexHibernate extends HibernateDriver implements Complex {
 			public void visit(ComplexHolder0 holder) {
 				addToCheckSum(holder.ownCheckSum());
 				holder.setName("updated");
-				holder.setArray(null);
+				List<ComplexHolder0> children = holder.getChildren();
+				ComplexHolder0[] array = new ComplexHolder0[children.size()];
+				for (int i = 0; i < array.length; i++) {
+					array[i] = children.get(i);
+				}
+				holder.setArray(array);
 				store(holder);
 			}
 		});

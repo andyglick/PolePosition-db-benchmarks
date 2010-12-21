@@ -239,6 +239,10 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 	}
 
 	private ComplexHolder0 readRootInternal() {
+		return readHolder(Integer.MAX_VALUE, ROOT_ID);
+	}
+
+	private ComplexHolder0 readHolder(int depth, int id) {
 		ComplexHolder0 holder = null;
 		try {
 			final PreparedStatement complexHolder0Stat = prepareStatement("select * from " + HOLDER_TABLE0 + " where id=?");
@@ -253,12 +257,13 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 
 			Map<Integer, ComplexHolder0> idToInstance = new HashMap<Integer, ComplexHolder0>();
 			holder = readHolder(
+					depth,
 					idToInstance, 
 					complexHolder0Stat, 
 					complexHolderStats,
 					arrayStat,
 					childrenStat,
-					ROOT_ID);
+					id);
 			
 			complexHolder0Stat.close();
 			for (int i = 0; i < complexHolderStats.length; i++) {
@@ -272,41 +277,24 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 	}
 
 	private ComplexHolder0 readHolder(
+			int depth,
 			Map<Integer, ComplexHolder0> read, 
 			final PreparedStatement complexHolder0Stat, 
 			PreparedStatement[] complexHolderStats, 
 			PreparedStatement arrayStat, 
 			PreparedStatement childrenStat, 
 			int id) throws SQLException {
-		
+		if(depth < 1){
+			return null;
+		}
 		ComplexHolder0 existing = read.get(id);
 		if(existing != null){
 			return existing;
 		}
 		complexHolder0Stat.setInt(1, id); 
 		ResultSet resultSet0 = executeQuery(complexHolder0Stat);
-		ComplexHolder0 holder = null;
 		int type = resultSet0.getInt(TYPE);
-		switch (type){
-			case 0:
-				holder = new ComplexHolder0();
-				break;
-			case 1:
-				holder = new ComplexHolder1();
-				break;
-			case 2:
-				holder = new ComplexHolder2();
-				break;
-			case 3:
-				holder = new ComplexHolder3();
-				break;
-			case 4:
-				holder = new ComplexHolder4();
-				break;
-			default:
-				throw new IllegalStateException("Valid type int 0 to 4 expected. Found:" + type);
-		
-		}
+		ComplexHolder0 holder = holderFromType(type);
 		holder.setId(id);
 		read.put(id, holder);
 		
@@ -356,6 +344,7 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 			int idx = 0;
 			for (Integer childId : arrayIds) {
 				array[idx++] = readHolder(
+						depth -1,
 						read, 
 						complexHolder0Stat,
 						complexHolderStats, 
@@ -377,6 +366,7 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 			holder.setChildren(children);
 			for (Integer childId : childrenIds) {
 				children.add(readHolder(
+						depth -1,
 						read, 
 						complexHolder0Stat,
 						complexHolderStats, 
@@ -388,6 +378,24 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 		childrenResultSet.close();
 		return holder;
 		
+	}
+
+	private ComplexHolder0 holderFromType(int type) {
+		switch (type){
+			case 0:
+				return new ComplexHolder0();
+			case 1:
+				return new ComplexHolder1();
+			case 2:
+				return new ComplexHolder2();
+			case 3:
+				return new ComplexHolder3();
+			case 4:
+				return new ComplexHolder4();
+			default:
+				throw new IllegalStateException("Valid type int 0 to 4 expected. Found:" + type);
+		
+		}
 	}
 
 	private void close(ResultSet resultSet) throws SQLException {
@@ -414,7 +422,7 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 		int currentInt = firstInt;
 		for (int run = 0; run < selectCount; run++) {
 			StringBuilder sb = new StringBuilder();
-			sb.append("select * from " + HOLDER_TABLE0);
+			sb.append("select " + HOLDER_TABLE0 + ".id from " + HOLDER_TABLE0);
 			sb.append(" INNER JOIN " + HOLDER_TABLES[0]);
 			sb.append(" on " + HOLDER_TABLE0 + ".id = " + HOLDER_TABLES[0] + ".id ");
 			sb.append(" INNER JOIN " + HOLDER_TABLES[1]);
@@ -426,23 +434,22 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 			sb.append(" where " + HOLDER_TABLES[1] + ".i2 = ?");
 			PreparedStatement stat = prepareStatement(sb.toString());
 			
+			
+			
 			try {
 				stat.setInt(1, currentInt);
 				ResultSet resultSet = executeQuery(stat);
-				int type = resultSet.getInt("type");
-				ComplexHolder2 holder = (ComplexHolder2) ComplexHolder0.FACTORIES[type].run();
-				holder.setName(resultSet.getString("name"));
-				holder._i1 = resultSet.getInt("i1");
-				holder._i2 = resultSet.getInt("i2");
-				if(holder instanceof ComplexHolder3){
-					ComplexHolder3 complexHolder3 = (ComplexHolder3) holder;
-					complexHolder3._i3 = resultSet.getInt("i3");
-				}
-				if(holder instanceof ComplexHolder4){
-					ComplexHolder4 complexHolder4 = (ComplexHolder4) holder;
-					complexHolder4._i4 = resultSet.getInt("i4");
-				}
+				int holderId = resultSet.getInt("id");
+				ComplexHolder2 holder = (ComplexHolder2) readHolder(2, holderId);
 				addToCheckSum(holder.ownCheckSum());
+				List<ComplexHolder0> children = holder.getChildren();
+				for (ComplexHolder0 child : children) {
+					addToCheckSum(child.ownCheckSum());
+				}
+				ComplexHolder0[] array = holder.getArray();
+				for (ComplexHolder0 arrayElement : array) {
+					addToCheckSum(arrayElement.ownCheckSum());
+				}
 				close(resultSet);
 				stat.close();
 			} catch (Exception e) {
@@ -460,6 +467,7 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 	public void update() {
 		final PreparedStatement nameStat = prepareStatement("update " + HOLDER_TABLE0 + " set name=? where id=?");
 		final PreparedStatement arrayDeleteStat = prepareStatement("delete from " + ARRAY_TABLE + " where parent = ?");
+		final PreparedStatement arrayInsertStat = prepareStatement("insert into tarray (parent, child, pos) values (?,?,?)");
 		ComplexHolder0 holder = readRootInternal();
 		holder.traverse(new NullVisitor(),
 			new Visitor<ComplexHolder0>(){
@@ -472,6 +480,13 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 						nameStat.addBatch();
 						arrayDeleteStat.setInt(1, holder.getId());
 						arrayDeleteStat.addBatch();
+						List<ComplexHolder0> children = holder.getChildren();
+						for (int i = 0; i < children.size(); i++) {
+							arrayInsertStat.setInt(1, holder.getId());
+							arrayInsertStat.setInt(2, children.get(i).getId());
+							arrayInsertStat.setInt(3, i);
+							arrayInsertStat.addBatch();
+						}
 					} catch (Exception e) {
 						throw new RuntimeException(e);
 					}
@@ -482,6 +497,8 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 			nameStat.close();
 			arrayDeleteStat.executeBatch();
 			arrayDeleteStat.close();
+			arrayInsertStat.executeBatch();
+			arrayInsertStat.close();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -497,7 +514,7 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 			String table = HOLDER_TABLES[i - 1];
 			complexHolderStats[i] = prepareStatement("delete from " + table + " where id=?"); 
 		}
-		final PreparedStatement arrayStat = prepareStatement("delete from " + ARRAY_TABLE + " where parent=?");
+		final PreparedStatement arrayDeleteStat = prepareStatement("delete from " + ARRAY_TABLE + " where parent=?");
 		final PreparedStatement childrenStat = prepareStatement("delete from " + CHILDREN_TABLE + " where parent=?");
 
 		ComplexHolder0 holder = readRootInternal();
@@ -512,8 +529,8 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 							complexHolderStats[i].setInt(1, id);
 							complexHolderStats[i].addBatch();
 						}
-						arrayStat.setInt(1, id);
-						arrayStat.addBatch();
+						arrayDeleteStat.setInt(1, id);
+						arrayDeleteStat.addBatch();
 						childrenStat.setInt(1, id);
 						childrenStat.addBatch();
 					} catch (Exception e) {
@@ -526,8 +543,8 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 				complexHolderStats[i].executeBatch();
 				complexHolderStats[i].close(); 
 			}
-			arrayStat.executeBatch();
-			arrayStat.close();
+			arrayDeleteStat.executeBatch();
+			arrayDeleteStat.close();
 			childrenStat.executeBatch();
 			childrenStat.close();
 		} catch (Exception e) {
