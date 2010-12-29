@@ -32,20 +32,20 @@ import com.lowagie.text.*;
 import com.lowagie.text.pdf.*;
 
 
-public class PDFReporter extends GraphReporter {
+public abstract class PDFReporterBase extends GraphReporter {
 
 	private Circuit _circuit;
 	private Document _document;
 	private PdfWriter _writer;
 	
 	private LinkedList _pdfData = new LinkedList();
-	private static final com.lowagie.text.Font h1Font = FontFactory.getFont(FontFactory.HELVETICA,15,Font.BOLD);
-    private static final com.lowagie.text.Font h2Font = FontFactory.getFont(FontFactory.HELVETICA,12,Font.BOLD);
-    private static final com.lowagie.text.Font bigFont = FontFactory.getFont(FontFactory.HELVETICA,10,Font.BOLD);
-    private static final com.lowagie.text.Font smallFont = FontFactory.getFont(FontFactory.HELVETICA,9,Font.PLAIN);
-    private static final com.lowagie.text.Font codeFont = FontFactory.getFont(FontFactory.COURIER,8,Font.PLAIN);
+	protected static final com.lowagie.text.Font h1Font = FontFactory.getFont(FontFactory.HELVETICA,15,Font.BOLD);
+	protected static final com.lowagie.text.Font h2Font = FontFactory.getFont(FontFactory.HELVETICA,12,Font.BOLD);
+    protected static final com.lowagie.text.Font bigFont = FontFactory.getFont(FontFactory.HELVETICA,10,Font.BOLD);
+    protected static final com.lowagie.text.Font smallFont = FontFactory.getFont(FontFactory.HELVETICA,9,Font.PLAIN);
+    protected static final com.lowagie.text.Font codeFont = FontFactory.getFont(FontFactory.COURIER,8,Font.PLAIN);
 
-	public PDFReporter(String path) {
+	public PDFReporterBase(String path) {
 		super(path);
 		
 		// Fail early if the document is still open in Acrobat Reader and can't be written to. 
@@ -75,7 +75,7 @@ public class PDFReporter extends GraphReporter {
 		// for overview
 		createMemoryChart(graph);
     }
-
+    
     private void renderFirstPage(List<TeamCar> cars) throws DocumentException{        
         Paragraph para=new Paragraph();
         para.add(new Chunk("PolePosition\n",h1Font));
@@ -174,6 +174,15 @@ public class PDFReporter extends GraphReporter {
 	}
 
 	private void renderTable(int type, final Graph graph, String unitsLegend) throws BadElementException, DocumentException {
+		renderCircuitPresentation(graph);
+        renderTableAndGraph(type, graph, unitsLegend);
+	}
+
+
+	protected abstract void renderTableAndGraph(int type, Graph graph, String unitsLegend) throws BadElementException;
+
+	@SuppressWarnings("unchecked")
+	private void renderCircuitPresentation(final Graph graph) {
 		Paragraph para=new Paragraph();
         Circuit circuit = graph.circuit();
         Lap lap = graph.lap();
@@ -192,72 +201,11 @@ public class PDFReporter extends GraphReporter {
         	para.setSpacingBefore(5f);
         	para.setLeading(11f);
 			para.add(new Chunk(code,codeFont));
-        	_pdfData.add(para);
+			_pdfData.add(para);
         }
-        
-        para=new Paragraph();
-		List<TeamCar> teamCars=graph.teamCars();
-		final List<TurnSetup> setups=graph.setups();
-		Table table = setupTable(graph);
-        addTableCell(table, 0, 0, 2, unitsLegend , null,false,true, Element.ALIGN_LEFT);
-        int idx=2;
-		for(TurnSetup setup : setups) {
-            StringBuffer header = new StringBuffer();
-            boolean first = true;
-            for(SetupProperty sp : setup.properties()){
-                if(! first){
-                    header.append("\n");
-                }
-                String name = sp.name();
-                if(! name.equals("commitinterval")){
-                    header.append(name);
-                    header.append(":");
-                    header.append(sp.value());
-                    first = false;
-                }
-            }
-			addTableCell(table, idx, 0, 1, header.toString(),null, true,true, Element.ALIGN_RIGHT);
-			idx++;
-		}
-		table.endHeaders();
-		int vidx=1;
-		
-		teamCars = new ArrayList<TeamCar>(teamCars);
-		Collections.sort(teamCars, new Comparator<TeamCar>() {
-			@Override
-			public int compare(TeamCar team1, TeamCar team2) {
-				long time1 = 0;
-				long time2 = 0;
-				for(TurnSetup setup : setups) {
-					time1 += graph.timeFor(team1, setup);
-					time2 += graph.timeFor(team2, setup);
-				}
-				if(time1 > time2){
-					return 1;
-				}
-				if(time1 < time2){
-					return - 1;
-				}
-				return 0;
-			}
-		});
-		
-		for(TeamCar teamCar : teamCars) {
-			addTableCell(table,0,vidx,2, teamCar.toString(),teamCar.website(),true,false, Element.ALIGN_LEFT);
-			int hidx=2;
-			for(TurnSetup setup : setups) {
-				String text = reportText(type, graph, teamCar, setup);
-				addTableCell(table,hidx,vidx,1, text, null,false,false, Element.ALIGN_RIGHT);
-				hidx++;
-			}
-			vidx++;
-		}
-		para.add(table);
-        para.add(new Chunk("\n",bigFont));
-        _pdfData.add(para);
 	}
 	
-	private String reportText(int type, Graph graph, TeamCar teamCar, TurnSetup setup) {
+	protected String reportText(int type, Graph graph, TeamCar teamCar, TurnSetup setup) {
 		String text = null;
 		switch (type) {
 		case ReporterConstants.TIME:
@@ -270,7 +218,7 @@ public class PDFReporter extends GraphReporter {
 	}
 
 
-	private void addTableCell(Table table, int hidx, int vidx, int colspan, String text, String link, boolean bold, boolean header, int hAlign ) throws BadElementException {
+	protected void addTableCell(Table table, int hidx, int vidx, int colspan, String text, String link, boolean bold, boolean header, int hAlign ) throws BadElementException {
         Chunk chunk = new Chunk(text,FontFactory.getFont(FontFactory.HELVETICA,9,(bold ? Font.BOLD : Font.PLAIN)));
         chunk.setTextRise(3);
 		Cell cell=new Cell(linked(chunk, link));
@@ -285,8 +233,10 @@ public class PDFReporter extends GraphReporter {
 	}
 	
 	private Element renderChart(JFreeChart chart) throws DocumentException, BadElementException {
-		return renderChart(chart, 522, 300);
+		return renderChart(chart, 522, chartHeight());
 	}
+
+	protected abstract int chartHeight();
 	
 	private Element renderChart(JFreeChart chart, int width, int height) throws DocumentException, BadElementException {
         PdfContentByte cb = _writer.getDirectContent();
@@ -298,7 +248,7 @@ public class PDFReporter extends GraphReporter {
 		return new ImgTemplate(tp);
 	} 
 
-	private Table setupTable(Graph graph) throws BadElementException {
+	protected Table setupTable(Graph graph) throws BadElementException {
 		Table table=new Table(graph.setups().size()+2);
 		table.setAutoFillEmptyCells(true);
 		table.setSpaceInsideCell(2);
@@ -364,5 +314,9 @@ public class PDFReporter extends GraphReporter {
 		_pdfData.add(i++, para);
 		_pdfData.add(i++, renderChart(chart));
 		_pdfData.add(i++, new NewPageLabel());
+	}
+
+	protected LinkedList pdfData() {
+		return _pdfData;
 	}
 }
