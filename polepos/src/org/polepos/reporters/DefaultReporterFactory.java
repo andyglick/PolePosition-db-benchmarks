@@ -27,7 +27,8 @@ public class DefaultReporterFactory {
 		return new Reporter[] {
 			new CheckSumReporter(defaultReporterOutputPath()),
 			new PlainTextReporter(defaultReporterOutputPath()), 
-			new PDFReporter(defaultReporterOutputPath()),
+//			new BarPDFReporter(defaultReporterOutputPath()),
+			new LinePDFReporter(defaultReporterOutputPath()),
 			new CSVReporter(defaultReporterOutputPath()), 
 			new HTMLReporter(subfolderPath(defaultReporterOutputPath(), "html")),
 			new XLSReporter(defaultReporterOutputPath()),

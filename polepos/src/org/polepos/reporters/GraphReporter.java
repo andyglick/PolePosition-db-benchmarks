@@ -235,6 +235,25 @@ public abstract class GraphReporter extends ReporterBase{
 	}
 
 	
+
+	protected static String legend(TurnSetup setup) {
+		String legend = "";
+		boolean first = true;
+		for (SetupProperty sp : setup.properties()) {
+			if (!first) {
+				legend += ", ";
+			}
+			String name = sp.name();
+			if (!name.equals("commitinterval")) {
+				legend += name + "=" + sp.value();
+				first = false;
+			}
+		}
+
+		return legend;
+	}
+
+	
 	double logarithmicMagnitudeGraphValue(double average, double time, boolean bestOnTop){
 		if(average == time){
 			return 0;
