@@ -45,11 +45,11 @@
 	<classpathentry kind="lib" path="lib/db4o/db4o-8.0.174.15231-all-java5.jar"/>
 	<classpathentry kind="lib" path="lib/common/javassist-3.12.0.GA.jar"/>
 	<classpathentry kind="lib" path="lib/common/slf4j-api-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/graph/jcommon-1.0.16.jar"/>
+	<classpathentry kind="lib" path="lib/graph/jfreechart-1.0.13.jar" sourcepath="lib/graph/jfreechart-1.0.13-src.zip"/>
 	<classpathentry kind="var" path="JUNIT_HOME/junit.jar" sourcepath="/ECLIPSE_HOME/plugins/org.eclipse.jdt.source_3.1.0/src/org.junit_3.8.1/junitsrc.zip"/>
 	<classpathentry kind="lib" path="lib/graph/gnujaxp.jar"/>
 	<classpathentry kind="lib" path="lib/graph/itext-1.2.jar"/>
-	<classpathentry kind="lib" path="lib/graph/jcommon-1.0.0-pre2.jar"/>
-	<classpathentry kind="lib" path="lib/graph/jfreechart-1.0.0-pre2.jar"/>
 	<classpathentry kind="lib" path="lib/graph/velocity-dep-1.4.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/jpa/geronimo-jpa_2.0_spec-1.0-PFD2.jar"/>

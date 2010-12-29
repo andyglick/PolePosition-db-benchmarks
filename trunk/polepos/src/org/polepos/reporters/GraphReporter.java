@@ -27,6 +27,7 @@ import org.jfree.chart.*;
 import org.jfree.chart.axis.*;
 import org.jfree.chart.plot.*;
 import org.jfree.chart.renderer.category.*;
+import org.jfree.chart.title.*;
 import org.jfree.data.category.*;
 import org.jfree.ui.*;
 import org.polepos.framework.*;
@@ -289,12 +290,11 @@ public abstract class GraphReporter extends ReporterBase{
 		LineAndShapeRenderer renderer = new LineAndShapeRenderer(true, false);
 		CategoryPlot plot = new CategoryPlot(dataset, categoryAxis, valueAxis, renderer);
 		plot.setOrientation(PlotOrientation.VERTICAL);
-		JFreeChart chart = new JFreeChart("", ReporterConstants.TITLE_FONT, plot, false);
-		StandardLegend legend = new StandardLegend();
+		JFreeChart chart = new JFreeChart("", ReporterConstants.TITLE_FONT, plot, true);
+		LegendTitle legend = chart.getLegend();
 		legend.setItemFont(ReporterConstants.LEGEND_FONT);
 		legend.setMargin(new RectangleInsets(1.0, 1.0, 1.0, 1.0));
 		legend.setBackgroundPaint(Color.white);
-		chart.setLegend(legend);
 		return chart;
 	}
 	
@@ -311,12 +311,11 @@ public abstract class GraphReporter extends ReporterBase{
 		plot.setOrientation(PlotOrientation.VERTICAL);
 		plot.getRangeAxis().centerRange(0);
 		plot.getRangeAxis().setRange(-3, 3);
-		JFreeChart chart = new JFreeChart("", ReporterConstants.TITLE_FONT, plot, false);
-		StandardLegend legend = new StandardLegend();
+		JFreeChart chart = new JFreeChart("", ReporterConstants.TITLE_FONT, plot, true);
+		LegendTitle legend = chart.getLegend();
 		legend.setItemFont(ReporterConstants.LEGEND_FONT);
 		legend.setMargin(new RectangleInsets(1.0, 1.0, 1.0, 1.0));
 		legend.setBackgroundPaint(Color.white);
-		chart.setLegend(legend);
 		return chart;
 	}
 	
@@ -335,12 +334,11 @@ public abstract class GraphReporter extends ReporterBase{
 		plot.getRangeAxis().centerRange(-2);
 		plot.getRangeAxis().setRange(-4, 1);
 		
-		JFreeChart chart = new JFreeChart("", ReporterConstants.TITLE_FONT, plot, false);
-		StandardLegend legend = new StandardLegend();
+		JFreeChart chart = new JFreeChart("", ReporterConstants.TITLE_FONT, plot, true);
+		LegendTitle legend = chart.getLegend();
 		legend.setItemFont(ReporterConstants.LEGEND_FONT);
 		legend.setMargin(new RectangleInsets(1.0, 1.0, 1.0, 1.0));
 		legend.setBackgroundPaint(Color.white);
-		chart.setLegend(legend);
 		return chart;
 	}
 
