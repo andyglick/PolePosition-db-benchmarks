@@ -30,6 +30,7 @@ import org.jfree.chart.*;
 import org.jfree.chart.axis.*;
 import org.jfree.chart.plot.*;
 import org.jfree.chart.renderer.category.*;
+import org.jfree.chart.title.*;
 import org.jfree.data.category.*;
 import org.jfree.ui.*;
 import org.polepos.framework.*;
@@ -86,12 +87,11 @@ public class OverViewChartBuilder {
         LineAndShapeRenderer renderer = new LineAndShapeRenderer(true, false);
         CategoryPlot plot = new CategoryPlot(dataset, categoryAxis, valueAxis, renderer);
         plot.setOrientation(PlotOrientation.VERTICAL);
-        JFreeChart chart = new JFreeChart("", TITLE_FONT, plot, false);
-        StandardLegend legend = new StandardLegend();
+        JFreeChart chart = new JFreeChart("", TITLE_FONT, plot, true);
+        LegendTitle legend = chart.getLegend();
         legend.setItemFont(LEGEND_FONT);
         legend.setMargin(new RectangleInsets(1.0, 1.0, 1.0, 1.0));
         legend.setBackgroundPaint(Color.white);
-        chart.setLegend(legend);
         
         BufferedImage img=chart.createBufferedImage(1100,900);
         try {
