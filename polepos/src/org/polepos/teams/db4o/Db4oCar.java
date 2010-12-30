@@ -61,7 +61,7 @@ public class Db4oCar extends Car {
 	
 
 	public Db4oCar(Team team, int[] options, ConfigurationSetting[] configurations) {
-		super(team);
+		super(team, "0xFFCA07");
 		_options = options;
 		_configurations = configurations;
 		name = Db4o.version().substring(5);

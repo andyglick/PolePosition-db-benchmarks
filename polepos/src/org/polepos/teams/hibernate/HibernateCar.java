@@ -32,8 +32,8 @@ public class HibernateCar extends Car {
     
     private final String _dbType;
     
-    public HibernateCar(Team team, String dbType){
-    	super(team);
+    public HibernateCar(Team team, String dbType, String color){
+    	super(team, color);
         _dbType = dbType;
     }
 

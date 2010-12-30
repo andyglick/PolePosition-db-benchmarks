@@ -34,7 +34,8 @@ public abstract class RdbmsSettings extends PropertiesHandler{
     protected final static String     KEY_VENDOR      = "vendor";
     protected final static String     KEY_VERSION     = "version";
     protected final static String     KEY_WEBSITE     = "website";
-    protected final static String     KEY_BATCH		  = "executebatch";
+    protected final static String     KEY_BATCH		 = "executebatch";
+    protected final static String 	 KEY_COLOR		 = "color";
 
     public RdbmsSettings(String file) {
         super(file);
@@ -115,6 +116,10 @@ public abstract class RdbmsSettings extends PropertiesHandler{
     
     public String getVendor(String dbtype) {
         return get(dbtype + "." + KEY_VENDOR);
+    }
+
+    public String color(String impl){
+        return get(impl+"."+KEY_COLOR);
     }
 
 }

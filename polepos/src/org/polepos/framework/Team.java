@@ -68,4 +68,11 @@ public abstract class Team
 		
 	}
 
+	public int colorFor(Car car) {
+		String color = car.color();
+		if (color.startsWith("0x")) {
+			color = color.substring(2);
+		}
+		return Integer.parseInt(color, 16);
+	}
 }

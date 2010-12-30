@@ -90,39 +90,63 @@ public class BarPDFReporter extends PDFReporterBase {
 		
 		teamCars = new ArrayList<TeamCar>(teamCars);
 		
-//		Collections.sort(teamCars, new Comparator<TeamCar>() {
-//
-//			@Override
-//			public int compare(TeamCar team1, TeamCar team2) {
-//				long time1 = 0;
-//				long time2 = 0;
-//				for(TurnSetup setup : setups) {
-//					time1 += graph.timeFor(team1, setup);
-//					time2 += graph.timeFor(team2, setup);
-//				}
-//				if(time1 > time2){
-//					return 1;
-//				}
-//				if(time1 < time2){
-//					return - 1;
-//				}
-//				return 0;	protected List<JFreeChart> createTimeChart(Graph graph) {
-//			}
-//		});
 		
-		for (TeamCar teamCar : teamCars) {
-			i = 0;
-			for (TurnSetup setup : setups) {
-				String legend = legend(setup);
+		i = 0;
+		for (final TurnSetup setup : setups) {
+			String legend = legend(setup);
+			final double bestForRun = best[i++];
+			Collections.sort(teamCars, new Comparator<TeamCar>() {
+				
+				@Override
+				public int compare(TeamCar team1, TeamCar team2) {
+					long time1 = graph.timeFor(team1, setup);
+					long time2 = graph.timeFor(team2, setup);
+					if(time1 > time2){
+						return 1;
+					}
+					if(time1 < time2){
+						return - 1;
+					}
+					return 0;
+				}
+			});
+			for (TeamCar teamCar : teamCars) {
 				double time = graph.timeFor(teamCar, setup);
-				dataset.addValue(best[i] == 0 ? 0 : time / best[i], teamCar.toString(), legend);
-				i++;
+				dataset.addValue(bestForRun == 0 ? 0 : time / bestForRun, teamCar.toString(), legend);
 			}
 		}
+		plot(dataset);
 		return dataset;
 	}
 
-    private static JFreeChart createBarChart(CategoryDataset dataset) {
+    private static void plot(DefaultCategoryDataset dataset) {
+    	
+		System.out.print("|");
+		System.out.print(String.format("%-30s","."));
+		System.out.print("|");
+
+		System.out.print("|");
+    	for(int r=0;r <dataset.getRowCount();r++) {
+    		System.out.print(String.format("%30s", dataset.getRowKey(r)));
+    		System.out.print("|");
+    	}
+		System.out.println();
+
+    	for(int c=0;c<dataset.getColumnCount();c++) {
+    		System.out.print("|");
+    		System.out.print(String.format("%-30s",dataset.getColumnKey(c)));
+    		System.out.print("|");
+        	for(int r=0;r <dataset.getRowCount();r++) {
+        		System.out.print(String.format("%30.1f", dataset.getValue(r, c)));
+        		System.out.print("|");
+        	}
+    		System.out.println();
+    		
+    	}
+		
+	}
+
+	private static JFreeChart createBarChart(CategoryDataset dataset) {
 
         // create the chart...
         JFreeChart chart = ChartFactory.createBarChart(
@@ -150,7 +174,7 @@ public class BarPDFReporter extends PDFReporterBase {
 			@Override
         	protected String generateLabelString(CategoryDataset dataset, int row, int column) {
 				Number value = dataset.getValue(row, column);
-        		return row == 0 ? (dataset.getColumnKey(column)+"") : String.format("%.1fx", value);
+        		return row == 0 ? (dataset.getColumnKey(column)+"") : String.format("%.2fx", value);
         	}
         });
         renderer.setBaseItemLabelsVisible(true);

@@ -34,10 +34,10 @@ import com.lowagie.text.pdf.*;
 
 public abstract class PDFReporterBase extends GraphReporter {
 
-	private Circuit _circuit;
 	private Document _document;
 	private PdfWriter _writer;
 	
+	@SuppressWarnings("rawtypes")
 	private LinkedList _pdfData = new LinkedList();
 	protected static final com.lowagie.text.Font h1Font = FontFactory.getFont(FontFactory.HELVETICA,15,Font.BOLD);
 	protected static final com.lowagie.text.Font h2Font = FontFactory.getFont(FontFactory.HELVETICA,12,Font.BOLD);
@@ -53,10 +53,6 @@ public abstract class PDFReporterBase extends GraphReporter {
 	}
 
     protected void report(Graph graph) {
-        Circuit circuit = graph.circuit();
-        if(! circuit.equals(_circuit)){
-            _circuit = circuit;
-        }
         
         List<JFreeChart>timeCharts = createTimeChart(graph);
         try {
@@ -182,7 +178,7 @@ public abstract class PDFReporterBase extends GraphReporter {
 	protected abstract void renderTableAndGraph(int type, Graph graph, String unitsLegend) throws BadElementException;
 
 	@SuppressWarnings("unchecked")
-	private void renderCircuitPresentation(final Graph graph) {
+	protected void renderCircuitPresentation(final Graph graph) {
 		Paragraph para=new Paragraph();
         Circuit circuit = graph.circuit();
         Lap lap = graph.lap();
@@ -233,7 +229,11 @@ public abstract class PDFReporterBase extends GraphReporter {
 	}
 	
 	private Element renderChart(JFreeChart chart) throws DocumentException, BadElementException {
-		return renderChart(chart, 522, chartHeight());
+		return renderChart(chart, chartWidth(), chartHeight());
+	}
+
+	protected int chartWidth() {
+		return 522;
 	}
 
 	protected abstract int chartHeight();
@@ -292,7 +292,8 @@ public abstract class PDFReporterBase extends GraphReporter {
 	}
 	
 	private void renderPDFFile() throws DocumentException {
-        Iterator iter = _pdfData.iterator();
+        @SuppressWarnings("rawtypes")
+		Iterator iter = _pdfData.iterator();
         while(iter.hasNext()) {
         	Object obj = iter.next();
         	if(isNewPage(obj)) {
@@ -318,5 +319,9 @@ public abstract class PDFReporterBase extends GraphReporter {
 
 	protected LinkedList pdfData() {
 		return _pdfData;
+	}
+
+	public PdfWriter writer() {
+		return _writer;
 	}
 }

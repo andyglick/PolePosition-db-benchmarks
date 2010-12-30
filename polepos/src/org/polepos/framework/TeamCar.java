@@ -78,5 +78,9 @@ public class TeamCar {
         return car.website();
     }
 
+	public int color() {
+		return team.colorFor(car);
+	}
+
     
 }

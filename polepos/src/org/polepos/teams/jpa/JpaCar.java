@@ -41,8 +41,8 @@ public class JpaCar extends Car {
     private final String              _dbName;
     private final String              _name;
 
-    public JpaCar(Team team, String name, String dbName) throws CarMotorFailureException,  IOException{
-    	super(team);
+    public JpaCar(Team team, String name, String dbName, String color) throws CarMotorFailureException,  IOException{
+    	super(team, color);
 
         _name = name;
         _dbName = dbName;
