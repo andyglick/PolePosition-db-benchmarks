@@ -31,9 +31,9 @@ import com.db4o.io.*;
 
 public class Db4oCar extends Car {
 	
-	private ObjectServer _server;
+	private transient ObjectServer _server;
 	
-	private ObjectContainer _objectContainer;
+	private transient ObjectContainer _objectContainer;
     
     public static final int SERVER_PORT = 4488;
     

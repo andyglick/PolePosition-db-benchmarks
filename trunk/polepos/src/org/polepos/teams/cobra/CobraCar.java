@@ -31,7 +31,7 @@ import com.versant.odbms.DatastoreManagerFactory;
  */
 public class CobraCar extends Car {
 
-    private DatastoreManagerFactory mFactory;
+    private transient DatastoreManagerFactory mFactory;
 
     private final String              mDbName;
     private final String              mName;

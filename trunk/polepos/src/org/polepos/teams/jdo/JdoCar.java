@@ -32,7 +32,7 @@ import org.polepos.teams.jdbc.*;
 
 public class JdoCar extends Car {
 
-    private PersistenceManagerFactory _persistenceManagerFactory;
+    private transient PersistenceManagerFactory _persistenceManagerFactory;
 
     private final String              mDbName;
     private final String              mName;
