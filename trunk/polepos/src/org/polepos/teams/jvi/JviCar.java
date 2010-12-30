@@ -36,7 +36,7 @@ public class JviCar extends Car {
     private final String              _name;
 
     public JviCar(Team team, String name, String dbName) throws CarMotorFailureException,  IOException{
-    	super(team);
+    	super(team, "0xE68282");
 
         _name = name;
         _dbName = dbName;

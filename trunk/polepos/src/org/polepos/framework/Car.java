@@ -33,9 +33,13 @@ public abstract class Car{
     protected String _website;
     
     protected String _description;
+
+
+	private final String _color;
         
-    public Car(Team team){
+    public Car(Team team, String color){
     	_team = team;
+		this._color = color;
     }
     
 	public abstract String name();
@@ -51,4 +55,8 @@ public abstract class Car{
     public Team team(){
     	return _team;
     }
+
+	public String color() {
+		return _color;
+	}
 }

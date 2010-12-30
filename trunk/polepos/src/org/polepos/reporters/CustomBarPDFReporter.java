@@ -1,0 +1,83 @@
+/* 
+This file is part of the PolePosition database benchmark
+http://www.polepos.org
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public
+License along with this program; if not, write to the Free
+Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
+MA  02111-1307, USA. */
+
+
+package org.polepos.reporters;
+
+import java.awt.*;
+import java.awt.Font;
+import java.io.*;
+import java.util.*;
+import java.util.List;
+
+import org.polepos.framework.*;
+
+import com.db4o.*;
+import com.lowagie.text.*;
+import com.lowagie.text.pdf.*;
+
+public class CustomBarPDFReporter extends PDFReporterBase {
+
+	public CustomBarPDFReporter(String path) {
+		super(path);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	protected void report(Graph graph) {
+        
+		renderCircuitPresentation(graph);
+        
+        try {
+			pdfData().add(render(graph));
+		} catch (BadElementException e) {
+			throw new RuntimeException(e);
+		}
+        pdfData().add(new NewPageLabel());
+        
+	}
+
+	private Object render(Graph graph) throws BadElementException {
+        PdfContentByte cb = writer().getDirectContent();
+		PdfTemplate tp = cb.createTemplate(chartWidth(), chartHeight());
+		Graphics2D graphics = tp.createGraphics(chartWidth(), chartHeight(), new DefaultFontMapper());
+		
+//		new File("graph.db4o").delete();
+//		EmbeddedObjectContainer db = Db4oEmbedded.openFile("graph.db4o");
+//		db.store(graph);
+//		db.commit();
+//		db.close();
+		
+		new CustomBarRender(graph).render(graphics);
+		
+		graphics.dispose();
+		return new ImgTemplate(tp);
+	}
+
+	
+	@Override
+	protected void renderTableAndGraph(int type, Graph graph, String unitsLegend) throws BadElementException {
+	}
+
+	@Override
+	protected int chartHeight() {
+		return 600;
+	}
+	
+}

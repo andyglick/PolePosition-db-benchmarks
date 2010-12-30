@@ -49,14 +49,14 @@ public class JdoTeam extends Team{
                 if(jdosqldbs != null && jdosqldbs.length > 0){
                     for(String sqldb : jdosqldbs){
                         try {
-                            cars.add(new JdoCar(this, impl, sqldb));
+                            cars.add(new JdoCar(this, impl, sqldb, Jdo.settings().color(impl)));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
                 }else{
                     try {
-                        cars.add(new JdoCar(this, impl, null));
+                        cars.add(new JdoCar(this, impl, null, Jdo.settings().color(impl)));
                     } catch (Exception e) {
                         e.printStackTrace();
                     } 
@@ -198,5 +198,6 @@ public class JdoTeam extends Team{
         pm.currentTransaction().commit();
 		
 	}
-		
+
+
 }

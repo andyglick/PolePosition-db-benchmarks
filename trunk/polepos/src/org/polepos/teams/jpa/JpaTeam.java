@@ -60,14 +60,14 @@ public class JpaTeam extends Team{
                 if(jdosqldbs != null && jdosqldbs.length > 0){
                     for(String sqldb : jdosqldbs){
                         try {
-                            cars.add(new JpaCar(this, impl, sqldb));
+                            cars.add(new JpaCar(this, impl, sqldb, Jpa.settings().color(impl)));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
                 }else{
                     try {
-                        cars.add(new JpaCar(this, impl, null));
+                        cars.add(new JpaCar(this, impl, null, Jpa.settings().color(impl)));
                     } catch (Exception e) {
                         e.printStackTrace();
                     } 

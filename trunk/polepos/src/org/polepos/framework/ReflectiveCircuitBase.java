@@ -47,6 +47,9 @@ public class ReflectiveCircuitBase extends CircuitBase {
 		});
 		
 		for (Method method : declaredMethods) {
+			if (method.getAnnotation(Ignored.class) != null) {
+				continue;
+			}
 			add(new Lap(method.getName()));
 		}
 		
