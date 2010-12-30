@@ -28,7 +28,7 @@ import org.polepos.teams.jdbc.*;
 
 public class HibernateCar extends Car {
     
-    private SessionFactory _sessionFactory;
+    private transient SessionFactory _sessionFactory;
     
     private final String _dbType;
     
