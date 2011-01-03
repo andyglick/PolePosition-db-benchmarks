@@ -21,12 +21,6 @@ MA  02111-1307, USA. */
 package org.polepos.reporters;
 
 import java.awt.*;
-import java.awt.Font;
-import java.io.*;
-import java.util.*;
-import java.util.List;
-
-import org.polepos.framework.*;
 
 import com.db4o.*;
 import com.lowagie.text.*;
@@ -36,6 +30,22 @@ public class CustomBarPDFReporter extends PDFReporterBase {
 
 	public CustomBarPDFReporter(String path) {
 		super(path);
+	}
+	
+	public static void main(String[] args) {
+		CustomBarPDFReporter reporter = new CustomBarPDFReporter("/home/fabio/polepols");
+		EmbeddedObjectContainer db = Db4oEmbedded.openFile("graph.db4o");
+		PersistentGraphs pg = db.query(PersistentGraphs.class).iterator().next();
+		
+		db.deactivate(pg, Integer.MAX_VALUE);
+		db.activate(pg, Integer.MAX_VALUE);
+
+		reporter.graphs(pg.graphs());
+		
+		reporter.render();
+		reporter.endReport();
+
+		db.close();
 	}
 	
 	@SuppressWarnings("unchecked")

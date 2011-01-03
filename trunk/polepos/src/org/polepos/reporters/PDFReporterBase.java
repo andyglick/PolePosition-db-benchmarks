@@ -151,7 +151,11 @@ public abstract class PDFReporterBase extends GraphReporter {
     @Override
 	public void endSeason() {
         super.endSeason();
-        if(_document != null){
+        endReport();
+	}
+
+	protected void endReport() {
+		if(_document != null){
             _document.close();
         }
         if(_writer != null){
