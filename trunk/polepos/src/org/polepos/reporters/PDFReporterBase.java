@@ -201,6 +201,7 @@ public abstract class PDFReporterBase extends GraphReporter {
         	para.setSpacingBefore(5f);
         	para.setLeading(11f);
 			para.add(new Chunk(code,codeFont));
+			para.add(new Chunk("\n",codeFont));
 			_pdfData.add(para);
         }
 	}

@@ -19,7 +19,6 @@ MA  02111-1307, USA. */
 package org.polepos.reporters;
 
 import java.awt.*;
-import java.awt.font.*;
 import java.awt.geom.*;
 import java.util.*;
 import java.util.List;
@@ -31,7 +30,7 @@ import org.polepos.framework.*;
 import com.db4o.*;
 
 public class CustomBarRender {
-	private Graphics2D graphics;
+	private Graphics graphics;
 	private GraphData graphData;
 	private List<TurnData> runs;
 	private final Graph graph;
@@ -91,7 +90,7 @@ public class CustomBarRender {
 	}
 	
 	double maxBarWidth() {
-		return graphics.getClipBounds().getWidth() - barX();
+		return graphics.getClipBounds().getWidth() - barX() - textWidth("10000x")/2;
 	}
 	
 	double widthPerOrderOfMagnitude() {
@@ -115,7 +114,7 @@ public class CustomBarRender {
 			@Override
 			public void paint(Graphics g) {
 				super.paint(g);
-				renderer.render((Graphics2D) g);
+				renderer.render(g);
 			}
 		};
 		w.setSize(522, 600);
@@ -128,14 +127,12 @@ public class CustomBarRender {
 		this.graph = graph;
 	}
 
-	public void render(Graphics2D graphics) {
+	public int render(Graphics graphics) {
 		this.graphics = graphics;
 
 		graphics.setFont(graphData().teamNameFont);
 
 		double y = 0;
-		
-		y += stride();
 		
 		for (TurnData turnData : runs()) {
 			if (y > 0) {
@@ -145,13 +142,13 @@ public class CustomBarRender {
 			
 		}
 		
-		y += graphData().paddingY;
-
-		renderAxis(graphics, (int) y);
+		y = renderAxis(graphics, (int) y);
+		
+		return (int) y;
 
 	}
 
-	private void renderAxis(Graphics2D graphics, int y) {
+	private int renderAxis(Graphics graphics, int y) {
 		int axisX = (int) graphData().maxTeamNameWidth;
 		graphics.setColor(Color.BLACK);
 		graphics.drawLine(axisX, 0, axisX, y);
@@ -162,7 +159,7 @@ public class CustomBarRender {
 			int x = (int) (i * widthPerOrderOfMagnitude()) + axisX;
 			
 			graphics.drawLine(x, y, x, (int) (y+graphData().markerHeight));
-			
+
 			String legend;
 			
 			if (i == 0) {
@@ -173,18 +170,22 @@ public class CustomBarRender {
 				legend = String.format("%.0fx", Math.pow(10, i-1));
 			}
 			
-			graphics.drawString(legend, (float)(x-textWidth(legend)/2.), (float)(y+graphData().markerHeight+graphData().paddingY+textHeight(legend)));
+			graphics.drawString(legend, (int)(x-textWidth(legend)/2.), (int)(y+graphData().markerHeight+textHeight(legend)));
 		}
+		
+		y += stride()*2;
+		
+		return y;
 		
 	}
 
-	private double renderTurn(Graphics2D graphics, TurnData turnData, double y) {
+	private double renderTurn(Graphics graphics, TurnData turnData, double y) {
 
 		String legend = CustomBarPDFReporter.legend(turnData.turn);
 		
 		graphics.setFont(graphData().turnLegendFont);
-		graphics.setPaint(Color.BLACK);
-		graphics.drawString(legend, (float) (barX()+graphData().paddingX), (float) (y + graphData().barHeight-graphData().paddingY));
+		graphics.setColor(Color.BLACK);
+		graphics.drawString(legend, (int) (barX()+graphData().paddingX), (int) (y + graphData().barHeight-graphData().paddingY));
 
 
 		y += stride();
@@ -192,14 +193,13 @@ public class CustomBarRender {
 		for (TeamData teamData : turnData.teams) {
 
 			graphics.setFont(graphData().teamNameFont);
-			graphics.setPaint(Color.BLACK);
-
+			graphics.setColor(Color.BLACK);
 			
 			
-			float textY = (float) (y + graphData().barHeight - textHeight(teamData.teamCar.name())/2);
-			graphics.drawString(teamData.teamCar.name(), (float) (graphData().maxTeamNameWidth-textWidth(teamData.teamCar.name())-graphData().paddingX), textY);
+			int textY = (int) (graphData.paddingY+(float) (y + graphData().barHeight - textHeight(teamData.teamCar.name())/2));
+			graphics.drawString(teamData.teamCar.name(), (int) (graphData().maxTeamNameWidth-textWidth(teamData.teamCar.name())-graphData().paddingX), textY);
 
-			graphics.setPaint(teamData.barColor());
+			graphics.setColor(teamData.barColor());
 
 			
 			int barWidth = (int) (barUnits(teamData.orderOfMagnitude) * widthPerOrderOfMagnitude());
@@ -209,13 +209,13 @@ public class CustomBarRender {
 			String magnitude = String.format("%.1fx", teamData.orderOfMagnitude);
 			
 			graphics.setColor(Color.BLACK);
-			graphics.drawString(magnitude, (float)(barX()+barWidth+graphData().paddingX), textY);
+			graphics.drawString(magnitude, (int)(barX()+barWidth+graphData().paddingX), textY);
 
-			String absolute = teamData.time+"ms";
-			graphics.setColor(Color.WHITE);
-//			graphics.setFont(graphData().turnLegendFont);
-			graphics.drawString(absolute, (float)(barX()+barWidth-textWidth(absolute)-graphData().paddingX), textY);
-//			graphics.setFont(graphData().teamNameFont);
+			if (teamData.time > 0) {
+				String absolute = teamData.time+"ms";
+				graphics.setColor(Color.WHITE);
+				graphics.drawString(absolute, (int)(barX()+barWidth-textWidth(absolute)-graphData().paddingX), textY);
+			}
 
 			y += stride();
 		}
@@ -238,14 +238,17 @@ public class CustomBarRender {
 		return Math.log10(orderOfMagnitude) + 1;
 	}
 
-	private Rectangle2D textBounds(Graphics2D g, String string, Font font) {
-		FontRenderContext frc = g.getFontRenderContext();
-		TextLayout layout = new TextLayout(string, font, frc);
+	private Rectangle2D textBounds(Graphics g, String string, Font font) {
+		
+	    FontMetrics metrics = g.getFontMetrics(font);
+	    int hgt = metrics.getHeight();
+	    int adv = metrics.stringWidth(string);
+	    Dimension size = new Dimension(adv+2, hgt+2);
 
-		return layout.getBounds();
+	    return new Rectangle(size);
 	}
 
-	private GraphData prepareGraphData(Graphics2D graphics, final Graph graph) {
+	private GraphData prepareGraphData(Graphics graphics, final Graph graph) {
 
 		GraphData graphData = new GraphData();
 

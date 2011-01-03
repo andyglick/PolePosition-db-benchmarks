@@ -23,6 +23,8 @@ package org.polepos.reporters;
 import java.awt.*;
 
 import com.db4o.*;
+import com.db4o.config.*;
+import com.db4o.ta.*;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.*;
 
@@ -34,12 +36,14 @@ public class CustomBarPDFReporter extends PDFReporterBase {
 	
 	public static void main(String[] args) {
 		CustomBarPDFReporter reporter = new CustomBarPDFReporter("/home/fabio/polepols");
-		EmbeddedObjectContainer db = Db4oEmbedded.openFile("graph.db4o");
+		
+		
+	    EmbeddedConfiguration cfg = Db4oEmbedded.newConfiguration();
+	    cfg.common().add(new TransparentPersistenceSupport());
+		
+		EmbeddedObjectContainer db = Db4oEmbedded.openFile(cfg, "graph.db4o");
 		PersistentGraphs pg = db.query(PersistentGraphs.class).iterator().next();
 		
-		db.deactivate(pg, Integer.MAX_VALUE);
-		db.activate(pg, Integer.MAX_VALUE);
-
 		reporter.graphs(pg.graphs());
 		
 		reporter.render();
@@ -68,13 +72,14 @@ public class CustomBarPDFReporter extends PDFReporterBase {
 		PdfTemplate tp = cb.createTemplate(chartWidth(), chartHeight());
 		Graphics2D graphics = tp.createGraphics(chartWidth(), chartHeight(), new DefaultFontMapper());
 		
-//		new File("graph.db4o").delete();
-//		EmbeddedObjectContainer db = Db4oEmbedded.openFile("graph.db4o");
-//		db.store(graph);
-//		db.commit();
-//		db.close();
+		int height = new CustomBarRender(graph).render(graphics);
+		
+		tp = cb.createTemplate(chartWidth(), height);
+		graphics = tp.createGraphics(chartWidth(), height, new DefaultFontMapper());
 		
 		new CustomBarRender(graph).render(graphics);
+		
+		
 		
 		graphics.dispose();
 		return new ImgTemplate(tp);
