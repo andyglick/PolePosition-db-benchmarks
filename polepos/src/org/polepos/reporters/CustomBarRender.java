@@ -27,7 +27,6 @@ import java.util.List;
 import javax.swing.*;
 
 import org.polepos.framework.*;
-import org.polepos.reporters.CustomBarPDFReporter.*;
 
 import com.db4o.*;
 

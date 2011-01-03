@@ -20,6 +20,7 @@ MA  02111-1307, USA. */
 package org.polepos.reporters;
 
 import java.awt.*;
+import java.io.*;
 import java.util.*;
 import java.util.List;
 
@@ -32,6 +33,8 @@ import org.jfree.data.category.*;
 import org.jfree.ui.*;
 import org.polepos.framework.*;
 import org.polepos.util.*;
+
+import com.db4o.*;
 
 
 public abstract class GraphReporter extends ReporterBase{
@@ -83,7 +86,7 @@ public abstract class GraphReporter extends ReporterBase{
     public void reportResult(Result result) {
         
         if(mGraphs == null){
-            mGraphs = new HashMap<CircuitLap,Graph>();
+            mGraphs = new LinkedHashMap<CircuitLap,Graph>();
         }
         
         if(mCircuits == null){
@@ -108,27 +111,36 @@ public abstract class GraphReporter extends ReporterBase{
     
     @Override
     public void endSeason() {
-    	List<TeamCar> cars = null;
+    	persist(mGraphs);
+    	render();
+    }
+
+	protected void render() {
+		List<TeamCar> cars = null;
         if(mGraphs != null){
             OverViewChartBuilder overViewChartBuilder = new OverViewChartBuilder();
-            for(Circuit circuit : mCircuits){
-                for(Lap lap : circuit.laps()){
-                    Graph graph =mGraphs.get(new CircuitLap(circuit, lap));
-                    
-                    if(graph != null){
-                    	if(cars == null) {
-                    		cars = graph.teamCars();
-                    	}
-                        report(graph);
-                        reportOverviewDatabaseSize(graph);
-                        overViewChartBuilder.report(graph);
-                    }
+            for (Graph graph : mGraphs.values()) {
+                if(graph != null){
+                	if(cars == null) {
+                		cars = graph.teamCars();
+                	}
+                    report(graph);
+                    reportOverviewDatabaseSize(graph);
+                    overViewChartBuilder.report(graph);
                 }
-            }
+			}
             overViewChartBuilder.createJPGs(path());
 			finish(cars);
         }
-    }
+	}
+    
+    private void persist(Map<CircuitLap, Graph> graphs) {
+		new File("graph.db4o").delete();
+		EmbeddedObjectContainer db = Db4oEmbedded.openFile("graph.db4o");
+		db.store(new PersistentGraphs(graphs));
+		db.commit();
+		db.close();
+	}
 
 	protected abstract void report(Graph graph);
 	protected abstract void finish(List <TeamCar> cars);
@@ -359,6 +371,14 @@ public abstract class GraphReporter extends ReporterBase{
 		legend.setMargin(new RectangleInsets(1.0, 1.0, 1.0, 1.0));
 		legend.setBackgroundPaint(Color.white);
 		return chart;
+	}
+
+	public void graphs(Map<CircuitLap,Graph> mGraphs) {
+		this.mGraphs = mGraphs;
+	}
+
+	public Map<CircuitLap,Graph> graphs() {
+		return mGraphs;
 	}
 
 
