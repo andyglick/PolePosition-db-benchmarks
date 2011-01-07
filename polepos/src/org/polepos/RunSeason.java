@@ -63,10 +63,10 @@ public class RunSeason extends AbstractRunner {
 	public CircuitBase[] circuits() {
 		return new CircuitBase[] {
 				
-				new ReflectiveCircuitBase(FlatObject.class),
+				new ReflectiveCircuitBase(Complex.class),
 				new ReflectiveCircuitBase(NestedLists.class),
 				new ReflectiveCircuitBase(InheritanceHierarchy.class),
-				new ReflectiveCircuitBase(Complex.class),
+				new ReflectiveCircuitBase(FlatObject.class),
 				
 // Old Circuits
 // Most usecases are covered by the 4 new circuits
