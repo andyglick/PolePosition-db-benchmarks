@@ -35,7 +35,7 @@ public class CustomBarPDFReporter extends PDFReporterBase {
 	}
 	
 	public static void main(String[] args) {
-		CustomBarPDFReporter reporter = new CustomBarPDFReporter("/home/fabio/polepols");
+		CustomBarPDFReporter reporter = new CustomBarPDFReporter(DefaultReporterFactory.defaultReporterOutputPath());
 		
 		
 	    EmbeddedConfiguration cfg = Db4oEmbedded.newConfiguration();
