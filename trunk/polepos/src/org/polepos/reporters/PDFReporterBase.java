@@ -195,7 +195,15 @@ public abstract class PDFReporterBase extends GraphReporter {
         para.add(new Chunk(lap.name()+ "\n",bigFont));
         _pdfData.add(para);
         
-        String code = lap.code();
+        renderCode(lap);
+	}
+
+	private void renderCode(Lap lap) {
+		if(true){
+			return;
+		}
+		Paragraph para;
+		String code = lap.code();
         if(code != null){
         	para=new Paragraph();
         	para.setSpacingBefore(5f);
