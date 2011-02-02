@@ -21,7 +21,6 @@ package org.polepos.teams.jdbc;
 
 import java.sql.*;
 
-import org.polepos.circuits.barcelona.*;
 import org.polepos.circuits.inheritancehierarchy.*;
 import org.polepos.data.*;
 import org.polepos.framework.*;
@@ -67,7 +66,6 @@ public class InheritanceHierarchyJdbc extends JdbcDriver implements InheritanceH
             for (int i = 0; i < 5; i++) {
                 statements[i] = prepareStatement("insert into " + TABLES[i] + " (id, parent, i" + i + ") values (?,?,?)");
             }
-            
             int count = setup().getObjectCount();
 			for (int j = 0; j < 5; j++) {
 				for (int i = 1; i <= count; i++) {
@@ -165,8 +163,8 @@ public class InheritanceHierarchyJdbc extends JdbcDriver implements InheritanceH
                 if(!rs.next()) {
                     System.err.println("Expected one result, received none: "+ i);
                 }
-                B4 b4 = new B4(rs.getInt(3), rs.getInt(6), rs.getInt(9), rs.getInt(12), rs.getInt(15));
-                addToCheckSum(b4.checkSum());
+                InheritanceHierarchy4 ih4 = new InheritanceHierarchy4(rs.getInt(3), rs.getInt(6), rs.getInt(9), rs.getInt(12), rs.getInt(15));
+                addToCheckSum(ih4.checkSum());
                 if(rs.next()) {
                     System.err.println("Expected one result, received multiple: "+i);
                 }
