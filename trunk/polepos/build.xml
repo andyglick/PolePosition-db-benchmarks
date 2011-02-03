@@ -47,7 +47,8 @@
         </java>
     </target>
 
-	<target name="race" depends="clean,compile,jdoenhance,jvienhance,jpaenhance" description="runs with all circuits and all teams ">
+	<!-- <target name="race" depends="clean,compile,jdoenhance,jvienhance,jpaenhance" description="runs with all circuits and all teams "> -->
+	<target name="race" depends="clean,compile,jdoenhance" description="runs with all circuits and all teams ">
 		<java classname="org.polepos.RunSeason" fork="true" >
 			<classpath>
 				<pathelement location="bin" />
