@@ -22,9 +22,6 @@ package org.polepos.teams.jdbc;
 import org.polepos.*;
 import org.polepos.framework.*;
 
-/**
- * @author Herkules
- */
 public class JdbcSettings extends RdbmsSettings {
 
     public JdbcSettings() {

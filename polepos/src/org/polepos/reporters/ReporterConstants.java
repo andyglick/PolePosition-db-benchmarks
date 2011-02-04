@@ -24,6 +24,7 @@ import java.awt.*;
 
 public class ReporterConstants {
 	protected final static String WEBSITE="http://www.polepos.org";
+	protected final static String CIRCUITS_PAGE="http://www.polepos.org/circuits.html";
     public final static int TIME = 1;
     public final static int MEMORY = 2;
 	public static final String OLD_LOGARITHMIC_TIME_CHART_LEGEND = " 1  /  log(t + 2)                     better >";

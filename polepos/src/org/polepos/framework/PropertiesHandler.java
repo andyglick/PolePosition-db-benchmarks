@@ -23,10 +23,6 @@ import java.io.*;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
-/**
- *
- * @author Herkules
- */
 public class PropertiesHandler
 {
 	private final static	String		DBPROPSDIR = ".bdbench";

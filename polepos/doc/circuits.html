@@ -6,11 +6,20 @@
 	</head>
 	<body>
 	<h1>PolePosition Circuits</h1>
-	    <p>This file explains what each circuit of the Poleposition benchmark does.
+	    <p>This file is a complementary narrative for the open source <a href="http://www.polepos.org">Poleposition benchmark project</a>.  
+            Source code snippets are provided for selected tasks to show how they are implemented. As a general rule 
+	    using plain JDBC required many more lines of code than using modern object-oriented techniques like object databases or object-relational
+	    mappers. For example <a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/jdbc/ComplexJdbc.java">ComplexJdbc.java</a>
+	    was written with 550 lines of code, whereas the same task was possible with the OO counterparts 
+	    <a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/db4o/ComplexDb4o.java">ComplexDb4o.java</a>, 
+        <a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/jdo/ComplexJdo.java">ComplexJdo.java</a> and 
+        <a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/hibernate/ComplexHibernate.java">ComplexHibernate.java</a>
+        with only about 150 lines of code.
 	    </p>
 		<hr>
 		<h2>Content</h2>
-		<p>
+		<p>Poleposition benchmark tasks are called circuits. This document contains
+		explanations to the following circuits:</p>
 			<ul>
 				<li>
 					<a href="#complex">Complex</a>
@@ -22,7 +31,6 @@
 					<a href="#flatobject">Flatobject</a>
 				</li>
 			</ul>
-		<P></P>
 		<hr>
 		<a name="complex"></a>
 		<h2>Complex</h2>
@@ -34,11 +42,10 @@
             <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/db4o/ComplexDb4o.java">ComplexDb4o.java</a></li>
             <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/jdo/ComplexJdo.java">ComplexJdo.java</a></li>
             <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/hibernate/ComplexHibernate.java">ComplexHibernate.java</a></li>
-            <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/db4o/ComplexJdbc.java">ComplexJdbc.java</a></li>
+            <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/jdbc/ComplexJdbc.java">ComplexJdbc.java</a></li>
             </ul>
-        <p>
-			In a nutshell the class model looks like this:</p>
-            <pre>
+<p>The class model for the Complex circuit looks like this:</p>
+<pre>
 class ComplexHolder0 {
     String _name;
     List &lt;ComplexHolder0&gt; _children;
@@ -61,36 +68,46 @@ class ComplexHolder4 extends ComplexHolder3 {
     int _i4;
 }
 </pre>
+<p>Member _i2 on ComplexHolder2 is indexed for queries.</p>
+<hr />
 <h3>Complex.write</h3>
-<p>ComplexHolder0#generate() generates a structure with depth and objectcount as 
-    specificied in the configuration file. The _children List and the _array member 
+<p>ComplexHolder0#generate() generates a deep object graph as configured by the &#39;depth&#39; 
+    and &#39;objects&#39; properties in the 
+    <a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/settings/Circuits.properties">Circuits.properties configuration file</a>. 
+    The _children List and the _array member 
     are again filled with ComplexHolder0 objects. Varying instances from 
     ComplexHolder0 to ComplexHolder4 are used.
 <p>Complex.write stores the complete graph
-    and measures the time taken for each database access technology.
+    and measures the time taken for each database. <hr />    
 <h3>Complex.read</h3>
 <p>Complex.read accesses the root object of the structure that was generated with 
 Complex.write, loads all attached objects into
 memory and traverses them, making sure that all objects are present by calculating
 a checksum over all objects.
 </p>
+<hr />
 <h3>Complex.query</h3>
 <p>
-Complex.query queries for ComplexHolder2 instances over the indexed _i2 field. The 
-    query is run multiple times, specified by the selects property in the 
-    configuration file. Sample queries look like this:</p>
+    Complex.query queries for ComplexHolder2 instances over the indexed _i2 field. 
+    The query is run multiple times, specified by the selects property in the 
+    <a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/settings/Circuits.properties">Circuits.properties configuration file</a>. 
+    Sample queries look like this:</p>
 <pre>
 // db4o
-Query query = db().query();
+Query query = db.query();
 query.constrain(ComplexHolder2.class);
 query.descend("_i2").constrain(currentInt);
 ObjectSet<ComplexHolder2> result = query.execute();
 
 // JDO
 String filter = "this.i2 == param";
-Query query = db().newQuery(ComplexHolder2.class, filter);
+Query query = pm.newQuery(ComplexHolder2.class, filter);
 query.declareParameters("int param");
 Collection result = (Collection) query.execute(currentInt);
+
+// Hibernate
+String query = "from org.polepos.teams.hibernate.data.ComplexHolder2 where i2=" + currentInt;
+Iterator it = session.iterate(query);
 
 // JDBC
 StringBuilder sb = new StringBuilder();
@@ -107,10 +124,12 @@ sb.append(" where " + HOLDER_TABLES[1] + ".i2 = ?");
 PreparedStatement stat = prepareStatement(sb.toString());
 ResultSet resultSet stat.executeQuery();
 </pre>
-<p>For JDBC we are only showing the main query. Reading individual object 
-intances required another 150 lines of code with our implementation, see
-<a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/db4o/ComplexJdbc.java">ComplexJdbc.java</a>.
+<p>For JDBC we are only showing the code to set up the main query. Reading individual object 
+instances required another 150 lines of code with our implementation, see the 
+    #readHolder() methods in
+<a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/jdbc/ComplexJdbc.java">ComplexJdbc.java</a>.
  </p>
+ <hr />
 <h3>Complex.update</h3>
 <p>Complex.update reads the root object of the graph and traverses all
 holder objects, updates the name, copies all instances from the _children list
@@ -126,11 +145,11 @@ for (int i = 0; i < array.length; i++) {
     array[i] = children.get(i);
 }
 holder.setArray(array);
-store(holder);
+db.store(holder);
 
 // JDBC 
 PreparedStatement nameStat = prepareStatement("update " + HOLDER_TABLE0 + " set name=? where id=?");
-PreparedStatement arrayDeleteStat = prepareStatement("delete from " + ARRAY_TABLE + " where parent = ?");
+PreparedStatement arrayDeleteStat = prepareStatement("delete from tarray where parent = ?");
 PreparedStatement arrayInsertStat = prepareStatement("insert into tarray (parent, child, pos) values (?,?,?)");
 nameStat.setString(1, "updated");
 nameStat.setInt(2, holder.getId());
@@ -145,34 +164,39 @@ for (int i = 0; i < children.size(); i++) {
     arrayInsertStat.addBatch();
 }
 </pre>
+<hr />
 <h3>Complex.delete</h3>
-<p>Complex.delete traverses all objects from the root and deletes each object individually.</p>
+<p>Complex.delete traverses all objects from the root and deletes each object 
+    individually, using batched prepared statements where applicable.</p>
 		<hr>
 		<a name="nestedlists"></a>
 		<h2>Nestedlists</h2>
-			The Nestelists circuit simulates writing, reading, querying and updating a deep 
+		<p>The Nestelists circuit simulates writing, reading, querying and updating a deep 
             graph of lists. Objects are partially reused within the lists. 
             The sources for the implementations can be found here:</p>
             <ul>
             <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/db4o/NestedListsDb4o.java">NestedListsDb4o.java</a></li>
             <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/jdo/NestedListsJdo.java">NestedListsJdo.java</a></li>
             <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/hibernate/NestedListsHibernate.java">NestedListsHibernate.java</a></li>
-            <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/db4o/NestedListsJdbc.java">NestedListsJdbc.java</a></li>
+            <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/jdbc/NestedListsJdbc.java">NestedListsJdbc.java</a></li>
             </ul>
-		<hr>
 <p>The class model for the NestedLists circuit looks like this:</p>
 <pre>
 class ListHolder {
     private long _id;
     private String _name;
     List &lt;ListHolder&gt; _list;
+}
 </pre>
+<hr />
 <h3>Nestedlists.create</h3>
-<p>ListHolder#generate() generates a deep structure of lists, reusing an amount of previous objects
-specified by the reuse property in the configuration file. Nestedlists.create stores the root of
+<p>ListHolder#generate() generates a deep structure of lists, reusing an amount of previously 
+    instantiated objects
+specified by the &#39;reuse&#39; property in the 
+    <a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/settings/Circuits.properties">Circuits.properties configuration file</a>. Nestedlists.create stores the root of
 this generated graph and measures the time taken.</p>
 <pre>
-// OO
+// OOOOOOOOO
 db.store(ListHolder.generate(depth(), objectCount(), reuse()));
 db.commit();
 
@@ -182,7 +206,6 @@ final PreparedStatement listHolderStatement = prepareStatement("insert into " + 
 final PreparedStatement listStatement = prepareStatement("insert into " + LIST_TABLE + " (fid, fitem, felement) values (?,?,?)");
 _rootId = (int) root.id();
 root.accept(new Visitor&lt;ListHolder&gt;() {
-	@Override
     public void visit(ListHolder listHolder) {
         try {
             int listHolderId = (int) listHolder.id();
@@ -210,23 +233,19 @@ listStatement.close();
 listHolderStatement.close();
 commit();
 </pre>
+<hr />
 <h3>Nestedlists.read</h3>
 <p>Nestedlists.read loads the root object of the structure stored with Nestedlists.create
-and traverses all objects and adds them to the checksum.</p>
+and traverses all objects adding them to the checksum.</p>
 <pre>
 // OO just traverses the root with a simple visitor
-
-@Override
 public void read() throws Throwable {
-    ListHolder root = root();
-    activate(root, Integer.MAX_VALUE);
-    root.accept(new Visitor&lt;ListHolder&gt;(){
+    root().accept(new Visitor&lt;ListHolder&gt;(){
         public void visit(ListHolder listHolder){
             addToCheckSum(listHolder);
         }
     });
 }
-
 private ListHolder root() {
     Query query = db().query();
     query.constrain(ListHolder.class);
@@ -236,10 +255,7 @@ private ListHolder root() {
 }
 
 
-// JDBC requires a recursive read method and a set to check if an instance
-// was already loaded
-
-@Override
+// JDBC requires a recursive read method and a set to check if an instance was already loaded
 public void read() throws Throwable {
     ListHolder root = root();
     root.accept(new Visitor&lt;ListHolder&gt;(){
@@ -248,7 +264,6 @@ public void read() throws Throwable {
         }
     });
 }
-
 private ListHolder root() throws SQLException {
     PreparedStatement listHolderStatement = prepareStatement("select * from " + LISTHOLDER_TABLE + " where fid = ?");
     PreparedStatement listStatement = prepareStatement("select * from " + LIST_TABLE + " where fid = ? order by felement");
@@ -258,7 +273,6 @@ private ListHolder root() throws SQLException {
     closePreparedStatement(listStatement);
     return root;
 }
-
 private ListHolder recurseRead(PreparedStatement listHolderStatement,
         PreparedStatement listStatement, int id, Set&lt;ListHolder&gt; found) throws SQLException {
     listHolderStatement.setInt(ID, id);
@@ -290,20 +304,179 @@ private ListHolder recurseRead(PreparedStatement listHolderStatement,
     return listHolder;
 }
 </pre>
+<hr />
+<h3>Nestedlists.update</h3>
+<p>Nestedlists.update traverses the graph of lists created in Nestedlists.create and
+updates the name of each Listholder individually (using batched prepared statements 
+with JDBC).
+</p>
+<hr />
+<h3>Nestedlists.delete</h3>
+<p>Nestedlists.delete traverses the graph of lists created in Nestedlists.create and
+deletes each Listholder individually (using batched prepared statements with JDBC).
+</p>
+<hr />
+<a name="inheritancehierarchy"></a>
+<h2>Inheritancehierarchy</h2>
+<p>The Inheritancehierarchy circuit simulates writing, reading, querying and deleting
+objects of a class hierarchy with a depth of 5 levels.
+The sources for the implementations can be found here:</p>
+            <ul>
+            <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/db4o/InheritanceHierarchyDb4o.java">InheritanceHierarchyDb4o.java</a></li>
+            <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/jdo/InheritanceHierarchyJdo.java">InheritanceHierarchyJdo.java</a></li>
+            <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/hibernate/InheritanceHierarchyHibernate.java">InheritanceHierarchyHibernate.java</a></li>
+            <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/jdbc/InheritanceHierarchyJdbc.java">InheritanceHierarchyJdbc.java</a></li>
+            </ul>
+<p>The class model for the InheritanceHierarchy circuit looks like this:</p>
+<pre>
+class InheritanceHierarchy0 {
+    int i0;
+}
+class InheritanceHierarchy1 extends InheritanceHierarchy0 {
+   int i1  
+}
+class InheritanceHierarchy2 extends InheritanceHierarchy1 {
+   int i2  
+}
+class InheritanceHierarchy3 extends InheritanceHierarchy2 {
+   int i3  
+}
+class InheritanceHierarchy4 extends InheritanceHierarchy3 {
+   int i4  
+}
+</pre>
+<p>Member i2 on InheritanceHierarchy2 is indexed for queries.
+Since we are simulating the scenario where a class structure may contain tens or even hundreds of
+classes, we store the data for each class in a separate table instead of putting all 
+    classes into a single table.</p>
+<hr />
+<h3>InheritanceHierarchy.write</h3>
+<p>InheritanceHierarchy.write stores a number of InheritanceHierarchy4 objects
+and measures the time taken.</p>
+<pre>
+// OO
+int count = setup().getObjectCount();
+for (int i = 1; i<= count; i++) {
+    InheritanceHierarchy4 inheritancheHierarchy4 = new InheritanceHierarchy4();
+    inheritancheHierarchy4.setAll(i);
+    db.store(inheritancheHierarchy4);
+}
+commit();
 
 
+// JDBC
+PreparedStatement[] statements = new PreparedStatement[5];
+for (int i = 0; i < 5; i++) {
+    statements[i] = prepareStatement("insert into " + TABLES[i] + " (id, parent, i" + i + ") values (?,?,?)");
+}
+int count = setup().getObjectCount();
+for (int j = 0; j < 5; j++) {
+	for (int i = 1; i <= count; i++) {  
+		InheritanceHierarchy4 inheritanceHierarchy4 = new InheritanceHierarchy4();
+		inheritanceHierarchy4.setAll(i);
+		statements[j].setInt(1, i);
+		statements[j].setInt(2, i);
+		statements[j].setInt(3, inheritanceHierarchy4.getIx(j));
+		statements[j].addBatch();
+	}
+	statements[j].executeBatch();
+	statements[j].close();
+}
+commit();
+</pre>
+<hr />
+<h3>InheritanceHierarchy.read</h3>
+<p>InheritanceHierarchy.read executes a number of queries for all 
+    InheritanceHierarchy4 objects, adding each to a checksum.</p>
+<hr />
+<h3>InheritanceHierarchy.query</h3>
+<p>InheritanceHierarchy.query executes a number of queries for all InheritanceHierarchy4 
+objects with a where clause for the indexed i2 member.</p>
+<hr />
+<h3>InheritanceHierarchy.delete</h3>
+<p>InheritanceHierarchy.delete simulates deleting all InheritanceHierarchy4 objects
+individually. 
+</p>
+<pre>
+// db4o
+Query q = db.query();
+q.constrain(InheritanceHierarchy4.class);
+ObjectSet&lt;InheritanceHierarchy4&gt; deleteSet = q.execute();
+while(deleteSet.hasNext()){
+    db().delete(deleteSet.next());
+}
+db.commit();
 
-		<a name="inheritancehierarchy"></a>
-		<h2>Inheritancehierarchy</h2>
-		<p>As already expressed above, there is no best product. </p>
-		<hr>
+// JDO
+Extent extent = db().getExtent(InheritanceHierarchy4.class, false);
+Iterator it = extent.iterator();
+while(it.hasNext()){
+    db().deletePersistent(it.next());
+}
+extent.closeAll();
+commit();
+
+// Hibernate
+Transaction tx = session.beginTransaction();
+Iterator it = session.iterate("from org.polepos.teams.hibernate.data.InheritanceHierarchy4");
+while(it.hasNext()){
+    db().delete(it.next());
+}
+tx.commit();
+
+
+// JDBC
+int count = setup().getObjectCount();
+PreparedStatement[] statements = new PreparedStatement[5];
+for (int i = 0; i < 5; i++) {
+    statements[i] = prepareStatement("delete from " + TABLES[i] + " where id=?");
+}
+for (int j = 0; j < 5; j++) {
+    for (int i = 1; i <= count; i++) {
+        statements[j].setInt(1, i);
+        statements[j].addBatch();
+    }
+statements[j].executeBatch();
+statements[j].close();
+commit();     
+
+</pre>
+
+<hr />		
 		<a name="flatobject"></a>
 		<h2>Flatobject</h2>
 		<p>
-			All sources of the PolePosition test suite including a couple of open source 
-			database engines to run tests are available for download 
-            <a href="http://sourceforge.net/project/showfiles.php?group_id=134549" target="_blank">here</a>.
-		</p>
-
+The Flatobject circuit simulates writing, updating and deleting plain simple
+flat objects as well as querying for indexed int members and string members.
+The sources for the implementations can be found here:</p>
+            <ul>
+            <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/db4o/FlatObjectDb4o.java">FlatObjectDb4o.java</a></li>
+            <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/jdo/FlatObjectJdo.java">FlatObjectJdo.java</a></li>
+            <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/hibernate/FlatObjectHibernate.java">FlatObjectHibernate.java</a></li>
+            <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/jdbc/FlatObjectJdbc.java">FlatObjectJdbc.java</a></li>
+            </ul>
+<p>The class model for the FlatObject circuit looks like this:</p>
+<pre>
+class IndexedObject {
+    int _int;
+    String _string;
+}
+</pre>            
+<p>Both the _int and the _string field are indexed.</p>
+<hr />
+<h3>FlatObject.write</h3>
+<p>FlatObject.write simulates storing a number of simple objects to a database.</p>
+<hr />
+<h3>FlatObject.queryIndexedString</h3>
+<p>FlatObject.queryIndexedString simulates querying for a number of flat objects by an indexed string member.</p>
+<hr />
+<h3>FlatObject.queryIndexedInt</h3>
+<p>FlatObject.queryIndexedInt simulates querying for a number of flat objects by an indexed int member.</p>
+<hr />
+<h3>FlatObject.update</h3>
+<p>FlatObject.write simulates updating a string member on a number of simple objects after querying for an indexed int member.</p>
+<hr />
+<h3>FlatObject.delete</h3>
+<p>FlatObject.delete simulates deleting a number of simple objects individually after querying for an indexed int member.</p>
 	</body>
 </html>
