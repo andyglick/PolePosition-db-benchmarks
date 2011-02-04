@@ -52,7 +52,7 @@ MySQL, McKoi, Derby, HSQLDB, open source, Java">
             database engines and object-relational mapping technology. It is by no means 
             complete. Database vendors and open source database project contributors are 
             invited to improve the test implementations and to write further scenarios 
-            (&quot;Circuits&quot;). The PolePosition framework will help you to implement tests 
+            (&quot;Circuits&quot;). The PolePosition framework will help to implement tests 
             quickly and to time and output the results as number series and graph 
 			visualizations.
 		</p>
@@ -84,15 +84,17 @@ MySQL, McKoi, Derby, HSQLDB, open source, Java">
         </p>
         <p>
             <a href="results/PolePositionClientServer.pdf" target="_blank">Client/Server Results</a><br />
-            Database setups with client/server functionality for scalable applications.
-		</p>
+            Database setups with client/server functionality for scalable applications.</p>
+        <p>
+            An explanation about each benchmark scenario (&quot;Circuit&quot;) and what it does can be 
+            found <a href="circuits.html">here</a>.</p>
 		<p>
 			You are encouraged to 
             <a href="http://sourceforge.net/project/showfiles.php?group_id=134549" target="_blank">download</a>
             the PolePosition suite and to run the tests yourself with your 
 			favourite databases on your hardware, see <a href="#running">Running the tests</a>. 
             If you are evaluating databases for a concrete scenario, the best thing you can 
-            do is to write your own customized circuit for this usecase.</p>
+            do is to write your own customized circuit for this use case.</p>
 		<hr>
 		<a name="interpretation"></a>
 		<h2>Interpretation</h2>
@@ -104,14 +106,14 @@ MySQL, McKoi, Derby, HSQLDB, open source, Java">
 				<li>
 				    When you interpret the results, you should focus on significant differences, 
                     where the results differ by an order of magnitude. If you see differences of 
-                    only 20% or 30% this may be an effect of Java garbage collection kicking in.<li>
-				    The longer the tests run (see the milliseconds value in the table), the more 
+                    only 20% or 30% this may be an effect of Java garbage collection.<li>
+				    The longer the tests run (see the milliseconds values), the more 
                     meaningful the results will be.<li>
 				HSQLDB looks very good on many graphs, because much processing is done in 
 				memory. We configured HSQLDB to use cached tables and with write_delay=false to be 
                     fair to other databases that flush file buffers on commit. Before you consider to use HSQLDB for a complex database application, you 
-				should take a close look at Barcelona:query. The query optimizer does not seem 
-				to cope with a query over five tables.
+				should take a close look at Complex:query. The query optimizer does not seem 
+				to cope with a query over five tables. 
 				<li>
 		The use of O-R mapping technology like Hibernate, 
                     Datanucleus or OpenJPA has a 
@@ -121,33 +123,22 @@ MySQL, McKoi, Derby, HSQLDB, open source, Java">
 				application. If you want your data to be up-to-date, you have to reread from 
 				the database.
 				<li>
-				As would be expected, object databases like db4o and Versant VOD provide best performance for 
-				inheritance hierarchies, tree structures and navigational access to object 
+			As would be expected, object databases like db4o and Versant VOD provide best performance for 
+				inheritance hierarchies, complex structures and navigational access to object 
                     members. 
 				<li>
-				If you need a relational database for whatever reason, MySQL should certainly 
-				be on your evaluation list. We tested quite a few other proprietary databases with 
-                    PolePosition, products that may not be listed here because of their 
-				license agreements. These other products did not look good at all in comparison.
-				<li>
 				If you take a look at the sources of the tests, they are also a measurement, 
-					how easy it is to work against a specific database. SQL looks like a foreigner 
-					in Java code, very ugly, difficult to write and refactor. O-R mappers and 
+					how easy it is to work against a specific database. SQL statements look like 
+                    aliens in Java code, ugly, difficult to write, debug and refactor. O-R mappers and 
 					object databases make life so much easier and productive for developers. The task of storing 
-					objects is very similar among all the products tested. An 
+					objects is very similar among all the products tested. A common 
                     object-oriented query language, like LINQ, would be great for Java.</li>
-                <li>
-					The pseudocode shown on each page is not an accurate representation of the 
-                    actual code that is run. It&#39;s just a shorthand to give you a general idea of the 
-                    nature of the circuit, abbreviated as much as possible so it fits on the page. 
-                    Please look at the actual source code if you really want to know what&#39;s going 
-                    on.</li>
 			</ul>
 		<hr>
 		<a name="download"></a>
 		<h2>Download</h2>
 		<p>
-			All sources of the PolePosition test suite including a couple of open source 
+		All sources of the PolePosition test suite including some open source 
 			database engines to run tests are available for download 
             <a href="http://sourceforge.net/project/showfiles.php?group_id=134549" target="_blank">here</a>.
 		</p>
@@ -165,10 +156,10 @@ MySQL, McKoi, Derby, HSQLDB, open source, Java">
 			like to take a look at the configuration possibilities, so you can first check 
             that all configured databases run through successfully.</p>
         <p>
-			Changing org.polepos.Settings.DEBUG to true will run all benchmarks with less 
-            objects.s.</p>
+		Changing org.polepos.Settings.DEBUG to true will run all benchmarks with less 
+            objects.</p>
 		<p>
-			The main class to start the PolePosition suite is org.polepos.RunSeasonAfterEnhancing.<br />
+			The main class to start the PolePosition suite is org.polepos.RunSeasonAfterEnhancing..<br />
             To run with all engines in one go, you need quite a lot of RAM. We ran with 
             -Xmx1500m</p>
         <p>
@@ -192,14 +183,12 @@ MySQL, McKoi, Derby, HSQLDB, open source, Java">
 					configures the settings for all circuits<BR>
 				<li>
 					/results/<BR>
-			is where the results of your test run will end up. 
-                    Open PolePosition.pdf from there when your run is done. <span class="red">
-                    Before you run again, don&#39;t forget to close PolePosition.pdf in Acrobat Reader, 
-                    otherwise the run will not complete because the file will be locked.</span> <BR>
+		is where the results of your test run will end up. 
+                    Open PolePosition.pdf from there when your test run is done. <BR>
 				<li>
-					/build.xml<BR>
-			is a simple Ant script to help you compile and run the tests, if you prefer 
-					that to running from within Eclipse.
+					/build.xmll<BR>
+		is a simple Ant script to help you compile and run the tests, if you prefer 
+					Ant to running from within Eclipse.
 				</li>
 			</ul>
 		<hr>
@@ -237,7 +226,7 @@ MySQL, McKoi, Derby, HSQLDB, open source, Java">
 		<hr>
 		<a name="license"></a>
 		<h2>License</h2>
-		<p>PolePosition sourcecode is supplied under the <a href="http://www.gnu.org/copyleft/gpl.html">
+		<p>PolePosition source code is supplied under the <a href="http://www.gnu.org/copyleft/gpl.html">
 				GPL</a>.
 		</p>
 		<p><br>

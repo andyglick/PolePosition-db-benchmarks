@@ -41,7 +41,9 @@ public class CustomBarPDFReporter extends PDFReporterBase {
 	    EmbeddedConfiguration cfg = Db4oEmbedded.newConfiguration();
 	    cfg.common().add(new TransparentPersistenceSupport());
 		
-		EmbeddedObjectContainer db = Db4oEmbedded.openFile(cfg, "graph.db4o");
+	    // EmbeddedObjectContainer db = Db4oEmbedded.openFile(cfg, "ClientServerGraph.db4o");
+	    EmbeddedObjectContainer db = Db4oEmbedded.openFile(cfg, "EmbeddedGraph.db4o");
+	    // EmbeddedObjectContainer db = Db4oEmbedded.openFile(cfg, "ConcurrentGraph.db4o");
 		PersistentGraphs pg = db.query(PersistentGraphs.class).iterator().next();
 		
 		reporter.graphs(pg.graphs());

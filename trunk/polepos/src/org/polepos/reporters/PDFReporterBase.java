@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.jfree.chart.*;
 import org.polepos.framework.*;
+import org.polepos.teams.jdbc.*;
 
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.*;
@@ -43,6 +44,7 @@ public abstract class PDFReporterBase extends GraphReporter {
 	protected static final com.lowagie.text.Font h2Font = FontFactory.getFont(FontFactory.HELVETICA,12,Font.BOLD);
     protected static final com.lowagie.text.Font bigFont = FontFactory.getFont(FontFactory.HELVETICA,10,Font.BOLD);
     protected static final com.lowagie.text.Font smallFont = FontFactory.getFont(FontFactory.HELVETICA,9,Font.PLAIN);
+    protected static final com.lowagie.text.Font smallBoldFont = FontFactory.getFont(FontFactory.HELVETICA,9,Font.BOLD);
     protected static final com.lowagie.text.Font codeFont = FontFactory.getFont(FontFactory.COURIER,8,Font.PLAIN);
 
 	public PDFReporterBase(String path) {
@@ -74,10 +76,21 @@ public abstract class PDFReporterBase extends GraphReporter {
     
     private void renderFirstPage(List<TeamCar> cars) throws DocumentException{        
         Paragraph para=new Paragraph();
-        para.add(new Chunk("PolePosition\n",h1Font));
-        para.add(new Chunk("the open source database benchmark\n",smallFont));
-        para.add(linked(new Chunk(ReporterConstants.WEBSITE + "\n\n\n", smallFont), ReporterConstants.WEBSITE));
-        para.add(new Chunk("Participating teams\n\n",h2Font));
+        CircuitSettings circuitSettings = new CircuitSettings();
+        String configurationName = circuitSettings.configurationName();
+        String title = "PolePosition";
+        if(configurationName != null && configurationName.length() > 0){
+        	title = title + " - " + configurationName;
+        }
+        title = title + " Results\n";
+        para.add(new Chunk(title,h1Font));
+        para.add(new Chunk("Results from running the Poleposition open source database benchmark\n\n\n",smallFont));
+        para.add(new Chunk("Related Links\n\n",h2Font));
+        para.add(new Chunk("Poleposition website\n", smallBoldFont));
+        para.add(linked(new Chunk(ReporterConstants.WEBSITE + "\n", smallFont), ReporterConstants.WEBSITE));
+        para.add(new Chunk("Explanation how the benchmarks are run\n", smallBoldFont));
+        para.add(linked(new Chunk(ReporterConstants.CIRCUITS_PAGE + "\n\n\n", smallFont), ReporterConstants.CIRCUITS_PAGE ));
+        para.add(new Chunk("Databases benchmarked in this run\n\n",h2Font));
         
         int i = 0;
         _pdfData.add(i++, para);
@@ -108,7 +121,7 @@ public abstract class PDFReporterBase extends GraphReporter {
     
     private Element renderTeam(String name, String description, String website) throws DocumentException{
         Paragraph para=new Paragraph();
-        para.add(linked(new Chunk(name + "\n",bigFont), website));
+        para.add(linked(new Chunk(name + "\n",smallBoldFont), website));
         if(description != null){
             para.add(linked(new Chunk(description + "\n",smallFont), website));
         }
@@ -127,8 +140,6 @@ public abstract class PDFReporterBase extends GraphReporter {
         anchor.setReference(link);
         return anchor;
     }
-    
-    
 
 	private void setupDocument(String path) {
 		if(_document != null){
@@ -177,7 +188,6 @@ public abstract class PDFReporterBase extends GraphReporter {
 		renderCircuitPresentation(graph);
         renderTableAndGraph(type, graph, unitsLegend);
 	}
-
 
 	protected abstract void renderTableAndGraph(int type, Graph graph, String unitsLegend) throws BadElementException;
 
