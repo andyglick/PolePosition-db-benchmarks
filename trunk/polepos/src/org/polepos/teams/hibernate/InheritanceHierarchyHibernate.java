@@ -36,14 +36,12 @@ public class InheritanceHierarchyHibernate extends HibernateDriver implements In
     public void write(){
         try{
             Transaction tx = db().beginTransaction();
-            
             int count = setup().getObjectCount(); 
             for (int i = 1; i<= count; i++) {
                 InheritanceHierarchy4 inheritanceHierarchy4 = new InheritanceHierarchy4();
                 inheritanceHierarchy4.setAll(i);
                 db().save(inheritanceHierarchy4);
             }
-            
             tx.commit();
         }
         catch ( HibernateException hex ){
@@ -58,14 +56,14 @@ public class InheritanceHierarchyHibernate extends HibernateDriver implements In
     public void query(){
         int count = setup().getSelectCount();
         for (int i = 1; i <= count; i++) {
-            doQuery(FROM + " where i2=" + i);
+            doQuery(FROM + " where i2= ?", i);
         }
     }
     
     public void delete(){
         try{
             Transaction tx = db().beginTransaction();
-            Iterator it = db().iterate(FROM);
+            Iterator it = db().createQuery(FROM).iterate();
             while(it.hasNext()){
                 db().delete(it.next());
                 addToCheckSum(5);
