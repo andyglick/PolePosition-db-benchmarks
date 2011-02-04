@@ -45,26 +45,26 @@ public class FlatObjectHibernate extends HibernateDriver implements FlatObject{
     public void queryIndexedString() {
         initializeTestId(setup().getSelectCount());
         while(hasMoreTestIds()) {
-        	doSingleResultQuery( FROM + " where String='" + IndexedObject.queryString(nextTestId()) + "'" );
+        	doSingleResultQuery( FROM + " where String = ? ", IndexedObject.queryString(nextTestId()));
         }
     }
     
     public void queryIndexedInt() {
         initializeTestId(setup().getSelectCount());
         while(hasMoreTestIds()) {
-        	doSingleResultQuery(selectFromNextTestId());
+        	doSingleResultQuery(selectFromInt(), nextTestId());
         }
     }
 
-	private String selectFromNextTestId() {
-		return FROM + " where Int=" + nextTestId();
+	private String selectFromInt() {
+		return FROM + " where Int = ?";
 	}
     
     public void update() {
     	Transaction tx = begin();
         initializeTestIdD(setup().getUpdateCount());
         while(hasMoreTestIds()) {
-			IndexedObject indexedObject = (IndexedObject) db().iterate(selectFromNextTestId()).next();
+			IndexedObject indexedObject = queryForSingle(selectFromInt(), nextTestId());
 			indexedObject.updateString();
         	store(indexedObject);
             addToCheckSum(indexedObject);
@@ -76,7 +76,7 @@ public class FlatObjectHibernate extends HibernateDriver implements FlatObject{
     	Transaction tx = begin();
         initializeTestId(setup().getUpdateCount());
         while(hasMoreTestIds()) {
-			IndexedObject indexedObject = (IndexedObject) db().iterate(selectFromNextTestId()).next();
+			IndexedObject indexedObject = queryForSingle(selectFromInt(), nextTestId());
 			addToCheckSum(indexedObject);
         	delete(indexedObject);
         }

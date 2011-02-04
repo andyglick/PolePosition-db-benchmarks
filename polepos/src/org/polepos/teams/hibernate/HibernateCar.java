@@ -111,11 +111,10 @@ public class HibernateCar extends Car {
         cfg.setProperty("hibernate.jdbc.use_streams_for_binary", "true");
         cfg.setProperty("hibernate.max_fetch_depth", "1");
         cfg.setProperty("hibernate.cache.region_prefix", "hibernate.test");
-        cfg.setProperty("hibernate.cache.use_query_cache", "true");
+        cfg.setProperty("hibernate.cache.use_second_level_cache", "false");
+        cfg.setProperty("hibernate.cache.use_query_cache", "false");
         cfg.setProperty("hibernate.cache.provider_class", "org.hibernate.cache.EhCacheProvider");
-        
-        cfg.setProperty("hibernate.proxool.pool_alias", "pool1");
-        
+        // cfg.setProperty("hibernate.proxool.pool_alias", "pool1");
         cfg.setProperty("hibernate.connection.writedelay", "0");
  
         SessionFactory factory = cfg.buildSessionFactory();     

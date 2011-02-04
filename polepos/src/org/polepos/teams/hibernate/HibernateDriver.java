@@ -56,7 +56,7 @@ public abstract class HibernateDriver extends DriverBase{
 	protected void doQuery(String query) {
         
 		try{
-			Iterator it = db().iterate( query );
+			Iterator it = db().createQuery( query ).list().iterator();
 			while(it.hasNext()){
 				Object o = it.next();
                 if(o instanceof CheckSummable){
@@ -69,10 +69,24 @@ public abstract class HibernateDriver extends DriverBase{
 		}		
 	}
 	
+	protected void doQuery(String query, Object singleParam) {
+	    try{
+	        Iterator it = db().createQuery( query ).setParameter(0, singleParam).list().iterator();
+	        while(it.hasNext()){
+	            Object o = it.next();
+	            if(o instanceof CheckSummable){
+	                addToCheckSum(((CheckSummable)o).checkSum());
+	            }
+	        }
+	    }
+	    catch ( HibernateException hex ){
+	        hex.printStackTrace();
+	    }       
+	}
+	
 	protected void doSingleResultQuery(String query) {
 		try{
-			Iterator it = db().iterate( query );
-			Object o = (Object) it.next();
+			Object o = db().createQuery( query ).uniqueResult();
             if(o instanceof CheckSummable){
                 addToCheckSum((CheckSummable)o);
             }
@@ -82,8 +96,20 @@ public abstract class HibernateDriver extends DriverBase{
 		}		
 	}
 	
+	protected void doSingleResultQuery(String query, Object singleParam) {
+	    try{
+	        Object o = db().createQuery( query ).setParameter(0, singleParam).uniqueResult();
+	        if(o instanceof CheckSummable){
+	            addToCheckSum((CheckSummable)o);
+	        }
+	    }
+	    catch ( HibernateException hex ){
+	        hex.printStackTrace();
+	    }       
+	}
+	
 	protected <T> T queryForSingle(String query) {
-		Iterator<T> it = db().iterate( query );
+		Iterator<T> it = db().createQuery( query ).list().iterator();
 		if(! it.hasNext()){
 			throw new RuntimeException("none found");
 		}
@@ -93,6 +119,19 @@ public abstract class HibernateDriver extends DriverBase{
 		}
 		return res;
 	}
+	
+	protected <T> T queryForSingle(String query, Object param) {
+		Iterator<T> it = db().createQuery( query).setParameter(0, param) .list().iterator();
+		if(! it.hasNext()){
+			throw new RuntimeException("none found");
+		}
+		T res = it.next();
+		if(it.hasNext()){
+			throw new RuntimeException("more than one found");
+		}
+		return res;
+	}
+
 	
 	protected Transaction begin() {
 		return db().beginTransaction();

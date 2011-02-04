@@ -48,7 +48,7 @@ public class ComplexHibernate extends HibernateDriver implements Complex {
 
 	private ComplexHolder0 root() {
 		String query = "from org.polepos.teams.hibernate.data.ComplexRoot";
-		Iterator it = db().iterate(query);
+		Iterator it = db().createQuery(query).iterate();
 		if(! it.hasNext()){
 			throw new IllegalStateException("no ComplexRoot found");
 		}
@@ -66,8 +66,8 @@ public class ComplexHibernate extends HibernateDriver implements Complex {
 		int lastInt = firstInt + (objectCount() * objectCount() * objectCount()) - 1;
 		int currentInt = firstInt;
 		for (int run = 0; run < selectCount; run++) {
-			String query = "from org.polepos.teams.hibernate.data.ComplexHolder2 where i2=" + currentInt;
-			Iterator it = db().iterate(query);
+			String query = "from org.polepos.teams.hibernate.data.ComplexHolder2 where i2 = ?";
+			Iterator it = db().createQuery(query).setParameter(0, currentInt).iterate();
 			if(! it.hasNext()){
 				throw new IllegalStateException("no ComplexHolder2 found");
 			}
