@@ -99,14 +99,11 @@ public class JpaTeam extends Team{
     @Override
     public DriverBase[] drivers() {
         return new DriverBase[]{
-            new MelbourneJpa(),
-            new SepangJpa(),
-            new BahrainJpa(),
-            new ImolaJpa(),
-            new BarcelonaJpa(),
-            new MonacoJpa(),
-            new MontrealJpa(),
-            new NurburgringJpa()
+            new TreesJpa(),
+            new NativeIdsJpa(),
+            new CommitsJpa(),
+            new ArrayListsJpa(),
+            new StringsJpa()
         };
     }
     

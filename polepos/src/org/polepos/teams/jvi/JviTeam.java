@@ -120,9 +120,12 @@ public class JviTeam extends Team {
 
 	@Override
 	public DriverBase[] drivers() {
-		return new DriverBase[] { new MelbourneJvi(), new SepangJvi(),
-				new BahrainJvi(), new ImolaJvi(), new BarcelonaJvi(),
-				new MonacoJvi(), new MontrealJvi(), new NurburgringJvi() };
+		return new DriverBase[] { 
+				new TreesJvi(),
+				new NativeIdsJvi(),
+				new CommitsJvi(), 
+				new ArrayListsJvi(), 
+				new StringsJvi() };
 	}
 
 	@Override

@@ -21,18 +21,18 @@ package org.polepos;
 
 import java.io.*;
 
+import org.polepos.circuits.arraylists.*;
 import org.polepos.circuits.bahrain.*;
 import org.polepos.circuits.barcelona.*;
+import org.polepos.circuits.commits.*;
 import org.polepos.circuits.complex.*;
 import org.polepos.circuits.flatobject.*;
-import org.polepos.circuits.imola.*;
 import org.polepos.circuits.inheritancehierarchy.*;
 import org.polepos.circuits.melbourne.*;
-import org.polepos.circuits.monaco.*;
-import org.polepos.circuits.montreal.*;
+import org.polepos.circuits.nativeids.*;
 import org.polepos.circuits.nestedlists.*;
-import org.polepos.circuits.nurburgring.*;
-import org.polepos.circuits.sepang.*;
+import org.polepos.circuits.strings.*;
+import org.polepos.circuits.trees.*;
 import org.polepos.framework.*;
 import org.polepos.reporters.*;
 import org.polepos.runner.*;
@@ -62,23 +62,16 @@ public class RunSeason extends AbstractRunner {
 	@Override
 	public CircuitBase[] circuits() {
 		return new CircuitBase[] {
-				
 				new ReflectiveCircuitBase(Complex.class),
 				new ReflectiveCircuitBase(NestedLists.class),
 				new ReflectiveCircuitBase(InheritanceHierarchy.class),
 				new ReflectiveCircuitBase(FlatObject.class),
 				
-// Old Circuits
-// Most usecases are covered by the 4 new circuits
-				
-//				new Melbourne(), 
-//				new Sepang(), 
-//				new Bahrain(),
-//				new Imola(),
-//				new Barcelona(),
-//				new Monaco(),
-//				new Montreal(),
-//				new Nurburgring(),
+//				new Trees(), 
+//				new NativeIds(),
+//				new Commits(),
+//				new ArrayLists(),
+//				new Strings(),
 		};
 	}
 	

@@ -32,6 +32,16 @@ import org.polepos.teams.db4o.*;
 
 public abstract class AbstractDb4oVersionsRaceRunner extends AbstractRunner {
 	
+	private String[] colors = new String[]{
+			"0xFFCA07",
+			"0x44BDE0", 
+			"0x127ABF",
+			"0x2B439C", 
+
+	};
+	
+	private int currentColor;
+	
 	public abstract DriverBase[] drivers();
 	
 	private String _workspace;
@@ -85,10 +95,15 @@ public abstract class AbstractDb4oVersionsRaceRunner extends AbstractRunner {
                 
                 ClassLoader loader=new VersionClassLoader(urls, prefixes, Team.class.getClassLoader());
                 team = instantiateTeam((Class<? extends Team>)loader.loadClass(Db4oTeam.class.getName()), loadDrivers);
+                
             }
             team.configure(options, configurations);
             if(jarName != null){
                 team.getClass().getMethod("setJarName", new Class[]{String.class}).invoke(team, jarName);
+            }
+            if(currentColor < colors.length){
+            	String color = colors[currentColor++];
+            	invoke(team, "setColor", color);
             }
             
             for (int i = 0; i < drivers.length; i++) {

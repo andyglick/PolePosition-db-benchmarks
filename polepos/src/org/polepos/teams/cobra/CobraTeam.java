@@ -70,8 +70,7 @@ public class CobraTeam extends Team{
     @Override
     public DriverBase[] drivers() {
         return new DriverBase[]{
-            new MelbourneCobra(),
-            new SepangCobra()
+            new TreesCobra()
         };
     }
     

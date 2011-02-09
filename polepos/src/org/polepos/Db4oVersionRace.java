@@ -22,14 +22,18 @@ package org.polepos;
 
 import java.util.*;
 
+import org.polepos.circuits.arraylists.*;
 import org.polepos.circuits.bahrain.*;
 import org.polepos.circuits.barcelona.*;
-import org.polepos.circuits.imola.*;
+import org.polepos.circuits.commits.*;
+import org.polepos.circuits.complex.*;
+import org.polepos.circuits.flatobject.*;
+import org.polepos.circuits.inheritancehierarchy.*;
 import org.polepos.circuits.melbourne.*;
-import org.polepos.circuits.monaco.*;
-import org.polepos.circuits.montreal.*;
-import org.polepos.circuits.nurburgring.*;
-import org.polepos.circuits.sepang.*;
+import org.polepos.circuits.nativeids.*;
+import org.polepos.circuits.nestedlists.*;
+import org.polepos.circuits.strings.*;
+import org.polepos.circuits.trees.*;
 import org.polepos.framework.*;
 import org.polepos.runner.db4o.*;
 import org.polepos.teams.db4o.*;
@@ -72,27 +76,29 @@ public class Db4oVersionRace extends AbstractDb4oVersionsRaceRunner{
 
 	public CircuitBase[] circuits() {
 		return new CircuitBase[] { 
-				new Melbourne(), 
-				new Sepang(), 
-				new Bahrain(),
-				new Imola(),
-				new Barcelona(),
-				new Monaco(),
-				new Montreal(),
-				new Nurburgring(),
+				new ReflectiveCircuitBase(Complex.class),
+				new ReflectiveCircuitBase(NestedLists.class),
+				new ReflectiveCircuitBase(InheritanceHierarchy.class),
+				new ReflectiveCircuitBase(FlatObject.class),
+				new Trees(), 
+				new NativeIds(),
+				new Commits(),
+				new ArrayLists(),
+				new Strings(),
 		};
 	}
 
 	public DriverBase[] drivers() {
 		return new DriverBase [] {
-				new MelbourneDb4o(),
-		        new SepangDb4o(),
-		        new BahrainDb4o(),
-		        new ImolaDb4o(),
-		        new BarcelonaDb4o(),
-		        new MonacoDb4o(),
-		        new NurburgringDb4o(),
-		        new MontrealDb4o(),
+				new ComplexDb4o(),
+				new NestedListsDb4o(),
+				new InheritanceHierarchyDb4o(),
+				new FlatObjectDb4o(),
+		        new TreesDb4o(),
+		        new NativeIdsDb4o(),
+		        new CommitsDb4o(),
+		        new StringsDb4o(),
+		        new ArrayListsDb4o(),
 		};
 	}
     

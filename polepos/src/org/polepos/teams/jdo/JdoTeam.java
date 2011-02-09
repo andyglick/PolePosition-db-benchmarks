@@ -97,14 +97,11 @@ public class JdoTeam extends Team{
         	new NestedListsJdo(),
         	new InheritanceHierarchyJdo(),
         	new ComplexJdo(),
-            new MelbourneJdo(),
-            new SepangJdo(),
-            new BahrainJdo(),
-            new ImolaJdo(),
-            new BarcelonaJdo(),
-            new MonacoJdo(),
-            new MontrealJdo(),
-            new NurburgringJdo()
+            new TreesJdo(),
+            new NativeIdsJdo(),
+            new CommitsJdo(),
+            new ArrayListsJdo(),
+            new StringsJdo()
         };
     }
     
