@@ -23,13 +23,10 @@ package org.polepos;
 import java.util.*;
 
 import org.polepos.circuits.arraylists.*;
-import org.polepos.circuits.bahrain.*;
-import org.polepos.circuits.barcelona.*;
 import org.polepos.circuits.commits.*;
 import org.polepos.circuits.complex.*;
 import org.polepos.circuits.flatobject.*;
 import org.polepos.circuits.inheritancehierarchy.*;
-import org.polepos.circuits.melbourne.*;
 import org.polepos.circuits.nativeids.*;
 import org.polepos.circuits.nestedlists.*;
 import org.polepos.circuits.strings.*;
