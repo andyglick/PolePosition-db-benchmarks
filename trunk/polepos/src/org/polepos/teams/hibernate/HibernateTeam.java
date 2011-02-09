@@ -62,18 +62,15 @@ public class HibernateTeam extends Team {
 
 	public DriverBase[] drivers() {
 		return new DriverBase[] {
-				new FlatObjectHibernate(),
-				new NestedListsHibernate(),
-				new InheritanceHierarchyHibernate(),
 				new ComplexHibernate(),
-				new MelbourneHibernate(),
-				new SepangHibernate(), 
-				new BahrainHibernate(),
-				new ImolaHibernate(), 
-				new BarcelonaHibernate(),
-				new MonacoHibernate(), 
-				new MontrealHibernate(),
-				new NurburgringHibernate(), 
+				new InheritanceHierarchyHibernate(),
+				new NestedListsHibernate(),
+				new FlatObjectHibernate(),
+				new TreesHibernate(), 
+				new NativeIdsHibernate(), 
+				new CommitsHibernate(), 
+				new ArrayListsHibernate(),
+				new StringsHibernate(), 
 		};
 	}
 

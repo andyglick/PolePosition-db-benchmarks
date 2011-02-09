@@ -62,12 +62,9 @@ public class JdbcTeam extends Team{
         	new NestedListsJdbc(),
         	new InheritanceHierarchyJdbc(),
         	new ComplexJdbc(),
-            new MelbourneJdbc(),
-            new SepangJdbc(),
-            new BahrainJdbc(),
-            new ImolaJdbc(),
-            new BarcelonaJdbc(),
-            new MonacoJdbc()
+            new TreesJdbc(),
+            new NativeIdsJdbc(),
+            new CommitsJdbc()
         };
     }
     

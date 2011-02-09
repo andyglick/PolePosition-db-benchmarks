@@ -111,7 +111,7 @@ public abstract class GraphReporter extends ReporterBase{
     
     @Override
     public void endSeason() {
-    	persist(mGraphs);
+    	// persist(mGraphs);
     	render();
     }
 

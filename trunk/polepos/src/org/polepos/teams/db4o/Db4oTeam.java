@@ -26,8 +26,10 @@ import java.util.*;
 import org.polepos.framework.*;
 
 public class Db4oTeam extends Team {
+	
+	private String _color;
     
-    private String _name = db4oName(); 
+    public String _name = db4oName(); 
     
     private final List<DriverBase> _drivers;
 
@@ -49,18 +51,15 @@ public class Db4oTeam extends Team {
     }
 
     private void addDrivers(){
-    	addDriver(new FlatObjectDb4o());
-    	addDriver(new NestedListsDb4o());
-    	addDriver(new InheritanceHierarchyDb4o());
     	addDriver(new ComplexDb4o());
-        addDriver(new MelbourneDb4o());
-        addDriver(new SepangDb4o());
-        addDriver(new BahrainDb4o());
-        addDriver(new ImolaDb4o());
-        addDriver(new BarcelonaDb4o());
-        addDriver(new MonacoDb4o());
-        addDriver(new NurburgringDb4o());
-        addDriver(new MontrealDb4o());
+    	addDriver(new InheritanceHierarchyDb4o());
+    	addDriver(new NestedListsDb4o());
+    	addDriver(new FlatObjectDb4o());
+        addDriver(new TreesDb4o());
+        addDriver(new NativeIdsDb4o());
+        addDriver(new CommitsDb4o());
+        addDriver(new StringsDb4o());
+        addDriver(new ArrayListsDb4o());
     }
     
     @Override
@@ -185,6 +184,20 @@ public class Db4oTeam extends Team {
     
     public void setJarName(String jarName){
         _name = _name.replaceAll("db4o", jarName);
+    }
+    
+    public int colorFor(Car car) {
+    	if(_color == null){
+    		return super.colorFor(car);
+    	}
+		if (_color.startsWith("0x")) {
+			_color = _color.substring(2);
+		}
+		return Integer.parseInt(_color, 16);
+    }
+    
+    public void setColor(String color){
+    	_color = color;
     }
     
 }
