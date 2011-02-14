@@ -33,10 +33,10 @@ import org.polepos.teams.db4o.*;
 public abstract class AbstractDb4oVersionsRaceRunner extends AbstractRunner {
 	
 	private String[] colors = new String[]{
-			"0xFFCA07",
-			"0x44BDE0", 
+			"0x2B439C",
 			"0x127ABF",
-			"0x2B439C", 
+			"0x44BDE0",
+			"0xFFCA07",
 
 	};
 	
