@@ -158,7 +158,9 @@ public abstract class CustomBarRendererBase {
 			
 			int x = (int) (i * widthPerOrderOfMagnitude()) + axisX;
 			
-			graphics.drawLine(x, y, x, (int) (y+graphData().markerHeight));
+			if(doDrawXAxisMarker(i)){
+				graphics.drawLine(x, y, x, (int) (y+graphData().markerHeight));
+			}
 	
 			String legend;
 			
@@ -167,7 +169,7 @@ public abstract class CustomBarRendererBase {
 				legend = "magnitude";
 			} else {
 				graphics.setFont(graphData().teamNameFont);
-				legend = String.format("%.0fx", Math.pow(10, i-1));
+				legend = magnitudeAxisLegend(i);
 			}
 			
 			graphics.drawString(legend, (int)(x-textWidth(legend)/2.), (int)(y+graphData().markerHeight+textHeight(legend)));
@@ -178,6 +180,10 @@ public abstract class CustomBarRendererBase {
 		return y;
 		
 	}
+
+	protected abstract boolean doDrawXAxisMarker(int i);
+
+	protected abstract String magnitudeAxisLegend(int i);
 
 	private double renderTurn(Graphics graphics, TurnData turnData, double y) {
 	
@@ -206,22 +212,26 @@ public abstract class CustomBarRendererBase {
 	
 			graphics.fillRect((int)barX(), (int) y, barWidth, (int) graphData().barHeight);
 			
-			String magnitude = String.format("%.1fx", teamData.orderOfMagnitude);
+			String magnitude = magnitudeBarLegend(teamData);
 			
 			graphics.setColor(Color.BLACK);
 			graphics.drawString(magnitude, (int)(barX()+barWidth+graphData().paddingX), textY);
 	
 			if (teamData.val > 0) {
-				String absolute = teamData.val+"ms";
+				String absolute = teamData.val+ taskLegend();
 				graphics.setColor(Color.WHITE);
 				graphics.drawString(absolute, (int)(barX()+barWidth-textWidth(absolute)-graphData().paddingX), textY);
 			}
-	
+			
 			y += stride();
 		}
 		return y;
 	
 	}
+
+	protected abstract String magnitudeBarLegend(TeamData teamData);
+
+	protected abstract String taskLegend();
 
 	protected abstract int barWidth(TeamData teamData);
 

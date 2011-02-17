@@ -78,4 +78,27 @@ public class TimedLapsCustomBarRenderer extends CustomBarRendererBase {
 		return (int) (barUnits(teamData.orderOfMagnitude) * widthPerOrderOfMagnitude());
 	}
 
+	@Override
+	protected String taskLegend() {
+		return "ms";
+	}
+
+	@Override
+	protected String magnitudeBarLegend(TeamData teamData) {
+		return String.format("%.1fx", teamData.orderOfMagnitude);
+	}
+
+	@Override
+	protected String magnitudeAxisLegend(int i) {
+		if(i == 1){
+			return "best";
+		}
+		return String.format("%.0fx", Math.pow(10, i-1));
+	}
+
+	@Override
+	protected boolean doDrawXAxisMarker(int i) {
+		return true;
+	}
+
 }

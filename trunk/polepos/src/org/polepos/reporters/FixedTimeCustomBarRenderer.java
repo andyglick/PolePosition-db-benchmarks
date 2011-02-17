@@ -23,8 +23,11 @@ package org.polepos.reporters;
 import java.util.*;
 
 import org.polepos.framework.*;
+import org.polepos.reporters.CustomBarRendererBase.*;
 
 public class FixedTimeCustomBarRenderer extends CustomBarRendererBase {
+	
+	private static final int BEST_MAGNITUDE = 5;
 
 	public FixedTimeCustomBarRenderer(Graph graph) {
 		super(graph);
@@ -43,17 +46,16 @@ public class FixedTimeCustomBarRenderer extends CustomBarRendererBase {
 			long best = 0;
 			for (TeamCar teamCar : teamCars) {
 				long iterations = graph.iterationsFor(teamCar, setup);
-				System.err.println("ITER: " + iterations);
 				TeamData teamData = new TeamData(teamCar, 0, iterations);
 				if (iterations != 0 && iterations > best) {
 					best = iterations;
 				}
 				turnData.teams.add(teamData);
 			}
-			turnData.best = best == 0 ? 1 : best;
+			turnData.best = best;
 
 			for (TeamData teamData : turnData.teams) {
-				teamData.orderOfMagnitude = teamData.val / (double)turnData.best;
+				teamData.orderOfMagnitude = (double)turnData.best / (teamData.val == 0 ? 1 : teamData.val) ;
 			}
 
 			Collections.sort(turnData.teams, new Comparator<TeamData>() {
@@ -80,7 +82,38 @@ public class FixedTimeCustomBarRenderer extends CustomBarRendererBase {
 
 	@Override
 	protected int barWidth(TeamData teamData) {
-		return (int)((4 - barUnits(teamData.orderOfMagnitude)) * widthPerOrderOfMagnitude());
+		return (int)((BEST_MAGNITUDE - barUnits(teamData.orderOfMagnitude)) * widthPerOrderOfMagnitude());
+	}
+
+	@Override
+	protected String taskLegend() {
+		return " iterations";
+	}
+
+	@Override
+	protected String magnitudeBarLegend(TeamData teamData) {
+		
+		double orderOfMagnitude = teamData.orderOfMagnitude;
+		if(orderOfMagnitude == 1){
+			return "";
+		}
+		return String.format("- %.1fx", orderOfMagnitude);
+	}
+
+	@Override
+	protected String magnitudeAxisLegend(int i) {
+		if(i == BEST_MAGNITUDE - 1){
+			return "best";
+		}
+		if(i > BEST_MAGNITUDE - 1){
+			return "";
+		}
+		return String.format("- %.0fx", Math.pow(10, BEST_MAGNITUDE - 1 - i));
+	}
+
+	@Override
+	protected boolean doDrawXAxisMarker(int i) {
+		return i < BEST_MAGNITUDE;
 	}
 
 }
