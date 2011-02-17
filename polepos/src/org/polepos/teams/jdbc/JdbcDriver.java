@@ -31,11 +31,11 @@ public abstract class JdbcDriver extends org.polepos.framework.DriverBase {
 	
 	private Connection _connection;
 	
-	public void prepare() throws CarMotorFailureException{
+	public void prepare() {
 		openConnection();
 	}
 	
-	public void backToPit(){
+	public void closeDatabase(){
         close();
 	}
     
@@ -153,7 +153,7 @@ public abstract class JdbcDriver extends org.polepos.framework.DriverBase {
 	}
     
 	
-	public void openConnection() throws CarMotorFailureException {
+	public void openConnection() {
 
 		try {
 			assert null == _connection : "database has to be closed before opening";
@@ -183,7 +183,7 @@ public abstract class JdbcDriver extends org.polepos.framework.DriverBase {
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new CarMotorFailureException();
+			throw new RuntimeException(e);
 		}
 	}
 

@@ -101,7 +101,8 @@ public class JdoTeam extends Team{
             new NativeIdsJdo(),
             new CommitsJdo(),
             new ArrayListsJdo(),
-            new StringsJdo()
+            new StringsJdo(),
+        	new ComplexConcurrencyJdo(),
         };
     }
     

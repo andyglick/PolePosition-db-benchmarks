@@ -24,6 +24,7 @@ import java.io.*;
 import org.polepos.circuits.arraylists.*;
 import org.polepos.circuits.commits.*;
 import org.polepos.circuits.complex.*;
+import org.polepos.circuits.complexconcurrency.*;
 import org.polepos.circuits.flatobject.*;
 import org.polepos.circuits.inheritancehierarchy.*;
 import org.polepos.circuits.nativeids.*;
@@ -57,8 +58,11 @@ public class RunSeason extends AbstractRunner {
 	}
 
 	@Override
-	public CircuitBase[] circuits() {
-		return new CircuitBase[] {
+	public Circuit[] circuits() {
+		return new Circuit[] {
+				
+				// new ComplexConcurrency(),
+				
 				new ReflectiveCircuitBase(Complex.class),
 				new ReflectiveCircuitBase(NestedLists.class),
 				new ReflectiveCircuitBase(InheritanceHierarchy.class),

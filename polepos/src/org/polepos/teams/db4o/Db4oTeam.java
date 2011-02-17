@@ -60,6 +60,7 @@ public class Db4oTeam extends Team {
         addDriver(new CommitsDb4o());
         addDriver(new StringsDb4o());
         addDriver(new ArrayListsDb4o());
+    	addDriver(new ComplexConcurrencyDb4o());
     }
     
     @Override

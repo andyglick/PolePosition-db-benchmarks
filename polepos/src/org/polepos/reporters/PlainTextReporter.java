@@ -117,7 +117,11 @@ public class PlainTextReporter extends ReporterBase{
             }
             mOut.println();
         }
-        mOut.println("[" + result.getIndex() + "] " + result.getTime() + "ms   ");
+        if(result instanceof TimedLapsResult){
+        	mOut.println("[" + result.getIndex() + "] " + ((TimedLapsResult)result).getTime() + "ms   ");
+        } else if (result instanceof FixedTimeResult){
+        	mOut.println("[" + result.getIndex() + "] " + ((FixedTimeResult)result).iterations() + "iterations   ");
+        }
     }
 
 	public void endSeason() {

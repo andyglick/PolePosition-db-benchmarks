@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.polepos.framework.Car;
-import org.polepos.framework.CarMotorFailureException;
 import org.polepos.framework.DriverBase;
 import org.polepos.framework.TurnSetup;
 
@@ -45,15 +44,15 @@ public abstract class CobraDriver extends DriverBase{
 	private transient DatastoreManager mDatastoreManager;
     private transient Set newObjects = new HashSet();
     
-	public void takeSeatIn( Car car, TurnSetup setup) throws CarMotorFailureException{
-        super.takeSeatIn(car, setup);
+	public void configure( Car car, TurnSetup setup) {
+        super.configure(car, setup);
 	}
     
 	public void prepare(){
 		mDatastoreManager = cobraCar().getDatastoreManager();
 	}
 	
-	public void backToPit(){
+	public void closeDatabase(){
         if(db().isTransactionActive()){
             db().commitTransaction();
         }

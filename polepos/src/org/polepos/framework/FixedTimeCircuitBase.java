@@ -17,33 +17,31 @@ License along with this program; if not, write to the Free
 Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA  02111-1307, USA. */
 
+
 package org.polepos.framework;
 
 import java.util.*;
 
-public interface Circuit {
-
- 	public List<Lap> laps();
-
-	public TurnSetup[] lapSetups();
-
-	public Class<?> requiredDriver();
-
-	public String description();
-
-	public String internalName();
+public abstract class FixedTimeCircuitBase extends CircuitBase {
 	
-	public String name();
+	@Override
+	public boolean isConcurrency() {
+		return false;
+	}
 
-	public void setTurnSetups(TurnSetup[] turnSetups);
+	@Override
+	public RacingStrategy racingStrategy() {
+		return new FixedTimeRacingStrategy(this);
+	}
 	
-	public Driver[] nominate(Team team);
-	
-	public void reportTo(Circuit circuit);
-	
-	public boolean isConcurrency();
-
-	public RacingStrategy racingStrategy();
+	@Override
+	public List<Lap> laps() {
+		ArrayList<Lap> list = new ArrayList<Lap>();
+		Lap lap = new Lap("");
+		lap.circuit(this);
+		list.add(lap);
+		return list;
+	}
 	
 
 }

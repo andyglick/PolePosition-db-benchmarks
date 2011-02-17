@@ -22,16 +22,14 @@ package org.polepos.framework;
 
 import java.util.*;
 
-public class ConcurrencyCircuit implements Circuit {
+public class ConcurrencyCircuit extends TimedLapsCircuitBase {
 	
 	public static final String NAME_ADD_ON = "Concurrency";
 	
-	private final Circuit _delegate;
+	private final TimedLapsCircuitBase _delegate;
 	
-    private TurnSetup[] _turnSetups;
-	
-	public ConcurrencyCircuit(Circuit delegate){
-		_delegate = delegate;
+    public ConcurrencyCircuit(Circuit delegate){
+		_delegate = (TimedLapsCircuitBase) delegate;
 	}
 
 	@Override
@@ -59,10 +57,9 @@ public class ConcurrencyCircuit implements Circuit {
 		return NAME_ADD_ON + " " + _delegate.name();
 	}
 
-	@Override
 	public TurnResult[] race(Team team, Car car, Driver driver) {
 		
-		TurnSetup[] turnSetups = _delegate.getTurnSetups();
+		TurnSetup[] turnSetups = _delegate.turnSetups();
 		
 		_delegate.setTurnSetups(_turnSetups);
 		_delegate.reportTo(this);
@@ -85,11 +82,6 @@ public class ConcurrencyCircuit implements Circuit {
 	public void setTurnSetups(TurnSetup[] turnSetups) {
 		_turnSetups = turnSetups;
 	}
-
-	@Override
-	public String fileNamePrefix() {
-		return _delegate.fileNamePrefix() + "_" + NAME_ADD_ON;
-	}
 	
 	@Override
 	public Driver[] nominate(Team team){
@@ -111,14 +103,22 @@ public class ConcurrencyCircuit implements Circuit {
 		return true;
 	}
 
-	@Override
-	public TurnSetup[] getTurnSetups() {
+	public TurnSetup[] turnSetups() {
 		return _turnSetups;
 	}
 
-	@Override
 	public void runLapsBefore(Lap lap, TurnSetup turnSetup, DriverBase driver, Car car) {
 		_delegate.runLapsBefore(lap, turnSetup, driver, car);
+	}
+	
+	@Override
+	public RacingStrategy racingStrategy() {
+		return new TimedLapsRacingStrategy(this);
+	}
+
+	@Override
+	protected void addLaps() {
+		_delegate.addLaps();
 	}
 
 }

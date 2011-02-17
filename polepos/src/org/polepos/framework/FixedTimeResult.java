@@ -17,33 +17,45 @@ License along with this program; if not, write to the Free
 Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA  02111-1307, USA. */
 
+
 package org.polepos.framework;
 
-import java.util.*;
+public class FixedTimeResult extends Result {
 
-public interface Circuit {
+	private final long _iterations;
 
- 	public List<Lap> laps();
-
-	public TurnSetup[] lapSetups();
-
-	public Class<?> requiredDriver();
-
-	public String description();
-
-	public String internalName();
+	public FixedTimeResult(Circuit circuit, Lap lap, Team team, TurnSetup setup, int index, long iterations) {
+		super(circuit, lap, team, setup, index);
+		_iterations = iterations;
+	}
 	
-	public String name();
+	public long iterations(){
+		return _iterations;
+	}
 
-	public void setTurnSetups(TurnSetup[] turnSetups);
-	
-	public Driver[] nominate(Team team);
-	
-	public void reportTo(Circuit circuit);
-	
-	public boolean isConcurrency();
+	@Override
+	public String getName() {
+		return getCircuit().name();
+	}
 
-	public RacingStrategy racingStrategy();
-	
+	@Override
+	public long getCheckSum() {
+		return 0;
+	}
+
+	@Override
+	public long getDatabaseSize() {
+		return 0;
+	}
+
+	@Override
+	public long getMemory() {
+		return 0;
+	}
+
+	@Override
+	public long getTime() {
+		return 0;
+	}
 
 }

@@ -37,9 +37,9 @@ public class InheritanceHierarchyJdbc extends JdbcDriver implements InheritanceH
         "inheritanceHierarchyJdbc4",
     };
     
-    public void takeSeatIn(Car car, TurnSetup setup) throws CarMotorFailureException{
+    public void configure(Car car, TurnSetup setup) {
         
-        super.takeSeatIn(car, setup);
+        super.configure(car, setup);
         openConnection();
         
         for (int i = TABLES.length - 1; i >= 0; i--) {

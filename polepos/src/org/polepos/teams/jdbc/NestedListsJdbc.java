@@ -45,9 +45,9 @@ public class NestedListsJdbc extends JdbcDriver implements NestedLists {
     private int _rootId;
 
 
-	public void takeSeatIn(Car car, TurnSetup setup) throws CarMotorFailureException{
+	public void configure(Car car, TurnSetup setup) {
         
-        super.takeSeatIn(car, setup);
+        super.configure(car, setup);
         openConnection();
         
         dropTable(LISTHOLDER_TABLE);

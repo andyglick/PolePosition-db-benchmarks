@@ -17,33 +17,29 @@ License along with this program; if not, write to the Free
 Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA  02111-1307, USA. */
 
-package org.polepos.framework;
 
-import java.util.*;
+package org.polepos.teams.db4o;
 
-public interface Circuit {
+import org.polepos.circuits.complexconcurrency.*;
+import org.polepos.data.*;
 
- 	public List<Lap> laps();
+import com.db4o.config.*;
 
-	public TurnSetup[] lapSetups();
+public class ComplexConcurrencyDb4o extends Db4oDriver implements ComplexConcurrencyDriver {
 
-	public Class<?> requiredDriver();
+	@Override
+	public void configure(Configuration config) {
+		config.objectClass(ComplexHolder2.class).objectField("_i2").indexed(true);
+		config.activationDepth(1);
+	}
 
-	public String description();
-
-	public String internalName();
+	@Override
+	public void race() {
+		ComplexHolder0 holder = ComplexHolder0.generate(depth(), objectCount());
+		store(new ComplexRoot(holder));
+		commit();
+	}
 	
-	public String name();
-
-	public void setTurnSetups(TurnSetup[] turnSetups);
-	
-	public Driver[] nominate(Team team);
-	
-	public void reportTo(Circuit circuit);
-	
-	public boolean isConcurrency();
-
-	public RacingStrategy racingStrategy();
 	
 
 }

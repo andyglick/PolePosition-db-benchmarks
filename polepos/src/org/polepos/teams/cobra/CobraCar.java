@@ -36,7 +36,7 @@ public class CobraCar extends Car {
     private final String              mDbName;
     private final String              mName;
 
-    CobraCar(Team team, String name, String dbName) throws CarMotorFailureException {
+    CobraCar(Team team, String name, String dbName)  {
     	super(team, "0xC86879");
 
         mName = name;

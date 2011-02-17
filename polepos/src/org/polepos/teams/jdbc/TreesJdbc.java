@@ -30,8 +30,8 @@ public class TreesJdbc extends JdbcDriver implements TreesDriver{
 	
 	private static final String TABLE = "malaysia";
     
-	public void takeSeatIn(Car car, TurnSetup setup) throws CarMotorFailureException{
-		super.takeSeatIn(car, setup);
+	public void configure(Car car, TurnSetup setup){
+		super.configure(car, setup);
 		openConnection();
 		dropTable( TABLE );
 		createTable( TABLE, new String[]{ "id", "preceding", "subsequent", "name", "depth" }, new Class[]{Integer.TYPE,Integer.TYPE,Integer.TYPE,String.class, Integer.TYPE} );

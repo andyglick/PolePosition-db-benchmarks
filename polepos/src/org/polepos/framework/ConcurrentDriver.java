@@ -32,12 +32,11 @@ public class ConcurrentDriver extends Driver {
 	}
 	
 	@Override
-	public void takeSeatIn(Car car, TurnSetup setup)
-			throws CarMotorFailureException {
+	public void configure(Car car, TurnSetup setup) {
 		int threadCount = setup.getThreadCount();
 		cloneMasterDriver(threadCount);
 		for(Driver driver : _drivers){
-			driver.takeSeatIn(car, setup);
+			driver.configure(car, setup);
 		}
 	}
 
@@ -51,17 +50,17 @@ public class ConcurrentDriver extends Driver {
 	}
 
 	@Override
-	public void backToPit() {
+	public void closeDatabase() {
 		// We send the master driver back to pit last,
 		// since it may have opened the server.
 		for (int i = 1; i < _drivers.length; i++) {
-			_drivers[i].backToPit();
+			_drivers[i].closeDatabase();
 		}
-		_drivers[0].backToPit();
+		_drivers[0].closeDatabase();
 	}
 
 	@Override
-	public void prepare() throws CarMotorFailureException {
+	public void prepare() {
 		for(Driver driver : _drivers){
 			driver.prepare();
 		}
@@ -86,7 +85,8 @@ public class ConcurrentDriver extends Driver {
 	
 	public Runnable prepareLap(final Lap lap) {
 		
-		lap.circuit().runLapsBefore(lap, lap.circuit().getTurnSetups()[0], _masterDriver, _masterDriver.car());
+		TimedLapsCircuitBase circuit = (TimedLapsCircuitBase) lap.circuit();
+		circuit.runLapsBefore(lap, circuit.turnSetups()[0], _masterDriver, _masterDriver.car());
 		
 		for (int i = 1; i < _drivers.length; i++) {
 			_drivers[i].copyStateFrom(_masterDriver);

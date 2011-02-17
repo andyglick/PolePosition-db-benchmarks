@@ -27,8 +27,6 @@ import org.polepos.circuits.complex.*;
 import org.polepos.data.*;
 import org.polepos.framework.*;
 
-import com.db4o.*;
-import com.db4o.query.*;
 
 public class ComplexJdbc extends JdbcDriver implements Complex {
 	
@@ -61,9 +59,9 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
     
     private IdGenerator _idGenerator;
     
-    public void takeSeatIn(Car car, TurnSetup setup) throws CarMotorFailureException{
+    public void configure(Car car, TurnSetup setup) {
         
-        super.takeSeatIn(car, setup);
+        super.configure(car, setup);
         openConnection();
         
         dropTable(HOLDER_TABLE0);

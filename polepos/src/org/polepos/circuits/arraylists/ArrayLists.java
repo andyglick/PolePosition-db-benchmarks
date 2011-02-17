@@ -5,7 +5,7 @@ package org.polepos.circuits.arraylists;
 import org.polepos.framework.*;
 
 
-public class ArrayLists extends CircuitBase{
+public class ArrayLists extends TimedLapsCircuitBase{
 
     @Override
     public String description() {

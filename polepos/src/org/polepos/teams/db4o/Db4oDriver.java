@@ -53,7 +53,7 @@ public abstract class Db4oDriver extends DriverBase {
 		objectClass.objectField(fieldName).indexed(true);
 	}
 
-	public void backToPit() {
+	public void closeDatabase() {
 		db4oCar().close(_container);
 	}
 

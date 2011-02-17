@@ -21,7 +21,7 @@ package org.polepos.circuits.nativeids;
 
 import org.polepos.framework.*;
 
-public class NativeIds extends CircuitBase {
+public class NativeIds extends TimedLapsCircuitBase {
 
 	@Override
 	public String description() {
