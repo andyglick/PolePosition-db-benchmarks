@@ -107,6 +107,18 @@ public class Graph {
         }
 		return res.getTime();
 	}
+
+	public final long iterationsFor(TeamCar teamCar, TurnSetup setup) {
+		return iterationsFor(new TurnCombination(teamCar,setup));
+	}
+
+	public long iterationsFor(TurnCombination turnCombination) {
+        Result res = results.get(turnCombination);
+        if(res == null){
+            return 0;
+        }
+		return res.getIterations();
+	}
 	
 	public final long memoryFor(TeamCar teamCar, TurnSetup setup) {
 	    Result res = results.get(new TurnCombination(teamCar,setup));

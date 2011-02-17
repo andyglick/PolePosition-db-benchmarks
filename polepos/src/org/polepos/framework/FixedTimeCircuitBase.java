@@ -44,4 +44,9 @@ public abstract class FixedTimeCircuitBase extends CircuitBase {
 	}
 	
 
+    @Override
+    public boolean isFixedTime() {
+    	return true;
+    }
+
 }

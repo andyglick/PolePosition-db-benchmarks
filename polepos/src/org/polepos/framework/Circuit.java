@@ -45,5 +45,6 @@ public interface Circuit {
 
 	public RacingStrategy racingStrategy();
 	
+	boolean isFixedTime();
 
 }

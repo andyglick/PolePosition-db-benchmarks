@@ -29,7 +29,8 @@ public class FixedTimeResult extends Result {
 		_iterations = iterations;
 	}
 	
-	public long iterations(){
+	@Override
+	public long getIterations(){
 		return _iterations;
 	}
 

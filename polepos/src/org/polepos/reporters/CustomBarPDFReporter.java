@@ -74,14 +74,12 @@ public class CustomBarPDFReporter extends PDFReporterBase {
 		PdfTemplate tp = cb.createTemplate(chartWidth(), chartHeight());
 		Graphics2D graphics = tp.createGraphics(chartWidth(), chartHeight(), new DefaultFontMapper());
 		
-		int height = new CustomBarRender(graph).render(graphics);
+		int height = new TimedLapsCustomBarRenderer(graph).render(graphics);
 		
 		tp = cb.createTemplate(chartWidth(), height);
 		graphics = tp.createGraphics(chartWidth(), height, new DefaultFontMapper());
 		
-		new CustomBarRender(graph).render(graphics);
-		
-		
+		(graph.circuit().isFixedTime() ? new FixedTimeCustomBarRenderer(graph) : new TimedLapsCustomBarRenderer(graph)).render(graphics);
 		
 		graphics.dispose();
 		return new ImgTemplate(tp);
