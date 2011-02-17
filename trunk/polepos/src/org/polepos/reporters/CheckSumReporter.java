@@ -20,19 +20,11 @@ MA  02111-1307, USA. */
 
 package org.polepos.reporters;
 
-import java.util.*;
-
-import org.polepos.framework.*;
 
 public class CheckSumReporter extends GraphReporter {
 
 	public CheckSumReporter(String path) {
 		super(path);
-	}
-
-	@Override
-	protected void finish(List<TeamCar> cars) {
-		// do nothing
 	}
 
 	@Override
