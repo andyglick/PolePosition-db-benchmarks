@@ -32,6 +32,7 @@ public class DefaultReporterFactory {
 			new CSVReporter(defaultReporterOutputPath()), 
 			new HTMLReporter(subfolderPath(defaultReporterOutputPath(), "html")),
 			new XLSReporter(defaultReporterOutputPath()),
+			new PersistGraphReporter(defaultReporterOutputPath()),
 		};
 	}
     

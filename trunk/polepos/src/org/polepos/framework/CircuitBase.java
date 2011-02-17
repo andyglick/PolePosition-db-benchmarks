@@ -82,6 +82,4 @@ public abstract class CircuitBase implements Circuit {
 	public TurnSetup[] lapSetups(){
         return _turnSetups;
     }
-
-
 }

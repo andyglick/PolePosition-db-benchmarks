@@ -71,6 +71,8 @@ public abstract class Result {
 
 	public abstract long getTime();
 
+	public abstract long getIterations();
+
 	public abstract long getMemory();
 
 	public abstract long getDatabaseSize();

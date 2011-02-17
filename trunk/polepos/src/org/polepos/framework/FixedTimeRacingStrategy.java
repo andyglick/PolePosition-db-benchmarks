@@ -108,10 +108,7 @@ public class FixedTimeRacingStrategy implements RacingStrategy {
 		}
 		
 		
-		// FIXME: Change to FixedTimeResult
-		// Result result = new FixedTimeResult(_circuit, _circuit.laps().get(0), team,turnSetups[i],i,iterations);
-		
-		Result result = new TimedLapsResult(_circuit, team,_circuit.laps().get(0), setup ,setupIndex,iterations,0,0,0);
+		Result result = new FixedTimeResult(_circuit, _circuit.laps().get(0), team, setup, setupIndex, iterations);
 		
 		team.tearDown();
 		driver.circuitCompleted();

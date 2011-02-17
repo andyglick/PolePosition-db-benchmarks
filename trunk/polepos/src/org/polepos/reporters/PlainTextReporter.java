@@ -120,7 +120,7 @@ public class PlainTextReporter extends ReporterBase{
         if(result instanceof TimedLapsResult){
         	mOut.println("[" + result.getIndex() + "] " + ((TimedLapsResult)result).getTime() + "ms   ");
         } else if (result instanceof FixedTimeResult){
-        	mOut.println("[" + result.getIndex() + "] " + ((FixedTimeResult)result).iterations() + "iterations   ");
+        	mOut.println("[" + result.getIndex() + "] " + ((FixedTimeResult)result).getIterations() + "iterations   ");
         }
     }
 

@@ -56,6 +56,11 @@ public class TimedLapsResult extends Result{
     public long getDatabaseSize() {
     	return _databaseSize;
     }
+
+	@Override
+	public long getIterations() {
+		return 0;
+	}
     
 
 }

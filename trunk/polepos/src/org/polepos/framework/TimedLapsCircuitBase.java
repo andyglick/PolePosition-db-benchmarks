@@ -27,7 +27,7 @@ import org.polepos.watcher.*;
 /**
  * a set of timed test cases that work against the same data
  */
-public abstract class TimedLapsCircuitBase extends CircuitBase implements Circuit {
+public abstract class TimedLapsCircuitBase extends CircuitBase {
     
     public static final String NUM_RUNS_PROPERTY_ID = "POLEPOS_NUM_RUNS";
     public static final String MEMORY_USAGE_PROPERTY_ID = "POLEPOS_MEMORY_USAGE";
@@ -267,6 +267,9 @@ public abstract class TimedLapsCircuitBase extends CircuitBase implements Circui
 	    return _laps;
 	}
 
-    
+    @Override
+    public boolean isFixedTime() {
+    	return false;
+    }
 }
 
