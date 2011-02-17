@@ -167,6 +167,10 @@ public class TurnSetup implements Cloneable{
 	public int getThreadCount() {
 		return getSetting(TurnSetupConfig.THREADCOUNT);
 	}
+	
+	public int getTime() {
+		return getSetting(TurnSetupConfig.TIME);
+	}
     
     
 }

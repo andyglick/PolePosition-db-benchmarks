@@ -21,7 +21,7 @@ package org.polepos.circuits.trees;
 
 import org.polepos.framework.*;
 
-public class Trees extends CircuitBase
+public class Trees extends TimedLapsCircuitBase
 {
     
     @Override

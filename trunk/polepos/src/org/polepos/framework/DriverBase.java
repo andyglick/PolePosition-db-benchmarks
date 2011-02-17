@@ -51,7 +51,7 @@ public abstract class DriverBase extends Driver implements Cloneable
 	 * take a seat in a car.
 	 */
 	@Override
-	public void takeSeatIn( Car car, TurnSetup setup ) throws CarMotorFailureException{
+	public void configure( Car car, TurnSetup setup ) {
         mCar = car;
         mSetup = setup;
         _checkSum = 0;
@@ -62,7 +62,7 @@ public abstract class DriverBase extends Driver implements Cloneable
 	 * Normally opens the database.
 	 */
 	@Override
-	public abstract void prepare() throws CarMotorFailureException;
+	public abstract void prepare();
 	
 	
 	/**
@@ -70,7 +70,7 @@ public abstract class DriverBase extends Driver implements Cloneable
      * created and close any resources it opened. 
      */
     @Override
-	public abstract void backToPit();
+	public abstract void closeDatabase();
     
     
 	protected TurnSetup setup(){

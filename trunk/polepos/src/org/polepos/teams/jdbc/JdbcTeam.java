@@ -32,11 +32,7 @@ public class JdbcTeam extends Team{
 		mCars = new Car[ dbs.length ];
 		
 		for( int i = 0; i < dbs.length; i++ ){
-			try {
-				mCars[i] = new JdbcCar(this, dbs[ i ], Jdbc.settings().color(dbs[i]) );
-            } catch (CarMotorFailureException e) {
-                mCars[i] = null;
-            } 
+			mCars[i] = new JdbcCar(this, dbs[ i ], Jdbc.settings().color(dbs[i]) );
 		}
 	}
 	

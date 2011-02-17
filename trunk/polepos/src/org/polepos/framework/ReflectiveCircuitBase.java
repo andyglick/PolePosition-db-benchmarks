@@ -24,7 +24,7 @@ import java.lang.reflect.*;
 import java.util.*;
 
 
-public class ReflectiveCircuitBase extends CircuitBase {
+public class ReflectiveCircuitBase extends TimedLapsCircuitBase {
 
 	private final Class<?> _driverClass;
 

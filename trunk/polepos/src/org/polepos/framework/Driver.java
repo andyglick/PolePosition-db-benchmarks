@@ -20,7 +20,7 @@ MA  02111-1307, USA. */
 package org.polepos.framework;
 
 
-public abstract class Driver {
+public abstract class Driver implements Cloneable{
 
 	public Driver() {
 		super();
@@ -30,12 +30,11 @@ public abstract class Driver {
 
 	public abstract long checkSum();
 
-	public abstract void backToPit();
+	public abstract void closeDatabase();
 
-	public abstract void prepare() throws CarMotorFailureException;
+	public abstract void prepare() ;
 
-	public abstract void takeSeatIn(Car car, TurnSetup setup)
-			throws CarMotorFailureException;
+	public abstract void configure(Car car, TurnSetup setup);
 
 	public abstract Runnable prepareLap(final Lap lap);
 

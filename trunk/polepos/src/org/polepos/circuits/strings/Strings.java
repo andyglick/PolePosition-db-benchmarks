@@ -23,7 +23,7 @@ package org.polepos.circuits.strings;
 import org.polepos.framework.*;
 
 
-public class Strings extends CircuitBase{
+public class Strings extends TimedLapsCircuitBase{
     
     @Override
     public String description(){

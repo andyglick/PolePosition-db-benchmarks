@@ -17,33 +17,22 @@ License along with this program; if not, write to the Free
 Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA  02111-1307, USA. */
 
-package org.polepos.framework;
 
-import java.util.*;
+package org.polepos.circuits.complexconcurrency;
 
-public interface Circuit {
 
- 	public List<Lap> laps();
+import org.polepos.framework.*;
 
-	public TurnSetup[] lapSetups();
+public class ComplexConcurrency extends FixedTimeCircuitBase{
 
-	public Class<?> requiredDriver();
+	@Override
+	public String description() {
+		return "runs the complex scenario against multiple concurrent clients within a fixed time span";
+	}
 
-	public String description();
-
-	public String internalName();
-	
-	public String name();
-
-	public void setTurnSetups(TurnSetup[] turnSetups);
-	
-	public Driver[] nominate(Team team);
-	
-	public void reportTo(Circuit circuit);
-	
-	public boolean isConcurrency();
-
-	public RacingStrategy racingStrategy();
-	
+	@Override
+	public Class<?> requiredDriver() {
+		return ComplexConcurrencyDriver.class;
+	}
 
 }

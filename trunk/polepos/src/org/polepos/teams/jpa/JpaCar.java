@@ -29,7 +29,6 @@ import javax.persistence.PersistenceException;
 
 import org.polepos.framework.*;
 import org.polepos.teams.jdbc.Jdbc;
-import org.polepos.teams.jdo.Jdo;
 
 /**
  * @author Christian Ernst
@@ -41,7 +40,7 @@ public class JpaCar extends Car {
     private final String              _dbName;
     private final String              _name;
 
-    public JpaCar(Team team, String name, String dbName, String color) throws CarMotorFailureException,  IOException{
+    public JpaCar(Team team, String name, String dbName, String color) throws IOException{
     	super(team, color);
 
         _name = name;

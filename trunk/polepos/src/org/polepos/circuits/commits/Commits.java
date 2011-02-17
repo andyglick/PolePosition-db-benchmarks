@@ -22,7 +22,7 @@ package org.polepos.circuits.commits;
 import org.polepos.framework.*;
 
 
-public class Commits extends CircuitBase{
+public class Commits extends TimedLapsCircuitBase{
 
     @Override
     public String description() {

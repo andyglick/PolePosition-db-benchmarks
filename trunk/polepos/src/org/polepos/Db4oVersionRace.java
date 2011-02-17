@@ -71,8 +71,8 @@ public class Db4oVersionRace extends AbstractDb4oVersionsRaceRunner{
         return teams;
     }
 
-	public CircuitBase[] circuits() {
-		return new CircuitBase[] { 
+	public Circuit[] circuits() {
+		return new Circuit[] { 
 				new ReflectiveCircuitBase(Complex.class),
 				new ReflectiveCircuitBase(NestedLists.class),
 				new ReflectiveCircuitBase(InheritanceHierarchy.class),

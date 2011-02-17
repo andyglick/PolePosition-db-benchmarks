@@ -30,15 +30,15 @@ public abstract class JdoDriver extends DriverBase{
     
 	private transient PersistenceManager mPersistenceManager;
     
-	public void takeSeatIn( Car car, TurnSetup setup) throws CarMotorFailureException{
-        super.takeSeatIn(car, setup);
+	public void configure( Car car, TurnSetup setup) {
+        super.configure(car, setup);
 	}
     
 	public void prepare(){
 		mPersistenceManager = jdoCar().getPersistenceManager();
 	}
 	
-	public void backToPit(){
+	public void closeDatabase(){
         Transaction tx = db().currentTransaction();
         if(tx.isActive()){
             tx.rollback();

@@ -33,7 +33,7 @@ public abstract class AbstractRunner {
 	
 	public void run(String propertiesFileName){
 		TurnSetupConfig turnSetupConfig = new TurnSetupConfig(propertiesFileName);
-		List<CircuitBase> distinctCircuits = Arrays.asList(circuits());
+		List<Circuit> distinctCircuits = Arrays.asList(circuits());
 		List<Circuit> circuits = new ArrayList<Circuit>();
 		circuits.addAll(distinctCircuits);
         if(turnSetupConfig.runConcurrency()){
@@ -50,7 +50,7 @@ public abstract class AbstractRunner {
 		new Racer( circuits, Arrays.asList(teams()), Arrays.asList(reporters())).run();
 	}
 
-	protected abstract CircuitBase[] circuits();
+	protected abstract Circuit[] circuits();
 
 	protected abstract Team[] teams();
 

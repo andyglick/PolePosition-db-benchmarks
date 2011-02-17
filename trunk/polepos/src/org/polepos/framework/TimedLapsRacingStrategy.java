@@ -17,33 +17,37 @@ License along with this program; if not, write to the Free
 Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA  02111-1307, USA. */
 
+
 package org.polepos.framework;
 
 import java.util.*;
 
-public interface Circuit {
+import org.polepos.reporters.*;
 
- 	public List<Lap> laps();
-
-	public TurnSetup[] lapSetups();
-
-	public Class<?> requiredDriver();
-
-	public String description();
-
-	public String internalName();
+public class TimedLapsRacingStrategy implements RacingStrategy {
 	
-	public String name();
+	private final TimedLapsCircuitBase _circuit;
 
-	public void setTurnSetups(TurnSetup[] turnSetups);
-	
-	public Driver[] nominate(Team team);
-	
-	public void reportTo(Circuit circuit);
-	
-	public boolean isConcurrency();
+	public TimedLapsRacingStrategy(TimedLapsCircuitBase circuit) {
+		_circuit = circuit;
+	}
 
-	public RacingStrategy racingStrategy();
-	
+	@Override
+	public void race(Team team, Car car, Driver driver, List<Reporter> reporters) {
+
+		long startTime = System.currentTimeMillis();
+        
+        TurnSetup[] setups = _circuit.lapSetups();
+        TurnResult[] results = _circuit.race(team, car, driver);
+        
+        long stopTime = System.currentTimeMillis();
+        long t = stopTime - startTime;
+        System.out.println("Time[ms]: " + t);	
+
+        for (Reporter reporter : reporters) {
+            reporter.report(team, car, setups, results);
+        }
+		
+	}
 
 }

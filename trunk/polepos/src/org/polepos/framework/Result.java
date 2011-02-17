@@ -22,8 +22,7 @@ package org.polepos.framework;
 /**
  * a result for a lap that holds the name and the time.
  */
-public class Result {
-    
+public abstract class Result {
     
     private final Circuit _circuit;
     
@@ -35,33 +34,18 @@ public class Result {
     
     private final Lap _lap;
     
-    private final long _time;
-    
-    private final long _checkSum;
-    
-    private final long _memory;    
-    
-    private final long _databaseSize;
-    
-    public Result(Circuit circuit, Team team, Lap lap, TurnSetup setup, int index, long time, long memory, long databaseSize, long checkSum){
+    public Result(Circuit circuit, Lap lap, Team team, TurnSetup setup, int index){
         _circuit = circuit;
         _team = team;
-        _lap = lap;
         _setup = setup;
+        _lap = lap;
         _index = index;
-        _time = time;
-        _memory = memory;
-        _databaseSize = databaseSize;
-        _checkSum = checkSum;
+        
     }
     
-    public String getName(){
-        return _lap.name();
-    }
-    
-    public long getTime(){
-        return _time;
-    }
+	public String getName() {
+		return _lap.name();
+	}
     
     public TurnSetup getSetup(){
         return _setup;
@@ -75,24 +59,23 @@ public class Result {
         return _circuit;
     }
     
+    public Team getTeam(){
+    	return _team;
+    }
+    
     public Lap getLap(){
         return _lap;
     }
     
-    public long getCheckSum(){
-        return _checkSum;
-    }
+    public abstract long getCheckSum();
+
+	public abstract long getTime();
+
+	public abstract long getMemory();
+
+	public abstract long getDatabaseSize();
+
+
     
-    public Team getTeam(){
-        return _team;
-    }
-    
-    public long getMemory(){
-        return _memory;
-    }
-    
-    public long getDatabaseSize() {
-    	return _databaseSize;
-    }
 }
 

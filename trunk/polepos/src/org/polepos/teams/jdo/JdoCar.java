@@ -37,7 +37,7 @@ public class JdoCar extends Car {
     private final String              mDbName;
     private final String              mName;
 
-    JdoCar(Team team, String name, String dbName, String color) throws CarMotorFailureException {
+    JdoCar(Team team, String name, String dbName, String color) {
     	super(team, color);
 
         mName = name;

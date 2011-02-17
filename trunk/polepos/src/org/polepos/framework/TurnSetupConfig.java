@@ -37,8 +37,11 @@ public class TurnSetupConfig {
 	
 	private final static String CONCURRENCY = "concurrency";
 	public final static String THREADCOUNT = "threads";
+	public final static String TIME = "time";
 	
 	final static String[] AVAILABLE_SETTINGS = new String[]{
+		THREADCOUNT,
+		TIME,
 		REUSE,
 	    OBJECTCOUNT,
 	    SELECTCOUNT,
@@ -47,7 +50,7 @@ public class TurnSetupConfig {
 	    TREEWIDTH,
 	    DEPTH,
 	    COMMITINTERVAL,
-	    OBJECTSIZE
+	    OBJECTSIZE,
 	};
     
     public TurnSetupConfig(String propertiesFileName){

@@ -27,7 +27,6 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
 import org.polepos.framework.Car;
-import org.polepos.framework.CarMotorFailureException;
 import org.polepos.framework.CheckSummable;
 import org.polepos.framework.DriverBase;
 import org.polepos.framework.TurnSetup;
@@ -40,15 +39,15 @@ public abstract class JpaDriver extends DriverBase{
     
 	private transient EntityManager mEntityManager;
     
-	public void takeSeatIn( Car car, TurnSetup setup) throws CarMotorFailureException{
-        super.takeSeatIn(car, setup);
+	public void configure( Car car, TurnSetup setup) {
+        super.configure(car, setup);
 	}
     
 	public void prepare(){
 		mEntityManager = jpaCar().getEntityManager();
 	}
 	
-	public void backToPit(){
+	public void closeDatabase(){
         EntityTransaction tx = db().getTransaction();
         if(tx.isActive()){
             tx.commit();

@@ -38,8 +38,8 @@ public class FlatObjectJdbc extends JdbcDriver implements FlatObject
     
     
 
-	public void takeSeatIn(Car car, TurnSetup setup) throws CarMotorFailureException {	
-		super.takeSeatIn(car, setup);
+	public void configure(Car car, TurnSetup setup) {	
+		super.configure(car, setup);
 		
         openConnection();
         dropTable("flatobject");

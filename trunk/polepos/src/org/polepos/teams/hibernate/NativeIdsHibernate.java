@@ -32,9 +32,9 @@ public class NativeIdsHibernate extends HibernateDriver implements NativeIdsDriv
     
 	private Serializable[] ids;
 	
-	public void takeSeatIn(Car car, TurnSetup setup) throws CarMotorFailureException{	
+	public void configure(Car car, TurnSetup setup) {	
 		ids=new Serializable[setup.getSelectCount()];
-		super.takeSeatIn(car, setup);
+		super.configure(car, setup);
 	}
 
 	public void store() {

@@ -37,7 +37,7 @@ public class JdbcCar extends Car {
 		colTypesMap.put(Integer.TYPE, "INTEGER");
 	}
 
-	public JdbcCar(Team team, String dbtype, String color) throws CarMotorFailureException {
+	public JdbcCar(Team team, String dbtype, String color) {
 		super(team, color);
 		_dbType = dbtype;
 		JdbcSettings jdbcSettings = Jdbc.settings();
@@ -49,7 +49,7 @@ public class JdbcCar extends Car {
 			Class.forName(jdbcSettings.getDriverClass(dbtype)).newInstance();
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new CarMotorFailureException();
+			throw new RuntimeException(e);
 		}
 	}
 

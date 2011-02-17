@@ -23,7 +23,6 @@ import org.hibernate.Transaction;
 import org.hibernate.classic.Session;
 import org.hsqldb.jdbc.*;
 import org.polepos.framework.Car;
-import org.polepos.framework.CarMotorFailureException;
 import org.polepos.framework.DriverBase;
 import org.polepos.framework.Team;
 import org.polepos.teams.hibernate.data.*;

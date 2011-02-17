@@ -17,33 +17,20 @@ License along with this program; if not, write to the Free
 Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA  02111-1307, USA. */
 
-package org.polepos.framework;
 
-import java.util.*;
+package org.polepos.teams.jdo;
 
-public interface Circuit {
+import org.polepos.circuits.complexconcurrency.*;
+import org.polepos.teams.jdo.data.*;
 
- 	public List<Lap> laps();
+public class ComplexConcurrencyJdo extends JdoDriver implements ComplexConcurrencyDriver {
 
-	public TurnSetup[] lapSetups();
-
-	public Class<?> requiredDriver();
-
-	public String description();
-
-	public String internalName();
-	
-	public String name();
-
-	public void setTurnSetups(TurnSetup[] turnSetups);
-	
-	public Driver[] nominate(Team team);
-	
-	public void reportTo(Circuit circuit);
-	
-	public boolean isConcurrency();
-
-	public RacingStrategy racingStrategy();
-	
+	@Override
+	public void race() {
+		begin();
+		ComplexHolder0 holder = ComplexHolder0.generate(depth(), objectCount());
+		store(new ComplexRoot(holder));
+		commit();
+	}
 
 }
