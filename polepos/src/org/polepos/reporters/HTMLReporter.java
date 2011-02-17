@@ -31,7 +31,7 @@ import org.jfree.chart.*;
 import org.polepos.framework.*;
 
 
-public class HTMLReporter extends GraphReporter {	
+public class HTMLReporter extends RenderingReporter {	
 
 	public HTMLReporter(String path) {
 		super(path);

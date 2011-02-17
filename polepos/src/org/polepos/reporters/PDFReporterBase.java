@@ -33,7 +33,7 @@ import com.lowagie.text.*;
 import com.lowagie.text.pdf.*;
 
 
-public abstract class PDFReporterBase extends GraphReporter {
+public abstract class PDFReporterBase extends RenderingReporter {
 
 	private Document _document;
 	private PdfWriter _writer;
