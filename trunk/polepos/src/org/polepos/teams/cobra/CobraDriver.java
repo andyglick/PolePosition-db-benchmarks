@@ -44,10 +44,6 @@ public abstract class CobraDriver extends DriverBase{
 	private transient DatastoreManager mDatastoreManager;
     private transient Set newObjects = new HashSet();
     
-	public void configure( Car car, TurnSetup setup) {
-        super.configure(car, setup);
-	}
-    
 	public void prepare(){
 		mDatastoreManager = cobraCar().getDatastoreManager();
 	}

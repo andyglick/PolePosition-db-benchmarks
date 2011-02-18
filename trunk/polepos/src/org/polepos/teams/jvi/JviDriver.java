@@ -19,10 +19,8 @@ MA  02111-1307, USA. */
 
 package org.polepos.teams.jvi;
 
-import org.polepos.framework.Car;
 import org.polepos.framework.CheckSummable;
 import org.polepos.framework.DriverBase;
-import org.polepos.framework.TurnSetup;
 
 import com.versant.trans.Query;
 import com.versant.trans.QueryResult;
@@ -35,11 +33,6 @@ import com.versant.trans.TransSession;
 public abstract class JviDriver extends DriverBase{
     
 	private transient TransSession mSession;
-    
-	public void configure( Car car, TurnSetup setup) {
-        super.configure(car, setup);
-        jviCar().initialize();
-	}
     
 	public void prepare(){
 		mSession = jviCar().getTransSession();

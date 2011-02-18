@@ -165,6 +165,7 @@ public abstract class TimedLapsCircuitBase extends CircuitBase {
 	private void prepareDriverToRunLaps(Car car, Driver driver, TurnSetup setup) {
 		car.team().setUp();
 		driver.configure(car, setup);
+		driver.prepareDatabase();
 		driver.prepare();
 	}
 

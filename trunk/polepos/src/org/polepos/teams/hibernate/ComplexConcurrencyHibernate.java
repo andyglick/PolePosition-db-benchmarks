@@ -18,39 +18,34 @@ Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA  02111-1307, USA. */
 
 
-package org.polepos.teams.db4o;
+package org.polepos.teams.hibernate;
+
+import java.io.*;
 
 import org.polepos.circuits.complexconcurrency.*;
 import org.polepos.framework.*;
 
-import com.db4o.config.*;
+public class ComplexConcurrencyHibernate extends HibernateDriver implements ComplexConcurrencyDriver{
 
-public class ComplexConcurrencyDb4o extends Db4oDriver implements ComplexConcurrencyDriver {
-
-	private ComplexDb4o _delegate = new ComplexDb4o();
-	
-	@Override
-	public void configure(Configuration config) {
-		_delegate.configure(config);
-	}
+	private ComplexHibernate _delegate = new ComplexHibernate();
 	
 	@Override
 	public void prefillDatabase() {
 		_delegate.write();
 	}
-
+	
 	@Override
 	public void race() {
-		int[] ids = new int[writes()];
+		Serializable[] ids = new Serializable[writes()];
 		for (int i = 0; i < writes(); i++) {
-			ids[i] = ((Integer)_delegate.write()).intValue();
+			ids[i]= (Serializable) _delegate.write();
 		}
 		_delegate.query();
 		for (int i = 0; i < updates(); i++) {
 			_delegate.update(ids[i]);
 		}
 		for (int i = 0; i < deletes(); i++) {
-			_delegate.delete(ids[i]);
+			_delegate.deleteById(ids[i]);
 		}
 	}
 	
@@ -77,9 +72,9 @@ public class ComplexConcurrencyDb4o extends Db4oDriver implements ComplexConcurr
 
 	
 	@Override
-	public ComplexConcurrencyDb4o clone() {
-		ComplexConcurrencyDb4o clone = (ComplexConcurrencyDb4o) super.clone();
-		clone._delegate = new ComplexDb4o();
+	public ComplexConcurrencyHibernate clone() {
+		ComplexConcurrencyHibernate clone = (ComplexConcurrencyHibernate) super.clone();
+		clone._delegate = new ComplexHibernate();
 		return clone;
 	}
 

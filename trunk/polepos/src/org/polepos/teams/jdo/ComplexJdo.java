@@ -31,46 +31,38 @@ import org.polepos.teams.jdo.data.*;
 
 public class ComplexJdo extends JdoDriver implements Complex {
 	
+	private Object _rootId;
+	
 	@Override
-	public void write() {
+	public Object write() {
 		begin();
-		ComplexHolder0 holder = ComplexHolder0.generate(depth(), objectCount());
+		ComplexHolder0 holder = ComplexHolder0.generate(depth(), objects());
 		addToCheckSum(holder);
-		store(new ComplexRoot(holder));
+		store(holder);
+		_rootId = db().getObjectId(holder);
 		commit();
+		return _rootId;
 	}
 
 	@Override
 	public void read() {
-		beginRead();
-		ComplexHolder0 holder = rootHolder();
+		begin();
+		ComplexHolder0 holder = read(_rootId);
 		addToCheckSum(holder);
 	}
-
-	private ComplexHolder0 rootHolder() {
-        return root().getHolder();
+	
+	public ComplexHolder0 read(Object id) {
+		begin();
+		return (ComplexHolder0) db().getObjectById(id);
 	}
 
-	private ComplexRoot root() {
-		Query query = db().newQuery(ComplexRoot.class);
-        Collection result = (Collection) query.execute();
-		Iterator it = result.iterator();
-		if(! it.hasNext()){
-			throw new IllegalStateException("no ComplexRoot found");
-		}
-		ComplexRoot root = (ComplexRoot) it.next();
-		if(it.hasNext()){
-			throw new IllegalStateException("More than one ComplexRoot found");
-		}
-		return root;
-	}
 
 	@Override
 	public void query() {
-		beginRead();
-		int selectCount = selectCount();
-		int firstInt = objectCount() * objectCount() + objectCount();
-		int lastInt = firstInt + (objectCount() * objectCount() * objectCount()) - 1;
+		begin();
+		int selectCount = selects();
+		int firstInt = objects() * objects() + objects();
+		int lastInt = firstInt + (objects() * objects() * objects()) - 1;
 		int currentInt = firstInt;
 		for (int run = 0; run < selectCount; run++) {
 	        String filter = "this.i2 == param";
@@ -83,9 +75,6 @@ public class ComplexJdo extends JdoDriver implements Complex {
 			}
 			ComplexHolder2 holder = (ComplexHolder2) it.next();
 			addToCheckSum(holder.ownCheckSum());
-			if(it.hasNext()){
-				throw new IllegalStateException("More than one ComplexHolder2 found");
-			}
 			List<ComplexHolder0> children = holder.getChildren();
 			for (ComplexHolder0 child : children) {
 				addToCheckSum(child.ownCheckSum());
@@ -104,8 +93,12 @@ public class ComplexJdo extends JdoDriver implements Complex {
 	
 	@Override
 	public void update() {
+		update(_rootId);
+	}
+	
+	public void update(Object id) {
 		begin();
-		ComplexHolder0 holder = rootHolder();
+		ComplexHolder0 holder = read(id);
 		holder.traverse(new NullVisitor<ComplexHolder0>(),
 				new Visitor<ComplexHolder0>() {
 			@Override
@@ -122,13 +115,15 @@ public class ComplexJdo extends JdoDriver implements Complex {
 		});
 		commit();
 	}
-
+	
 	@Override
 	public void delete() {
+		deleteById(_rootId);
+	}
+
+	public void deleteById(Object id) {
 		begin();
-		ComplexRoot root = root();
-		ComplexHolder0 holder = root.getHolder();		
-		delete(root);
+		ComplexHolder0 holder = read(id);		
 		holder.traverse(
 			new NullVisitor<ComplexHolder0>(),
 			new Visitor<ComplexHolder0>() {

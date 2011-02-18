@@ -97,7 +97,7 @@ public class FixedTimeCustomBarRenderer extends CustomBarRendererBase {
 		if(orderOfMagnitude == 1){
 			return "";
 		}
-		return String.format("- %.1fx", orderOfMagnitude);
+		return String.format("1/%.1fx", orderOfMagnitude);
 	}
 
 	@Override
@@ -108,7 +108,7 @@ public class FixedTimeCustomBarRenderer extends CustomBarRendererBase {
 		if(i > BEST_MAGNITUDE - 1){
 			return "";
 		}
-		return String.format("- %.0fx", Math.pow(10, BEST_MAGNITUDE - 1 - i));
+		return String.format("1/%.0fx", Math.pow(10, BEST_MAGNITUDE - 1 - i));
 	}
 
 	@Override

@@ -45,9 +45,8 @@ public class NestedListsJdbc extends JdbcDriver implements NestedLists {
     private int _rootId;
 
 
-	public void configure(Car car, TurnSetup setup) {
-        
-        super.configure(car, setup);
+    @Override
+    public void prepareDatabase() {
         openConnection();
         
         dropTable(LISTHOLDER_TABLE);
@@ -82,7 +81,7 @@ public class NestedListsJdbc extends JdbcDriver implements NestedLists {
 		final PreparedStatement listStatement = 
 			prepareStatement("insert into " + LIST_TABLE + " (fid, fitem, felement) values (?,?,?)");
 
-		ListHolder root = ListHolder.generate(depth(), objectCount(), reuse());
+		ListHolder root = ListHolder.generate(depth(), objects(), reuse());
 		_rootId = (int) root.id();
 		
 		root.accept(new Visitor<ListHolder>() {

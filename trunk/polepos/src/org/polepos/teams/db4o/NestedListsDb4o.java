@@ -32,7 +32,7 @@ public class NestedListsDb4o extends Db4oDriver implements NestedLists {
 
 	@Override
 	public void create() throws Throwable {
-		store(ListHolder.generate(depth(), objectCount(), reuse()));
+		store(ListHolder.generate(depth(), objects(), reuse()));
 		commit();
 	}
 	

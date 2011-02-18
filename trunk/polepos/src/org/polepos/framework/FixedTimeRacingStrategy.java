@@ -45,38 +45,39 @@ public class FixedTimeRacingStrategy implements RacingStrategy {
 			results[i] = turnResult;
 		}
         for (Reporter reporter : reporters) {
-            reporter.report(team, car, turnSetups, results);
+        	reporter.report(team, car, turnSetups, results);
         }
-		
 	}
 
 	private Result raceTurn(Team team, Car car, Driver driver, TurnSetup setup, int setupIndex) {
 		car.team().setUp();
 		
 		driver.configure(car, setup);
-		driver.prepare();
-		// fill database
+		driver.prepareDatabase();
 		
+		driver.prepare();
+		((FixedTimeDriver)driver).prefillDatabase();
 		driver.closeDatabase();
 		
 		MemoryUtil.gc();
 		
-		int threadCount = setup.getThreadCount();
-		
 		int time = setup.getTime();
 		
+		int threadCount = setup.getThreadCount();
 		DriverBase[] drivers = new DriverBase[threadCount];
 		ConcurrentTurnRacer[] racers = new ConcurrentTurnRacer[threadCount];
 		Thread[] threads = new Thread[threadCount];
+
 		
 		for (int i = 0; i < threads.length; i++) {
 			drivers[i] = ((DriverBase)driver).clone();
-			// drivers[i].configure(car, setup);
+			drivers[i].configure(car, setup);
 			drivers[i].prepare();
 			drivers[i].bulkId(i + 1);
 			racers[i] = new ConcurrentTurnRacer((FixedTimeDriver)drivers[i]);
 			threads[i] = new Thread(racers[i]);
 		}
+		
 		
 		for (int i = 0; i < threads.length; i++) {
 			threads[i].start();

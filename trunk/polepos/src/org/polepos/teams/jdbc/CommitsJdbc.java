@@ -23,16 +23,14 @@ package org.polepos.teams.jdbc;
 import java.sql.*;
 
 import org.polepos.circuits.commits.*;
-import org.polepos.framework.*;
 
 
 public class CommitsJdbc extends JdbcDriver implements CommitsDriver{
 	
 	private static final String TABLE = "monaco";
 
-    public void configure(Car car, TurnSetup setup) {
-        
-        super.configure(car, setup);
+    @Override
+    public void prepareDatabase() {
 
         openConnection();
         

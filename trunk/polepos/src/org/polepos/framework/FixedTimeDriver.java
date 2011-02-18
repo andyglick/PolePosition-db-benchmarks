@@ -22,8 +22,10 @@ package org.polepos.framework;
 
 public interface FixedTimeDriver {
 	
-	public void bulkId(int id);
+	public void prefillDatabase();
 	
-	public void race(); 
+	public void race();
+	
+	
 
 }

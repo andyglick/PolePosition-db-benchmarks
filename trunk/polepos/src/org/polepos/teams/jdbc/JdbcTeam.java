@@ -60,7 +60,8 @@ public class JdbcTeam extends Team{
         	new ComplexJdbc(),
             new TreesJdbc(),
             new NativeIdsJdbc(),
-            new CommitsJdbc()
+            new CommitsJdbc(),
+            new ComplexConcurrencyJdbc(),
         };
     }
     

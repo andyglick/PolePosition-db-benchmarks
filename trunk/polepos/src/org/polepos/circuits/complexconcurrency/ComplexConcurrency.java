@@ -27,7 +27,7 @@ public class ComplexConcurrency extends FixedTimeCircuitBase{
 
 	@Override
 	public String description() {
-		return "runs the complex scenario against multiple concurrent clients within a fixed time span";
+		return "runs inserts, queries, updates and deletes against the complex scenario\nwith multiple concurrent clients within a fixed time span";
 	}
 
 	@Override

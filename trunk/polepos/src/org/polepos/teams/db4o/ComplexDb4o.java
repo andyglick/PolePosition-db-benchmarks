@@ -32,44 +32,42 @@ import com.db4o.query.*;
 
 public class ComplexDb4o extends Db4oDriver implements Complex {
 	
+	private int _rootId;
+	
 	@Override
-	public void write() {
-		ComplexHolder0 holder = ComplexHolder0.generate(depth(), objectCount());
-		store(new ComplexRoot(holder));
+	public Object write() {
+		ComplexHolder0 holder = ComplexHolder0.generate(depth(), objects());
+		store(holder);
 		addToCheckSum(holder);
 		commit();
+		_rootId = (int) db().getID(holder);
+		return _rootId;
 	}
 
 	@Override
 	public void read() {
-		ComplexHolder0 holder = root();
-		db().activate(holder, Integer.MAX_VALUE);
+		ComplexHolder0 holder = read(_rootId);
 		addToCheckSum(holder);
 	}
+	
 
-	private ComplexHolder0 root() {
-		ObjectSet<ComplexRoot> result = db().query(ComplexRoot.class);
-		if(result.size() != 1) {
-			throw new IllegalStateException();
-		}
-		return result.get(0)._holder;
+	public ComplexHolder0 read(int id) {
+		ComplexHolder0 holder = db().getByID(id);
+		db().activate(holder, Integer.MAX_VALUE);
+		return holder;
 	}
 
 	@Override
 	public void query() {
-		int selectCount = selectCount();
-		int firstInt = objectCount() * objectCount() + objectCount();
-		int lastInt = firstInt + (objectCount() * objectCount() * objectCount()) - 1;
+		int selectCount = selects();
+		int firstInt = objects() * objects() + objects();
+		int lastInt = firstInt + (objects() * objects() * objects()) - 1;
 		int currentInt = firstInt;
 		for (int run = 0; run < selectCount; run++) {
-			
 			Query query = db().query();
 			query.constrain(ComplexHolder2.class);
 			query.descend("_i2").constrain(currentInt);
 			ObjectSet<ComplexHolder2> result = query.execute();
-			if(result.size() != 1) {
-				throw new IllegalStateException("" + result.size());
-			}
 			ComplexHolder2 holder = result.get(0);
 			db().activate(holder, 3);
 			addToCheckSum(holder.ownCheckSum());
@@ -86,12 +84,15 @@ public class ComplexDb4o extends Db4oDriver implements Complex {
 				currentInt = firstInt;
 			}
 		}
-		
 	}
 	
 	@Override
 	public void update() {
-		ComplexHolder0 holder = root();
+		update(_rootId);
+	}
+	
+	public void update(int id) {
+		ComplexHolder0 holder = read(id);
 		db().activate(holder, Integer.MAX_VALUE);
 		holder.traverse(new NullVisitor(),
 				new Visitor<ComplexHolder0>() {
@@ -110,9 +111,14 @@ public class ComplexDb4o extends Db4oDriver implements Complex {
 		});
 	}
 
+
 	@Override
 	public void delete() {
-		ComplexHolder0 holder = root();
+		delete(_rootId);
+	}
+	
+	public void delete(int id) {
+		ComplexHolder0 holder = read(id);
 		db().activate(holder, Integer.MAX_VALUE);
 		holder.traverse(
 			new NullVisitor(),
@@ -124,6 +130,7 @@ public class ComplexDb4o extends Db4oDriver implements Complex {
 			}
 		});
 	}
+
 
 	@Override
 	public void configure(Configuration config) {

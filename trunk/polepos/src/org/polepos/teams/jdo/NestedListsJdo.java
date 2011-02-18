@@ -33,7 +33,7 @@ public class NestedListsJdo extends JdoDriver implements NestedLists {
 	@Override
 	public void create() throws Throwable {
 		begin();
-		store(ListHolder.generate(depth(), objectCount(), reuse()));
+		store(ListHolder.generate(depth(), objects(), reuse()));
 		commit();
 	}
 	
@@ -48,7 +48,7 @@ public class NestedListsJdo extends JdoDriver implements NestedLists {
 	}
 	
 	private ListHolder root() {
-		beginRead();
+		begin();
         Query query = db().newQuery(ListHolder.class, "this._name == '" + ListHolder.ROOT_NAME + "'");
         Collection<ListHolder> result = (Collection<ListHolder>)query.execute();
         if(result.size() != 1){
