@@ -124,9 +124,7 @@ public class TurnSetup implements Cloneable{
     }
     
     public List<SetupProperty> properties() {
-    	List<SetupProperty> list = new ArrayList<SetupProperty>(mSettings.values());
-    	Collections.sort(list);
-    	return list;
+    	return new ArrayList<SetupProperty>(mSettings.values());
     }
     
     public void addSetting(SetupProperty setupProperty){

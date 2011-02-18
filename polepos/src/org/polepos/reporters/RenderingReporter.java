@@ -36,7 +36,9 @@ import org.polepos.util.*;
 
 public abstract class RenderingReporter extends GraphReporter{
     
-    public RenderingReporter(String path) {
+    private static final int MAX_PROPERTIES_TO_DISPLAY = 6;
+
+	public RenderingReporter(String path) {
 		super(path);
 		
 	}
@@ -170,6 +172,7 @@ public abstract class RenderingReporter extends GraphReporter{
 	protected static String legend(TurnSetup setup) {
 		String legend = "";
 		boolean first = true;
+		int count = 0;
 		for (SetupProperty sp : setup.properties()) {
 			if (!first) {
 				legend += ", ";
@@ -178,6 +181,10 @@ public abstract class RenderingReporter extends GraphReporter{
 			if (!name.equals("commitinterval")) {
 				legend += name + "=" + sp.value();
 				first = false;
+			}
+			count++;
+			if(count >= MAX_PROPERTIES_TO_DISPLAY){
+				return legend;
 			}
 		}
 
