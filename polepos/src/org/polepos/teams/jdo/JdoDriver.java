@@ -28,14 +28,10 @@ import org.polepos.framework.*;
 
 public abstract class JdoDriver extends DriverBase{
     
-	private transient PersistenceManager mPersistenceManager;
-    
-	public void configure( Car car, TurnSetup setup) {
-        super.configure(car, setup);
-	}
+	private transient PersistenceManager pm;
     
 	public void prepare(){
-		mPersistenceManager = jdoCar().getPersistenceManager();
+		pm = jdoCar().getPersistenceManager();
 	}
 	
 	public void closeDatabase(){
@@ -43,8 +39,8 @@ public abstract class JdoDriver extends DriverBase{
         if(tx.isActive()){
             tx.rollback();
         }
-		mPersistenceManager.close();
-		mPersistenceManager = null;
+		pm.close();
+		pm = null;
 	}
 	
 	protected JdoCar jdoCar(){
@@ -52,18 +48,14 @@ public abstract class JdoDriver extends DriverBase{
 	}
 	
 	protected PersistenceManager db(){
-		return mPersistenceManager;
+		return pm;
 	}
 	
-	public void beginRead(){
+    public void begin(){
 		Transaction currentTransaction = db().currentTransaction();
 		if(! currentTransaction.isActive()){
 			currentTransaction.begin();
 		}
-	}
-	
-    public void begin(){
-        db().currentTransaction().begin();
     }
     
     public void commit(){
@@ -75,7 +67,7 @@ public abstract class JdoDriver extends DriverBase{
     }
     
     protected void doQuery( Query q, Object param){
-    	beginRead();
+    	begin();
         Collection result = (Collection)q.execute(param);
         Iterator it = result.iterator();
         while(it.hasNext()){
@@ -97,7 +89,7 @@ public abstract class JdoDriver extends DriverBase{
     }
     
     protected void readExtent(Class clazz){
-    	beginRead();
+    	begin();
         Extent extent = db().getExtent( clazz, false );
         int count = 0;
         Iterator itr = extent.iterator();

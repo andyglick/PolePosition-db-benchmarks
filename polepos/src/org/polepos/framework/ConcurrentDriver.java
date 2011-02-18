@@ -20,7 +20,7 @@ MA  02111-1307, USA. */
 
 package org.polepos.framework;
 
-public class ConcurrentDriver extends Driver {
+public class ConcurrentDriver implements Driver {
 	
 	
 	private DriverBase _masterDriver;
@@ -125,6 +125,10 @@ public class ConcurrentDriver extends Driver {
 		}
 		return lap.concurrent();
 	}
-	
+
+	@Override
+	public void prepareDatabase() {
+		_masterDriver.prepareDatabase();		
+	}
 	
 }

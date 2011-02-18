@@ -19,6 +19,7 @@ MA  02111-1307, USA. */
 
 package org.polepos.teams.hibernate;
 
+import java.io.*;
 import java.util.Iterator;
 
 import org.hibernate.*;
@@ -31,10 +32,6 @@ import org.polepos.framework.TurnSetup;
 public abstract class HibernateDriver extends DriverBase{
 	
     private Session _session;
-
-	public void configure( Car car, TurnSetup setup ){
-        super.configure(car, setup);
-	}
 
 	public void prepare() {
         _session = hibernateCar().openSession();
@@ -136,8 +133,8 @@ public abstract class HibernateDriver extends DriverBase{
 		return db().beginTransaction();
 	}
 	
-    protected void store(Object obj) {
-    	db().save(obj);
+    protected Serializable store(Object obj) {
+    	return db().save(obj);
 	}
     
     protected void delete(Object obj) {

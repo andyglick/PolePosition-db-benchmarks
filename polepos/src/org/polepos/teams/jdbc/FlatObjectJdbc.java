@@ -38,8 +38,8 @@ public class FlatObjectJdbc extends JdbcDriver implements FlatObject
     
     
 
-	public void configure(Car car, TurnSetup setup) {	
-		super.configure(car, setup);
+    @Override
+    public void prepareDatabase() {
 		
         openConnection();
         dropTable("flatobject");
@@ -61,7 +61,7 @@ public class FlatObjectJdbc extends JdbcDriver implements FlatObject
 	}
 
 	public void write() throws SQLException{
-        initializeTestId(objectCount());
+        initializeTestId(objects());
         PreparedStatement preparedStatement = prepareStatement("insert into flatobject (fid, fint, fstring) values (?,?,?)");
         while ( hasMoreTestIds() ){
         	IndexedObject indexedObject = new IndexedObject(nextTestId());

@@ -30,7 +30,7 @@ public class FlatObjectHibernate extends HibernateDriver implements FlatObject{
     
 	public void write(){
 		Transaction tx = begin();
-        initializeTestId(objectCount());
+        initializeTestId(objects());
 		while ( hasMoreTestIds()){
 			IndexedObject indexedObject = new IndexedObject(nextTestId());
 			store(indexedObject);

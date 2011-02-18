@@ -26,7 +26,7 @@ import org.polepos.*;
 /**
  * an implementation of a circuit for a team
  */
-public abstract class DriverBase extends Driver implements Cloneable
+public abstract class DriverBase implements Driver
 {
     
     private Car mCar;
@@ -152,9 +152,7 @@ public abstract class DriverBase extends Driver implements Cloneable
 
 	public void copyStateFrom(DriverBase masterDriver) {
 		// default: do nothing
-		
 		// Implement for concurrency to copy the state
-		
 	}
 
 	public void bulkId(int id) {
@@ -186,15 +184,15 @@ public abstract class DriverBase extends Driver implements Cloneable
 		throw new IllegalStateException(" Out of _objectCount. Did you call initializeTestId ?");
 	}
 	
-	protected int selectCount(){
+	protected int selects(){
 		return setup().getSelectCount();
 	}
 	
-	protected int objectCount() {
+	protected int objects() {
 		return setup().getObjectCount();
 	}
 	
-	protected int updateCount() {
+	protected int updates() {
 		return setup().getUpdateCount();
 	}
 	
@@ -204,6 +202,14 @@ public abstract class DriverBase extends Driver implements Cloneable
 	
 	protected int reuse() {
 		return setup().getReuse();
+	}
+	
+	protected int writes(){
+		return setup().getWrites();
+	}
+	
+	protected int deletes(){
+		return setup().getDeletes();
 	}
 	
 	protected boolean doCommit(){
@@ -218,6 +224,10 @@ public abstract class DriverBase extends Driver implements Cloneable
 
 	protected boolean hasMoreTestIds() {
 		return _objectCount > 0;
+	}
+	
+	public void prepareDatabase(){
+		// virtual
 	}
 
 }

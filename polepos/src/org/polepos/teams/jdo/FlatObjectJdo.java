@@ -31,7 +31,7 @@ public class FlatObjectJdo extends JdoDriver implements FlatObject {
     
 	public void write(){
 		begin();
-        initializeTestId(objectCount());
+        initializeTestId(objects());
 		while ( hasMoreTestIds()){
 			JdoIndexedObject indexedObject = new JdoIndexedObject(nextTestId());
 			store(indexedObject);

@@ -24,7 +24,6 @@ import java.util.*;
 
 import org.polepos.*;
 import org.polepos.data.*;
-import org.polepos.framework.*;
 
 
 public abstract class JdbcDriver extends org.polepos.framework.DriverBase {
@@ -70,7 +69,6 @@ public abstract class JdbcDriver extends org.polepos.framework.DriverBase {
 	}
 
 	protected void performPreparedQuery(PreparedStatement stat, Object arg) {
-		Log.logger.fine("starting query"); // NOI18N
 		ResultSet rs = null;
 		try {
 			stat.setObject(1, arg);
@@ -99,7 +97,6 @@ public abstract class JdbcDriver extends org.polepos.framework.DriverBase {
 	}
 	
 	protected <Value> void performSingleResultQuery(String sql,List<Value> values) {
-	    Log.logger.fine( "starting query" ); //NOI18N
 	    PreparedStatement stat=prepareStatement(sql);
 		try {
 			for(Value val : values) {

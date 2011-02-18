@@ -69,7 +69,8 @@ public class HibernateTeam extends Team {
 				new NativeIdsHibernate(), 
 				new CommitsHibernate(), 
 				new ArrayListsHibernate(),
-				new StringsHibernate(), 
+				new StringsHibernate(),
+				new ComplexConcurrencyHibernate(),
 		};
 	}
 

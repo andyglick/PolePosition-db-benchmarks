@@ -20,6 +20,7 @@ MA  02111-1307, USA. */
 
 package org.polepos.teams.hibernate;
 
+import java.io.*;
 import java.util.*;
 
 import org.hibernate.*;
@@ -31,39 +32,33 @@ import org.polepos.teams.hibernate.data.*;
 public class ComplexHibernate extends HibernateDriver implements Complex {
 	
 	
+	private Serializable _rootId;
+
 	@Override
-	public void write() {
+	public Object write() {
 		Transaction tx = begin();
-		ComplexHolder0 holder = ComplexHolder0.generate(depth(), objectCount());
+		ComplexHolder0 holder = ComplexHolder0.generate(depth(), objects());
 		addToCheckSum(holder);
-		store(new ComplexRoot(holder));
+		_rootId = store(holder);
 		tx.commit();
+		return _rootId;
 	}
 
 	@Override
 	public void read() {
-		ComplexHolder0 holder = root();
+		ComplexHolder0 holder = read(_rootId);
 		addToCheckSum(holder);
 	}
-
-	private ComplexHolder0 root() {
-		String query = "from org.polepos.teams.hibernate.data.ComplexRoot";
-		Iterator it = db().createQuery(query).iterate();
-		if(! it.hasNext()){
-			throw new IllegalStateException("no ComplexRoot found");
-		}
-		ComplexRoot root = (ComplexRoot) it.next();
-		if(it.hasNext()){
-			throw new IllegalStateException("More than one ComplexRoot found");
-		}
-		return root.getHolder();
+	
+	public ComplexHolder0 read(Serializable _id) {
+		return (ComplexHolder0)db().load(ComplexHolder0.class,_id);
 	}
 
 	@Override
 	public void query() {
-		int selectCount = selectCount();
-		int firstInt = objectCount() * objectCount() + objectCount();
-		int lastInt = firstInt + (objectCount() * objectCount() * objectCount()) - 1;
+		int selectCount = selects();
+		int firstInt = objects() * objects() + objects();
+		int lastInt = firstInt + (objects() * objects() * objects()) - 1;
 		int currentInt = firstInt;
 		for (int run = 0; run < selectCount; run++) {
 			String query = "from org.polepos.teams.hibernate.data.ComplexHolder2 where i2 = ?";
@@ -73,9 +68,6 @@ public class ComplexHibernate extends HibernateDriver implements Complex {
 			}
 			ComplexHolder2 holder = (ComplexHolder2) it.next();
 			addToCheckSum(holder.ownCheckSum());
-			if(it.hasNext()){
-				throw new IllegalStateException("More than one ComplexHolder2 found");
-			}
 			List<ComplexHolder0> children = holder.getChildren();
 			for (ComplexHolder0 child : children) {
 				addToCheckSum(child.ownCheckSum());
@@ -93,8 +85,12 @@ public class ComplexHibernate extends HibernateDriver implements Complex {
 	
 	@Override
 	public void update() {
+		update(_rootId);
+	}
+	
+	public void update(Serializable id) {
 		Transaction tx = begin();
-		ComplexHolder0 holder = root();
+		ComplexHolder0 holder = read(id);
 		holder.traverse(new NullVisitor<ComplexHolder0>(),
 				new Visitor<ComplexHolder0>() {
 			@Override
@@ -115,7 +111,11 @@ public class ComplexHibernate extends HibernateDriver implements Complex {
 
 	@Override
 	public void delete() {
-		ComplexHolder0 holder = root();
+		deleteById(_rootId);
+	}
+	
+	public void deleteById(Serializable id) {
+		ComplexHolder0 holder = read(id);
 		holder.traverse(
 			new NullVisitor<ComplexHolder0>(),
 			new Visitor<ComplexHolder0>() {
@@ -126,5 +126,4 @@ public class ComplexHibernate extends HibernateDriver implements Complex {
 			}
 		});
 	}
-
 }

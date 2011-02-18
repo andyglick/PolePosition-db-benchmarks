@@ -39,7 +39,7 @@ public class TreesJdo extends JdoDriver implements TreesDriver {
 	}
 
 	public void read(){
-		beginRead();
+		begin();
         JdoTree tree = (JdoTree)db().getObjectById(oid, false);
         JdoTree.traverse(tree, new JdoTreeVisitor() {
             public void visit(JdoTree tree) {

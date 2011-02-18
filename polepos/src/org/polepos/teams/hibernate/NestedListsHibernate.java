@@ -32,7 +32,7 @@ public class NestedListsHibernate extends HibernateDriver implements NestedLists
 	@Override
 	public void create() throws Throwable {
 		Transaction tx = begin();
-		store(ListHolder.generate(depth(), objectCount(), reuse()));
+		store(ListHolder.generate(depth(), objects(), reuse()));
 		tx.commit();
 	}
 	

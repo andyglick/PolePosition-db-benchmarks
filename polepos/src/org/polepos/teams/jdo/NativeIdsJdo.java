@@ -39,7 +39,7 @@ public class NativeIdsJdo extends JdoDriver implements NativeIdsDriver{
     }
 
     public void retrieve() {
-    	beginRead();
+    	begin();
         for(Object id: oids) {
             JdoPilot pilot=(JdoPilot)db().getObjectById(id, false);
             if(pilot==null) {

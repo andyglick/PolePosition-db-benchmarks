@@ -18,27 +18,20 @@ Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA  02111-1307, USA. */
 
 
-package org.polepos.teams.db4o;
+package org.polepos.teams.jdbc;
 
 import org.polepos.circuits.complexconcurrency.*;
 import org.polepos.framework.*;
 
-import com.db4o.config.*;
-
-public class ComplexConcurrencyDb4o extends Db4oDriver implements ComplexConcurrencyDriver {
-
-	private ComplexDb4o _delegate = new ComplexDb4o();
+public class ComplexConcurrencyJdbc extends JdbcDriver implements ComplexConcurrencyDriver {
 	
-	@Override
-	public void configure(Configuration config) {
-		_delegate.configure(config);
-	}
+	private ComplexJdbc _delegate = new ComplexJdbc();
 	
 	@Override
 	public void prefillDatabase() {
 		_delegate.write();
 	}
-
+	
 	@Override
 	public void race() {
 		int[] ids = new int[writes()];
@@ -75,11 +68,10 @@ public class ComplexConcurrencyDb4o extends Db4oDriver implements ComplexConcurr
 		_delegate.closeDatabase();
 	}
 
-	
 	@Override
-	public ComplexConcurrencyDb4o clone() {
-		ComplexConcurrencyDb4o clone = (ComplexConcurrencyDb4o) super.clone();
-		clone._delegate = new ComplexDb4o();
+	public ComplexConcurrencyJdbc clone() {
+		ComplexConcurrencyJdbc clone = (ComplexConcurrencyJdbc) super.clone();
+		clone._delegate = new ComplexJdbc(_delegate.idGenerator());
 		return clone;
 	}
 

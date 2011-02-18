@@ -29,6 +29,8 @@ import javax.jdo.datastore.*;
 import org.polepos.framework.*;
 import org.polepos.teams.jdbc.*;
 
+import com.versant.core.jdo.*;
+
 
 public class JdoCar extends Car {
 
@@ -160,13 +162,16 @@ public class JdoCar extends Car {
 
     public PersistenceManager getPersistenceManager() {
     	
-        PersistenceManager persistenceManager = _persistenceManagerFactory.getPersistenceManager();
-        
-        if(! "hsqldb".equals(mDbName)){
-        	return persistenceManager;
+        PersistenceManager pm = _persistenceManagerFactory.getPersistenceManager();
+        if(pm instanceof VersantPersistenceManager){
+        	((VersantPersistenceManager)pm).setReadLockOnOptimisticQueryResults( false);
         }
         
-        JDOConnection dataStoreConnection = persistenceManager.getDataStoreConnection();
+        if(! "hsqldb".equals(mDbName)){
+        	return pm;
+        }
+        
+        JDOConnection dataStoreConnection = pm.getDataStoreConnection();
         Connection connection = (Connection) dataStoreConnection.getNativeConnection();
         
         JdbcCar.hsqlDbWriteDelayToZero(connection);
@@ -180,7 +185,7 @@ public class JdoCar extends Car {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return persistenceManager;
+		return pm;
     }
 
     @Override

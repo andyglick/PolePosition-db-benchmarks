@@ -21,16 +21,60 @@ MA  02111-1307, USA. */
 package org.polepos.teams.jdo;
 
 import org.polepos.circuits.complexconcurrency.*;
-import org.polepos.teams.jdo.data.*;
+import org.polepos.framework.*;
 
 public class ComplexConcurrencyJdo extends JdoDriver implements ComplexConcurrencyDriver {
 
+	private ComplexJdo _delegate = new ComplexJdo();
+	
+	@Override
+	public void prefillDatabase() {
+		_delegate.write();
+	}
+	
 	@Override
 	public void race() {
-		begin();
-		ComplexHolder0 holder = ComplexHolder0.generate(depth(), objectCount());
-		store(new ComplexRoot(holder));
-		commit();
+		Object[] ids = new Object[writes()];
+		for (int i = 0; i < writes(); i++) {
+			ids[i] = _delegate.write();
+		}
+		_delegate.query();
+		for (int i = 0; i < updates(); i++) {
+			_delegate.update(ids[i]);
+		}
+		for (int i = 0; i < deletes(); i++) {
+			_delegate.deleteById(ids[i]);
+		}
 	}
+	
+	@Override
+	public void prepare() {
+		_delegate.prepare();
+	}
+	
+	@Override
+	public void prepareDatabase() {
+		_delegate.prepareDatabase();
+	}
+	
+	@Override
+	public void configure(Car car, TurnSetup setup) {
+		super.configure(car, setup);
+		_delegate.configure(car, setup);
+	}
+	
+	@Override
+	public void closeDatabase() {
+		_delegate.closeDatabase();
+	}
+
+	
+	@Override
+	public ComplexConcurrencyJdo clone() {
+		ComplexConcurrencyJdo clone = (ComplexConcurrencyJdo) super.clone();
+		clone._delegate = new ComplexJdo();
+		return clone;
+	}
+
 
 }

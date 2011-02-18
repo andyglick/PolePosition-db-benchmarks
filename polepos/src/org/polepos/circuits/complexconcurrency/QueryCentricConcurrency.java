@@ -18,26 +18,14 @@ Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA  02111-1307, USA. */
 
 
-package org.polepos.circuits.complex;
+package org.polepos.circuits.complexconcurrency;
 
-import org.polepos.framework.*;
-
-@CircuitDescription("write, read, query, update and delete complex object graph")
-public interface Complex {
+public class QueryCentricConcurrency extends ComplexConcurrency {
 	
-    @Order(1)
-    public Object write();
-    
-    @Order(2)
-    public void read();
-    
-    @Order(3)
-    public void query();
-    
-    @Order(4)
-    public void update();
-    
-    @Order(5)
-    public void delete();
+	@Override
+	public String description() {
+		return "runs the complex concurrent scenario with a focus on completing many queries";
+	}
+
 
 }

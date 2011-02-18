@@ -46,10 +46,6 @@ public class JviCar extends Car {
 
     }
 
-    public void initialize() {
- 
-    }
-
     /**
      *
      */

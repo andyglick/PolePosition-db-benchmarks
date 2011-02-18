@@ -33,8 +33,8 @@ public class NativeIdsJdbc extends JdbcDriver implements NativeIdsDriver {
 	
     private static final String TABLE = "sanmarino";
     
-	public void configure(Car car, TurnSetup setup) {	
-		super.configure(car, setup);
+    @Override
+    public void prepareDatabase() {
 		
         openConnection();
         dropTable( TABLE);

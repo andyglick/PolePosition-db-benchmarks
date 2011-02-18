@@ -38,8 +38,9 @@ public abstract class CircuitBase implements Circuit {
 	 */
 	@Override
 	public String name() {
-	    String name = internalName();
-	    return name.substring(0,1).toUpperCase() + name.substring(1);
+		String name = className();
+	    int pos = name.lastIndexOf(".");
+	    return name.substring(pos + 1);
 	}
 
 	/**

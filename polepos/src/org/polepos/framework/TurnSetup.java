@@ -171,6 +171,13 @@ public class TurnSetup implements Cloneable{
 	public int getTime() {
 		return getSetting(TurnSetupConfig.TIME);
 	}
-    
+	
+	public int getWrites() {
+		return getSetting(TurnSetupConfig.WRITES);
+	}
+	
+	public int getDeletes() {
+		return getSetting(TurnSetupConfig.DELETES);
+	}
     
 }
