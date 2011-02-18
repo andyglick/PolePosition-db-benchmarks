@@ -68,6 +68,7 @@ public class RunSeason extends AbstractRunner {
 				
 //				new ComplexConcurrency(),
 //				new QueryCentricConcurrency(),
+//				new InsertCentricConcurrency(),
 				
 //				new Trees(), 
 //				new NativeIds(),

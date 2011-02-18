@@ -44,17 +44,17 @@ public class TurnSetupConfig {
 	final static String[] AVAILABLE_SETTINGS = new String[]{
 		THREADCOUNT,
 		TIME,
-		REUSE,
-	    OBJECTCOUNT,
 	    SELECTCOUNT,
 	    UPDATECOUNT,
-	    COMMITCOUNT,
-	    TREEWIDTH,
-	    DEPTH,
-	    COMMITINTERVAL,
-	    OBJECTSIZE,
 	    WRITES,
 	    DELETES,
+	    OBJECTCOUNT,
+	    TREEWIDTH,
+	    DEPTH,
+		REUSE,
+	    COMMITCOUNT,
+	    COMMITINTERVAL,
+	    OBJECTSIZE,
 	};
     
     public TurnSetupConfig(String propertiesFileName){
