@@ -42,14 +42,15 @@ public class ComplexHolder0 implements CheckSummable {
 		id = _idGenerator.nextId();
 	}
 	
-	public static ComplexHolder0 generate(int depth, int leafs){
+	public static ComplexHolder0 generate(int depth, int leafs, boolean disjunctSpecial){
 		ComplexHolder0 complexHolder = new ComplexHolder0();
 		complexHolder.name = "root";
-		createChildren(complexHolder, depth -1, leafs);
+		int specialValue = disjunctSpecial ? (int) Math.pow(leafs, depth) : 0;	
+		createChildren(complexHolder, depth -1, leafs, specialValue);
 		return complexHolder;
 	}
 	
-	private static void createChildren(ComplexHolder0 root, int depth, int numChildren) {
+	private static void createChildren(ComplexHolder0 root, int depth, int numChildren, int specialValue) {
 		if(depth < 1){
 			return;
 		}
@@ -65,7 +66,7 @@ public class ComplexHolder0 implements CheckSummable {
 					ComplexHolder0 curChild = curFactory.run();
 					curChild.name = String.valueOf(holderIdx);
 					curChild.array = createArray(holderIdx);
-					curChild.setSpecial(holderIdx);
+					curChild.setSpecial(holderIdx + specialValue);
 					curParent.addChild(curChild);
 					childLevel.add(curChild);
 					holderIdx++;

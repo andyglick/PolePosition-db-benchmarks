@@ -35,14 +35,19 @@ public class ComplexJdo extends JdoDriver implements Complex {
 	
 	@Override
 	public Object write() {
+		return write(false);
+	}
+	
+	public Object write(boolean disjunctSpecial) {
 		begin();
-		ComplexHolder0 holder = ComplexHolder0.generate(depth(), objects());
+		ComplexHolder0 holder = ComplexHolder0.generate(depth(), objects(), disjunctSpecial);
 		addToCheckSum(holder);
 		store(holder);
 		_rootId = db().getObjectId(holder);
 		commit();
 		return _rootId;
 	}
+
 
 	@Override
 	public void read() {

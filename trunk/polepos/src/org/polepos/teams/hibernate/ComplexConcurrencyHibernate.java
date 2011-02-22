@@ -38,7 +38,7 @@ public class ComplexConcurrencyHibernate extends HibernateDriver implements Comp
 	public void race() {
 		Serializable[] ids = new Serializable[writes()];
 		for (int i = 0; i < writes(); i++) {
-			ids[i]= (Serializable) _delegate.write();
+			ids[i]= (Serializable) _delegate.write(true);
 		}
 		_delegate.query();
 		for (int i = 0; i < updates(); i++) {

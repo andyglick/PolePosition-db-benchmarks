@@ -34,9 +34,14 @@ public class ComplexDb4o extends Db4oDriver implements Complex {
 	
 	private int _rootId;
 	
+	
 	@Override
 	public Object write() {
-		ComplexHolder0 holder = ComplexHolder0.generate(depth(), objects());
+		return write(false);
+	}
+	
+	public Object write(boolean disjunctSpecial) {
+		ComplexHolder0 holder = ComplexHolder0.generate(depth(), objects(), disjunctSpecial);
 		store(holder);
 		addToCheckSum(holder);
 		commit();
