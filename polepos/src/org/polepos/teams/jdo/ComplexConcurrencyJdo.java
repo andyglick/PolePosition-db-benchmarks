@@ -36,7 +36,7 @@ public class ComplexConcurrencyJdo extends JdoDriver implements ComplexConcurren
 	public void race() {
 		Object[] ids = new Object[writes()];
 		for (int i = 0; i < writes(); i++) {
-			ids[i] = _delegate.write();
+			ids[i] = _delegate.write(true);
 		}
 		_delegate.query();
 		for (int i = 0; i < updates(); i++) {

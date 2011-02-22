@@ -102,6 +102,11 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
     
 	@Override
 	public Object write() {
+		return write(false);
+	}
+
+    
+	public Object write(boolean disjunctSpecial) {
 		final Stack<Integer> parentIds = new Stack<Integer>();
 		final PreparedStatement complexHolder0Stat = prepareStatement("insert into " + HOLDER_TABLE0 + " (id, name, type) values (?,?,?)");
 		final PreparedStatement[] complexHolderStats = new PreparedStatement[4];
@@ -113,7 +118,7 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 		final PreparedStatement arrayStat = prepareStatement("insert into tarray (parent, child, pos) values (?,?,?)");
 		final PreparedStatement childrenStat = prepareStatement("insert into children (parent, child, pos) values (?,?,?)");
 		final Map<ComplexHolder0,Integer> ids = new HashMap<ComplexHolder0, Integer>();
-		ComplexHolder0 holder = ComplexHolder0.generate(depth(), objects());
+		ComplexHolder0 holder = ComplexHolder0.generate(depth(), objects(), disjunctSpecial);
 		addToCheckSum(holder);
 		holder.traverse(new Visitor<ComplexHolder0>() {
 			@Override
@@ -238,14 +243,7 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 			final PreparedStatement arrayStat = prepareStatement("select * from " + ARRAY_TABLE + " where parent=? order by pos");
 			final PreparedStatement childrenStat = prepareStatement("select * from " + CHILDREN_TABLE + " where parent=? order by pos");
 			Map<Integer, ComplexHolder0> idToInstance = new HashMap<Integer, ComplexHolder0>();
-			holder = readHolder(
-					depth,
-					idToInstance, 
-					complexHolder0Stat, 
-					complexHolderStats,
-					arrayStat,
-					childrenStat,
-					id);
+			holder = readHolder(depth,idToInstance,complexHolder0Stat,complexHolderStats,arrayStat,childrenStat, id);
 			complexHolder0Stat.close();
 			for (int i = 0; i < complexHolderStats.length; i++) {
 				complexHolderStats[i].close(); 
@@ -466,10 +464,17 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 		try {
 			nameStat.executeBatch();
 			nameStat.close();
+			
 			arrayDeleteStat.executeBatch();
 			arrayDeleteStat.close();
+			
+			// Without this commit we get deadlocks
+			// in the concurrency runs
+			commit();
+			
 			arrayInsertStat.executeBatch();
 			arrayInsertStat.close();
+			
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

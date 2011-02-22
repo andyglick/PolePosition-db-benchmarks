@@ -36,7 +36,7 @@ public class ComplexConcurrencyJdbc extends JdbcDriver implements ComplexConcurr
 	public void race() {
 		int[] ids = new int[writes()];
 		for (int i = 0; i < writes(); i++) {
-			ids[i] = ((Integer)_delegate.write()).intValue();
+			ids[i] = ((Integer)_delegate.write(true)).intValue();
 		}
 		_delegate.query();
 		for (int i = 0; i < updates(); i++) {
