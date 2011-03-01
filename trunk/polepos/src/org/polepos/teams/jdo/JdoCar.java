@@ -155,9 +155,22 @@ public class JdoCar extends Car {
         
 		properties.setProperty("datanucleus.persistenceByReachabilityAtCommit", "false");
 		properties.setProperty("datanucleus.manageRelationships", "false");
+		
+		properties.setProperty("datanucleus.valuegeneration.sequence.allocationSize","100"); 
          
         
+		_persistenceManagerFactory = JDOHelper.getPersistenceManagerFactory(properties, JDOHelper.class.getClassLoader());
+		
+        
+        PersistenceManager pm = _persistenceManagerFactory.getPersistenceManager();
+		((JdoTeam)team()).deleteAll(pm);
+        pm.close();
+        _persistenceManagerFactory.close();
+        
+        properties.setProperty("datanucleus.autoCreateSchema", "false");
+        
         _persistenceManagerFactory = JDOHelper.getPersistenceManagerFactory(properties, JDOHelper.class.getClassLoader());
+        
     }
 
     public PersistenceManager getPersistenceManager() {

@@ -115,41 +115,42 @@ public class JdoTeam extends Team{
 	@Override
     public void setUp() {
 		for(int i = 0; i < mCars.length;i++){		
-			
 		    JdoCar jdoCar = (JdoCar)mCars[i];
 			PersistenceManager pm = jdoCar.getPersistenceManager();
-			
-		    deleteAll(pm, JdoIndexedObject.class);
-		    deleteAll(pm, ListHolder.class);
-		    deleteAll(pm, ComplexRoot.class);
-		    deleteAll(pm, ComplexHolder4.class);
-		    deleteAll(pm, ComplexHolder3.class);
-		    deleteAll(pm, ComplexHolder2.class);
-		    deleteAll(pm, ComplexHolder1.class);
-		    deleteAll(pm, ComplexHolder0.class);
-		    
-		    deleteAll(pm, InheritanceHierarchy4.class);
-		    deleteAll(pm, InheritanceHierarchy3.class);
-		    deleteAll(pm, InheritanceHierarchy2.class);
-		    deleteAll(pm, InheritanceHierarchy1.class);
-		    deleteAll(pm, InheritanceHierarchy0.class);
-		    
-		    deleteAll(pm, JB0.class);
-		    deleteAll(pm, JB1.class);
-		    deleteAll(pm, JB2.class);
-		    deleteAll(pm, JB3.class);
-		    deleteAll(pm, JB4.class);
-		    
-		    deleteAll(pm, JdoIndexedPilot.class);
-		    deleteAll(pm, JdoPilot.class);
-		    deleteAll(pm, JdoTree.class);
-		    deleteAll(pm, JdoLightObject.class);
-		    deleteAll(pm, JdoListHolder.class);
-		    deleteAll(pm, JN1.class);
-		    
-	    
+		    deleteAll(pm);
 		    pm.close();
 		}
+	}
+
+
+	public void deleteAll(PersistenceManager pm) {
+		deleteAll(pm, JdoIndexedObject.class);
+		deleteAll(pm, ListHolder.class);
+		deleteAll(pm, ComplexRoot.class);
+		deleteAll(pm, ComplexHolder4.class);
+		deleteAll(pm, ComplexHolder3.class);
+		deleteAll(pm, ComplexHolder2.class);
+		deleteAll(pm, ComplexHolder1.class);
+		deleteAll(pm, ComplexHolder0.class);
+		
+		deleteAll(pm, InheritanceHierarchy4.class);
+		deleteAll(pm, InheritanceHierarchy3.class);
+		deleteAll(pm, InheritanceHierarchy2.class);
+		deleteAll(pm, InheritanceHierarchy1.class);
+		deleteAll(pm, InheritanceHierarchy0.class);
+		
+		deleteAll(pm, JB0.class);
+		deleteAll(pm, JB1.class);
+		deleteAll(pm, JB2.class);
+		deleteAll(pm, JB3.class);
+		deleteAll(pm, JB4.class);
+		
+		deleteAll(pm, JdoIndexedPilot.class);
+		deleteAll(pm, JdoPilot.class);
+		deleteAll(pm, JdoTree.class);
+		deleteAll(pm, JdoLightObject.class);
+		deleteAll(pm, JdoListHolder.class);
+		deleteAll(pm, JN1.class);
 	}
 
 
