@@ -114,6 +114,7 @@ public class ComplexDb4o extends Db4oDriver implements Complex {
 				store(holder);
 			}
 		});
+		commit();
 	}
 
 
