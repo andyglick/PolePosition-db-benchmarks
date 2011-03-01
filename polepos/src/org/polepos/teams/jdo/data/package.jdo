@@ -3,12 +3,14 @@
 <jdo>
     <package name="org.polepos.teams.jdo.data">
     	<class name="JdoIndexedObject">
-          <field name = "_int" indexed = "true"/>
-          <field name = "_string"  indexed = "true"/>
+          	<field name = "_int" indexed = "true"/>
+          	<field name = "_string"  indexed = "true"/>
         </class>
         <class name="ListHolder">
         	<field name="_id" indexed = "true"/>
-        	<field name="_name" indexed = "true"/>
+        	<field name="_name" persistence-modifier="persistent" indexed = "true">
+                <column length="100" jdbc-type="VARCHAR"/>
+            </field>
         	<field name="_list">
         		<collection element-type="ListHolder"/>
         	</field>
@@ -16,7 +18,9 @@
         <class name="ComplexRoot" />
         <class name="ComplexHolder0">
         	<inheritance strategy="new-table"/>
-        	<field name="name" />
+        	<field name="name" persistence-modifier="persistent">
+                <column length="100" jdbc-type="VARCHAR"/>
+            </field>
         	<field name="array" />
             <field name="children">
         		<collection element-type="ComplexHolder0"/>
@@ -58,36 +62,42 @@
         	<inheritance strategy="new-table"/>
         	<field name = "i4" />
         </class>
-        
-    
-        <class name="JB0" />
-        <class name="JB1" persistence-capable-superclass="org.polepos.teams.jdo.data.JB0" />
+        <class name="JB0">
+        </class>
+        <class name="JB1" persistence-capable-superclass="org.polepos.teams.jdo.data.JB0">
+        </class>
         <class name="JB2" persistence-capable-superclass="org.polepos.teams.jdo.data.JB1">
 	        <field name = "b2" indexed = "true"/>
         </class> 
-        <class name="JB3" persistence-capable-superclass="org.polepos.teams.jdo.data.JB2" />
-        <class name="JB4" persistence-capable-superclass="org.polepos.teams.jdo.data.JB3" />
-    <class name="JdoTree">
-        <fetch-group name="subsequent">
-    		<field name="subsequent" recursion-depth="16"/>
-		</fetch-group>
-		<fetch-group name="preceding">
-    		<field name="preceding" recursion-depth="16"/>
-		</fetch-group>
-	</class>
-        <class name="JdoPilot" />
-        
-        <class name="JdoIndexedPilot">
-          <field name = "mName" indexed = "true"/>
-          <field name = "mLicenseID"  indexed = "true"/>
+        <class name="JB3" persistence-capable-superclass="org.polepos.teams.jdo.data.JB2">
+    	</class>
+        <class name="JB4" persistence-capable-superclass="org.polepos.teams.jdo.data.JB3">
         </class>
-        <class name="JdoLightObject"/>
+    	<class name="JdoTree">
+	        <fetch-group name="subsequent">
+    			<field name="subsequent" recursion-depth="16"/>
+			</fetch-group>
+			<fetch-group name="preceding">
+    			<field name="preceding" recursion-depth="16"/>
+			</fetch-group>
+		</class>
+        <class name="JdoPilot">
+	    </class>
+        <class name="JdoIndexedPilot">
+          	<field name="mName" persistence-modifier="persistent" indexed = "true">
+                <column length="100" jdbc-type="VARCHAR"/>
+          	</field>
+          	<field name = "mLicenseID"  indexed = "true"/>
+        </class>
+        <class name="JdoLightObject">
+	    </class>
         <class name="JdoListHolder">
         	<field name = "list">
         		<collection element-type="java.lang.Integer"/>
         	</field>
         </class>
-        <class name="JN1"/>
+        <class name="JN1">
+        </class>
     </package>    
 </jdo>    
 
