@@ -126,7 +126,6 @@ public class JdoTeam extends Team{
 	public void deleteAll(PersistenceManager pm) {
 		deleteAll(pm, JdoIndexedObject.class);
 		deleteAll(pm, ListHolder.class);
-		deleteAll(pm, ComplexRoot.class);
 		deleteAll(pm, ComplexHolder4.class);
 		deleteAll(pm, ComplexHolder3.class);
 		deleteAll(pm, ComplexHolder2.class);

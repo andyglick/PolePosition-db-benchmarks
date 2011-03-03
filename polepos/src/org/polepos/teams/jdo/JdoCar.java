@@ -148,15 +148,23 @@ public class JdoCar extends Car {
         
         
         properties.setProperty("datanucleus.autoCreateConstraints", "false");
-//        properties.setProperty("datanucleus.validateColumns", "false");
         
+        // properties.setProperty("datanucleus.validateColumns", "false");
         
-        properties.setProperty("datanucleus.connectionPoolingType", "DBCP");
+        // properties.setProperty("datanucleus.connectionPoolingType", "DBCP");
         
 		properties.setProperty("datanucleus.persistenceByReachabilityAtCommit", "false");
 		properties.setProperty("datanucleus.manageRelationships", "false");
 		
-		properties.setProperty("datanucleus.valuegeneration.sequence.allocationSize","100"); 
+		properties.setProperty("datanucleus.valuegeneration.sequence.allocationSize","100");
+		properties.setProperty("datanucleus.valuegeneration.increment.allocationSize","100");
+		
+		
+		properties.setProperty("datanucleus.connectionPool.maxStatements","20");
+		properties.setProperty("datanucleus.autoStartMechanism","None");
+		
+		
+		// properties.setProperty("datanucleus.cache.level2.type","ehcache");
          
         
 		_persistenceManagerFactory = JDOHelper.getPersistenceManagerFactory(properties, JDOHelper.class.getClassLoader());

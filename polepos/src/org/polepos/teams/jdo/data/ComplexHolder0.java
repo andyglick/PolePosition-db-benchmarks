@@ -28,6 +28,8 @@ import com.db4o.foundation.*;
 
 public class ComplexHolder0 implements CheckSummable {
 	
+	private long id;
+	
 	private String name;
 	
 	private List<ComplexHolder0> children = new ArrayList<ComplexHolder0>();
@@ -40,6 +42,7 @@ public class ComplexHolder0 implements CheckSummable {
 	
 	public static ComplexHolder0 generate(int depth, int leafs, boolean disjunctSpecial){
 		ComplexHolder0 complexHolder = new ComplexHolder0();
+		
 		complexHolder.name = "root";
 		int specialValue = disjunctSpecial ? (int) Math.pow(leafs, depth) : 0;
 		createChildren(complexHolder, depth -1, leafs, specialValue);

@@ -106,7 +106,6 @@ public class HibernateTeam extends Team {
 	public static final Class[] persistentClasses() {
 		return new Class[] { 
 			ComplexHolder0.class,
-			ComplexRoot.class,
 			HB0.class,
 			HibernateIndexedPilot.class, 
 			HibernateLightObject.class, 
