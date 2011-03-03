@@ -3,7 +3,7 @@
 
 <hibernate-mapping package="org.polepos.teams.hibernate.data">
 	<class name="HibernateListHolder" table="tHibernateListHolder">
-		<id column="ID" type="int">
+		<id column="fid" type="int">
         	<generator class="native"/>
 		</id>
 		<list name="list" cascade="all">

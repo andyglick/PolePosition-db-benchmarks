@@ -468,7 +468,7 @@ public class ComplexJdbc extends JdbcDriver implements Complex {
 			arrayDeleteStat.executeBatch();
 			arrayDeleteStat.close();
 			
-			// Without this commit we get deadlocks
+			// FIXME: Without this commit we get deadlocks
 			// in the concurrency runs
 			commit();
 			

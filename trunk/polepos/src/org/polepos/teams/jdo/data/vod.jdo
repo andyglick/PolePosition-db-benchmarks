@@ -13,7 +13,6 @@
         		<collection element-type="ListHolder"/>
         	</field>
         </class>
-        <class name="ComplexRoot" />
         <class name="ComplexHolder0">
         	<field name="name" />
         	<field name="array" />
