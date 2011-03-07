@@ -132,7 +132,7 @@ public abstract class JdbcDriver extends org.polepos.framework.DriverBase {
 	}
 
 	private void handleException(Exception e) {
-		if(Settings.DEBUG){
+		if(Settings.isDebug()){
 			throw new RuntimeException(e);
 		}
 		e.printStackTrace();

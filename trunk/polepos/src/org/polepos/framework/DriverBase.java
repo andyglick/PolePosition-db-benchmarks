@@ -120,7 +120,7 @@ public abstract class DriverBase implements Driver
 				try {
 					method.invoke(DriverBase.this, (Object[]) null);
 				} catch (Exception e) {
-				    if(Settings.DEBUG){
+				    if(Settings.isDebug()){
 				    	throw new RuntimeException(e);
 				    }
 				    e.printStackTrace();
@@ -131,7 +131,7 @@ public abstract class DriverBase implements Driver
 				try{
 					return DriverBase.this.getClass().getDeclaredMethod(lap.name(), (Class[])null);
 				} catch (Exception e) {
-				    if(Settings.DEBUG){
+				    if(Settings.isDebug()){
 				    	throw new RuntimeException(e);
 				    }
 				    e.printStackTrace();
