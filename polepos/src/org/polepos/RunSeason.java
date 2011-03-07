@@ -42,6 +42,8 @@ import org.polepos.teams.jdo.*;
 import org.polepos.teams.jpa.*;
 import org.polepos.teams.jvi.*;
 
+import com.db4o.foundation.*;
+
 /**
  * This is the Main class to run PolePosition. If JDO, JPA and JVI are
  * to be tested also, persistent classes have to be enhanced first.
@@ -59,17 +61,15 @@ public class RunSeason extends AbstractRunner {
 
 	@Override
 	public Circuit[] circuits() {
+		return ArraysP.concat(defaultCircuits(), concurrencyCircuits());
+	}
+	
+	private Circuit[] defaultCircuits(){
 		return new Circuit[] {
-				
 				new ReflectiveCircuitBase(Complex.class),
 				new ReflectiveCircuitBase(NestedLists.class),
 				new ReflectiveCircuitBase(InheritanceHierarchy.class),
 				new ReflectiveCircuitBase(FlatObject.class),
-				
-//				new ComplexConcurrency(),
-//				new QueryCentricConcurrency(),
-//				new InsertCentricConcurrency(),
-				
 //				new Trees(), 
 //				new NativeIds(),
 //				new Commits(),
@@ -78,12 +78,20 @@ public class RunSeason extends AbstractRunner {
 		};
 	}
 	
-	
+	private Circuit[] concurrencyCircuits() {
+		if(! Settings.isConcurrency()){
+			return new Circuit[] {};
+		}
+		return new Circuit[] {
+				new ComplexConcurrency(),
+				new QueryCentricConcurrency(),
+				new InsertCentricConcurrency(),
+		};
+	}
 
 	@Override
 	public Team[] teams() {
 		return new Team[] {
-				
  				new Db4oTeam(),
 				new JdoTeam(),
 //				new Db4oClientServerTeam(),
@@ -91,9 +99,8 @@ public class RunSeason extends AbstractRunner {
 				new HibernateTeam(),
 				
 //				new JpaTeam(),
-				
-				// new JviTeam(),
-				// new CobraTeam(),
+//				new JviTeam(),
+// 				new CobraTeam(),
 		};
 	}
 

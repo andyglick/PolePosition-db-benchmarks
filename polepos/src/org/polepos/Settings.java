@@ -22,22 +22,34 @@ package org.polepos;
 
 public class Settings {
     
-    public static boolean DEBUG = false;
+    private static boolean DEBUG = false;
     
-    public static final String CIRCUIT = DEBUG ? "settings/DebugCircuits.properties" : "settings/Circuits.properties" ;
+    private static boolean CONCURRENCY = false;
+    
+    public static final String CIRCUIT = isDebug() ? "settings/DebugCircuits.properties" : "settings/Circuits.properties" ;
     
     public static final String JDBC = "settings/Jdbc.properties";
     
     public static final String JDO = "settings/Jdo.properties";
     
-    static{
-        
+    public static boolean isDebug(){
+		String debug = System.getProperty("polepos.debug");
+		if(debug != null){
+			return Boolean.parseBoolean(debug);
+		}
         String className = Settings.class.getName() ;
-        
         if(DEBUG){
             System.out.println(className + ".DEBUG is set to true.\n");
         }
-
+		return DEBUG;
     }
+	
+	public static boolean isConcurrency(){
+		String concurrency = System.getProperty("polepos.concurrency");
+		if(concurrency != null){
+			return Boolean.parseBoolean(concurrency);
+		}
+		return CONCURRENCY;
+	}
 
 }
