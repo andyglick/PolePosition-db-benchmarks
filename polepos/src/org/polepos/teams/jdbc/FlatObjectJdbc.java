@@ -23,7 +23,6 @@ import java.sql.*;
 
 import org.polepos.circuits.flatobject.*;
 import org.polepos.data.*;
-import org.polepos.framework.*;
 
 
 public class FlatObjectJdbc extends JdbcDriver implements FlatObject

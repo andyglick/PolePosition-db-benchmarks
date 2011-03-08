@@ -57,7 +57,7 @@
 					<include name="**/**/*.jar" />
 				</fileset>
 			</classpath>
-			<jvmarg value="-Xmx1g"/>
+			<jvmarg value="-Xmx1400m"/>
 			<sysproperty key="polepos.debug" value="${polepos.debug}" />
 			<sysproperty key="polepos.concurrency" value="${polepos.concurrency}" />
 
