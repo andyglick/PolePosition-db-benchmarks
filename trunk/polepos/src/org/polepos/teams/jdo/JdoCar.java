@@ -164,7 +164,7 @@ public class JdoCar extends Car {
 		properties.setProperty("datanucleus.autoStartMechanism","None");
 		
 		
-		// properties.setProperty("datanucleus.cache.level2.type","ehcache");
+		properties.setProperty("datanucleus.cache.level2.type","ehcache");
          
         
 		_persistenceManagerFactory = JDOHelper.getPersistenceManagerFactory(properties, JDOHelper.class.getClassLoader());
