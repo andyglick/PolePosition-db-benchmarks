@@ -126,18 +126,26 @@ public class JdoTeam extends Team{
 	public void deleteAll(PersistenceManager pm) {
 		deleteAll(pm, JdoIndexedObject.class);
 		deleteAll(pm, ListHolder.class);
+		
+		// This doesn't work for VOD, only objects of the concrete
+		// class are deleted.
+		deletePersistentAll(pm, ComplexHolder0.class);
+		
+		// so we repeat deleting for each class
 		deleteAll(pm, ComplexHolder4.class);
 		deleteAll(pm, ComplexHolder3.class);
 		deleteAll(pm, ComplexHolder2.class);
 		deleteAll(pm, ComplexHolder1.class);
 		deleteAll(pm, ComplexHolder0.class);
 		
+		deletePersistentAll(pm, InheritanceHierarchy0.class);
 		deleteAll(pm, InheritanceHierarchy4.class);
 		deleteAll(pm, InheritanceHierarchy3.class);
 		deleteAll(pm, InheritanceHierarchy2.class);
 		deleteAll(pm, InheritanceHierarchy1.class);
 		deleteAll(pm, InheritanceHierarchy0.class);
 		
+		deletePersistentAll(pm, JB0.class);
 		deleteAll(pm, JB0.class);
 		deleteAll(pm, JB1.class);
 		deleteAll(pm, JB2.class);
@@ -158,27 +166,42 @@ public class JdoTeam extends Team{
 		// Added after getting OutOfMemory issues with
 		// 3 million objects per extent.
 		if(true){
+			checkExtentSize(pm, clazz, "before deleteAllBatched");
 			deleteAllBatched(pm, clazz);
+			checkExtentSize(pm, clazz, "after deleteAllBatched");
 			return;
 		}
 		
-		
-		// This didn't work in Datanucleus ....
-		
-		pm.currentTransaction().begin();
-		pm.newQuery(clazz).deletePersistentAll();
-		pm.currentTransaction().commit();
+		// This didn't work for all engines
+		deletePersistentAll(pm, clazz);
 		
 		// ...so delete all again like this...
-		
 		pm.currentTransaction().begin();
 		pm.deletePersistentAll((Collection) pm.newQuery(clazz).execute());
 		pm.currentTransaction().commit();
 	}
 
 
+	private void deletePersistentAll(PersistenceManager pm, Class clazz) {
+		checkExtentSize(pm, clazz, "before deletePersistentAll");
+		pm.currentTransaction().begin();
+		pm.newQuery(clazz).deletePersistentAll();
+		pm.currentTransaction().commit();
+		checkExtentSize(pm, clazz, "after deletePersistentAll");
+	}
+	
+	private void checkExtentSize(PersistenceManager pm, Class clazz, String msg){
+		if(true){
+			return;
+		}
+		pm.currentTransaction().begin();
+		Collection collection = (Collection) pm.newQuery(clazz).execute();
+		System.out.println(pm.getClass().getSimpleName());
+		System.out.println(msg + " " + clazz.getSimpleName() + " size: " + collection.size());
+		pm.currentTransaction().rollback();
+	}
+
 	private void deleteAllBatched(PersistenceManager pm, Class clazz) {
-		
 		pm.currentTransaction().begin();
 		int batchSize = 10000;
         int commitctr = 0;
