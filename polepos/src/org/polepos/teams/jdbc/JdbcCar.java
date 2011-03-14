@@ -43,15 +43,86 @@ public class JdbcCar extends Car {
 		JdbcSettings jdbcSettings = Jdbc.settings();
 		_website = jdbcSettings.getWebsite(dbtype);
 		_description = jdbcSettings.getDescription(dbtype);
-		_name = jdbcSettings.getName(dbtype);
-
 		try {
 			Class.forName(jdbcSettings.getDriverClass(dbtype)).newInstance();
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
+		_name = jdbcSettings.getName(dbtype) + "-" + getVersion(dbtype);
 	}
+	
+	public Connection openConnection() {
+		try {
+			JdbcSettings jdbcSettings = Jdbc.settings();
+			Properties props = new Properties();
+			String username = jdbcSettings.getUsername(_dbType);
+			if(username != null){
+				props.put("user", username);
+			}
+			String password = jdbcSettings.getPassword(_dbType);
+			if(password != null){
+				props.put("password", password);
+			}
+			
+			// If we don't use this setting, HSQLDB will hold all tables
+			// in memory completely, which is not what other engines do.
+			props.put("hsqldb.default_table_type", "cached");
+			
+			String connectUrl = jdbcSettings.getConnectUrl(_dbType);
+			Connection connection = DriverManager.getConnection(connectUrl, props);
+			connection.setAutoCommit(false);
+			return connection;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+	}
+	
+	private String getVersion(String dbtype){
+		
+	    try {
+			Connection conn = openConnection();
+			DatabaseMetaData meta = conn.getMetaData();
+			
+			int majorVersion = 0;
+			int minorVersion = 0;
+			try {
+			  majorVersion = meta.getDatabaseMajorVersion();
+			} catch (Exception e) {
+				System.out.println("major Version: unsupported feature");
+			}
+
+			try {
+			  minorVersion = meta.getDatabaseMinorVersion();
+			} catch (Exception e) {
+				System.out.println("minorVersion unsupported feature");
+			}
+
+			String productName = meta.getDatabaseProductName();
+			String productVersion = meta.getDatabaseProductVersion();
+//			System.out.println("productName" + productName);
+//			System.out.println("productVersion" + productVersion);
+			conn.close();
+			
+// The following produces earlier versions than we use:			
+			
+//			String version = "" + majorVersion + "." + minorVersion;
+//			return version;
+			
+// Remove the part after the dash from Derby and MySQL
+			int pos = productVersion.indexOf("-");
+			String version = pos > 0 ? productVersion.substring(0, pos -1) : productVersion;
+			System.out.println("Detected: " + productName + " " + version);
+			return version;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return Jdbc.settings().getVersion(dbtype);
+	}
+
 
 	public String name() {
 		if (_name != null) {
