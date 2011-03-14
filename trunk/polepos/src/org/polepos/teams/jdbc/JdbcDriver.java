@@ -26,7 +26,7 @@ import org.polepos.*;
 import org.polepos.data.*;
 
 
-public abstract class JdbcDriver extends org.polepos.framework.DriverBase {
+public class JdbcDriver extends org.polepos.framework.DriverBase {
 	
 	private Connection _connection;
 	
@@ -148,36 +148,10 @@ public abstract class JdbcDriver extends org.polepos.framework.DriverBase {
     
 	
 	public void openConnection() {
-
-		try {
-			assert null == _connection : "database has to be closed before opening";
-			JdbcSettings jdbcSettings = Jdbc.settings();
-			
-			Properties props = new Properties();
-			String username = jdbcSettings.getUsername(jdbcCar()._dbType);
-			if(username != null){
-				props.put("user", username);
-			}
-			String password = jdbcSettings.getPassword(jdbcCar()._dbType);
-			if(password != null){
-				props.put("password", password);
-			}
-			
-			// If we don't use this setting, HSQLDB will hold all tables
-			// in memory completely, which is not what other engines do.
-			props.put("hsqldb.default_table_type", "cached");
-			
-			
-			_connection = DriverManager.getConnection(jdbcSettings.getConnectUrl(jdbcCar()._dbType), props);
-			_connection.setAutoCommit(false);
-			
-			if(isHsqlDb()){
-				JdbcCar.hsqlDbWriteDelayToZero(_connection);
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new RuntimeException(e);
+		assert null == _connection : "database has to be closed before opening";
+		_connection = jdbcCar().openConnection();
+		if(isHsqlDb()){
+			JdbcCar.hsqlDbWriteDelayToZero(_connection);
 		}
 	}
 

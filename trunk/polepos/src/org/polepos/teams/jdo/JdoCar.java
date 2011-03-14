@@ -36,14 +36,17 @@ public class JdoCar extends Car {
 
     private transient PersistenceManagerFactory _persistenceManagerFactory;
 
-    private final String              mDbName;
-    private final String              mName;
+    private final String _dbName;
+    
+    private final String _jdoName;
+    
+    private String _name; 
 
     JdoCar(Team team, String name, String dbName, String color) {
     	super(team, color);
 
-        mName = name;
-        mDbName = dbName;
+        _jdoName = name;
+        _dbName = dbName;
 
         _website = Jdo.settings().getWebsite(name);
         _description = Jdo.settings().getDescription(name);
@@ -53,7 +56,7 @@ public class JdoCar extends Car {
     }
 
     private boolean isSQL() {
-        return mDbName != null;
+        return _dbName != null;
     }
     
     private void initialize() {
@@ -61,7 +64,7 @@ public class JdoCar extends Car {
         Properties properties = new Properties();
 
         properties.setProperty("javax.jdo.PersistenceManagerFactoryClass", Jdo.settings()
-            .getFactory(mName));
+            .getFactory(_jdoName));
         
         // properties.setProperty("javax.jdo.option.NontransactionalRead", "true");
         
@@ -101,36 +104,36 @@ public class JdoCar extends Car {
 
         if (isSQL()) {
             try {
-                Class.forName(Jdbc.settings().getDriverClass(mDbName)).newInstance();
+                Class.forName(Jdbc.settings().getDriverClass(_dbName)).newInstance();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
 
             properties.setProperty("javax.jdo.option.ConnectionDriverName", Jdbc.settings()
-                .getDriverClass(mDbName));
-            String connectUrl = Jdbc.settings().getConnectUrl(mDbName);
+                .getDriverClass(_dbName));
+            String connectUrl = Jdbc.settings().getConnectUrl(_dbName);
             
 			properties.setProperty("javax.jdo.option.ConnectionURL", connectUrl);
             
-            String user = Jdbc.settings().getUsername(mDbName);
+            String user = Jdbc.settings().getUsername(_dbName);
             if (user != null) {
                 properties.setProperty("javax.jdo.option.ConnectionUserName", user);
             }
 
-            String password = Jdbc.settings().getPassword(mDbName);
+            String password = Jdbc.settings().getPassword(_dbName);
             if (password != null) {
                 properties.setProperty("javax.jdo.option.ConnectionPassword", password);
             }
         } else {
 
-            properties.setProperty("javax.jdo.option.ConnectionURL", Jdo.settings().getURL(mName));
+            properties.setProperty("javax.jdo.option.ConnectionURL", Jdo.settings().getURL(_jdoName));
 
-            String user = Jdo.settings().getUsername(mName);
+            String user = Jdo.settings().getUsername(_jdoName);
             if (user != null) {
                 properties.setProperty("javax.jdo.option.ConnectionUserName", user);
             }
 
-            String password = Jdo.settings().getPassword(mName);
+            String password = Jdo.settings().getPassword(_jdoName);
             if (password != null) {
                 properties.setProperty("javax.jdo.option.ConnectionPassword", password);
             }
@@ -182,27 +185,18 @@ public class JdoCar extends Car {
     }
 
     public PersistenceManager getPersistenceManager() {
-    	
         PersistenceManager pm = _persistenceManagerFactory.getPersistenceManager();
         if(pm instanceof VersantPersistenceManager){
         	((VersantPersistenceManager)pm).setReadLockOnOptimisticQueryResults( false);
         }
-        
-        if(! "hsqldb".equals(mDbName)){
+        if(! "hsqldb".equals(_dbName)){
         	return pm;
         }
-        
         JDOConnection dataStoreConnection = pm.getDataStoreConnection();
         Connection connection = (Connection) dataStoreConnection.getNativeConnection();
-        
         JdbcCar.hsqlDbWriteDelayToZero(connection);
         try {
-        	
-        	// Closing the connection here really feels strange, but otherwise
-        	// Datanucleus hangs, probably because it runs out of JDBC connections.
-        	
 			connection.close();
-			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -211,12 +205,20 @@ public class JdoCar extends Car {
 
     @Override
     public String name() {
+    	if(_name != null){
+    		return _name;
+    	}
        
         if(isSQL()){
-            return Jdo.settings().getName(mName) + "/" +Jdbc.settings().getName(mDbName)+"-"+Jdbc.settings().getVersion(mDbName);
+        	// Creating a JdbcCar to get the version name from it.
+        	JdbcTeam jdbcTeam = new JdbcTeam();
+        	JdbcCar jdbcCar = new JdbcCar(jdbcTeam, _dbName, color());
+        	_name = Jdo.settings().getName(_jdoName) + "/" + jdbcCar.name(); 
+        } else {
+        	_name = Jdo.settings().getVendor(_jdoName) + "/" + Jdo.settings().getName(_jdoName)+"-"+Jdo.settings().getVersion(_jdoName);
         }
-        return Jdo.settings().getVendor(mName) + "/" + Jdo.settings().getName(mName)+"-"+Jdo.settings().getVersion(mName);
-
+        
+        return _name;
     }
 
 }
