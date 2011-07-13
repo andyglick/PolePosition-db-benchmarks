@@ -2,26 +2,25 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping package="org.polepos.teams.hibernate.data">
-	<class name="InheritanceHierarchy0" table="tInheritanceHierarchy0">
-		<id column="fid" type="int">
+	<class name="InheritanceHierarchy0" table="tInheritanceHierarchyNew0" polymorphism="implicit">
+		<id column="ID" type="int">
         	<generator class="native"/>
 		</id>
+		<discriminator>
+      		<column name="DISCRIMINATOR"/>
+    	</discriminator>
 		<property name="i0"		column="i0"		type="int"/>
-		<joined-subclass name="InheritanceHierarchy1" table="tInheritanceHierarchy1">
-			<key column="parent0"/>
+		<subclass name="InheritanceHierarchy1" discriminator-value="tih1" >
 			<property name="i1"		column="i1"		type="int"/>
-			<joined-subclass name="InheritanceHierarchy2" table="tInheritanceHierarchy2">
-				<key column="parent1"/>
+			<subclass name="InheritanceHierarchy2" discriminator-value="tih2" >
 				<property name="i2"		column="i2"		type="int"    index="i2_idx"/>
-				<joined-subclass name="InheritanceHierarchy3" table="tInheritanceHierarchy3">
-					<key column="parent2"/>
+				<subclass name="InheritanceHierarchy3" discriminator-value="tih3" >
 					<property name="i3"		column="i3"		type="int"/>
-					<joined-subclass name="InheritanceHierarchy4" table="tInheritanceHierarchy4">
-						<key column="parent3"/>
+					<subclass name="InheritanceHierarchy4" discriminator-value="tih4" >
 						<property name="i4"		column="i4"		type="int"/>
-					</joined-subclass>
-				</joined-subclass>
-			</joined-subclass>
-		</joined-subclass>
+					</subclass>
+				</subclass>
+			</subclass>
+		</subclass>
 	</class>
 </hibernate-mapping>

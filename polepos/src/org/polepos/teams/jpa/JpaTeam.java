@@ -24,11 +24,16 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import org.polepos.circuits.arraylists.ListHolder;
 import org.polepos.framework.Car;
 import org.polepos.framework.DriverBase;
 import org.polepos.framework.Team;
+import org.polepos.teams.jdo.ComplexConcurrencyJdo;
+import org.polepos.teams.jpa.data.ComplexHolder0;
+import org.polepos.teams.jpa.data.InheritanceHierarchy0;
 import org.polepos.teams.jpa.data.JPB0;
 import org.polepos.teams.jpa.data.JPN1;
+import org.polepos.teams.jpa.data.JpaIndexedObject;
 import org.polepos.teams.jpa.data.JpaIndexedPilot;
 import org.polepos.teams.jpa.data.JpaLightObject;
 import org.polepos.teams.jpa.data.JpaListHolder;
@@ -99,11 +104,16 @@ public class JpaTeam extends Team{
     @Override
     public DriverBase[] drivers() {
         return new DriverBase[]{
+        	new FlatObjectJpa(),
+        	new InheritanceHierarchyJpa(),
+        	new NestedListsJpa(),
+        	new ComplexJpa(),
             new TreesJpa(),
             new NativeIdsJpa(),
             new CommitsJpa(),
             new ArrayListsJpa(),
-            new StringsJpa()
+            new StringsJpa(),
+        	new ComplexConcurrencyJpa(),
         };
     }
     
@@ -122,6 +132,22 @@ public class JpaTeam extends Team{
 			
 			EntityManager em = ((JpaCar)mCars[i]).getEntityManager();
 
+		    em.getTransaction().begin();
+		    em.createQuery("delete from "+ ComplexHolder0.class.getSimpleName() + " this ").executeUpdate();
+		    em.getTransaction().commit();
+		    
+		    em.getTransaction().begin();
+		    em.createQuery("delete from "+ InheritanceHierarchy0.class.getSimpleName() + " this ").executeUpdate();
+		    em.getTransaction().commit();
+
+		    em.getTransaction().begin();
+		    em.createQuery("delete from "+ JpaIndexedObject.class.getSimpleName() + " this ").executeUpdate();
+		    em.getTransaction().commit();
+		    
+		    em.getTransaction().begin();
+		    em.createQuery("delete from "+ ListHolder.class.getSimpleName() + " this ").executeUpdate();
+		    em.getTransaction().commit();
+		    
 		    em.getTransaction().begin();
 		    em.createQuery("delete from "+ JPB0.class.getSimpleName() + " this ").executeUpdate();
 		    em.getTransaction().commit();

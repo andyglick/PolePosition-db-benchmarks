@@ -39,16 +39,17 @@ public class NestedListsJdo extends JdoDriver implements NestedLists {
 	
 	@Override
 	public void read() throws Throwable {
+		begin();
 		ListHolder root = root();
 		root.accept(new Visitor<ListHolder>(){
 			public void visit(ListHolder listHolder){
 				addToCheckSum(listHolder);
 			}
 		});
+		commit();
 	}
 	
 	private ListHolder root() {
-		begin();
         Query query = db().newQuery(ListHolder.class, "this._name == '" + ListHolder.ROOT_NAME + "'");
         Collection<ListHolder> result = (Collection<ListHolder>)query.execute();
         if(result.size() != 1){

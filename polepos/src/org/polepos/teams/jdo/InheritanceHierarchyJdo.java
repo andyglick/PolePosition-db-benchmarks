@@ -30,8 +30,8 @@ public class InheritanceHierarchyJdo extends JdoDriver implements InheritanceHie
     
 	@Override
     public void write(){
-        int count = setup().getObjectCount();
         begin();
+        int count = setup().getObjectCount();
         for (int i = 1; i<= count; i++) {
             InheritanceHierarchy4 inheritanceHierarchy4 = new InheritanceHierarchy4();
             inheritanceHierarchy4.setAll(i);
@@ -42,11 +42,14 @@ public class InheritanceHierarchyJdo extends JdoDriver implements InheritanceHie
     
 	@Override
     public void read(){
+	begin();
         readExtent(InheritanceHierarchy4.class);
+        commit();
     }
     
 	@Override
 	public void query(){
+	begin();
         int count = setup().getSelectCount();
         String filter = "this.i2 == param";
         for (int i = 1; i <= count; i++) {
@@ -54,6 +57,7 @@ public class InheritanceHierarchyJdo extends JdoDriver implements InheritanceHie
             query.declareParameters("int param");
             doQuery(query, i);
         }
+        commit();
     }
     
 	@Override

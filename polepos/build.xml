@@ -1,6 +1,7 @@
 <project name="poleposition" default="race" basedir=".">
 
 	<property name="polepositionversion" value="0.40" />
+	<property name="polepos.concurrency" value="true" />
 
 	<property name="jdo" value="jdo" />
 	<property name="jvi" value="jvi" />
@@ -10,9 +11,10 @@
 		<fileset dir="lib">
 			<include name="**/*.jar" />
 		</fileset>
-
+        <pathelement location="bin" />
 	</path>
-	
+    
+
 	<target name="jdoenhance" description="runs the JDO enhancer" if="jdo">
 		<java classname="org.polepos.enhance.JdoEnhance">
 			<classpath>
@@ -47,8 +49,7 @@
         </java>
     </target>
 
-	<!-- <target name="race" depends="clean,compile,jdoenhance,jvienhance,jpaenhance" description="runs with all circuits and all teams "> -->
-	<target name="race" depends="clean,compile,jdoenhance" description="runs with all circuits and all teams ">
+	<target name="race" depends="clean,compile,jpaenhance,jdoenhance" description="runs with all circuits and all teams ">
 		<echo message="${polepos.debug}" />
 		<java classname="org.polepos.RunSeason" fork="true"  >
 			<classpath>
@@ -57,7 +58,7 @@
 					<include name="**/**/*.jar" />
 				</fileset>
 			</classpath>
-			<jvmarg value="-Xmx1400m"/>
+			<jvmarg value="-Xmx2048m"/>
 			<sysproperty key="polepos.debug" value="${polepos.debug}" />
 			<sysproperty key="polepos.concurrency" value="${polepos.concurrency}" />
 

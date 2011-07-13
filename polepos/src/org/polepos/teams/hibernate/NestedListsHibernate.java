@@ -38,12 +38,14 @@ public class NestedListsHibernate extends HibernateDriver implements NestedLists
 	
 	@Override
 	public void read() throws Throwable {
+		Transaction tx = begin();
 		ListHolder root = root();
 		root.accept(new Visitor<ListHolder>(){
 			public void visit(ListHolder listHolder){
 				addToCheckSum(listHolder);
 			}
 		});
+		tx.commit();
 	}
 	
 	private ListHolder root() {

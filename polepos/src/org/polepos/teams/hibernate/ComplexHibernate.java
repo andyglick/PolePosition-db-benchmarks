@@ -50,8 +50,10 @@ public class ComplexHibernate extends HibernateDriver implements Complex {
 
 	@Override
 	public void read() {
+		Transaction tx = begin();
 		ComplexHolder0 holder = read(_rootId);
 		addToCheckSum(holder);
+		tx.commit();
 	}
 	
 	public ComplexHolder0 read(Serializable _id) {
@@ -60,6 +62,7 @@ public class ComplexHibernate extends HibernateDriver implements Complex {
 
 	@Override
 	public void query() {
+		Transaction tx = begin();
 		int selectCount = selects();
 		int firstInt = objects() * objects() + objects();
 		int lastInt = firstInt + (objects() * objects() * objects()) - 1;
@@ -85,6 +88,8 @@ public class ComplexHibernate extends HibernateDriver implements Complex {
 				currentInt = firstInt;
 			}
 		}
+		tx.commit();
+
 	}
 	
 	@Override
@@ -107,7 +112,6 @@ public class ComplexHibernate extends HibernateDriver implements Complex {
 					array[i] = children.get(i);
 				}
 				holder.setArray(array);
-				store(holder);
 			}
 		});
 		tx.commit();
@@ -119,6 +123,7 @@ public class ComplexHibernate extends HibernateDriver implements Complex {
 	}
 	
 	public void deleteById(Serializable id) {
+		Transaction tx = begin();
 		ComplexHolder0 holder = read(id);
 		holder.traverse(
 			new NullVisitor<ComplexHolder0>(),
@@ -129,5 +134,6 @@ public class ComplexHibernate extends HibernateDriver implements Complex {
 				db().delete(holder);
 			}
 		});
+		tx.commit();
 	}
 }

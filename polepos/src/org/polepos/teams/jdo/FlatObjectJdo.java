@@ -45,6 +45,7 @@ public class FlatObjectJdo extends JdoDriver implements FlatObject {
 	}
  
     public void queryIndexedString() {
+        begin();
         initializeTestId(setup().getSelectCount());
         String filter = "this._string == param";
         while(hasMoreTestIds()) {
@@ -52,9 +53,11 @@ public class FlatObjectJdo extends JdoDriver implements FlatObject {
             query.declareParameters("String param");
             doQuery(query, IndexedObject.queryString(nextTestId()));
         }
+        commit();
     }
             
     public void queryIndexedInt() {
+	begin();
         initializeTestId(setup().getSelectCount());
         String filter = "this._int == param";
         while(hasMoreTestIds()) {
@@ -62,10 +65,10 @@ public class FlatObjectJdo extends JdoDriver implements FlatObject {
             query.declareParameters("Integer param");
             doQuery(query, nextTestId());
         }
+        commit();
     }
 	
     public void update() {
-    	PersistenceManager pm = db();
     	begin();
     	String filter = "this._int == param";
         initializeTestId(setup().getUpdateCount());
@@ -81,7 +84,6 @@ public class FlatObjectJdo extends JdoDriver implements FlatObject {
 	}
     
     public void delete() {
-    	PersistenceManager pm = db();
     	begin();
     	String filter = "this._int == param";
         initializeTestId(setup().getUpdateCount());
