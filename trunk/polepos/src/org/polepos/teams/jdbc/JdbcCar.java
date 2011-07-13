@@ -44,7 +44,10 @@ public class JdbcCar extends Car {
 		_website = jdbcSettings.getWebsite(dbtype);
 		_description = jdbcSettings.getDescription(dbtype);
 		try {
-			Class.forName(jdbcSettings.getDriverClass(dbtype)).newInstance();
+        	String driverName = jdbcSettings.getDriverClass(dbtype);
+        	if(driverName != null && !driverName.equals("")){
+        		Class.forName(driverName).newInstance();
+        	}
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);

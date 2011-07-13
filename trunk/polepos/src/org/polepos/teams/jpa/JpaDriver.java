@@ -82,8 +82,6 @@ public abstract class JpaDriver extends DriverBase{
     }
     
     protected void readExtent(Class clazz){
-    	begin();
-        
         Iterator itr = db().createQuery("SELECT this FROM "+clazz.getSimpleName()+ " this").getResultList().iterator();
         while (itr.hasNext()){
             Object o = itr.next();
@@ -91,17 +89,17 @@ public abstract class JpaDriver extends DriverBase{
                 addToCheckSum(((CheckSummable)o).checkSum());    
             }
         }
-        
-        commit();
     }
     
     @Override
 	public boolean supportsConcurrency() {
     	
-    	// Unfortunately OpenJpa has problems generating primary keys concurrently
-    	// so we failed to run OpenJpa in concurrent mode
-    	
-		return false;
+		return true;
+	}
+    
+    
+	protected void delete(Object obj) {
+		db().remove(obj);
 	}
 
 }

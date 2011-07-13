@@ -49,14 +49,19 @@ public class InheritanceHierarchyHibernate extends HibernateDriver implements In
     }
     
     public void read(){
+    Transaction tx = db().beginTransaction();
         doQuery(FROM);
+            tx.commit();
     }
     
     public void query(){
-        int count = setup().getSelectCount();
+    Transaction tx = db().beginTransaction();
+                int count = setup().getSelectCount();
         for (int i = 1; i <= count; i++) {
             doQuery(FROM + " where i2= ?", i);
         }
+            tx.commit();
+
     }
     
     public void delete(){

@@ -1,0 +1,153 @@
+/* 
+This file is part of the PolePosition database benchmark
+http://www.polepos.org
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public
+License along with this program; if not, write to the Free
+Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
+MA  02111-1307, USA. */
+
+package org.polepos.teams.jpa;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.persistence.Query;
+
+import org.polepos.circuits.complex.Complex;
+import org.polepos.framework.NullVisitor;
+import org.polepos.framework.Visitor;
+import org.polepos.teams.jpa.data.ComplexHolder0;
+import org.polepos.teams.jpa.data.ComplexHolder2;
+
+/**
+ * @author Christian Ernst
+ */
+public class ComplexJpa extends JpaDriver implements Complex {
+
+	private Object _rootId;
+
+	@Override
+	public Object write() {
+		return write(false);
+	}
+
+	public Object write(boolean disjunctSpecial) {
+		begin();
+		ComplexHolder0 holder = ComplexHolder0.generate(depth(), objects(),
+				disjunctSpecial);
+		addToCheckSum(holder);
+		store(holder);
+		_rootId = holder.getOid();
+		commit();
+		return _rootId;
+	}
+
+	@Override
+	public void read() {
+		begin();
+		ComplexHolder0 holder = read(_rootId);
+		addToCheckSum(holder);
+		commit();
+	}
+
+	public ComplexHolder0 read(Object id) {
+		return (ComplexHolder0) db().find(ComplexHolder0.class, id);
+	}
+
+	@Override
+	public void query() {
+		begin();
+		int selectCount = selects();
+		int firstInt = objects() * objects() + objects();
+		int lastInt = firstInt + (objects() * objects() * objects()) - 1;
+		int currentInt = firstInt;
+		for (int run = 0; run < selectCount; run++) {
+			String filter = "this.i2 = :param";
+			Query query = db().createQuery(
+					"SELECT this FROM " + ComplexHolder2.class.getName()
+							+ " this WHERE " + filter);
+			query.setParameter("param", currentInt);
+			Collection result = (Collection) query.getResultList();
+			Iterator it = result.iterator();
+			if (!it.hasNext()) {
+				throw new IllegalStateException("no ComplexHolder2 found");
+			}
+			ComplexHolder2 holder = (ComplexHolder2) it.next();
+			if (it.hasNext()) {
+				throw new IllegalStateException("more ComplexHolder2 found");
+			}
+			addToCheckSum(holder.ownCheckSum());
+			List<ComplexHolder0> children = holder.getChildren();
+			for (ComplexHolder0 child : children) {
+				addToCheckSum(child.ownCheckSum());
+			}
+			ComplexHolder0[] array = holder.getArray();
+			for (ComplexHolder0 arrayElement : array) {
+				addToCheckSum(arrayElement.ownCheckSum());
+			}
+			currentInt++;
+			if (currentInt > lastInt) {
+				currentInt = firstInt;
+			}
+		}
+		commit();
+	}
+
+	@Override
+	public void update() {
+		update(_rootId);
+	}
+
+	public void update(Object id) {
+		begin();
+		ComplexHolder0 holder = read(id);
+		holder.traverse(new NullVisitor<ComplexHolder0>(),
+				new Visitor<ComplexHolder0>() {
+					@Override
+					public void visit(ComplexHolder0 holder) {
+						addToCheckSum(holder.ownCheckSum());
+						holder.setName("updated");
+						List<ComplexHolder0> children = holder.getChildren();
+						ComplexHolder0[] array = new ComplexHolder0[children
+								.size()];
+						for (int i = 0; i < array.length; i++) {
+							array[i] = children.get(i);
+						}
+						holder.setArray(array);
+					}
+				});
+		commit();
+	}
+
+	@Override
+	public void delete() {
+		deleteById(_rootId);
+	}
+
+	public void deleteById(Object id) {
+		begin();
+		ComplexHolder0 holder = read(id);
+		holder.traverse(new NullVisitor<ComplexHolder0>(),
+				new Visitor<ComplexHolder0>() {
+					@Override
+					public void visit(ComplexHolder0 holder) {
+						addToCheckSum(holder.ownCheckSum());
+						delete(holder);
+					}
+				});
+		commit();
+	}
+
+}

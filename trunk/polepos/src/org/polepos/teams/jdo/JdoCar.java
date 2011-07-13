@@ -26,6 +26,10 @@ import java.util.*;
 import javax.jdo.*;
 import javax.jdo.datastore.*;
 
+import org.datanucleus.NucleusContext;
+import org.datanucleus.api.jdo.JDOPersistenceManagerFactory;
+import org.datanucleus.store.schema.SchemaAwareStoreManager;
+import org.datanucleus.store.schema.SchemaTool;
 import org.polepos.framework.*;
 import org.polepos.teams.jdbc.*;
 
@@ -39,6 +43,8 @@ public class JdoCar extends Car {
     private final String _dbName;
     
     private final String _jdoName;
+    
+    private final Properties properties = new Properties();
     
     private String _name; 
 
@@ -60,34 +66,22 @@ public class JdoCar extends Car {
     }
     
     private void initialize() {
-        
-        Properties properties = new Properties();
-
+  	
         properties.setProperty("javax.jdo.PersistenceManagerFactoryClass", Jdo.settings()
             .getFactory(_jdoName));
-        
-        // properties.setProperty("javax.jdo.option.NontransactionalRead", "true");
         
         properties.setProperty("javax.jdo.option.Multithreaded", "true");
         properties.setProperty("javax.jdo.option.Optimistic", "true");
         
         // Versant VODJDO specific settings
         properties.setProperty("versant.metadata.0", "org/polepos/teams/jdo/data/vod.jdo");
-
         properties.setProperty("versant.allowPmfCloseWithPmHavingOpenTx","true");
         properties.setProperty("versant.vdsSchemaEvolve","true");
-        
-        properties.setProperty("versant.hyperdrive", "true");
+        properties.setProperty("versant.hyperdrive", "false");
         properties.setProperty("versant.remoteAccess", "false");
-        
-        // Turning this on can make the Concurrency tests crash.
-        // Versant reports this is fixed. 
-        // TODO: Test again against the latest VOD release 
-        properties.setProperty("versant.l2CacheEnabled", "false");
-        
-        // Reduces RPC calls for VOD for optimistic read from 3 to 1 
+        properties.setProperty("versant.l2CacheEnabled", "true");
         properties.setProperty("versant.retainConnectionInOptTx", "true");
-        
+        properties.setProperty("versant.readLockOptQueryResults", "false");
         properties.setProperty("versant.l2CacheMaxObjects", "5000000");
         properties.setProperty("versant.l2QueryCacheEnabled", "true");
         properties.setProperty("versant.logDownloader", "none");
@@ -95,10 +89,6 @@ public class JdoCar extends Car {
         properties.setProperty("versant.metricSnapshotIntervalMs", "1000000000");
         properties.setProperty("versant.metricStoreCapacity", "0");
         properties.setProperty("versant.vdsNamingPolicy", "none");
-        
-        
-        
-        
         properties.setProperty("versant.remoteMaxActive", "30");
         properties.setProperty("versant.maxActive", "30");
 
@@ -139,38 +129,67 @@ public class JdoCar extends Car {
             }
         }
 
-        properties.setProperty("datanucleus.autoCreateSchema", "true");
-        
-//        properties.setProperty("datanucleus.validateTables", "false");
-//        properties.setProperty("datanucleus.validateConstraints", "false");
-//        properties.setProperty("datanucleus.metadata.validate", "false");
-        
+        properties.setProperty("datanucleus.autoCreateTables", "true");
+        properties.setProperty("datanucleus.autoCreateColumns", "true");
+        properties.setProperty("datanucleus.autoCreateConstraints", "false");
+        properties.setProperty("datanucleus.validateTables", "false");
+        properties.setProperty("datanucleus.validateColumns", "false");
+        properties.setProperty("datanucleus.validateConstraints", "false");
+        properties.setProperty("datanucleus.metadata.validate", "false");
         properties.setProperty("datanucleus.connectionPool.maxIdle", "15");
         properties.setProperty("datanucleus.connectionPool.minIdle", "5");
         properties.setProperty("datanucleus.connectionPool.maxActive", "30");
-        
-        
-        properties.setProperty("datanucleus.autoCreateConstraints", "false");
-        
-        // properties.setProperty("datanucleus.validateColumns", "false");
-        
-        // properties.setProperty("datanucleus.connectionPoolingType", "DBCP");
-        
-		properties.setProperty("datanucleus.persistenceByReachabilityAtCommit", "false");
+        properties.setProperty("datanucleus.connectionPoolingType", "DBCP");
 		properties.setProperty("datanucleus.manageRelationships", "false");
-		
 		properties.setProperty("datanucleus.valuegeneration.sequence.allocationSize","100");
 		properties.setProperty("datanucleus.valuegeneration.increment.allocationSize","100");
-		
-		
 		properties.setProperty("datanucleus.connectionPool.maxStatements","20");
 		properties.setProperty("datanucleus.autoStartMechanism","None");
-		
-		
-		// properties.setProperty("datanucleus.cache.level2.type","ehcache");
-         
-        
+		properties.setProperty("datanucleus.cache.level2.type","ehcache");
+
 		_persistenceManagerFactory = JDOHelper.getPersistenceManagerFactory(properties, JDOHelper.class.getClassLoader());
+		
+		// Datanucleus Schema create
+		if(_persistenceManagerFactory instanceof JDOPersistenceManagerFactory){
+			NucleusContext ctx = ((JDOPersistenceManagerFactory)_persistenceManagerFactory).getNucleusContext();
+
+			Set classNames = new HashSet();
+			classNames.add("org.polepos.teams.jdo.data.ComplexHolder0");
+			classNames.add("org.polepos.teams.jdo.data.ComplexHolder1");
+			classNames.add("org.polepos.teams.jdo.data.ComplexHolder2");
+			classNames.add("org.polepos.teams.jdo.data.ComplexHolder3");
+			classNames.add("org.polepos.teams.jdo.data.ComplexHolder4");
+			classNames.add("org.polepos.teams.jdo.data.InheritanceHierarchy0");
+			classNames.add("org.polepos.teams.jdo.data.InheritanceHierarchy1");		
+			classNames.add("org.polepos.teams.jdo.data.InheritanceHierarchy2");	
+			classNames.add("org.polepos.teams.jdo.data.InheritanceHierarchy3");	
+			classNames.add("org.polepos.teams.jdo.data.InheritanceHierarchy4");	
+			classNames.add("org.polepos.teams.jdo.data.JB0");	
+			classNames.add("org.polepos.teams.jdo.data.JB1");	
+			classNames.add("org.polepos.teams.jdo.data.JB2");	
+			classNames.add("org.polepos.teams.jdo.data.JB3");	
+			classNames.add("org.polepos.teams.jdo.data.JB4");	
+			classNames.add("org.polepos.teams.jdo.data.JdoIndexedObject");	
+			classNames.add("org.polepos.teams.jdo.data.JdoIndexedPilot");	
+			classNames.add("org.polepos.teams.jdo.data.JdoLightObject");	
+			classNames.add("org.polepos.teams.jdo.data.JdoListHolder");	
+			classNames.add("org.polepos.teams.jdo.data.JdoPilot");	
+			classNames.add("org.polepos.teams.jdo.data.JdoTree");	
+			classNames.add("org.polepos.teams.jdo.data.JN1");
+			classNames.add("org.polepos.teams.jdo.data.ListHolder");
+
+			try
+			{
+			    //Properties props = new Properties();
+			    // Set any properties for schema generation
+			    ((SchemaAwareStoreManager)ctx.getStoreManager()).createSchema(classNames, properties);
+			}
+			catch(Exception e)
+			{
+			   e.printStackTrace();
+			}
+		}
+
 		
         
         PersistenceManager pm = _persistenceManagerFactory.getPersistenceManager();
@@ -186,9 +205,6 @@ public class JdoCar extends Car {
 
     public PersistenceManager getPersistenceManager() {
         PersistenceManager pm = _persistenceManagerFactory.getPersistenceManager();
-        if(pm instanceof VersantPersistenceManager){
-        	((VersantPersistenceManager)pm).setReadLockOnOptimisticQueryResults( false);
-        }
         if(! "hsqldb".equals(_dbName)){
         	return pm;
         }

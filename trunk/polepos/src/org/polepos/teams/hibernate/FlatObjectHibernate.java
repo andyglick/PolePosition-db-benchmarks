@@ -40,20 +40,25 @@ public class FlatObjectHibernate extends HibernateDriver implements FlatObject{
 			}
             addToCheckSum(indexedObject);
 		}
+		tx.commit();
 	}
 	
     public void queryIndexedString() {
+		Transaction tx = begin();
         initializeTestId(setup().getSelectCount());
         while(hasMoreTestIds()) {
         	doSingleResultQuery( FROM + " where String = ? ", IndexedObject.queryString(nextTestId()));
         }
+	tx.commit();
     }
     
     public void queryIndexedInt() {
+		Transaction tx = begin();
         initializeTestId(setup().getSelectCount());
         while(hasMoreTestIds()) {
         	doSingleResultQuery(selectFromInt(), nextTestId());
         }
+        tx.commit();
     }
 
 	private String selectFromInt() {

@@ -52,12 +52,16 @@ public class ComplexJdo extends JdoDriver implements Complex {
 	@Override
 	public void read() {
 		begin();
+		db().getFetchPlan().addGroup("array");
+		db().getFetchPlan().addGroup("children");
+		db().getFetchPlan().setMaxFetchDepth(-1);
 		ComplexHolder0 holder = read(_rootId);
 		addToCheckSum(holder);
+		db().getFetchPlan().clearGroups();
+		commit();
 	}
 	
 	public ComplexHolder0 read(Object id) {
-		begin();
 		return (ComplexHolder0) db().getObjectById(id);
 	}
 
@@ -71,7 +75,7 @@ public class ComplexJdo extends JdoDriver implements Complex {
 		int currentInt = firstInt;
 		for (int run = 0; run < selectCount; run++) {
 	        String filter = "this.i2 == param";
-	        Query query = db().newQuery(ComplexHolder2.class, filter);
+	        Query query = db().newQuery(db().getExtent(ComplexHolder2.class,true), filter);
 	        query.declareParameters("int param");
 	        Collection result = (Collection) query.execute(currentInt);
 			Iterator it = result.iterator();
@@ -79,6 +83,9 @@ public class ComplexJdo extends JdoDriver implements Complex {
 				throw new IllegalStateException("no ComplexHolder2 found");
 			}
 			ComplexHolder2 holder = (ComplexHolder2) it.next();
+			if(it.hasNext()){
+				throw new IllegalStateException("more ComplexHolder2 found");
+			}
 			addToCheckSum(holder.ownCheckSum());
 			List<ComplexHolder0> children = holder.getChildren();
 			for (ComplexHolder0 child : children) {
@@ -93,7 +100,7 @@ public class ComplexJdo extends JdoDriver implements Complex {
 				currentInt = firstInt;
 			}
 		}
-		
+		commit();
 	}
 	
 	@Override

@@ -67,7 +67,6 @@ public abstract class JdoDriver extends DriverBase{
     }
     
     protected void doQuery( Query q, Object param){
-    	begin();
         Collection result = (Collection)q.execute(param);
         Iterator it = result.iterator();
         while(it.hasNext()){
@@ -89,7 +88,6 @@ public abstract class JdoDriver extends DriverBase{
     }
     
     protected void readExtent(Class clazz){
-    	begin();
         Extent extent = db().getExtent( clazz, false );
         int count = 0;
         Iterator itr = extent.iterator();

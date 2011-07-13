@@ -7,6 +7,18 @@
     <persistence-unit name="datanucleus/mysql" transaction-type="RESOURCE_LOCAL">
         <provider>org.datanucleus.jpa.PersistenceProviderImpl</provider>
         
+        <class>org.polepos.teams.jpa.data.ComplexHolder0</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder1</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder2</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder3</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder4</class>
+        <class>org.polepos.teams.jpa.data.ListHolder</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy0</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy1</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy2</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy3</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy4</class>
+        <class>org.polepos.teams.jpa.data.JpaIndexedObject</class>
         <class>org.polepos.teams.jpa.data.JpaIndexedPilot</class>
         <class>org.polepos.teams.jpa.data.JpaPilot</class>
         <class>org.polepos.teams.jpa.data.JpaTree</class>
@@ -36,6 +48,18 @@
     <persistence-unit name="datanucleus/postgresql" transaction-type="RESOURCE_LOCAL">
         <provider>org.datanucleus.jpa.PersistenceProviderImpl</provider>
         
+        <class>org.polepos.teams.jpa.data.ComplexHolder0</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder1</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder2</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder3</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder4</class>
+        <class>org.polepos.teams.jpa.data.ListHolder</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy0</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy1</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy2</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy3</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy4</class>
+        <class>org.polepos.teams.jpa.data.JpaIndexedObject</class>
         <class>org.polepos.teams.jpa.data.JpaIndexedPilot</class>
         <class>org.polepos.teams.jpa.data.JpaPilot</class>
         <class>org.polepos.teams.jpa.data.JpaTree</class>
@@ -67,6 +91,18 @@
     <persistence-unit name="openjpa/mysql">
         <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
         
+        <class>org.polepos.teams.jpa.data.ComplexHolder0</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder1</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder2</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder3</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder4</class>
+        <class>org.polepos.teams.jpa.data.ListHolder</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy0</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy1</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy2</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy3</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy4</class>
+        <class>org.polepos.teams.jpa.data.JpaIndexedObject</class>
         <class>org.polepos.teams.jpa.data.JpaIndexedPilot</class>
         <class>org.polepos.teams.jpa.data.JpaPilot</class>
         <class>org.polepos.teams.jpa.data.JpaTree</class>
@@ -105,6 +141,18 @@
     <persistence-unit name="openjpa/postgresql">
         <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
         
+        <class>org.polepos.teams.jpa.data.ComplexHolder0</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder1</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder2</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder3</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder4</class>
+        <class>org.polepos.teams.jpa.data.ListHolder</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy0</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy1</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy2</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy3</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy4</class>
+        <class>org.polepos.teams.jpa.data.JpaIndexedObject</class>
         <class>org.polepos.teams.jpa.data.JpaIndexedPilot</class>
         <class>org.polepos.teams.jpa.data.JpaPilot</class>
         <class>org.polepos.teams.jpa.data.JpaTree</class>
@@ -132,6 +180,18 @@
     <persistence-unit name="hibernate/mysql" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         
+        <class>org.polepos.teams.jpa.data.ComplexHolder0</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder1</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder2</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder3</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder4</class>
+        <class>org.polepos.teams.jpa.data.ListHolder</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy0</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy1</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy2</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy3</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy4</class>
+        <class>org.polepos.teams.jpa.data.JpaIndexedObject</class>
         <class>org.polepos.teams.jpa.data.JpaIndexedPilot</class>
         <class>org.polepos.teams.jpa.data.JpaPilot</class>
         <class>org.polepos.teams.jpa.data.JpaTree</class>
@@ -172,6 +232,18 @@
     <persistence-unit name="eclipselink/mysql">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         
+        <class>org.polepos.teams.jpa.data.ComplexHolder0</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder1</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder2</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder3</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder4</class>
+        <class>org.polepos.teams.jpa.data.ListHolder</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy0</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy1</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy2</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy3</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy4</class>
+        <class>org.polepos.teams.jpa.data.JpaIndexedObject</class>
         <class>org.polepos.teams.jpa.data.JpaIndexedPilot</class>
         <class>org.polepos.teams.jpa.data.JpaPilot</class>
         <class>org.polepos.teams.jpa.data.JpaTree</class>
@@ -199,6 +271,18 @@
     <persistence-unit name="eclipselink/postgresql">
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         
+        <class>org.polepos.teams.jpa.data.ComplexHolder0</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder1</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder2</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder3</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder4</class>
+        <class>org.polepos.teams.jpa.data.ListHolder</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy0</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy1</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy2</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy3</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy4</class>
+        <class>org.polepos.teams.jpa.data.JpaIndexedObject</class>
         <class>org.polepos.teams.jpa.data.JpaIndexedPilot</class>
         <class>org.polepos.teams.jpa.data.JpaPilot</class>
         <class>org.polepos.teams.jpa.data.JpaTree</class>

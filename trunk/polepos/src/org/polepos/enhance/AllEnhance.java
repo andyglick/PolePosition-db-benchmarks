@@ -29,7 +29,7 @@ public class AllEnhance {
 		
 //		new JviEnhance().runWithoutSystemExit();
 		
-//		JpaEnhance.main(null);
+		JpaEnhance.main(null);
 	}
 
 }

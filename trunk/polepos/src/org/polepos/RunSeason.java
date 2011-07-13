@@ -34,7 +34,6 @@ import org.polepos.circuits.trees.*;
 import org.polepos.framework.*;
 import org.polepos.reporters.*;
 import org.polepos.runner.*;
-import org.polepos.teams.cobra.*;
 import org.polepos.teams.db4o.*;
 import org.polepos.teams.hibernate.*;
 import org.polepos.teams.jdbc.*;
@@ -92,15 +91,13 @@ public class RunSeason extends AbstractRunner {
 	@Override
 	public Team[] teams() {
 		return new Team[] {
- 				new Db4oTeam(),
+				new Db4oTeam(),
 				new JdoTeam(),
 //				new Db4oClientServerTeam(),
  				new JdbcTeam(),
 				new HibernateTeam(),
-				
-//				new JpaTeam(),
+				new JpaTeam(),
 //				new JviTeam(),
-// 				new CobraTeam(),
 		};
 	}
 

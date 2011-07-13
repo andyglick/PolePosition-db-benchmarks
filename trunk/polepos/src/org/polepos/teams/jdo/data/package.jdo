@@ -2,102 +2,100 @@
 <!DOCTYPE jdo PUBLIC '-//Sun Microsystems, Inc.//DTD Java Data Objects Metadata 2.2//EN' 'http://java.sun.com/dtd/jdo_2_2.dtd'>
 <jdo>
     <package name="org.polepos.teams.jdo.data">
-        <class name="ComplexHolder0" identity-type="application">
-        	<inheritance strategy="new-table"/>
-        	<field name="id" primary-key="true" value-strategy="native"/>
-        	<field name="name" persistence-modifier="persistent">
-                <column length="100" jdbc-type="VARCHAR"/>
+        <class name="ComplexHolder0">
+            <inheritance strategy="new-table"/>
+            <fetch-group name="children">
+                <field name="children" recursion-depth="10"/>
+            </fetch-group>
+            <fetch-group name="array">
+                <field name="array" recursion-depth="10"/>
+            </fetch-group>
+            <field name="array" embedded="true">
+                <array element-type="ComplexHolder0"/>
             </field>
-        	<field name="array" />
-            <field name="children">
-        		<collection element-type="ComplexHolder0"/>
-        	</field>
+            <field name="children" embedded="true">
+                <collection element-type="ComplexHolder0"/>
+            </field>
         </class>
         <class name="ComplexHolder1">
-        	<inheritance strategy="new-table"/>
-        	<field name = "i1" />
+            <inheritance strategy="new-table"/>
         </class>
         <class name="ComplexHolder2">
-        	<inheritance strategy="new-table"/>
-	        <field name = "i2" indexed = "true"/>
+            <inheritance strategy="new-table"/>
+            <field name = "i2" indexed = "true"/>
         </class> 
         <class name="ComplexHolder3">
-        	<inheritance strategy="new-table"/>
-        	<field name = "i3" />
+            <inheritance strategy="new-table"/>
         </class>
         <class name="ComplexHolder4">
-        	<inheritance strategy="new-table"/>
-        	<field name = "i4" />
-        </class>
-        <class name="ListHolder">
-        	<field name="_id" indexed = "true"/>
-        	<field name="_name" persistence-modifier="persistent" indexed = "true">
-                <column length="100" jdbc-type="VARCHAR"/>
-            </field>
-        	<field name="_list">
-        		<collection element-type="ListHolder"/>
-        	</field>
+            <inheritance strategy="new-table"/>
         </class>
         <class name="InheritanceHierarchy0">
-        	<inheritance strategy="new-table"/>
-        	<field name = "i0" />
+            <inheritance strategy="new-table"/>
         </class>
         <class name="InheritanceHierarchy1">
-			<inheritance strategy="new-table"/>
-			<field name = "i1" />
+            <inheritance strategy="new-table"/>
         </class>
         <class name="InheritanceHierarchy2">
-        	<inheritance strategy="new-table"/>
-	        <field name="i2" indexed="true"/>
+            <inheritance strategy="new-table"/>
+            <field name="i2" indexed="true"/>
         </class> 
         <class name="InheritanceHierarchy3">
-        	<inheritance strategy="new-table"/>
-        	<field name = "i3" />
+            <inheritance strategy="new-table"/>
         </class>
         <class name="InheritanceHierarchy4">
-        	<inheritance strategy="new-table"/>
-        	<field name = "i4" />
+            <inheritance strategy="new-table"/>
         </class>
         <class name="JdoIndexedObject">
-          	<field name = "_int" indexed = "true"/>
-          	<field name = "_string"  indexed = "true"/>
+            <field name = "_int" indexed = "true"/>
+            <field name = "_string"  indexed = "true"/>
+        </class>
+        <class name="ListHolder">
+            <fetch-group name="list">
+                <field name="_list" recursion-depth="10"/>
+            </fetch-group>
+            <field name="_id" indexed = "true"/>
+            <field name="_name" indexed = "true"/>
+            <field name="_list" default-fetch-group="true" embedded="true">
+                <collection element-type="ListHolder"/>
+            </field>
         </class>
         <class name="JB0">
+            <inheritance strategy="new-table"/>
         </class>
         <class name="JB1" persistence-capable-superclass="org.polepos.teams.jdo.data.JB0">
+            <inheritance strategy="new-table"/>
         </class>
         <class name="JB2" persistence-capable-superclass="org.polepos.teams.jdo.data.JB1">
-	        <field name = "b2" indexed = "true"/>
-        </class> 
+            <inheritance strategy="new-table"/>
+            <field name = "b2" indexed = "true"/>
+        </class>
         <class name="JB3" persistence-capable-superclass="org.polepos.teams.jdo.data.JB2">
-    	</class>
+            <inheritance strategy="new-table"/>
+        </class>
         <class name="JB4" persistence-capable-superclass="org.polepos.teams.jdo.data.JB3">
+            <inheritance strategy="new-table"/>
         </class>
-    	<class name="JdoTree">
-	        <fetch-group name="subsequent">
-    			<field name="subsequent" recursion-depth="16"/>
-			</fetch-group>
-			<fetch-group name="preceding">
-    			<field name="preceding" recursion-depth="16"/>
-			</fetch-group>
-		</class>
-        <class name="JdoPilot">
-	    </class>
+        <class name="JdoTree">
+            <fetch-group name="subsequent">
+               <field name="subsequent" recursion-depth="16"/>
+            </fetch-group>
+            <fetch-group name="preceding">
+                <field name="preceding" recursion-depth="16"/>
+            </fetch-group>
+        </class>
+        <class name="JdoPilot"/>
         <class name="JdoIndexedPilot">
-          	<field name="mName" persistence-modifier="persistent" indexed = "true">
-                <column length="100" jdbc-type="VARCHAR"/>
-          	</field>
-          	<field name = "mLicenseID"  indexed = "true"/>
+            <field name = "mName" indexed = "true"/>
+            <field name = "mLicenseID"  indexed = "true"/>
         </class>
-        <class name="JdoLightObject">
-	    </class>
+        <class name="JdoLightObject"/>
         <class name="JdoListHolder">
-        	<field name = "list">
-        		<collection element-type="java.lang.Integer"/>
-        	</field>
+            <field name = "list">
+                <collection element-type="java.lang.Integer"/>
+            </field>
         </class>
-        <class name="JN1">
-        </class>
-    </package>    
-</jdo>    
+        <class name="JN1"/>
+    </package>
+</jdo>
 
