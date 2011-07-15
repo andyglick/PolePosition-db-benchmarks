@@ -40,6 +40,7 @@ import org.polepos.teams.jdbc.*;
 import org.polepos.teams.jdo.*;
 import org.polepos.teams.jpa.*;
 import org.polepos.teams.jvi.*;
+import org.polepos.teams.mongodb.MongoDBTeam;
 
 import com.db4o.foundation.*;
 
@@ -91,12 +92,13 @@ public class RunSeason extends AbstractRunner {
 	@Override
 	public Team[] teams() {
 		return new Team[] {
-				new Db4oTeam(),
-				new JdoTeam(),
+//				new Db4oTeam(),
+//				new JdoTeam(),
 //				new Db4oClientServerTeam(),
- 				new JdbcTeam(),
-				new HibernateTeam(),
-				new JpaTeam(),
+//				new JdbcTeam(),
+//				new HibernateTeam(),
+//				new JpaTeam(),
+				new MongoDBTeam(),
 //				new JviTeam(),
 		};
 	}
