@@ -23,62 +23,15 @@ package org.polepos.reporters;
 import java.util.*;
 
 import org.polepos.framework.*;
-import org.polepos.reporters.CustomBarRendererBase.*;
 
-public class FixedTimeCustomBarRenderer extends CustomBarRendererBase {
+public class LogarithmicFixedTimeCustomBarRenderer extends FixedTimeCustomBarRendererBase {
 	
 	private static final int BEST_MAGNITUDE = 5;
 
-	public FixedTimeCustomBarRenderer(Graph graph) {
+	public LogarithmicFixedTimeCustomBarRenderer(Graph graph) {
 		super(graph);
 	}
 
-	@Override
-	protected List<TurnData> prepareTurnsData(final Graph graph) {
-		List<TurnData> runs = new ArrayList<TurnData>();
-
-		final List<TurnSetup> setups = graph.setups();
-		List<TeamCar> teamCars = graph.teamCars();
-
-		for (final TurnSetup setup : setups) {
-
-			TurnData turnData = new TurnData(setup, 0);
-			long best = 0;
-			for (TeamCar teamCar : teamCars) {
-				long iterations = graph.iterationsFor(teamCar, setup);
-				TeamData teamData = new TeamData(teamCar, 0, iterations);
-				if (iterations != 0 && iterations > best) {
-					best = iterations;
-				}
-				turnData.teams.add(teamData);
-			}
-			turnData.best = best;
-
-			for (TeamData teamData : turnData.teams) {
-				teamData.orderOfMagnitude = (double)turnData.best / (teamData.val == 0 ? 1 : teamData.val) ;
-			}
-
-			Collections.sort(turnData.teams, new Comparator<TeamData>() {
-
-				@Override
-				public int compare(TeamData team1, TeamData team2) {
-					long iterations1 = graph.iterationsFor(team1.teamCar, setup);
-					long iterations2 = graph.iterationsFor(team2.teamCar, setup);
-
-					if (iterations1 < iterations2) {
-						return 1;
-					}
-					if (iterations1 > iterations2) {
-						return -1;
-					}
-					return 0;
-				}
-			});
-
-			runs.add(turnData);
-		}
-		return runs;
-	}
 
 	@Override
 	protected int barWidth(TeamData teamData) {
@@ -86,12 +39,7 @@ public class FixedTimeCustomBarRenderer extends CustomBarRendererBase {
 	}
 
 	@Override
-	protected String taskLegend() {
-		return " iterations";
-	}
-
-	@Override
-	protected String magnitudeBarLegend(TeamData teamData) {
+	protected String legendOnRightOfBar(TeamData teamData) {
 		
 		double orderOfMagnitude = teamData.orderOfMagnitude;
 		if(orderOfMagnitude == 1){
@@ -115,5 +63,11 @@ public class FixedTimeCustomBarRenderer extends CustomBarRendererBase {
 	protected boolean doDrawXAxisMarker(int i) {
 		return i < BEST_MAGNITUDE;
 	}
+	
+	@Override
+	protected String legendInsideBar(TeamData teamData) {
+		return teamData.val+ " iterations";
+	}
+
 
 }

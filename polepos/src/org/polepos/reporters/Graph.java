@@ -33,6 +33,9 @@ public class Graph {
     private final Circuit circuit;
     private final Lap lap;
     
+    public long best;
+    public long worst;
+    
     public Graph(Result result){
         teamCars= new ArrayList<TeamCar>();
         setups=new ArrayList<TurnSetup>();

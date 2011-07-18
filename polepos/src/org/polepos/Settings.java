@@ -24,7 +24,9 @@ public class Settings {
     
     private static boolean DEBUG = false;
     
-    private static boolean CONCURRENCY = false;
+    private static boolean CONCURRENCY = true;
+    
+    public static boolean LOGARITHMIC = false;
     
     public static final String CIRCUIT = isDebug() ? "settings/DebugCircuits.properties" : "settings/Circuits.properties" ;
     

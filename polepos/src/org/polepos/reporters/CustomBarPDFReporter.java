@@ -22,6 +22,8 @@ package org.polepos.reporters;
 
 import java.awt.*;
 
+import org.polepos.*;
+
 import com.db4o.*;
 import com.db4o.config.*;
 import com.db4o.ta.*;
@@ -42,7 +44,7 @@ public class CustomBarPDFReporter extends PDFReporterBase {
 	    cfg.common().add(new TransparentPersistenceSupport());
 		
 	    // EmbeddedObjectContainer db = Db4oEmbedded.openFile(cfg, "ClientServerGraph.db4o");
-	    EmbeddedObjectContainer db = Db4oEmbedded.openFile(cfg, "EmbeddedGraph.db4o");
+	    EmbeddedObjectContainer db = Db4oEmbedded.openFile(cfg, "graph.db4o");
 	    // EmbeddedObjectContainer db = Db4oEmbedded.openFile(cfg, "ConcurrentGraph.db4o");
 		PersistentGraphs pg = db.query(PersistentGraphs.class).iterator().next();
 		
@@ -74,17 +76,29 @@ public class CustomBarPDFReporter extends PDFReporterBase {
 		PdfTemplate tp = cb.createTemplate(chartWidth(), chartHeight());
 		Graphics2D graphics = tp.createGraphics(chartWidth(), chartHeight(), new DefaultFontMapper());
 		
-		int height = new TimedLapsCustomBarRenderer(graph).render(graphics);
+		int height = newRenderer(graph).render(graphics);
 		
 		tp = cb.createTemplate(chartWidth(), height);
 		graphics = tp.createGraphics(chartWidth(), height, new DefaultFontMapper());
 		
-		(graph.circuit().isFixedTime() ? new FixedTimeCustomBarRenderer(graph) : new TimedLapsCustomBarRenderer(graph)).render(graphics);
+		newRenderer(graph).render(graphics);
 		
 		graphics.dispose();
 		return new ImgTemplate(tp);
 	}
-
+	
+	private CustomBarRendererBase newRenderer(Graph graph){
+		if(graph.circuit().isFixedTime()){
+			if(Settings.LOGARITHMIC){
+				return new LogarithmicFixedTimeCustomBarRenderer(graph);
+			}
+			return new LinearFixedTimeCustomBarRenderer(graph);
+		}
+		if(Settings.LOGARITHMIC){
+			return new LogarithmicTimedLapsCustomBarRenderer(graph);
+		}
+		return new LinearTimedLapsCustomBarRenderer(graph);
+	}
 	
 	@Override
 	protected void renderTableAndGraph(int type, Graph graph, String unitsLegend) throws BadElementException {
