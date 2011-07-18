@@ -42,12 +42,16 @@ public abstract class CustomBarRendererBase {
 	}
 	
 	protected static class TurnData {
+		
 			public TurnData(TurnSetup turn, long best) {
 				this.turn = turn;
 				this.best = best;
 			}
+			
 			TurnSetup turn;
+			
 			long best;
+			
 			public List<TeamData> teams = new ArrayList<TeamData>();
 		}
 
@@ -91,20 +95,32 @@ public abstract class CustomBarRendererBase {
 		
 		EmbeddedObjectContainer db = Db4oEmbedded.openFile("graph.db4o");
 		
-		Graph graph = db.query(Graph.class).iterator().next();
+		int circuitNo = 5;
+		ObjectSet<Graph> result = db.query(Graph.class);
+		// Graph graph = result.iterator().next();
+		Graph graph = result.get(circuitNo);
+		
+		
 		db.activate(graph, Integer.MAX_VALUE);
 		db.close();
 		
 		
-		final CustomBarRendererBase renderer = (graph.circuit().isFixedTime() ? new FixedTimeCustomBarRenderer(graph) : new TimedLapsCustomBarRenderer(graph));
-		JFrame w = new JFrame("Polepos preview") {
+		// final CustomBarRendererBase renderer = (graph.circuit().isFixedTime() ? new FixedTimeCustomBarRenderer(graph) : new LogarithmicTimedLapsCustomBarRenderer(graph));
+		final CustomBarRendererBase renderer = (graph.circuit().isFixedTime() ? new LinearFixedTimeCustomBarRenderer(graph) : new LinearTimedLapsCustomBarRenderer(graph));
+
+		JFrame w = new JFrame("Polepos preview");
+		JPanel contentPane = new JPanel()
+			{
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void paint(Graphics g) {
 				super.paint(g);
 				renderer.render(g);
 			}
+			
 		};
+		w.setContentPane(contentPane);
+		contentPane.setBackground(Color.WHITE);
 		w.setSize(522, 600);
 		w.setVisible(true);
 		
@@ -119,12 +135,16 @@ public abstract class CustomBarRendererBase {
 		return graphData().maxTeamNameWidth+1;
 	}
 
-	double maxBarWidth() {
-		return graphics.getClipBounds().getWidth() - barX() - textWidth("10000x")/2;
+	double maxBarWidthWithLegend() {
+		return maxBarWidth()- textWidth("10000x")/2;
+	}
+	
+	double maxBarWidth(){
+		return graphics.getClipBounds().getWidth() - barX();
 	}
 
 	protected double widthPerOrderOfMagnitude() {
-		return maxBarWidth() / graphData().maxMagnitude;
+		return maxBarWidthWithLegend() / graphData().maxMagnitude;
 	}
 
 	public int render(Graphics graphics) {
@@ -153,7 +173,10 @@ public abstract class CustomBarRendererBase {
 		graphics.setColor(Color.BLACK);
 		graphics.drawLine(axisX, 0, axisX, y);
 		graphics.drawLine(axisX, y, (int) graphics.getClipBounds().getWidth(), y);
-		
+		return renderXLegend(graphics, y, axisX);
+	}
+
+	protected int renderXLegend(Graphics graphics, int y, int axisX) {
 		for(int i=0;i<=graphData().maxMagnitude;i++) {
 			
 			int x = (int) (i * widthPerOrderOfMagnitude()) + axisX;
@@ -175,10 +198,7 @@ public abstract class CustomBarRendererBase {
 			graphics.drawString(legend, (int)(x-textWidth(legend)/2.), (int)(y+graphData().markerHeight+textHeight(legend)));
 		}
 		
-		y += stride()*2;
-		
-		return y;
-		
+		return (int) (y + stride()*2);
 	}
 
 	protected abstract boolean doDrawXAxisMarker(int i);
@@ -212,15 +232,13 @@ public abstract class CustomBarRendererBase {
 	
 			graphics.fillRect((int)barX(), (int) y, barWidth, (int) graphData().barHeight);
 			
-			String magnitude = magnitudeBarLegend(teamData);
-			
 			graphics.setColor(Color.BLACK);
-			graphics.drawString(magnitude, (int)(barX()+barWidth+graphData().paddingX), textY);
+			graphics.drawString(legendOnRightOfBar(teamData), (int)(barX()+barWidth+graphData().paddingX), textY);
 	
 			if (teamData.val > 0) {
-				String absolute = teamData.val+ taskLegend();
+				String legendInsideBar = legendInsideBar(teamData);
 				graphics.setColor(Color.WHITE);
-				graphics.drawString(absolute, (int)(barX()+barWidth-textWidth(absolute)-graphData().paddingX), textY);
+				graphics.drawString(legendInsideBar, (int)(barX()+barWidth-textWidth(legendInsideBar)-graphData().paddingX), textY);
 			}
 			
 			y += stride();
@@ -229,17 +247,17 @@ public abstract class CustomBarRendererBase {
 	
 	}
 
-	protected abstract String magnitudeBarLegend(TeamData teamData);
+	protected abstract String legendInsideBar(TeamData teamData);
 
-	protected abstract String taskLegend();
+	protected abstract String legendOnRightOfBar(TeamData teamData);
 
 	protected abstract int barWidth(TeamData teamData);
 
-	private double textWidth(String string) {
+	protected double textWidth(String string) {
 		return textBounds(graphics, string, graphics.getFont()).getWidth();
 	}
 
-	private double textHeight(String string) {
+	protected double textHeight(String string) {
 		return textBounds(graphics, string, graphics.getFont()).getHeight();
 	}
 
