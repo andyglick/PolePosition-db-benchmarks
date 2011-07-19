@@ -63,7 +63,7 @@ public class LinearFixedTimeCustomBarRenderer extends FixedTimeCustomBarRenderer
 	
 	@Override
 	double maxBarWidthWithLegend() {
-		return maxBarWidth(); //  - textWidth(" iterations") -1;
+		return maxBarWidth()  - textWidth("" + graph.best) -1;
 	}
 	
 	@Override
