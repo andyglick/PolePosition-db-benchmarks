@@ -37,8 +37,7 @@ public class LinearFixedTimeCustomBarRenderer extends FixedTimeCustomBarRenderer
 	
 	@Override
 	protected String legendOnRightOfBar(TeamData teamData) {
-		return "";
-		// return " iterations";
+		return "" + teamData.val ;
 	}
 
 	@Override
@@ -59,7 +58,7 @@ public class LinearFixedTimeCustomBarRenderer extends FixedTimeCustomBarRenderer
 	
 	@Override
 	protected String legendInsideBar(TeamData teamData) {
-		return "" + teamData.val ;
+		return "";
 	}
 	
 	@Override
