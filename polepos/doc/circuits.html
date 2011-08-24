@@ -9,11 +9,12 @@
 	    <p>This file is a complementary narrative for the open source <a href="http://www.polepos.org">Poleposition benchmark project</a>.  
             Source code snippets are provided for selected tasks to show how they are implemented. As a general rule 
 	    using plain JDBC required many more lines of code than using modern object-oriented techniques like object databases or object-relational
-	    mappers. For example <a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/jdbc/ComplexJdbc.java">ComplexJdbc.java</a>
+	    mappers. For example <a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/jdbc/ComplexJdbc.java">ComplexJdbc.java</a>
 	    was written with 550 lines of code, whereas the same task was possible with the OO counterparts 
-	    <a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/db4o/ComplexDb4o.java">ComplexDb4o.java</a>, 
-        <a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/jdo/ComplexJdo.java">ComplexJdo.java</a> and 
-        <a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/hibernate/ComplexHibernate.java">ComplexHibernate.java</a>
+	    <a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/db4o/ComplexDb4o.java">ComplexDb4o.java</a>, 
+        <a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/jdo/ComplexJdo.java">ComplexJdo.java</a> and 
+        <a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/hibernate/ComplexHibernate.java">ComplexHibernate.java</a>
+        <a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/mongodb/ComplexMongoDB.java">ComplexMongoDB.java</a>
         with only about 150 lines of code.
 	    </p>
 		<hr>
@@ -39,10 +40,11 @@
             object graph that is composed of multiple different classes with an inheritance hierarchy of 5 
             levels. The sources for the implementations can be found here:</p>
             <ul>
-            <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/db4o/ComplexDb4o.java">ComplexDb4o.java</a></li>
-            <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/jdo/ComplexJdo.java">ComplexJdo.java</a></li>
-            <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/hibernate/ComplexHibernate.java">ComplexHibernate.java</a></li>
-            <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/jdbc/ComplexJdbc.java">ComplexJdbc.java</a></li>
+            <li><a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/db4o/ComplexDb4o.java">ComplexDb4o.java</a></li>
+            <li><a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/jdo/ComplexJdo.java">ComplexJdo.java</a></li>
+            <li><a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/hibernate/ComplexHibernate.java">ComplexHibernate.java</a></li>
+            <li><a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/jdbc/ComplexJdbc.java">ComplexJdbc.java</a></li>
+			<li><a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/mongodb/ComplexMongoDB.java">ComplexMongoDB.java</a></li>
             </ul>
 <p>The class model for the Complex circuit looks like this:</p>
 <pre>
@@ -71,14 +73,13 @@ class ComplexHolder4 extends ComplexHolder3 {
 <p>Member _i2 on ComplexHolder2 is indexed for queries.</p>
 <hr />
 <h3>Complex.write</h3>
-<p>ComplexHolder0#generate() generates a deep object graph as configured by the &#39;depth&#39; 
-    and &#39;objects&#39; properties in the 
-    <a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/settings/Circuits.properties">Circuits.properties configuration file</a>. 
-    The _children List and the _array member 
+<p>ComplexHolder0#generate() generates a structure with depth and objectcount as 
+    specificied in the configuration file. The _children List and the _array member 
     are again filled with ComplexHolder0 objects. Varying instances from 
     ComplexHolder0 to ComplexHolder4 are used.
 <p>Complex.write stores the complete graph
-    and measures the time taken for each database. <hr />    
+    and measures the time taken for each database access technology.
+<hr />    
 <h3>Complex.read</h3>
 <p>Complex.read accesses the root object of the structure that was generated with 
 Complex.write, loads all attached objects into
@@ -88,10 +89,9 @@ a checksum over all objects.
 <hr />
 <h3>Complex.query</h3>
 <p>
-    Complex.query queries for ComplexHolder2 instances over the indexed _i2 field. 
-    The query is run multiple times, specified by the selects property in the 
-    <a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/settings/Circuits.properties">Circuits.properties configuration file</a>. 
-    Sample queries look like this:</p>
+Complex.query queries for ComplexHolder2 instances over the indexed _i2 field. The 
+    query is run multiple times, specified by the selects property in the 
+    configuration file. Sample queries look like this:</p>
 <pre>
 // db4o
 Query query = db.query();
@@ -124,11 +124,18 @@ sb.append(" where " + HOLDER_TABLES[1] + ".i2 = ?");
 PreparedStatement stat = prepareStatement(sb.toString());
 ResultSet resultSet stat.executeQuery();
 </pre>
-<p>For JDBC we are only showing the code to set up the main query. Reading individual object 
-instances required another 150 lines of code with our implementation, see the 
-    #readHolder() methods in
-<a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/jdbc/ComplexJdbc.java">ComplexJdbc.java</a>.
+<p>For JDBC we are only showing the main query. Reading individual object 
+intances required another 150 lines of code with our implementation, see
+<a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/jdbc/ComplexJdbc.java">ComplexJdbc.java</a>.
  </p>
+ <pre>
+// MongoDB
+BasicDBObject query = new BasicDBObject();
+query.put("_i2", currentInt);
+query.put(ComplexObjectSerialisation.TYPE_ATTRIBUTE, "ComplexHolder2");
+final DBObject resultDoc = dbCollection().findOne(query, SELECT_MASK); 
+ </pre>
+ <p>For MongoDB the selection masks selects the parts of the document which are required for the benchmark</p>
  <hr />
 <h3>Complex.update</h3>
 <p>Complex.update reads the root object of the graph and traverses all
@@ -149,7 +156,7 @@ db.store(holder);
 
 // JDBC 
 PreparedStatement nameStat = prepareStatement("update " + HOLDER_TABLE0 + " set name=? where id=?");
-PreparedStatement arrayDeleteStat = prepareStatement("delete from tarray where parent = ?");
+PreparedStatement arrayDeleteStat = prepareStatement("delete from " + ARRAY_TABLE + " where parent = ?");
 PreparedStatement arrayInsertStat = prepareStatement("insert into tarray (parent, child, pos) values (?,?,?)");
 nameStat.setString(1, "updated");
 nameStat.setInt(2, holder.getId());
@@ -163,22 +170,36 @@ for (int i = 0; i < children.size(); i++) {
     arrayInsertStat.setInt(3, i);
     arrayInsertStat.addBatch();
 }
+
+// MonoDB
+// Same as with OO databases, except that we convert everything into documents and store those:
+for (BasicDBObject object : serializer.convertToDocument(holder).allObjectsAsArray()) {
+	dbCollection().save(object);
+}
+
+// The mapping from object to documents looks something like this in general
+BasicDBObject dbObject = new BasicDBObject();
+dbObject.put(NAME_FIELD, holder.getName());
+dbObject.put(NAME_FIELD, holder.getName());
+dbObject.put(FIELD_I1, holder.getFieldI1());
+// and so on and so forth
+
 </pre>
 <hr />
 <h3>Complex.delete</h3>
-<p>Complex.delete traverses all objects from the root and deletes each object 
-    individually, using batched prepared statements where applicable.</p>
+<p>Complex.delete traverses all objects from the root and deletes each object individually.</p>
 		<hr>
 		<a name="nestedlists"></a>
 		<h2>Nestedlists</h2>
-		<p>The Nestelists circuit simulates writing, reading, querying and updating a deep 
+			The Nestelists circuit simulates writing, reading, querying and updating a deep 
             graph of lists. Objects are partially reused within the lists. 
             The sources for the implementations can be found here:</p>
             <ul>
-            <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/db4o/NestedListsDb4o.java">NestedListsDb4o.java</a></li>
-            <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/jdo/NestedListsJdo.java">NestedListsJdo.java</a></li>
-            <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/hibernate/NestedListsHibernate.java">NestedListsHibernate.java</a></li>
-            <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/jdbc/NestedListsJdbc.java">NestedListsJdbc.java</a></li>
+            <li><a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/db4o/NestedListsDb4o.java">NestedListsDb4o.java</a></li>
+            <li><a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/jdo/NestedListsJdo.java">NestedListsJdo.java</a></li>
+            <li><a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/hibernate/NestedListsHibernate.java">NestedListsHibernate.java</a></li>
+            <li><a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/jdbc/NestedListsJdbc.java">NestedListsJdbc.java</a></li>
+			<li><a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/mongodb/NestedListsMongoDB.java">NestedListsMongoDB.java</a></li>
             </ul>
 <p>The class model for the NestedLists circuit looks like this:</p>
 <pre>
@@ -190,13 +211,11 @@ class ListHolder {
 </pre>
 <hr />
 <h3>Nestedlists.create</h3>
-<p>ListHolder#generate() generates a deep structure of lists, reusing an amount of previously 
-    instantiated objects
-specified by the &#39;reuse&#39; property in the 
-    <a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/settings/Circuits.properties">Circuits.properties configuration file</a>. Nestedlists.create stores the root of
+<p>ListHolder#generate() generates a deep structure of lists, reusing an amount of previous objects
+specified by the reuse property in the configuration file. Nestedlists.create stores the root of
 this generated graph and measures the time taken.</p>
 <pre>
-// OOOOOOOOO
+// OO
 db.store(ListHolder.generate(depth(), objectCount(), reuse()));
 db.commit();
 
@@ -232,11 +251,24 @@ listHolderStatement.executeBatch();
 listStatement.close();
 listHolderStatement.close();
 commit();
+
+// MongoDB
+// Everything is stored in a single document. However the cyclic references in the lists are an issue.
+// To work around that issue the lists are flattened and the cycles are stored as mapping between ids. 
+// After that is a simple document store / load
+DBObject document = convertToDocument(listHolder);
+dbCollection().insert(document);
+
+// The mapping from object to documents looks something like this in general
+DBObject document = new BasicDBObject();
+document.put(ID_FIELD, listHolder.id());
+document.put(NAME_FIELD, listHolder.name());
+// and so on and so forth
 </pre>
 <hr />
 <h3>Nestedlists.read</h3>
 <p>Nestedlists.read loads the root object of the structure stored with Nestedlists.create
-and traverses all objects adding them to the checksum.</p>
+and traverses all objects and adds them to the checksum.</p>
 <pre>
 // OO just traverses the root with a simple visitor
 public void read() throws Throwable {
@@ -303,6 +335,13 @@ private ListHolder recurseRead(PreparedStatement listHolderStatement,
     }
     return listHolder;
 }
+
+// MongoDB
+// As earlier mentioned, everything is stored in one document. 
+// We can load the document and then deserialize the flat document back to an object graph with cycles in it.
+
+final DBObject document = dbCollection().findOne(new BasicDBObject(NAME_FIELD, ListHolder.ROOT_NAME));
+ListHolder root = convertFromDocument(document);
 </pre>
 <hr />
 <h3>Nestedlists.update</h3>
@@ -322,10 +361,11 @@ deletes each Listholder individually (using batched prepared statements with JDB
 objects of a class hierarchy with a depth of 5 levels.
 The sources for the implementations can be found here:</p>
             <ul>
-            <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/db4o/InheritanceHierarchyDb4o.java">InheritanceHierarchyDb4o.java</a></li>
-            <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/jdo/InheritanceHierarchyJdo.java">InheritanceHierarchyJdo.java</a></li>
-            <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/hibernate/InheritanceHierarchyHibernate.java">InheritanceHierarchyHibernate.java</a></li>
-            <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/jdbc/InheritanceHierarchyJdbc.java">InheritanceHierarchyJdbc.java</a></li>
+            <li><a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/db4o/InheritanceHierarchyDb4o.java">InheritanceHierarchyDb4o.java</a></li>
+            <li><a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/jdo/InheritanceHierarchyJdo.java">InheritanceHierarchyJdo.java</a></li>
+            <li><a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/hibernate/InheritanceHierarchyHibernate.java">InheritanceHierarchyHibernate.java</a></li>
+            <li><a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/jdbc/InheritanceHierarchyJdbc.java">InheritanceHierarchyJdbc.java</a></li>
+			<li><a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/mongodb/InheritanceHierarchyMongoDB.java">InheritanceHierarchyMongoDB.java</a></li>
             </ul>
 <p>The class model for the InheritanceHierarchy circuit looks like this:</p>
 <pre>
@@ -346,9 +386,9 @@ class InheritanceHierarchy4 extends InheritanceHierarchy3 {
 }
 </pre>
 <p>Member i2 on InheritanceHierarchy2 is indexed for queries.
-Since we are simulating the scenario where a class structure may contain tens or even hundreds of
-classes, we store the data for each class in a separate table instead of putting all 
-    classes into a single table.</p>
+Since we are simulating a class structure that contains tens or even hundreds of
+classes, we store the data for each class in separate tables, in the JDBC
+and OR mapper code.</p>
 <hr />
 <h3>InheritanceHierarchy.write</h3>
 <p>InheritanceHierarchy.write stores a number of InheritanceHierarchy4 objects
@@ -383,11 +423,21 @@ for (int j = 0; j < 5; j++) {
 	statements[j].close();
 }
 commit();
+
+// MongoDB
+int count = setup().getObjectCount();
+for (int i = 1; i <= count; i++) {
+	InheritanceHierarchy4 inheritancheHierarchy4 = new InheritanceHierarchy4();
+	inheritancheHierarchy4.setAll(i);
+	final DBObject document = serialize(inheritancheHierarchy4);
+	dbCollection().insert(document);
+}
+dbCollection().commit();
 </pre>
 <hr />
 <h3>InheritanceHierarchy.read</h3>
-<p>InheritanceHierarchy.read executes a number of queries for all 
-    InheritanceHierarchy4 objects, adding each to a checksum.</p>
+<p>InheritanceHierarchy.read executes a number of queries for all InheritanceHierarchy4 
+objects and iterates over each.</p>
 <hr />
 <h3>InheritanceHierarchy.query</h3>
 <p>InheritanceHierarchy.query executes a number of queries for all InheritanceHierarchy4 
@@ -438,8 +488,13 @@ for (int j = 0; j < 5; j++) {
     }
 statements[j].executeBatch();
 statements[j].close();
-commit();     
+commit(); 
 
+// MongoDB
+for (DBObject dbObject : dbCollection().find()) {
+	dbCollection().remove(dbObject);
+	addToCheckSum(5);
+}
 </pre>
 
 <hr />		
@@ -450,10 +505,11 @@ The Flatobject circuit simulates writing, updating and deleting plain simple
 flat objects as well as querying for indexed int members and string members.
 The sources for the implementations can be found here:</p>
             <ul>
-            <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/db4o/FlatObjectDb4o.java">FlatObjectDb4o.java</a></li>
-            <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/jdo/FlatObjectJdo.java">FlatObjectJdo.java</a></li>
-            <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/hibernate/FlatObjectHibernate.java">FlatObjectHibernate.java</a></li>
-            <li><a href="https://polepos.svn.sourceforge.net/svnroot/polepos/trunk/polepos/src/org/polepos/teams/jdbc/FlatObjectJdbc.java">FlatObjectJdbc.java</a></li>
+            <li><a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/db4o/FlatObjectDb4o.java">FlatObjectDb4o.java</a></li>
+            <li><a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/jdo/FlatObjectJdo.java">FlatObjectJdo.java</a></li>
+            <li><a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/hibernate/FlatObjectHibernate.java">FlatObjectHibernate.java</a></li>
+            <li><a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/jdbc/FlatObjectJdbc.java">FlatObjectJdbc.java</a></li>
+            <li><a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/mongodb/FlatObjectMongoDB.java">FlatObjectMongoDB.java</a></li>
             </ul>
 <p>The class model for the FlatObject circuit looks like this:</p>
 <pre>
