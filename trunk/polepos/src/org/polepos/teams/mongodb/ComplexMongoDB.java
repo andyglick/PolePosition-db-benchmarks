@@ -173,6 +173,7 @@ public final class ComplexMongoDB extends AbstractMongoDBDriver implements Compl
                     }
                 });
         dbCollection().remove(rootID(objectID));
+        dbCollection().commit();
     }
 
     private ComplexObjectSerialisation newSerializer() {

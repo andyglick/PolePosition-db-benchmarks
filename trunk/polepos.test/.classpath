@@ -5,4 +5,5 @@
 	<classpathentry path="/polepos" combineaccessrules="false" kind="src"/>
 	<classpathentry path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1" kind="con"/>
 	<classpathentry path="bin" kind="output"/>
+	<classpathentry kind="lib" path="../polepost/lib/mongoDB/mongo-2.6.3.jar"/>
 </classpath>
