@@ -66,7 +66,10 @@ public final class TreesMongoDB extends AbstractMongoDBDriver implements TreesDr
 
     @Override
     public void delete() {
+        // Read everything. It's not necessary and only here to be a little more fair against other implementations
+        Tree tree = readTree();
         dbCollection().remove(new BasicDBObject(DOCUMENT_ID_FIELD, treeRootID));
+        dbCollection().commit();
     }
 
     private Tree readTree() {
