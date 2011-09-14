@@ -100,7 +100,7 @@ public class Db4oTeam extends Team {
 
     @Override
     public DriverBase[] drivers() {
-        return _drivers.toArray(new DriverBase[0]);
+        return _drivers.toArray(new DriverBase[_drivers.size()]);
     }
 
     @Override

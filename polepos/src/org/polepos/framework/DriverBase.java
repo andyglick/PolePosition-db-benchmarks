@@ -19,9 +19,7 @@ MA  02111-1307, USA. */
 
 package org.polepos.framework;
 
-import java.lang.reflect.*;
-
-import org.polepos.*;
+import java.lang.reflect.Method;
 
 /**
  * an implementation of a circuit for a team
@@ -51,7 +49,7 @@ public abstract class DriverBase implements Driver
 	 * take a seat in a car.
 	 */
 	@Override
-	public void configure( Car car, TurnSetup setup ) {
+	public synchronized void configure( Car car, TurnSetup setup ) {
         mCar = car;
         mSetup = setup;
         _checkSum = 0;
@@ -89,7 +87,7 @@ public abstract class DriverBase implements Driver
     }
     
     @Override
-	public long checkSum(){
+	public synchronized long checkSum(){
         return _checkSum; 
     }
     

@@ -19,9 +19,9 @@ MA  02111-1307, USA. */
 
 package org.polepos.reporters;
 
-import java.io.*;
-
 import org.polepos.framework.*;
+
+import java.io.File;
 
 
 /**
@@ -91,8 +91,6 @@ public abstract class ReporterBase implements Reporter {
         
         _teamCar = new TeamCar(team, car);
         
-        reportSetups(setups);
-        
         for ( int i = 0; i < results.length; i++ ){
             beginResults();
             if(results[i] != null){
@@ -106,10 +104,6 @@ public abstract class ReporterBase implements Reporter {
     protected abstract void reportTeam(Team team);
     
     protected abstract void reportCar(Car car);
-    
-    public void reportSetups(TurnSetup[] setups){
-        
-    }
     
     protected abstract void beginResults();
 

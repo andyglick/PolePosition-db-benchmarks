@@ -19,22 +19,21 @@
 
 package org.polepos.framework;
 
-import java.util.*;
+import org.polepos.reporters.Reporter;
 
-
-import org.polepos.reporters.*;
+import java.util.List;
 
 public class Racer implements Runnable {
 
     private final List<Circuit> circuits;
-    
-    private final List<Team>    teams;
+
+    private final List<Team> teams;
 
     private final List<Reporter> reporters;
-    
-    
+
+
     public Racer(List<Circuit> circuits_, List<Team> teams_, List<Reporter> reporters_) {
-    	circuits = circuits_;
+        circuits = circuits_;
         teams = teams_;
         reporters = reporters_;
     }
@@ -48,42 +47,43 @@ public class Racer implements Runnable {
             for (Reporter reporter : reporters) {
                 reporter.startSeason();
             }
-            
+
 
             for (Team team : teams) {
-                
+
                 for (Car car : team.cars()) {
-                	
+
                     for (Circuit circuit : circuits) {
 
-                    	Driver[] drivers = circuit.nominate(team);
-                    	
-                    	if (drivers == null || drivers.length == 0) {
-                    		
-                    		for (Reporter reporter : reporters) {
-                    			reporter.noDriver(team, circuit);
-                    		}
-                    		
-                    		continue;
-                    	}
-                    	
-                        System.out.println("\n** Racing " + team.name() + "/"
-                            + car.name() + " on " + circuit.name() + "\n");
+                        Driver[] drivers = circuit.nominate(team);
 
-                        for (Reporter reporter : reporters) {
-                            reporter.sendToCircuit(circuit);
+                        if (drivers == null || drivers.length == 0) {
+
+                            for (Reporter reporter : reporters) {
+                                reporter.noDriver(team, circuit);
+                            }
+
+                        } else {
+
+                            System.out.println("\n** Racing " + team.name() + "/"
+                                    + car.name() + " on " + circuit.name() + "\n");
+
+                            for (Reporter reporter : reporters) {
+                                reporter.sendToCircuit(circuit);
+                            }
+
+                            for (Driver driver : drivers) {
+                                System.out.println("** On track: " + team.name() + "/" + car.name());
+                                RacingStrategy racingStrategy = circuit.racingStrategy();
+                                racingStrategy.race(team, car, driver, reporters);
+                            }
+
                         }
-    
-                        for (Driver driver : drivers) {
-                            System.out.println("** On track: " + team.name() + "/" + car.name());
-                            RacingStrategy racingStrategy = circuit.racingStrategy();
-                            racingStrategy.race(team, car, driver, reporters);
-                        }
-                        
+
                     }
                 }
             }
-            
+
 
             for (Reporter reporter : reporters) {
                 reporter.endSeason();
@@ -98,10 +98,10 @@ public class Racer implements Runnable {
             System.out.println("Overall time taken: " + duration + "ms\n");
             System.out.println("Reporters present:");
             for (Reporter reporter : reporters) {
-				System.out.println(reporter);
-			}
+                System.out.println(reporter);
+            }
             this.notify();
         }
-        
+
     }
 }

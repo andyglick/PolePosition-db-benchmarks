@@ -20,19 +20,27 @@ MA  02111-1307, USA. */
 
 package org.polepos.reporters;
 
+import com.lowagie.text.BadElementException;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryLabelPositions;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.NumberTickUnit;
+import org.jfree.chart.axis.SubCategoryAxis;
+import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.polepos.framework.TeamCar;
+import org.polepos.framework.TurnSetup;
+
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-
-import org.jfree.chart.*;
-import org.jfree.chart.axis.*;
-import org.jfree.chart.labels.*;
-import org.jfree.chart.plot.*;
-import org.jfree.chart.renderer.category.*;
-import org.jfree.data.category.*;
-import org.polepos.framework.*;
-
-import com.lowagie.text.*;
 
 public class BarPDFReporter extends PDFReporterBase {
 
@@ -52,17 +60,15 @@ public class BarPDFReporter extends PDFReporterBase {
 	
 	protected List<JFreeChart> createTimeChart(Graph graph) {
 		List<JFreeChart> list = new ArrayList<JFreeChart>();
-		
-		boolean bestOnTop = true;
-		
-		CategoryDataset dataset = createBarDataset(graph, bestOnTop);
+
+        CategoryDataset dataset = createBarDataset(graph);
 		list.add(createBarChart(dataset));
 		return list;
 	}
 
 	
 	
-	private static CategoryDataset createBarDataset(final Graph graph, boolean bestOnTop) {
+	private static CategoryDataset createBarDataset(final Graph graph) {
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
 		final List<TurnSetup> setups = graph.setups();

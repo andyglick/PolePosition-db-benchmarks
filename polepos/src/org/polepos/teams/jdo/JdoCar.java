@@ -19,21 +19,24 @@ MA  02111-1307, USA. */
 
 package org.polepos.teams.jdo;
 
-import java.sql.*;
-import java.util.*;
-
-
-import javax.jdo.*;
-import javax.jdo.datastore.*;
-
 import org.datanucleus.NucleusContext;
 import org.datanucleus.api.jdo.JDOPersistenceManagerFactory;
 import org.datanucleus.store.schema.SchemaAwareStoreManager;
-import org.datanucleus.store.schema.SchemaTool;
-import org.polepos.framework.*;
-import org.polepos.teams.jdbc.*;
+import org.polepos.framework.Car;
+import org.polepos.framework.Team;
+import org.polepos.teams.jdbc.Jdbc;
+import org.polepos.teams.jdbc.JdbcCar;
+import org.polepos.teams.jdbc.JdbcTeam;
 
-import com.versant.core.jdo.*;
+import javax.jdo.JDOHelper;
+import javax.jdo.PersistenceManager;
+import javax.jdo.PersistenceManagerFactory;
+import javax.jdo.datastore.JDOConnection;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Properties;
+import java.util.Set;
 
 
 public class JdoCar extends Car {
@@ -91,6 +94,7 @@ public class JdoCar extends Car {
         properties.setProperty("versant.vdsNamingPolicy", "none");
         properties.setProperty("versant.remoteMaxActive", "30");
         properties.setProperty("versant.maxActive", "30");
+        properties.setProperty("javax.jdo.option.NontransactionalRead", "true");
 
         if (isSQL()) {
             try {
@@ -198,7 +202,7 @@ public class JdoCar extends Car {
         _persistenceManagerFactory.close();
         
         properties.setProperty("datanucleus.autoCreateSchema", "false");
-        
+
         _persistenceManagerFactory = JDOHelper.getPersistenceManagerFactory(properties, JDOHelper.class.getClassLoader());
         
     }

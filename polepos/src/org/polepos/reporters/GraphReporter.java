@@ -19,14 +19,16 @@ MA  02111-1307, USA. */
 
 package org.polepos.reporters;
 
-import java.util.*;
-
 import org.polepos.framework.*;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public abstract class GraphReporter extends ReporterBase {
 
-	protected Map<CircuitLap,Graph> mGraphs;
-	private java.util.List<Circuit> mCircuits;
+	protected Map<CircuitLap,Graph> mGraphs= new LinkedHashMap<CircuitLap,Graph>();
+	private java.util.List<Circuit> mCircuits= new ArrayList <Circuit>();
 	public static int timeIndex = 0;
 	public static int memoryIndex = 0;
 	public static int sizeIndex = 0;
@@ -65,15 +67,6 @@ public abstract class GraphReporter extends ReporterBase {
 
 	@Override
 	public void reportResult(Result result) {
-	    
-	    if(mGraphs == null){
-	        mGraphs = new LinkedHashMap<CircuitLap,Graph>();
-	    }
-	    
-	    if(mCircuits == null){
-	        mCircuits = new ArrayList <Circuit>();
-	    }
-	    
 	    Circuit circuit = result.getCircuit();
 	    
 	    if(! mCircuits.contains(circuit)){
@@ -94,11 +87,7 @@ public abstract class GraphReporter extends ReporterBase {
 		this.mGraphs = mGraphs;
 	}
 
-	public Map<CircuitLap,Graph> graphs() {
-		return mGraphs;
-	}
-
-	@Override
+    @Override
 	public void endSeason() {
 		if(mGraphs != null){
             for (Graph graph : mGraphs.values()) {
