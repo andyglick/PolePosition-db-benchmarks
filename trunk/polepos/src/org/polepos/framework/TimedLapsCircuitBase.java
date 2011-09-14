@@ -19,10 +19,11 @@ MA  02111-1307, USA. */
 
 package org.polepos.framework;
 
-import java.util.*;
+import org.polepos.util.MemoryUtil;
+import org.polepos.watcher.FileSizeWatcher;
+import org.polepos.watcher.TimeWatcher;
 
-import org.polepos.util.*;
-import org.polepos.watcher.*;
+import java.util.*;
 
 /**
  * a set of timed test cases that work against the same data
@@ -230,14 +231,8 @@ public abstract class TimedLapsCircuitBase extends CircuitBase {
 			return MemoryUtil.usedMemory();
 		}
 	}
-	
-	public static class NullMemoryUsage implements MemoryUsage {
-		public long usedMemory() {
-			return 0;
-		}
-	}
-	
-	public boolean isConcurrency(){
+
+    public boolean isConcurrency(){
 		return false;
 	}
 	

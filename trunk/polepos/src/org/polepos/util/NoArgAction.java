@@ -22,5 +22,12 @@ package org.polepos.util;
  * Pure man's closures. Represents: ()=>()
  */
 public interface NoArgAction {
+
+    public final static NoArgAction NULL_ACTION = new NoArgAction() {
+        @Override
+        public void invoke() {
+
+        }
+    };
     void invoke();
 }

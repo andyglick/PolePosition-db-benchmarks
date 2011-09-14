@@ -19,18 +19,24 @@ MA  02111-1307, USA. */
 
 package org.polepos.reporters;
 
-import java.awt.*;
-import java.awt.Font;
-import java.io.*;
-import java.util.*;
-import java.util.List;
-
-import org.jfree.chart.*;
-import org.polepos.framework.*;
-import org.polepos.teams.jdbc.*;
-
 import com.lowagie.text.*;
-import com.lowagie.text.pdf.*;
+import com.lowagie.text.pdf.DefaultFontMapper;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfTemplate;
+import com.lowagie.text.pdf.PdfWriter;
+import org.jfree.chart.JFreeChart;
+import org.polepos.framework.*;
+import org.polepos.teams.jdbc.CircuitSettings;
+
+import java.awt.Font;
+import java.awt.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.List;
 
 
 public abstract class PDFReporterBase extends RenderingReporter {
@@ -209,9 +215,6 @@ public abstract class PDFReporterBase extends RenderingReporter {
 	}
 
 	private void renderCode(Lap lap) {
-		if(true){
-			return;
-		}
 		Paragraph para;
 		String code = lap.code();
         if(code != null){
