@@ -19,6 +19,8 @@ MA  02111-1307, USA. */
 
 package org.polepos.framework;
 
+import org.polepos.monitoring.LoadMonitoringResults;
+
 /**
  * a result for a lap that holds the name and the time.
  */
@@ -33,13 +35,21 @@ public abstract class Result {
     private final int _index;
     
     private final Lap _lap;
+
+    private final LoadMonitoringResults loadMonitoring;
     
-    public Result(Circuit circuit, Lap lap, Team team, TurnSetup setup, int index){
+    public Result(Circuit circuit,
+                  Lap lap,
+                  Team team,
+                  TurnSetup setup,
+                  LoadMonitoringResults loadMonitoring,
+                  int index){
         _circuit = circuit;
         _team = team;
         _setup = setup;
         _lap = lap;
         _index = index;
+        this.loadMonitoring = loadMonitoring;
         
     }
     
@@ -66,7 +76,11 @@ public abstract class Result {
     public Lap getLap(){
         return _lap;
     }
-    
+
+    public LoadMonitoringResults getLoadMonitoring() {
+        return loadMonitoring;
+    }
+
     public abstract long getCheckSum();
 
 	public abstract long getTime();

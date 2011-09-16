@@ -76,7 +76,7 @@ public abstract class GraphReporter extends ReporterBase {
 	    CircuitLap cl = new CircuitLap(circuit, result.getLap());
 	    Graph graph = mGraphs.get(cl);
 	    if(graph == null){
-	        graph = new Graph(result);
+	        graph = new Graph(result.getCircuit(), result.getLap());
 	        mGraphs.put(cl, graph);
 	    }
 	    graph.addResult(_teamCar, result);

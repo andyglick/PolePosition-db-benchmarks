@@ -18,24 +18,28 @@
  * MA  02111-1307, USA.MA  02111-1307, USA.
  */
 
-package org.polepos.teams.mongodb;
+package org.polepos.monitoring;
 
+import java.util.concurrent.atomic.AtomicInteger;
 
-import org.polepos.framework.SetupProperty;
-import org.polepos.framework.TurnSetup;
-import org.polepos.framework.TurnSetupConfig;
+import static junit.framework.Assert.assertTrue;
 
-final class RaceUtils {
-    private RaceUtils(){}
+/**
+* @author roman.stoffel@gamlor.info
+* @since 15.09.11
+*/
+class CallCountingSampler implements Sampler {
+    private final AtomicInteger wasCalled = new AtomicInteger(0);
+    @Override
+    public Result sample() {
+        wasCalled.incrementAndGet();
+        return Result.create("test",1.0);
+    }
 
-    static TurnSetup newTurn() {
-        TurnSetup setup = new TurnSetup();
-        setup.addSetting(new SetupProperty(TurnSetupConfig.DEPTH,2));
-        setup.addSetting(new SetupProperty(TurnSetupConfig.OBJECTCOUNT,5));
-        setup.addSetting(new SetupProperty(TurnSetupConfig.SELECTCOUNT,5));
-        setup.addSetting(new SetupProperty(TurnSetupConfig.DEPTH,5));
-        setup.addSetting(new SetupProperty(TurnSetupConfig.COMMITINTERVAL,1000));
-        setup.addSetting(new SetupProperty(TurnSetupConfig.UPDATECOUNT,5));
-        return setup;
+    public void assertHasBeenCalled(){
+        wasCalledAtLeast(1);
+    }
+    public void wasCalledAtLeast(int times){
+        assertTrue(wasCalled.intValue() >= times);
     }
 }

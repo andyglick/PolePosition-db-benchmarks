@@ -20,15 +20,19 @@ MA  02111-1307, USA. */
 
 package org.polepos.reporters;
 
+import com.db4o.Db4oEmbedded;
+import com.db4o.EmbeddedObjectContainer;
+import com.db4o.config.EmbeddedConfiguration;
+import com.db4o.ta.TransparentPersistenceSupport;
+import com.lowagie.text.BadElementException;
+import com.lowagie.text.ImgTemplate;
+import com.lowagie.text.pdf.DefaultFontMapper;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfTemplate;
+import org.polepos.Settings;
+import org.polepos.util.OneArgFunction;
+
 import java.awt.*;
-
-import org.polepos.*;
-
-import com.db4o.*;
-import com.db4o.config.*;
-import com.db4o.ta.*;
-import com.lowagie.text.*;
-import com.lowagie.text.pdf.*;
 
 public class CustomBarPDFReporter extends PDFReporterBase {
 
@@ -63,7 +67,21 @@ public class CustomBarPDFReporter extends PDFReporterBase {
 		renderCircuitPresentation(graph);
         
         try {
-			pdfData().add(render(graph));
+			pdfData().add(render(graph,new OneArgFunction<Graph, CustomBarRendererBase>() {
+                @Override
+                public CustomBarRendererBase invoke(Graph graph) {
+                    return newRenderer(graph);
+                }
+            }));
+
+            /** This is not yet used. Will be the rendering of machine load info
+			pdfData().add(render(graph,new OneArgFunction<Graph, CustomBarRendererBase>() {
+                @Override
+                public CustomBarRendererBase invoke(Graph graph) {
+		            return new LoadGraphRenderer(graph);
+                }
+            }));
+             **/
 		} catch (BadElementException e) {
 			throw new RuntimeException(e);
 		}
@@ -71,17 +89,17 @@ public class CustomBarPDFReporter extends PDFReporterBase {
         
 	}
 
-	private Object render(Graph graph) throws BadElementException {
+    private Object render(Graph graph, OneArgFunction<Graph,CustomBarRendererBase> rendererProvider) throws BadElementException {
         PdfContentByte cb = writer().getDirectContent();
 		PdfTemplate tp = cb.createTemplate(chartWidth(), chartHeight());
 		Graphics2D graphics = tp.createGraphics(chartWidth(), chartHeight(), new DefaultFontMapper());
 		
-		int height = newRenderer(graph).render(graphics);
+		int height = rendererProvider.invoke(graph).render(graphics);
 		
 		tp = cb.createTemplate(chartWidth(), height);
 		graphics = tp.createGraphics(chartWidth(), height, new DefaultFontMapper());
 		
-		newRenderer(graph).render(graphics);
+		rendererProvider.invoke(graph).render(graphics);
 		
 		graphics.dispose();
 		return new ImgTemplate(tp);

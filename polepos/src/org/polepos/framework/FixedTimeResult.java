@@ -20,12 +20,16 @@ MA  02111-1307, USA. */
 
 package org.polepos.framework;
 
+import org.polepos.monitoring.LoadMonitoringResults;
+
 public class FixedTimeResult extends Result {
 
 	private final long _iterations;
 
-	public FixedTimeResult(Circuit circuit, Lap lap, Team team, TurnSetup setup, int index, long iterations) {
-		super(circuit, lap, team, setup, index);
+	public FixedTimeResult(Circuit circuit, Lap lap, Team team,
+                           TurnSetup setup,
+                  LoadMonitoringResults loadMonitoring, int index, long iterations) {
+		super(circuit, lap, team, setup,loadMonitoring, index);
 		_iterations = iterations;
 	}
 	

@@ -18,24 +18,15 @@
  * MA  02111-1307, USA.MA  02111-1307, USA.
  */
 
-package org.polepos.teams.mongodb;
+package org.polepos.monitoring;
+
+/**
+ * @author roman.stoffel@gamlor.info
+ * @since 14.09.11
+ */
+interface Sampler {
+
+    Result sample();
 
 
-import org.polepos.framework.SetupProperty;
-import org.polepos.framework.TurnSetup;
-import org.polepos.framework.TurnSetupConfig;
-
-final class RaceUtils {
-    private RaceUtils(){}
-
-    static TurnSetup newTurn() {
-        TurnSetup setup = new TurnSetup();
-        setup.addSetting(new SetupProperty(TurnSetupConfig.DEPTH,2));
-        setup.addSetting(new SetupProperty(TurnSetupConfig.OBJECTCOUNT,5));
-        setup.addSetting(new SetupProperty(TurnSetupConfig.SELECTCOUNT,5));
-        setup.addSetting(new SetupProperty(TurnSetupConfig.DEPTH,5));
-        setup.addSetting(new SetupProperty(TurnSetupConfig.COMMITINTERVAL,1000));
-        setup.addSetting(new SetupProperty(TurnSetupConfig.UPDATECOUNT,5));
-        return setup;
-    }
 }

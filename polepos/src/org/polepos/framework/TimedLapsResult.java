@@ -20,6 +20,8 @@ MA  02111-1307, USA. */
 
 package org.polepos.framework;
 
+import org.polepos.monitoring.LoadMonitoringResults;
+
 public class TimedLapsResult extends Result{
 	
     private final long _time;
@@ -31,9 +33,10 @@ public class TimedLapsResult extends Result{
     private final long _databaseSize;
     
 	public TimedLapsResult(Circuit circuit, Team team, Lap lap,
-			TurnSetup setup, int index, long time, long memory,
+			TurnSetup setup,
+                  LoadMonitoringResults loadMonitoring, int index, long time, long memory,
 			long databaseSize, long checkSum) {
-		super(circuit, lap, team, setup, index);
+		super(circuit, lap, team, setup,loadMonitoring, index);
 		
 		_time = time;
 		_checkSum = checkSum;

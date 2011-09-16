@@ -28,7 +28,7 @@ public class LinearTimedLapsCustomBarRenderer extends TimedLapsCustomBarRenderer
 
 	@Override
 	protected int barWidth(TeamData teamData) {
-		return (int) (((double)teamData.val / (double)graph.worst) * (double)maxBarWidthWithLegend() );
+		return (int) (((double)teamData.val / (double)graph.worst) * maxBarWidthWithLegend());
 	}
 	
 	@Override
@@ -63,10 +63,9 @@ public class LinearTimedLapsCustomBarRenderer extends TimedLapsCustomBarRenderer
 	
 	@Override
 	protected int renderXLegend(Graphics graphics, int y, int axisX) {
-		int x = axisX;
-		String legend = "time in milliseconds  (less is better)";
+        String legend = "time in milliseconds  (less is better)";
 		graphics.setFont(graphData().turnLegendFont);
-		graphics.drawString(legend, (int)(x), (int)(y+graphData().markerHeight+textHeight(legend)));
+		graphics.drawString(legend, axisX, (int)(y+graphData().markerHeight+textHeight(legend)));
 		return (int) (y + stride()*2);
 	}
 

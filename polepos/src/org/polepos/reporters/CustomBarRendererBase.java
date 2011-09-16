@@ -19,16 +19,17 @@ MA  02111-1307, USA. */
 
 package org.polepos.reporters;
 
-import java.awt.*;
-import java.awt.geom.*;
-import java.util.*;
-import java.util.List;
+import com.db4o.Db4oEmbedded;
+import com.db4o.EmbeddedObjectContainer;
+import com.db4o.ObjectSet;
+import org.polepos.framework.TeamCar;
+import org.polepos.framework.TurnSetup;
 
 import javax.swing.*;
-
-import org.polepos.framework.*;
-
-import com.db4o.*;
+import java.awt.*;
+import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class CustomBarRendererBase {
 
@@ -294,14 +295,14 @@ public abstract class CustomBarRendererBase {
 		return graphData;
 	}
 
-	public GraphData graphData() {
+	protected GraphData graphData() {
 		if (graphData == null) {
 			this.graphData = prepareGraphData(graphics, graph);
 		}
 		return graphData;
 	}
 
-	public List<TurnData> runs() {
+	private List<TurnData> runs() {
 		if (runs == null) {
 			this.runs = prepareTurnsData(graph);
 		}

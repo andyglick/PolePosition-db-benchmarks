@@ -52,35 +52,7 @@ public class Racer implements Runnable {
             for (Team team : teams) {
 
                 for (Car car : team.cars()) {
-
-                    for (Circuit circuit : circuits) {
-
-                        Driver[] drivers = circuit.nominate(team);
-
-                        if (drivers == null || drivers.length == 0) {
-
-                            for (Reporter reporter : reporters) {
-                                reporter.noDriver(team, circuit);
-                            }
-
-                        } else {
-
-                            System.out.println("\n** Racing " + team.name() + "/"
-                                    + car.name() + " on " + circuit.name() + "\n");
-
-                            for (Reporter reporter : reporters) {
-                                reporter.sendToCircuit(circuit);
-                            }
-
-                            for (Driver driver : drivers) {
-                                System.out.println("** On track: " + team.name() + "/" + car.name());
-                                RacingStrategy racingStrategy = circuit.racingStrategy();
-                                racingStrategy.race(team, car, driver, reporters);
-                            }
-
-                        }
-
-                    }
+                    runCircuitWithCar(team, car);
                 }
             }
 
@@ -103,5 +75,36 @@ public class Racer implements Runnable {
             this.notify();
         }
 
+    }
+
+    private void runCircuitWithCar(Team team, Car car) {
+        for (Circuit circuit : circuits) {
+
+            Driver[] drivers = circuit.nominate(team);
+
+            if (drivers == null || drivers.length == 0) {
+
+                for (Reporter reporter : reporters) {
+                    reporter.noDriver(team, circuit);
+                }
+
+            } else {
+
+                System.out.println("\n** Racing " + team.name() + "/"
+                        + car.name() + " on " + circuit.name() + "\n");
+
+                for (Reporter reporter : reporters) {
+                    reporter.sendToCircuit(circuit);
+                }
+
+                for (Driver driver : drivers) {
+                    System.out.println("** On track: " + team.name() + "/" + car.name());
+                    RacingStrategy racingStrategy = circuit.racingStrategy();
+                    racingStrategy.race(team, car, driver, reporters);
+                }
+
+            }
+
+        }
     }
 }

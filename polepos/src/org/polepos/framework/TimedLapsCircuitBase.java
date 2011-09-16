@@ -19,7 +19,10 @@ MA  02111-1307, USA. */
 
 package org.polepos.framework;
 
+import org.polepos.monitoring.LoadMonitoringResults;
+import org.polepos.monitoring.Monitoring;
 import org.polepos.util.MemoryUtil;
+import org.polepos.util.NoArgAction;
 import org.polepos.watcher.FileSizeWatcher;
 import org.polepos.watcher.TimeWatcher;
 
@@ -125,7 +128,7 @@ public abstract class TimedLapsCircuitBase extends CircuitBase {
 					
 	            	System.out.println("*** Lap " + lap.name());
 	
-				    LapReading lapReading = runLap(team, driver, setup, lap);
+				    LapReading lapReading = runLap(team, driver, lap);
 				    if(!warmUp && lap.reportResult()) {
 				    	lapReadings.get(lap).add(lapReading);
 				    }
@@ -137,33 +140,41 @@ public abstract class TimedLapsCircuitBase extends CircuitBase {
 			tearDownTurn(team, driver);
 			warmUp = false;
 		}
-		
-		TurnResult turnResult = new TurnResult();
-		for (Lap lap : laps()) {
-			if(!lap.reportResult()) {
-				continue;
-			}
-			if(! driver.canRunLap(lap)){
-				continue;
-			}
-			long time = 0;
-			long memory = 0;
-			long fileSize = 0;
-			long checkSum = 0;
-			Set<LapReading> curReadings = lapReadings.get(lap);
-			for (LapReading curReading : curReadings) {
-				time += curReading.time;
-				memory += curReading.memory;
-				fileSize += curReading.fileSize;
-				checkSum += curReading.checkSum;
-			}
-			Result lapResult = new TimedLapsResult(_reportTo , team, lap, setup, index, time, memory, fileSize, checkSum);
-			turnResult.report(lapResult);
-		}
-		return turnResult;
+
+        return collectResults(team, driver, index, setup, lapReadings);
 	}
 
-	private void prepareDriverToRunLaps(Car car, Driver driver, TurnSetup setup) {
+    private TurnResult collectResults(Team team, Driver driver,
+                                      int index, TurnSetup setup, Map<Lap, Set<LapReading>> lapReadings) {
+        TurnResult turnResult = new TurnResult();
+        for (Lap lap : laps()) {
+            if (!lap.reportResult()) {
+                continue;
+            }
+            if (!driver.canRunLap(lap)) {
+                continue;
+            }
+            long time = 0;
+            long memory = 0;
+            long fileSize = 0;
+            long checkSum = 0;
+            Set<LapReading> curReadings = lapReadings.get(lap);
+            ArrayList<LoadMonitoringResults> monitoringResults = new ArrayList<LoadMonitoringResults>();
+            for (LapReading curReading : curReadings) {
+                time += curReading.time;
+                memory += curReading.memory;
+                fileSize += curReading.fileSize;
+                checkSum += curReading.checkSum;
+                monitoringResults.add(curReading.getLoadMonitoring());
+            }
+            LoadMonitoringResults load = LoadMonitoringResults.sumUp(monitoringResults);
+            Result lapResult = new TimedLapsResult(_reportTo, team, lap, setup, load, index, time, memory, fileSize, checkSum);
+            turnResult.report(lapResult);
+        }
+        return turnResult;
+    }
+
+    private void prepareDriverToRunLaps(Car car, Driver driver, TurnSetup setup) {
 		car.team().setUp();
 		driver.configure(car, setup);
 		driver.prepareDatabase();
@@ -175,9 +186,9 @@ public abstract class TimedLapsCircuitBase extends CircuitBase {
 		driver.circuitCompleted();
 	}
 
-	private LapReading runLap(Team team, Driver driver, TurnSetup setup, Lap lap) {
+	private LapReading runLap(Team team, Driver driver, Lap lap) {
 		
-		Runnable lapRunnable = driver.prepareLap(lap);
+		final Runnable lapRunnable = driver.prepareLap(lap);
 		
 		if( ! lap.hot() ){
 			driver.closeDatabase();
@@ -191,16 +202,22 @@ public abstract class TimedLapsCircuitBase extends CircuitBase {
 		_timeWatcher.start();
 		_fileSizeWatcher.monitorFile(team.databaseFile());
 		_fileSizeWatcher.start();
-		
-		lapRunnable.run();
-		
-		_timeWatcher.stop();
+
+        final LoadMonitoringResults monitoringResults = Monitoring.monitor(new NoArgAction() {
+            @Override
+            public void invoke() {
+                lapRunnable.run();
+            }
+        });
+
+        _timeWatcher.stop();
 		
 		// _memoryWatcher.stop();
 		
 		_fileSizeWatcher.stop();
 		
-		return new LapReading(_timeWatcher.value(), _memoryUsage.usedMemory(), _fileSizeWatcher.value(), driver.checkSum());
+		return new LapReading(_timeWatcher.value(), _memoryUsage.usedMemory(),
+                _fileSizeWatcher.value(), driver.checkSum(), monitoringResults);
 	}
 	
 	private final static class LapReading {
@@ -208,15 +225,23 @@ public abstract class TimedLapsCircuitBase extends CircuitBase {
 		public final long memory;
 		public final long fileSize;
 		public final long checkSum;
+        private final LoadMonitoringResults loadMonitoring;
 
-		public LapReading(long time, long memory, long fileSize, long checkSum) {
+		public LapReading(long time, long memory,
+                          long fileSize, long checkSum,
+                          LoadMonitoringResults loadMonitoring) {
 			this.time = time;
 			this.memory = memory;
 			this.fileSize = fileSize;
 			this.checkSum = checkSum;
-		}
-		
-		@Override
+            this.loadMonitoring = loadMonitoring;
+        }
+
+        public LoadMonitoringResults getLoadMonitoring() {
+            return loadMonitoring;
+        }
+
+        @Override
 		public String toString() {
 			return time + " ms";
 		}
@@ -243,7 +268,7 @@ public abstract class TimedLapsCircuitBase extends CircuitBase {
 				return;
 			}
 			if(driver.canRunLap(lap)){
-			    runLap(car.team(), driver, turnSetup, currentLap);
+			    runLap(car.team(), driver, currentLap);
 			}
 			
 		}

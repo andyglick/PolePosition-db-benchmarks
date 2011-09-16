@@ -18,24 +18,20 @@
  * MA  02111-1307, USA.MA  02111-1307, USA.
  */
 
-package org.polepos.teams.mongodb;
+package org.polepos.monitoring;
 
+/**
+ * @author roman.stoffel@gamlor.info
+ * @since 15.09.11
+ */
+public class MonitoringTestUtils {
+    static final long TEST_INTERVAL_IN_MILLISEC = 10;
 
-import org.polepos.framework.SetupProperty;
-import org.polepos.framework.TurnSetup;
-import org.polepos.framework.TurnSetupConfig;
-
-final class RaceUtils {
-    private RaceUtils(){}
-
-    static TurnSetup newTurn() {
-        TurnSetup setup = new TurnSetup();
-        setup.addSetting(new SetupProperty(TurnSetupConfig.DEPTH,2));
-        setup.addSetting(new SetupProperty(TurnSetupConfig.OBJECTCOUNT,5));
-        setup.addSetting(new SetupProperty(TurnSetupConfig.SELECTCOUNT,5));
-        setup.addSetting(new SetupProperty(TurnSetupConfig.DEPTH,5));
-        setup.addSetting(new SetupProperty(TurnSetupConfig.COMMITINTERVAL,1000));
-        setup.addSetting(new SetupProperty(TurnSetupConfig.UPDATECOUNT,5));
-        return setup;
+    static void waitFor(long timeInMilliseconds) {
+        try {
+            Thread.sleep(timeInMilliseconds);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 }

@@ -18,24 +18,37 @@
  * MA  02111-1307, USA.MA  02111-1307, USA.
  */
 
-package org.polepos.teams.mongodb;
+package org.polepos.reporters;
+
+import org.junit.Test;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+
+import static org.polepos.reporters.TestDataFactory.createEmptyGraph;
+
+/**
+ * @author roman.stoffel@gamlor.info
+ * @since 16.09.11
+ */
+public class TestLoadGraphRenderer {
+
+    @Test
+    public void canDealWithEmptyMonitoringResults(){
+        Graph emptyGraph = createEmptyGraph();
+
+        LoadGraphRenderer toTest = new LoadGraphRenderer(emptyGraph);
 
 
-import org.polepos.framework.SetupProperty;
-import org.polepos.framework.TurnSetup;
-import org.polepos.framework.TurnSetupConfig;
+        final Graphics graphics = createStubGraphics();
+        toTest.render(graphics);
 
-final class RaceUtils {
-    private RaceUtils(){}
+    }
 
-    static TurnSetup newTurn() {
-        TurnSetup setup = new TurnSetup();
-        setup.addSetting(new SetupProperty(TurnSetupConfig.DEPTH,2));
-        setup.addSetting(new SetupProperty(TurnSetupConfig.OBJECTCOUNT,5));
-        setup.addSetting(new SetupProperty(TurnSetupConfig.SELECTCOUNT,5));
-        setup.addSetting(new SetupProperty(TurnSetupConfig.DEPTH,5));
-        setup.addSetting(new SetupProperty(TurnSetupConfig.COMMITINTERVAL,1000));
-        setup.addSetting(new SetupProperty(TurnSetupConfig.UPDATECOUNT,5));
-        return setup;
+    private Graphics createStubGraphics() {
+        final BufferedImage img = new BufferedImage(500, 400, BufferedImage.TYPE_INT_RGB);
+        final Graphics graphics = img.getGraphics();
+        graphics.setClip(0,0,500,400);
+        return graphics;
     }
 }
