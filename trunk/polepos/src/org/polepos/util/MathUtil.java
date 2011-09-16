@@ -19,10 +19,23 @@ MA  02111-1307, USA. */
 
 package org.polepos.util;
 
-public class MathUtil {
+public final class MathUtil {
+    private MathUtil(){}
+
 	public static double toLogedValue(double d) {
 		double logMemory = Math.log(d + 2);
 		double valForOutput = 1 / logMemory;
 		return valForOutput;
 	}
+
+    /**
+     * Calculating the incremental average of numbers.
+     * @param currentAverage the last calculated average
+     * @param numberOfEntries the numbers of entries, including then valueOfEntryToAdd
+     * @param valueOfEntryToAdd the new value which is added the the average.
+     * @return
+     */
+    public static double incrementalAverage(double currentAverage, int numberOfEntries, double valueOfEntryToAdd) {
+        return currentAverage / numberOfEntries *(numberOfEntries-1) + (valueOfEntryToAdd /numberOfEntries);
+    }
 }

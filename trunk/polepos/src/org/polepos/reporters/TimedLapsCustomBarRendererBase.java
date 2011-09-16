@@ -19,9 +19,13 @@ MA  02111-1307, USA. */
 
 package org.polepos.reporters;
 
-import java.util.*;
+import org.polepos.framework.TeamCar;
+import org.polepos.framework.TurnSetup;
 
-import org.polepos.framework.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public abstract class TimedLapsCustomBarRendererBase extends
 		CustomBarRendererBase {
@@ -43,9 +47,8 @@ public abstract class TimedLapsCustomBarRendererBase extends
 	
 			TurnData turnData = new TurnData(setup, 0);
 			long best = Long.MAX_VALUE;
-			long worst = 0;
-			for (TeamCar teamCar : teamCars) {
-				long time = graph.timeFor(teamCar, setup);
+            for (TeamCar teamCar : teamCars) {
+				long time = valueToShow(graph, setup, teamCar);
 				TeamData teamData = new TeamData(teamCar, 0, time);
 				if (time != 0 && time < best) {
 					best = time;
@@ -55,7 +58,7 @@ public abstract class TimedLapsCustomBarRendererBase extends
 				}
 				turnData.teams.add(teamData);
 			}
-			turnData.best = best == 0 ? 1 : best;
+			turnData.best = best;
 	
 			for (TeamData teamData : turnData.teams) {
 				teamData.orderOfMagnitude = teamData.val / (double)turnData.best;
@@ -65,8 +68,8 @@ public abstract class TimedLapsCustomBarRendererBase extends
 	
 				@Override
 				public int compare(TeamData team1, TeamData team2) {
-					long time1 = graph.timeFor(team1.teamCar, setup);
-					long time2 = graph.timeFor(team2.teamCar, setup);
+					long time1 = valueToShow(graph, setup, team1.teamCar);
+					long time2 = valueToShow(graph, setup, team2.teamCar);
 	
 					if (time1 > time2) {
 						return 1;
@@ -82,5 +85,9 @@ public abstract class TimedLapsCustomBarRendererBase extends
 		}
 		return runs;
 	}
+
+    protected long valueToShow(Graph graph, TurnSetup setup, TeamCar teamCar) {
+        return graph.timeFor(teamCar, setup);
+    }
 
 }

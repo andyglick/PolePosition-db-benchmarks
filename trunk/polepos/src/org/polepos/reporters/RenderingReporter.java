@@ -19,19 +19,25 @@ MA  02111-1307, USA. */
 
 package org.polepos.reporters;
 
-import java.awt.*;
-import java.util.*;
-import java.util.List;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.ValueAxis;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.LineAndShapeRenderer;
+import org.jfree.chart.title.LegendTitle;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.ui.RectangleInsets;
+import org.polepos.framework.SetupProperty;
+import org.polepos.framework.TeamCar;
+import org.polepos.framework.TurnSetup;
+import org.polepos.util.MathUtil;
 
-import org.jfree.chart.*;
-import org.jfree.chart.axis.*;
-import org.jfree.chart.plot.*;
-import org.jfree.chart.renderer.category.*;
-import org.jfree.chart.title.*;
-import org.jfree.data.category.*;
-import org.jfree.ui.*;
-import org.polepos.framework.*;
-import org.polepos.util.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public abstract class RenderingReporter extends GraphReporter{
@@ -240,8 +246,7 @@ public abstract class RenderingReporter extends GraphReporter{
 		CategoryAxis categoryAxis = new CategoryAxis("");
 		categoryAxis.setLabelFont(ReporterConstants.CATEGORY_LABEL_FONT);
 		categoryAxis.setTickLabelFont(ReporterConstants.CATEGORY_TICKLABEL_FONT);
-		String yLegendText =  legendText;
-		ValueAxis valueAxis = new NumberAxis(yLegendText);
+        ValueAxis valueAxis = new NumberAxis(legendText);
 		valueAxis.setLabelFont(ReporterConstants.VALUE_LABEL_FONT);
 		valueAxis.setTickLabelFont(ReporterConstants.VALUE_TICKLABEL_FONT);
 		LineAndShapeRenderer renderer = new LineAndShapeRenderer(true, false);
@@ -280,7 +285,7 @@ public abstract class RenderingReporter extends GraphReporter{
 		CategoryAxis categoryAxis = new CategoryAxis("");
 		categoryAxis.setLabelFont(ReporterConstants.CATEGORY_LABEL_FONT);
 		categoryAxis.setTickLabelFont(ReporterConstants.CATEGORY_TICKLABEL_FONT);
-		
+
 		String yLegendText =  legendText;
 		ValueAxis valueAxis = new NumberAxis(yLegendText);
 		valueAxis.setLabelFont(ReporterConstants.VALUE_LABEL_FONT);
@@ -302,21 +307,19 @@ public abstract class RenderingReporter extends GraphReporter{
 	@Override
 	public void endSeason() {
 		List<TeamCar> cars = null;
-		if(mGraphs != null){
-            OverViewChartBuilder overViewChartBuilder = new OverViewChartBuilder();
-            for (Graph graph : mGraphs.values()) {
-                if(graph != null){
-                	if(cars == null) {
-                		cars = graph.teamCars();
-                	}
-                    report(graph);
-                    reportOverviewDatabaseSize(graph);
-                    overViewChartBuilder.report(graph);
+        OverViewChartBuilder overViewChartBuilder = new OverViewChartBuilder();
+        for (Graph graph : mGraphs.values()) {
+            if(graph != null){
+                if(cars == null) {
+                    cars = graph.teamCars();
                 }
-			}
-            overViewChartBuilder.createJPGs(path());
-			finish(cars);
+                report(graph);
+                reportOverviewDatabaseSize(graph);
+                overViewChartBuilder.report(graph);
+            }
         }
+        overViewChartBuilder.createJPGs(path());
+        finish(cars);
 	}
 	
 	protected abstract void finish(List <TeamCar> cars);

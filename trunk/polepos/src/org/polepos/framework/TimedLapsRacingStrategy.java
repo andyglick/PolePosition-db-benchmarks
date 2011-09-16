@@ -20,9 +20,9 @@ MA  02111-1307, USA. */
 
 package org.polepos.framework;
 
-import java.util.*;
+import org.polepos.reporters.Reporter;
 
-import org.polepos.reporters.*;
+import java.util.List;
 
 public class TimedLapsRacingStrategy implements RacingStrategy {
 	
@@ -39,7 +39,7 @@ public class TimedLapsRacingStrategy implements RacingStrategy {
         
         TurnSetup[] setups = _circuit.lapSetups();
         TurnResult[] results = _circuit.race(team, car, driver);
-        
+
         long stopTime = System.currentTimeMillis();
         long t = stopTime - startTime;
         System.out.println("Time[ms]: " + t);	

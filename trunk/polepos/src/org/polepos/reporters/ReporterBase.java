@@ -90,11 +90,11 @@ public abstract class ReporterBase implements Reporter {
         }
         
         _teamCar = new TeamCar(team, car);
-        
-        for ( int i = 0; i < results.length; i++ ){
+
+        for (TurnResult result : results) {
             beginResults();
-            if(results[i] != null){
-                results[i].report(this);
+            if (result != null) {
+                result.report(this);
             }
         }
     }

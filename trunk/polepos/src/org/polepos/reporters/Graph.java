@@ -19,16 +19,17 @@ MA  02111-1307, USA. */
 
 package org.polepos.reporters;
 
-import java.util.*;
-
 import org.polepos.framework.*;
+import org.polepos.monitoring.LoadMonitoringResults;
+
+import java.util.*;
 
 
 public class Graph {
     
-    private final List<TeamCar>teamCars;
-	private final List<TurnSetup> setups;
-    private final Map<TurnCombination,Result> results;
+    private final List<TeamCar>teamCars= new ArrayList<TeamCar>();
+	private final List<TurnSetup> setups=new ArrayList<TurnSetup>();
+    private final Map<TurnCombination,Result> results=new HashMap<TurnCombination,Result>();
 	
     private final Circuit circuit;
     private final Lap lap;
@@ -36,12 +37,9 @@ public class Graph {
     public long best;
     public long worst;
     
-    public Graph(Result result){
-        teamCars= new ArrayList<TeamCar>();
-        setups=new ArrayList<TurnSetup>();
-		results=new HashMap<TurnCombination,Result>();
-        circuit = result.getCircuit();
-        lap = result.getLap(); 
+    public Graph(Circuit circuit, Lap lap){
+        this.circuit = circuit;
+        this.lap = lap;
     }
 
     public void addResult(TeamCar teamCar, Result result) {
@@ -100,7 +98,12 @@ public class Graph {
 	}
 	
 	public final long timeFor(TeamCar teamCar, TurnSetup setup) {
-		return timeFor(new TurnCombination(teamCar,setup));
+		return timeFor(new TurnCombination(teamCar, setup));
+	}
+
+	public final LoadMonitoringResults loadMonitoring(TeamCar teamCar, TurnSetup setup) {
+		Result res = results.get((new TurnCombination(teamCar,setup)));
+        return res.getLoadMonitoring();
 	}
 	
 	public final long timeFor(TurnCombination turnCombination) {
@@ -167,11 +170,4 @@ public class Graph {
 		}
 	}
 
-	public void forEachTurnCombination(CodeBlock<TurnCombination> codeBlock) {
-		for(TeamCar teamCar : teamCars()) {
-			for(TurnSetup setup : setups()) {
-				codeBlock.apply(new TurnCombination(teamCar, setup));
-	        }
-	    }
-	}
 }

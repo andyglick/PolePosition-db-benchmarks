@@ -69,8 +69,8 @@ public abstract class PDFReporterBase extends RenderingReporter {
 				
 				// white if you like
 		        // timeChart.setBackgroundPaint(null);
-				
-				_pdfData.add(renderChart(timeChart));	
+
+				_pdfData.add(renderChart(timeChart));
 			}
 			_pdfData.add(new NewPageLabel());
 		} catch (Exception e) {
@@ -184,13 +184,8 @@ public abstract class PDFReporterBase extends RenderingReporter {
 		String unitsLegend = "t [time in ms]";
 		renderTable(ReporterConstants.TIME, graph, unitsLegend);
 	}
-	
-	private void renderMemoryTable(Graph graph) throws DocumentException {
-		String unitsLegend = "m [memory in bytes]";
-		renderTable(ReporterConstants.MEMORY, graph, unitsLegend);
-	}
 
-	private void renderTable(int type, final Graph graph, String unitsLegend) throws BadElementException, DocumentException {
+    private void renderTable(int type, final Graph graph, String unitsLegend) throws DocumentException {
 		renderCircuitPresentation(graph);
         renderTableAndGraph(type, graph, unitsLegend);
 	}
@@ -221,7 +216,7 @@ public abstract class PDFReporterBase extends RenderingReporter {
         	para=new Paragraph();
         	para.setSpacingBefore(5f);
         	para.setLeading(11f);
-			para.add(new Chunk(code,codeFont));
+			para.add(new Chunk(code, codeFont));
 			para.add(new Chunk("\n",codeFont));
 			_pdfData.add(para);
         }
@@ -254,7 +249,7 @@ public abstract class PDFReporterBase extends RenderingReporter {
 		table.addCell(cell,new Point(vidx,hidx));
 	}
 	
-	private Element renderChart(JFreeChart chart) throws DocumentException, BadElementException {
+	private Element renderChart(JFreeChart chart) throws DocumentException {
 		return renderChart(chart, chartWidth(), chartHeight());
 	}
 
@@ -264,7 +259,7 @@ public abstract class PDFReporterBase extends RenderingReporter {
 
 	protected abstract int chartHeight();
 	
-	private Element renderChart(JFreeChart chart, int width, int height) throws DocumentException, BadElementException {
+	private Element renderChart(JFreeChart chart, int width, int height) throws DocumentException {
         PdfContentByte cb = _writer.getDirectContent();
 		PdfTemplate tp = cb.createTemplate(width, height);
 		Graphics2D graphics = tp.createGraphics(width, height, new DefaultFontMapper());

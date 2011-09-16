@@ -20,10 +20,10 @@ MA  02111-1307, USA. */
 
 package org.polepos.framework;
 
-import java.util.*;
+import org.polepos.reporters.Reporter;
+import org.polepos.util.MemoryUtil;
 
-import org.polepos.reporters.*;
-import org.polepos.util.*;
+import java.util.List;
 
 public class FixedTimeRacingStrategy implements RacingStrategy {
 	
@@ -31,7 +31,7 @@ public class FixedTimeRacingStrategy implements RacingStrategy {
 	private final FixedTimeCircuitBase _circuit;
 
 	public FixedTimeRacingStrategy(FixedTimeCircuitBase circuit) {
-		_circuit = (FixedTimeCircuitBase) circuit;
+		_circuit = circuit;
 	}
 
 	@Override
@@ -109,7 +109,7 @@ public class FixedTimeRacingStrategy implements RacingStrategy {
 		}
 		
 		
-		Result result = new FixedTimeResult(_circuit, _circuit.laps().get(0), team, setup, setupIndex, iterations);
+		Result result = new FixedTimeResult(_circuit, _circuit.laps().get(0), team, setup,null, setupIndex, iterations);
 		
 		team.tearDown();
 		driver.circuitCompleted();
