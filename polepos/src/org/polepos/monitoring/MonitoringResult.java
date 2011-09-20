@@ -20,32 +20,36 @@
 
 package org.polepos.monitoring;
 
-import com.sun.management.OperatingSystemMXBean;
-import org.polepos.util.MathUtil;
-
 /**
  * @author roman.stoffel@gamlor.info
  * @since 14.09.11
  */
-public final class CPULoadCollector implements Sampler {
-    private final OperatingSystemMXBean systemInfo;
-    private int influence = 0;
-    private double currentAverage;
+public final class MonitoringResult {
+    private final MonitoringType name;
+    private final Double value;
 
-    public static final MonitoringType TYPE = MonitoringType.percentUnit("CPU Load Average", "% CPU");
+    private MonitoringResult(MonitoringType name, Double value) {
+        this.name = name;
+        this.value = value;
+    }
 
-    public CPULoadCollector(OperatingSystemMXBean systemInfo) {
-        this.systemInfo = systemInfo;
+    public static MonitoringResult create(MonitoringType name, Double value){
+        return new MonitoringResult(name, value);
+    }
+
+    public MonitoringType getType() {
+        return name;
+    }
+
+    public Double getValue() {
+        return value;
     }
 
     @Override
-    public MonitoringResult sample() {
-        influence++;
-        currentAverage = MathUtil.incrementalAverage(currentAverage, influence, systemInfo.getSystemCpuLoad());
-        return MonitoringResult.create(TYPE, currentAverage);
-    }
-
-    public static CPULoadCollector create(java.lang.management.OperatingSystemMXBean osBean) {
-        return new CPULoadCollector((OperatingSystemMXBean) osBean);
+    public String toString() {
+        return "Result{" +
+                "name='" + name + '\'' +
+                ", value=" + value +
+                '}';
     }
 }

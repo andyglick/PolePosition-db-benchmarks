@@ -26,7 +26,7 @@ package org.polepos.monitoring;
  */
 interface Sampler {
 
-    Result sample();
+    MonitoringResult sample();
 
 
 }

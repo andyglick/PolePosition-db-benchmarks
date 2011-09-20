@@ -30,12 +30,12 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author roman.stoffel@gamlor.info
  * @since 14.09.11
  */
-class BackgroundSampling {
+final class BackgroundSampling {
     private final Timer timer;
     static final long FIRST_RUN_DELAY_IN_MILLISEC =5;
-    static final long INTERVAL_IN_MILLISEC =500;
-    private AtomicReference<Collection<Result>> lastResult
-            = new AtomicReference<Collection<Result>>(new ArrayList<Result>());
+    static final long INTERVAL_IN_MILLISEC =50;
+    private AtomicReference<Collection<MonitoringResult>> lastResult
+            = new AtomicReference<Collection<MonitoringResult>>(new ArrayList<MonitoringResult>());
     private final long interval;
 
     private BackgroundSampling(long interval) {
@@ -58,7 +58,7 @@ class BackgroundSampling {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                ArrayList<Result> results = new ArrayList<Result>();
+                ArrayList<MonitoringResult> results = new ArrayList<MonitoringResult>();
                 for (Sampler sampler : samplers) {
                     results.add(sampler.sample());
                 }
@@ -68,7 +68,7 @@ class BackgroundSampling {
     }
 
 
-    public Collection<Result> stopAndCollectResults() {
+    public Collection<MonitoringResult> stopAndCollectResults() {
         timer.cancel();
         return lastResult.get();
     }

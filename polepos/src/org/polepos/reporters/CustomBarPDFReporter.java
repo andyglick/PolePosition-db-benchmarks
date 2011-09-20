@@ -30,101 +30,109 @@ import com.lowagie.text.pdf.DefaultFontMapper;
 import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfTemplate;
 import org.polepos.Settings;
+import org.polepos.monitoring.MonitoringType;
 import org.polepos.util.OneArgFunction;
 
 import java.awt.*;
 
 public class CustomBarPDFReporter extends PDFReporterBase {
 
-	public CustomBarPDFReporter(String path) {
-		super(path);
-	}
-	
-	public static void main(String[] args) {
-		CustomBarPDFReporter reporter = new CustomBarPDFReporter(DefaultReporterFactory.defaultReporterOutputPath());
-		
-		
-	    EmbeddedConfiguration cfg = Db4oEmbedded.newConfiguration();
-	    cfg.common().add(new TransparentPersistenceSupport());
-		
-	    // EmbeddedObjectContainer db = Db4oEmbedded.openFile(cfg, "ClientServerGraph.db4o");
-	    EmbeddedObjectContainer db = Db4oEmbedded.openFile(cfg, "graph.db4o");
-	    // EmbeddedObjectContainer db = Db4oEmbedded.openFile(cfg, "ConcurrentGraph.db4o");
-		PersistentGraphs pg = db.query(PersistentGraphs.class).iterator().next();
-		
-		reporter.graphs(pg.graphs());
-		
-		reporter.render();
-		reporter.endReport();
+    public CustomBarPDFReporter(String path) {
+        super(path);
+    }
 
-		db.close();
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	protected void report(Graph graph) {
-        
-		renderCircuitPresentation(graph);
-        
+    public static void main(String[] args) {
+        CustomBarPDFReporter reporter = new CustomBarPDFReporter(DefaultReporterFactory.defaultReporterOutputPath());
+
+
+        EmbeddedConfiguration cfg = Db4oEmbedded.newConfiguration();
+        cfg.common().add(new TransparentPersistenceSupport());
+
+        // EmbeddedObjectContainer db = Db4oEmbedded.openFile(cfg, "ClientServerGraph.db4o");
+        EmbeddedObjectContainer db = Db4oEmbedded.openFile(cfg, "graph.db4o");
+        // EmbeddedObjectContainer db = Db4oEmbedded.openFile(cfg, "ConcurrentGraph.db4o");
+        PersistentGraphs pg = db.query(PersistentGraphs.class).iterator().next();
+
+        reporter.graphs(pg.graphs());
+
+        reporter.render();
+        reporter.endReport();
+
+        db.close();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected void report(Graph graph) {
+
+        renderCircuitPresentation(graph);
+
         try {
-			pdfData().add(render(graph,new OneArgFunction<Graph, CustomBarRendererBase>() {
+            pdfData().add(render(graph, new OneArgFunction<Graph, ChartRenderer>() {
                 @Override
-                public CustomBarRendererBase invoke(Graph graph) {
+                public ChartRenderer invoke(Graph graph) {
                     return newRenderer(graph);
                 }
             }));
 
-            /** This is not yet used. Will be the rendering of machine load info
-			pdfData().add(render(graph,new OneArgFunction<Graph, CustomBarRendererBase>() {
+
+            renderMonitoringData(graph);
+
+        } catch (BadElementException e) {
+            throw new RuntimeException(e);
+        }
+        pdfData().add(new NewPageLabel());
+
+    }
+
+    private void renderMonitoringData(Graph graph) throws BadElementException {
+        for (final MonitoringType monitoringType : graph.availableMonitoryingTypes()) {
+            pdfData().add(render(graph, new OneArgFunction<Graph, ChartRenderer>() {
                 @Override
-                public CustomBarRendererBase invoke(Graph graph) {
-		            return new LoadGraphRenderer(graph);
+                public ChartRenderer invoke(Graph graph) {
+                    return new LoadGraphRenderer(graph, monitoringType);
                 }
             }));
-             **/
-		} catch (BadElementException e) {
-			throw new RuntimeException(e);
-		}
-        pdfData().add(new NewPageLabel());
-        
-	}
 
-    private Object render(Graph graph, OneArgFunction<Graph,CustomBarRendererBase> rendererProvider) throws BadElementException {
+        }
+    }
+
+    private Object render(Graph graph, OneArgFunction<Graph, ChartRenderer> rendererProvider) throws BadElementException {
         PdfContentByte cb = writer().getDirectContent();
-		PdfTemplate tp = cb.createTemplate(chartWidth(), chartHeight());
-		Graphics2D graphics = tp.createGraphics(chartWidth(), chartHeight(), new DefaultFontMapper());
-		
-		int height = rendererProvider.invoke(graph).render(graphics);
-		
-		tp = cb.createTemplate(chartWidth(), height);
-		graphics = tp.createGraphics(chartWidth(), height, new DefaultFontMapper());
-		
-		rendererProvider.invoke(graph).render(graphics);
-		
-		graphics.dispose();
-		return new ImgTemplate(tp);
-	}
-	
-	private CustomBarRendererBase newRenderer(Graph graph){
-		if(graph.circuit().isFixedTime()){
-			if(Settings.LOGARITHMIC){
-				return new LogarithmicFixedTimeCustomBarRenderer(graph);
-			}
-			return new LinearFixedTimeCustomBarRenderer(graph);
-		}
-		if(Settings.LOGARITHMIC){
-			return new LogarithmicTimedLapsCustomBarRenderer(graph);
-		}
-		return new LinearTimedLapsCustomBarRenderer(graph);
-	}
-	
-	@Override
-	protected void renderTableAndGraph(int type, Graph graph, String unitsLegend) throws BadElementException {
-	}
+        PdfTemplate tp = cb.createTemplate(chartWidth(), chartHeight());
+        Graphics2D graphics = tp.createGraphics(chartWidth(), chartHeight(), new DefaultFontMapper());
 
-	@Override
-	protected int chartHeight() {
-		return 600;
-	}
-	
+        int height = rendererProvider.invoke(graph).render(graphics);
+
+        tp = cb.createTemplate(chartWidth(), height);
+        graphics = tp.createGraphics(chartWidth(), height, new DefaultFontMapper());
+
+        rendererProvider.invoke(graph).render(graphics);
+
+        graphics.dispose();
+        return new ImgTemplate(tp);
+    }
+
+    private CustomBarRendererBase newRenderer(Graph graph) {
+        if (graph.circuit().isFixedTime()) {
+            if (Settings.LOGARITHMIC) {
+                return new LogarithmicFixedTimeCustomBarRenderer(graph);
+            }
+            return new LinearFixedTimeCustomBarRenderer(graph);
+        }
+        if (Settings.LOGARITHMIC) {
+            return new LogarithmicTimedLapsCustomBarRenderer(graph);
+        }
+        return new LinearTimedLapsCustomBarRenderer(graph);
+    }
+
+    @Override
+    protected void renderTableAndGraph(int type, Graph graph, String unitsLegend) throws BadElementException {
+    }
+
+    @Override
+    protected int chartHeight() {
+        return 600;
+    }
+
 }

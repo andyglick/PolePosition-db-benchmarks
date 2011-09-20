@@ -34,28 +34,42 @@ import static org.polepos.monitoring.LoadMonitoringResults.create;
  */
 public class TestLoadMonitoringResults {
 
-    private static final String RESULT_ONE = "test1";
-    private static final String RESULT_TWO = "test2";
+    private static final MonitoringType RESULT_ONE = MonitoringType.create("test1");
+    private static final MonitoringType RESULT_TWO = MonitoringType.create("test2");
+    private static final MonitoringType NOT_AVAILABLE = MonitoringType.create("not-available");
 
     @Test
-    public void singleResultSumIp(){
-        final LoadMonitoringResults original = create(Collections.singleton(Result.create(RESULT_ONE, 1.0)));
+    public void singleResultSumIp() {
+        final LoadMonitoringResults original = create(Collections.singleton(MonitoringResult.create(RESULT_ONE, 1.0)));
         LoadMonitoringResults sum = LoadMonitoringResults.sumUp(Collections.singleton(original));
-        Assert.assertEquals(1.0,sum.iterator().next().getValue());
+        Assert.assertEquals(1.0, sum.iterator().next().getValue());
     }
+
     @Test
-    public void sumsUp(){
-        final LoadMonitoringResults original1 = create(Collections.singleton(Result.create(RESULT_ONE, 1.0)));
-        final LoadMonitoringResults original2 = create(Collections.singleton(Result.create(RESULT_ONE, 0.5)));
+    public void sumsUp() {
+        final LoadMonitoringResults original1 = create(Collections.singleton(MonitoringResult.create(RESULT_ONE, 1.0)));
+        final LoadMonitoringResults original2 = create(Collections.singleton(MonitoringResult.create(RESULT_ONE, 0.5)));
         LoadMonitoringResults sum = LoadMonitoringResults.sumUp(asList(original1, original2));
-        Assert.assertEquals(0.75, sum.iterator().next().getValue(),0.001);
+        Assert.assertEquals(0.75, sum.iterator().next().getValue(), 0.001);
     }
+
     @Test
-    public void keepsDifferentTypesAppart(){
-        final LoadMonitoringResults original1 = create(asList(Result.create(RESULT_ONE, 1.0), Result.create(RESULT_TWO, 2.0)));
-        final LoadMonitoringResults original2 = create(asList(Result.create(RESULT_ONE, 0.5), Result.create(RESULT_TWO, 1.0)));
+    public void keepsDifferentTypesAppart() {
+        final LoadMonitoringResults original1 = create(asList(MonitoringResult.create(RESULT_ONE, 1.0), MonitoringResult.create(RESULT_TWO, 2.0)));
+        final LoadMonitoringResults original2 = create(asList(MonitoringResult.create(RESULT_ONE, 0.5), MonitoringResult.create(RESULT_TWO, 1.0)));
         LoadMonitoringResults sum = LoadMonitoringResults.sumUp(asList(original1, original2));
-        Assert.assertEquals(0.75, sum.byName(RESULT_ONE).getValue(),0.001);
-        Assert.assertEquals(1.5, sum.byName(RESULT_TWO).getValue(),0.001);
+        Assert.assertEquals(0.75, sum.byType(RESULT_ONE).getValue(), 0.001);
+        Assert.assertEquals(1.5, sum.byType(RESULT_TWO).getValue(), 0.001);
+    }
+
+    @Test
+    public void throwWhenTypeIsNotAvailable() {
+        final LoadMonitoringResults original1 = create(asList(MonitoringResult.create(RESULT_ONE, 1.0), MonitoringResult.create(RESULT_TWO, 2.0)));
+        try {
+            original1.byType(NOT_AVAILABLE);
+            Assert.fail("Expect exception");
+        } catch (IllegalArgumentException ex) {
+
+        }
     }
 }

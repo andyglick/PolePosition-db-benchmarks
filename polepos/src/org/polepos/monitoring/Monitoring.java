@@ -20,11 +20,10 @@
 
 package org.polepos.monitoring;
 
+import org.polepos.teams.jdbc.CircuitSettings;
 import org.polepos.util.NoArgAction;
 import org.polepos.util.NoArgFunction;
 
-import java.lang.management.ManagementFactory;
-import java.lang.management.OperatingSystemMXBean;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -34,39 +33,44 @@ import java.util.Collections;
  */
 public final class Monitoring {
 
-    public static LoadMonitoringResults monitor(Collection<? extends Sampler> samplers,NoArgAction run){
-        return monitor(samplers,run,BackgroundSampling.INTERVAL_IN_MILLISEC);
-    }
-    public static LoadMonitoringResults monitor(NoArgAction run){
-        return monitor(createDefaultMonitors(),run);
-    }
-    public static <T> ResultAndData<T> monitor(final NoArgFunction<T> run){
-        final MutableReference<T> ref = new MutableReference<T>();
-        LoadMonitoringResults results = monitor(createDefaultMonitors(),new NoArgAction() {
+    private static final CircuitSettings PROPERTIES = new CircuitSettings();
+
+    public static LoadMonitoringResults monitor(final NoArgAction run) {
+        return monitor(new NoArgFunction<Void>() {
             @Override
-            public void invoke() {
-                ref.set(run.invoke());
+            public Void invoke() {
+                run.invoke();
+                return null;
             }
-        });
-        return new ResultAndData<T>(results, ref.get());
+        }).getMonitoring();
+    }
+
+    static <T> ResultAndData<T> monitor(final NoArgFunction<T> run) {
+        return monitor(readSettings(), createDefaultMonitors(), run);
     }
 
     static Collection<? extends Sampler> createDefaultMonitors() {
-        final OperatingSystemMXBean osBean = ManagementFactory.getOperatingSystemMXBean();
-        CPULoadCollector cpuLoad = CPULoadCollector.create(osBean);
-        return Collections.singleton(cpuLoad);
+        return Samplers.defaultInstance().allSamplers();
     }
 
-    static LoadMonitoringResults monitor(Collection<? extends Sampler> samplers,
-                           NoArgAction run,
-                           long samplingIntervalInMillisec){
-        BackgroundSampling sampling = BackgroundSampling.start(samplers,samplingIntervalInMillisec);
-        run.invoke();
-        final Collection<Result> results = sampling.stopAndCollectResults();
-        return LoadMonitoringResults.create(results);
+    static <T> ResultAndData<T> monitor(MonitoringSettings settings, Collection<? extends Sampler> samplers,
+                                        final NoArgFunction<T> run) {
+        if (settings.isEnabled()) {
+            BackgroundSampling sampling = BackgroundSampling.start(samplers, settings.getSamplingRateInMillisec());
+            T data = run.invoke();
+            final Collection<MonitoringResult> results = sampling.stopAndCollectResults();
+            return new ResultAndData<T>(LoadMonitoringResults.create(results), data);
+        } else{
+            T data = run.invoke();
+            return new ResultAndData<T>(LoadMonitoringResults.create(Collections.<MonitoringResult>emptyList()),data);
+        }
     }
 
-    public static class ResultAndData<T>{
+    static MonitoringSettings readSettings() {
+        return MonitoringSettings.create(PROPERTIES);
+    }
+
+    public static class ResultAndData<T> {
         private final LoadMonitoringResults monitoring;
         private final T data;
 

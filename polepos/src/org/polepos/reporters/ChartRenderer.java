@@ -18,38 +18,14 @@
  * MA  02111-1307, USA.MA  02111-1307, USA.
  */
 
-package org.polepos.monitoring;
+package org.polepos.reporters;
+
+import java.awt.*;
 
 /**
  * @author roman.stoffel@gamlor.info
- * @since 14.09.11
+ * @since 16.09.11
  */
-public final class Result {
-    private final String name;
-    private final Double value;
-
-    private Result(String name, Double value) {
-        this.name = name;
-        this.value = value;
-    }
-
-    static Result create(String name, Double value){
-        return new Result(name, value);
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Double getValue() {
-        return value;
-    }
-
-    @Override
-    public String toString() {
-        return "Result{" +
-                "name='" + name + '\'' +
-                ", value=" + value +
-                '}';
-    }
+public interface ChartRenderer {
+	int render(Graphics2D graphics);
 }

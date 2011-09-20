@@ -58,7 +58,7 @@ public class TestBackgroundCollector {
         final BackgroundSampling sampling = BackgroundSampling.start(singleton(check), MonitoringTestUtils.TEST_INTERVAL_IN_MILLISEC);
         MonitoringTestUtils.waitFor(MonitoringTestUtils.TEST_INTERVAL_IN_MILLISEC * 2);
 
-        final Collection<Result> results = sampling.stopAndCollectResults();
+        final Collection<MonitoringResult> results = sampling.stopAndCollectResults();
         assertEquals(1, results.size());
     }
 

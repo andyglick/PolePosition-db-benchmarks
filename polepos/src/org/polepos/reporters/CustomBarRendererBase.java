@@ -31,7 +31,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class CustomBarRendererBase {
+public abstract class CustomBarRendererBase implements ChartRenderer{
 
 	private Graphics graphics;
 	private GraphData graphData;
@@ -93,7 +93,6 @@ public abstract class CustomBarRendererBase {
 
 	public static void main(String[] args) {
 		
-		
 		EmbeddedObjectContainer db = Db4oEmbedded.openFile("graph.db4o");
 		
 		int circuitNo = 5;
@@ -116,7 +115,7 @@ public abstract class CustomBarRendererBase {
 			@Override
 			public void paint(Graphics g) {
 				super.paint(g);
-				renderer.render(g);
+				renderer.render((Graphics2D)g);
 			}
 			
 		};
@@ -148,7 +147,7 @@ public abstract class CustomBarRendererBase {
 		return maxBarWidthWithLegend() / graphData().maxMagnitude;
 	}
 
-	public int render(Graphics graphics) {
+	public int render(Graphics2D graphics) {
 		this.graphics = graphics;
 	
 		graphics.setFont(graphData().teamNameFont);
