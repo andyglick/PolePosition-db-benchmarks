@@ -23,9 +23,11 @@ package org.polepos.reporters;
 import org.polepos.framework.Lap;
 import org.polepos.framework.TimedLapsResult;
 import org.polepos.framework.TurnSetup;
+import org.polepos.monitoring.MonitoringResult;
 import org.polepos.util.CircuitStub;
 import org.polepos.util.TeamStub;
 
+import java.util.Collection;
 import java.util.Collections;
 
 import static org.polepos.monitoring.LoadMonitoringResults.create;
@@ -36,7 +38,6 @@ import static org.polepos.monitoring.LoadMonitoringResults.create;
  */
 final class TestDataFactory {
 
-    private static final int DEFAULT_TIME = 100;
 
     private TestDataFactory(){}
 
@@ -46,8 +47,12 @@ final class TestDataFactory {
     }
 
     static TimedLapsResult createResult(Graph forGraph,int time,String teamName) {
+        return createResult(forGraph, time, teamName, Collections.<MonitoringResult>emptyList());
+    }
+
+    static TimedLapsResult createResult(Graph forGraph, int time, String teamName, Collection<MonitoringResult> monitoringResults) {
         return new TimedLapsResult(
                 forGraph.circuit(), new TeamStub(teamName),forGraph.lap(),
-                new TurnSetup(), create(Collections.<org.polepos.monitoring.Result>emptyList()),0,time,0,0,0);
+                new TurnSetup(), create(monitoringResults),0,time,0,0,0);
     }
 }

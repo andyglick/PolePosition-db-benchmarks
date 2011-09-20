@@ -21,6 +21,8 @@ package org.polepos.reporters;
 
 import org.polepos.framework.*;
 import org.polepos.monitoring.LoadMonitoringResults;
+import org.polepos.monitoring.MonitoringResult;
+import org.polepos.monitoring.MonitoringType;
 
 import java.util.*;
 
@@ -141,8 +143,18 @@ public class Graph {
         }
 		return res.getDatabaseSize();
 	}
-	
-	class TurnCombination {
+
+    public Collection<MonitoringType> availableMonitoryingTypes() {
+        Set<MonitoringType> types = new HashSet<MonitoringType>();
+        for (Result result : results.values()) {
+            for (MonitoringResult monitoringResult : result.getLoadMonitoring()) {
+                types.add(monitoringResult.getType());
+            }
+        }
+        return types;
+    }
+
+    class TurnCombination {
         
         final TeamCar teamCar;
         final TurnSetup setup;

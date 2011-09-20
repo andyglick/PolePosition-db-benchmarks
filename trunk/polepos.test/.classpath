@@ -6,6 +6,7 @@
 	<classpathentry path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1" kind="con"/>
 	<classpathentry path="bin" kind="output"/>
 	<classpathentry kind="lib" path="../polepost/lib/mongoDB/mongo-2.6.3.jar"/>
+	<classpathentry kind="lib" path="../polepost/lib/sigar/sigar.jar"/>
 	<classpathentry kind="lib" path="./lib/mockito-all-1.8.5.jar"/>
 	<classpathentry kind="lib" path="./lib/ApprovalTests.jar"/>
 </classpath>

@@ -60,7 +60,7 @@ public class TestCPULoadCollector {
 
         toTest.sample();
         toTest.sample();
-        final Result result = toTest.sample();
+        final MonitoringResult result = toTest.sample();
         Assert.assertEquals(0.75,(Double )result.getValue(),0.001);
     }
 }

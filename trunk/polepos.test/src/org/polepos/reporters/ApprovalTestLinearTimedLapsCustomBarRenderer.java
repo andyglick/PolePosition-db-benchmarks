@@ -21,7 +21,6 @@
 package org.polepos.reporters;
 
 import org.approvaltests.Approvals;
-import org.junit.Before;
 import org.junit.Test;
 import org.polepos.framework.TeamCar;
 import org.polepos.framework.TimedLapsResult;
@@ -29,7 +28,6 @@ import org.polepos.util.CarStub;
 import org.polepos.util.TeamStub;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 
 import static org.polepos.reporters.TestDataFactory.createEmptyGraph;
 import static org.polepos.reporters.TestDataFactory.createResult;
@@ -38,18 +36,14 @@ import static org.polepos.reporters.TestDataFactory.createResult;
  * @author roman.stoffel@gamlor.info
  * @since 16.09.11
  */
-public class ApprovalTestLinearTimedLapsCustomBarRenderer {
+public class ApprovalTestLinearTimedLapsCustomBarRenderer extends RenderingApprovalBase{
 
-    private BufferedImage renderTarget;
-    private Graphics graphic;
     private Graph graph;
 
-    @Before
-    public void setup(){
+    @Override
+    protected void additionalSetup() {
+
         this.graph = createEmptyGraph();
-        this.renderTarget = new BufferedImage(640,480,BufferedImage.TYPE_INT_ARGB);
-        this.graphic = renderTarget.getGraphics();
-        graphic.setClip(0,0,640,480);
     }
 
     @Test
@@ -60,8 +54,8 @@ public class ApprovalTestLinearTimedLapsCustomBarRenderer {
 
         LinearTimedLapsCustomBarRenderer toTest = new LinearTimedLapsCustomBarRenderer(graph);
 
-        toTest.render(graphic);
-        Approvals.approve(renderTarget);
+        toTest.render(graphic());
+        Approvals.approve(image());
     }
     @Test
     public void threeItemResult() throws Exception {
@@ -72,8 +66,8 @@ public class ApprovalTestLinearTimedLapsCustomBarRenderer {
 
         LinearTimedLapsCustomBarRenderer toTest = new LinearTimedLapsCustomBarRenderer(graph);
 
-        toTest.render(graphic);
-        Approvals.approve(renderTarget);
+        toTest.render(graphic());
+        Approvals.approve(image());
     }
 
     private void addTimeToGraph(int timeInMilliSec,String teamName,Color color) {

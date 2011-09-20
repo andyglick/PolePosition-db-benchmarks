@@ -28,27 +28,35 @@ import java.util.*;
  * @author roman.stoffel@gamlor.info
  * @since 14.09.11
  */
-public final class LoadMonitoringResults implements Iterable<Result>{
-    private final Map<String,Result> results;
+public final class LoadMonitoringResults implements Iterable<MonitoringResult>{
+    private final Map<MonitoringType,MonitoringResult> results;
 
-    private LoadMonitoringResults(Map<String,Result> results) {
+    private LoadMonitoringResults(Map<MonitoringType,MonitoringResult> results) {
         this.results = results;
     }
 
-    public static LoadMonitoringResults create(Collection<Result> results){
-        Map<String,Result> map = new HashMap<String, Result>();
-        for (Result result : results) {
-            map.put(result.getName(),result);
+    public static LoadMonitoringResults create(Collection<MonitoringResult> results){
+        Map<MonitoringType,MonitoringResult> map = new HashMap<MonitoringType, MonitoringResult>();
+        for (MonitoringResult result : results) {
+            map.put(result.getType(),result);
         }
         return new LoadMonitoringResults(map);
     }
 
     @Override
-    public Iterator<Result> iterator() {
+    public Iterator<MonitoringResult> iterator() {
         return results.values().iterator();
     }
 
-    public Result byName(String name){
+    public MonitoringResult byType(MonitoringType name){
+        final MonitoringResult returnValue = tryGetType(name);
+        if(null==returnValue){
+            throw new IllegalArgumentException("Couldn't find entry for "+name);
+        }
+        return returnValue;
+    }
+
+    public MonitoringResult tryGetType(MonitoringType name) {
         return results.get(name);
     }
 
@@ -60,17 +68,17 @@ public final class LoadMonitoringResults implements Iterable<Result>{
     }
 
     public static LoadMonitoringResults sumUp(Iterable<LoadMonitoringResults> resultsCollections){
-        Map<String,Result> sumMpa = new HashMap<String, Result>();
+        Map<MonitoringType,MonitoringResult> sumMpa = new HashMap<MonitoringType, MonitoringResult>();
         int count = 0;
         for (LoadMonitoringResults resultCollection : resultsCollections) {
             count++;
-            for (Map.Entry<String, Result> resultEntry : resultCollection.results.entrySet()) {
+            for (Map.Entry<MonitoringType, MonitoringResult> resultEntry : resultCollection.results.entrySet()) {
                 if(!sumMpa.containsKey(resultEntry.getKey())) {
                     sumMpa.put(resultEntry.getKey(),resultEntry.getValue());
                 } else{
                     double oldResult = sumMpa.get(resultEntry.getKey()).getValue();
                     double average = MathUtil.incrementalAverage(oldResult,count, resultEntry.getValue().getValue());
-                    sumMpa.put(resultEntry.getKey(),Result.create(resultEntry.getKey(),average));
+                    sumMpa.put(resultEntry.getKey(), MonitoringResult.create(resultEntry.getKey(), average));
                 }
             }
         }

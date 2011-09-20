@@ -22,7 +22,8 @@ package org.polepos.reporters;
 
 import org.polepos.framework.TeamCar;
 import org.polepos.framework.TurnSetup;
-import org.polepos.monitoring.LoadMonitoringResults;
+import org.polepos.monitoring.MonitoringResult;
+import org.polepos.monitoring.MonitoringType;
 
 import java.awt.*;
 
@@ -30,10 +31,14 @@ import java.awt.*;
  * @author roman.stoffel@gamlor.info
  * @since 15.09.11
  */
-public final class LoadGraphRenderer extends TimedLapsCustomBarRendererBase {
+public final class LoadGraphRenderer extends TimedLapsCustomBarRendererBase{
 
-    public LoadGraphRenderer(Graph graph) {
+
+    private final MonitoringType type;
+
+    public LoadGraphRenderer(Graph graph, MonitoringType type) {
         super(graph);
+        this.type = type;
     }
 	@Override
 	protected boolean doDrawXAxisMarker(int i) {
@@ -47,7 +52,7 @@ public final class LoadGraphRenderer extends TimedLapsCustomBarRendererBase {
 
 	@Override
 	protected String legendOnRightOfBar(TeamData teamData) {
-		return teamData.val + "% CPU";
+		return teamData.val + type.getLabel();
 	}
 
 	@Override
@@ -65,27 +70,24 @@ public final class LoadGraphRenderer extends TimedLapsCustomBarRendererBase {
 
 	@Override
 	double maxBarWidthWithLegend() {
-		String worst = "" + graph.worst + " % CPU";
+		String worst = "" + graph.worst + " "+type.getLabel();
 		return maxBarWidth() - textWidth(worst) -1;
 	}
 
     @Override
     protected long valueToShow(Graph graph, TurnSetup setup, TeamCar teamCar) {
-        final LoadMonitoringResults loadMonitoringResults = graph.loadMonitoring(teamCar, setup);
-        if(loadMonitoringResults.iterator().hasNext()){
-            return (long)(100L * loadMonitoringResults.iterator().next().getValue());
-        } else{
-            return 0L;
+        final MonitoringResult loadMonitoringResult = graph.loadMonitoring(teamCar, setup).tryGetType(type);
+        if(null==loadMonitoringResult){
+            return 0;
         }
+        return loadMonitoringResult.getType().calculateDisplayNumber(loadMonitoringResult.getValue());
     }
 
     @Override
 	protected int renderXLegend(Graphics graphics, int y, int axisX) {
-        String legend = "System CPU Load in % (less is better)";
+        String legend = type.getName()+" in "+this.type.getUnitOfMeasurment()+" (less is better)";
 		graphics.setFont(graphData().turnLegendFont);
 		graphics.drawString(legend, axisX, (int)(y+graphData().markerHeight+textHeight(legend)));
 		return (int) (y + stride()*2);
 	}
-
-
 }

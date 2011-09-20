@@ -18,28 +18,39 @@
  * MA  02111-1307, USA.MA  02111-1307, USA.
  */
 
-package org.polepos.monitoring;
+package org.polepos.reporters;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import org.junit.Before;
 
-import static junit.framework.Assert.assertTrue;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /**
-* @author roman.stoffel@gamlor.info
-* @since 15.09.11
-*/
-class CallCountingSampler implements Sampler {
-    private final AtomicInteger wasCalled = new AtomicInteger(0);
-    @Override
-    public MonitoringResult sample() {
-        wasCalled.incrementAndGet();
-        return MonitoringResult.create(MonitoringType.create("test"), 1.0);
+ * @author roman.stoffel@gamlor.info
+ * @since 16.09.11
+ */
+public abstract class RenderingApprovalBase {
+
+    private BufferedImage renderTarget;
+    private Graphics2D graphic;
+
+    @Before
+    public final void setup(){
+        this.renderTarget = new BufferedImage(640,480,BufferedImage.TYPE_INT_ARGB);
+        this.graphic = renderTarget.createGraphics();
+        graphic.setClip(0,0,640,480);
+        additionalSetup();
     }
 
-    public void assertHasBeenCalled(){
-        wasCalledAtLeast(1);
+    protected void additionalSetup() {
+
     }
-    public void wasCalledAtLeast(int times){
-        assertTrue(wasCalled.intValue() >= times);
+
+    public final BufferedImage image() {
+        return renderTarget;
+    }
+
+    public final Graphics2D graphic() {
+        return graphic;
     }
 }

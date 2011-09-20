@@ -51,5 +51,6 @@
 	<classpathentry kind="lib" path="lib/datanucleus/datanucleus-jdo-query-3.0.0-m3.jar"/>
 	<classpathentry kind="lib" path="lib/datanucleus/datanucleus-rdbms-3.0.0-m6.jar"/>
 	<classpathentry kind="lib" path="lib/mongoDB/mongo-2.6.3.jar"/>
+	<classpathentry kind="lib" path="lib/sigar/sigar.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
