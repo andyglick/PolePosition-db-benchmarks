@@ -6,10 +6,7 @@ import org.polepos.util.NoArgFunction;
 import java.util.Collection;
 import java.util.Collections;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotNull;
-import static org.polepos.monitoring.MonitoringTestUtils.TEST_INTERVAL_IN_MILLISEC;
+import static junit.framework.Assert.*;
 import static org.polepos.monitoring.MonitoringTestUtils.waitFor;
 
 /**
@@ -33,7 +30,7 @@ public class TestMonitoring {
     }
 
     private MonitoringSettings testSettings() {
-        return new MonitoringSettings(true,TEST_INTERVAL_IN_MILLISEC);
+        return new MonitoringSettings(true);
     }
 
     @Test
@@ -61,7 +58,7 @@ public class TestMonitoring {
     }
     @Test
     public void canDisableMonitoring() {
-        final MonitoringSettings settings = new MonitoringSettings(false, TEST_INTERVAL_IN_MILLISEC);
+        final MonitoringSettings settings = new MonitoringSettings(false);
         final Collection<? extends Sampler> defaults = Monitoring.createDefaultMonitors();
         final LoadMonitoringResults results = Monitoring.monitor(settings, defaults, new NoArgFunction<Object>() {
             @Override

@@ -33,22 +33,22 @@ public class TestSamplers {
 
     @Test
     public void returnsCPULoadMeter(){
-        final Sampler sampler = Samplers.defaultInstance().cpuLoad();
-        Assert.assertFalse(sampler.sample().getValue() ==0.0);
+        final Sampler sampler = Samplers.newInstance().cpuLoad();
+        Assert.assertTrue(sampler.collectResult().getValue() >=0.0);
     }
     @Test
     public void returnDiskReadCounter(){
-        final Sampler sampler = Samplers.defaultInstance().diskReads();
-        Assert.assertTrue(sampler.sample().getValue() >= 0.0);
+        final Sampler sampler = Samplers.newInstance().diskReads();
+        Assert.assertTrue(sampler.collectResult().getValue() >= 0.0);
     }
     @Test
     public void returnNetwork(){
-        final Sampler sampler = Samplers.defaultInstance().networkReads();
-        Assert.assertTrue(sampler.sample().getValue() >= 0.0);
+        final Sampler sampler = Samplers.newInstance().networkReads();
+        Assert.assertTrue(sampler.collectResult().getValue() >= 0.0);
     }
     @Test
     public void doesContainAllSamplers(){
-        final Collection<? extends Sampler> samplers = Samplers.defaultInstance().allSamplers();
+        final Collection<? extends Sampler> samplers = Samplers.newInstance().allSamplers();
         assertContains(CPULoadCollector.class,samplers);
         assertContains(NetworkReceiveCollector.class,samplers);
     }

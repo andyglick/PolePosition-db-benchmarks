@@ -20,14 +20,14 @@
 
 package org.polepos.monitoring;
 
-import com.sun.management.OperatingSystemMXBean;
 import junit.framework.Assert;
+import org.hyperic.sigar.Cpu;
+import org.hyperic.sigar.SigarException;
+import org.hyperic.sigar.SigarProxy;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.lang.management.ManagementFactory;
-
-import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -37,30 +37,39 @@ import static org.mockito.Mockito.when;
  */
 public class TestCPULoadCollector {
 
-    private CPULoadCollector toTest;
+    private Sampler toTest;
+    private SigarProxy sigarMock;
+    private Cpu cpuMock;
 
     @Before
-    public void setup(){
-        this.toTest = new CPULoadCollector((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean());
+    public void setup() throws SigarException {
+        this.sigarMock = mock(SigarProxy.class);
+        this.cpuMock = mock(Cpu.class);
+        when(sigarMock.getCpu()).thenReturn(cpuMock);
+        this.toTest = CPULoadCollector.create(sigarMock);
     }
 
     @Test
     public void returnsNumberBiggerThanZero(){
-        double number = (Double)toTest.sample().getValue();
+        double number = toTest.collectResult().getValue();
         assertNotNull(number);
-        Assert.assertTrue(number>0.0);
+        Assert.assertTrue(number>=0.0);
     }
     @Test
-    public void buildsAverage(){
-        OperatingSystemMXBean mxBeanMock = mock(OperatingSystemMXBean.class);
-        when(mxBeanMock.getSystemCpuLoad()).thenReturn(0.5)
-                .thenReturn(0.75).thenReturn(1.0);
-
-        toTest = new CPULoadCollector(mxBeanMock);
-
-        toTest.sample();
-        toTest.sample();
-        final MonitoringResult result = toTest.sample();
-        Assert.assertEquals(0.75,(Double )result.getValue(),0.001);
+    public void returnsDiff(){
+        when(cpuMock.getTotal()).thenReturn(1000L);
+        when(cpuMock.getUser()).thenReturn(200L);
+        when(cpuMock.getSys()).thenReturn(100L);
+        final MonitoringResult result = toTest.collectResult();
+        Assert.assertEquals(0.3, result.getValue(),0.001);
+    }
+    @Test
+    public void returnsDiffOverTime(){
+        when(cpuMock.getTotal()).thenReturn(1000L,2000L);
+        when(cpuMock.getUser()).thenReturn(200L,300L);
+        when(cpuMock.getSys()).thenReturn(100L,150L);
+        this.toTest = CPULoadCollector.create(sigarMock);
+        final MonitoringResult result = toTest.collectResult();
+        Assert.assertEquals(0.15, result.getValue(),0.001);
     }
 }

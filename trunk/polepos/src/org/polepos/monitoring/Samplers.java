@@ -24,8 +24,6 @@ import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarProxy;
 import org.hyperic.sigar.SigarProxyCache;
 
-import java.lang.management.ManagementFactory;
-import java.lang.management.OperatingSystemMXBean;
 import java.util.Collection;
 
 import static java.util.Arrays.asList;
@@ -35,21 +33,20 @@ import static java.util.Arrays.asList;
  * @since 16.09.11
  */
 public final class Samplers {
-    private final OperatingSystemMXBean osBean;
+    private static final int INTERVAL = 25;
     private final SigarProxy sigar;
 
     private Samplers(){
-        this.osBean = ManagementFactory.getOperatingSystemMXBean();
-        this.sigar = SigarProxyCache.newInstance(new Sigar(),(int)BackgroundSampling.INTERVAL_IN_MILLISEC/2);
+        this.sigar = SigarProxyCache.newInstance(new Sigar(), INTERVAL);
 
     }
 
-    public static Samplers defaultInstance(){
+    public static Samplers newInstance(){
         return new Samplers();
     }
 
     public Sampler cpuLoad() {
-        return CPULoadCollector.create(osBean);
+        return CPULoadCollector.create(sigar);
     }
 
     public Collection<? extends Sampler> allSamplers(){

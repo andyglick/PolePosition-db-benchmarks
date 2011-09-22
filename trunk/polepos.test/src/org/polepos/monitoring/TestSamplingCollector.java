@@ -31,31 +31,22 @@ import static junit.framework.Assert.assertEquals;
  * @author roman.stoffel@gamlor.info
  * @since 15.09.11
  */
-public class TestBackgroundCollector {
+public class TestSamplingCollector {
 
     @Test
     public void callsSamplers(){
         CallCountingSampler check = new CallCountingSampler();
-        final BackgroundSampling sampling = BackgroundSampling.start(singleton(check), MonitoringTestUtils.TEST_INTERVAL_IN_MILLISEC);
+        final SamplingCollector sampling = SamplingCollector.start(singleton(check));
         MonitoringTestUtils.waitFor(MonitoringTestUtils.TEST_INTERVAL_IN_MILLISEC * 2);
 
+        sampling.stopAndCollectResults();
         check.assertHasBeenCalled();
-        sampling.stopAndCollectResults();
 
-    }
-    @Test
-    public void samples(){
-        CallCountingSampler check = new CallCountingSampler();
-        final BackgroundSampling sampling = BackgroundSampling.start(singleton(check), MonitoringTestUtils.TEST_INTERVAL_IN_MILLISEC);
-        MonitoringTestUtils.waitFor(MonitoringTestUtils.TEST_INTERVAL_IN_MILLISEC * 4);
-
-        check.wasCalledAtLeast(3);
-        sampling.stopAndCollectResults();
     }
     @Test
     public void returnsResult(){
         CallCountingSampler check = new CallCountingSampler();
-        final BackgroundSampling sampling = BackgroundSampling.start(singleton(check), MonitoringTestUtils.TEST_INTERVAL_IN_MILLISEC);
+        final SamplingCollector sampling = SamplingCollector.start(singleton(check));
         MonitoringTestUtils.waitFor(MonitoringTestUtils.TEST_INTERVAL_IN_MILLISEC * 2);
 
         final Collection<MonitoringResult> results = sampling.stopAndCollectResults();

@@ -41,30 +41,30 @@ public class TestNetworkReceiveCollector {
     @Test
     public void returnsBytes() throws SigarException {
         SigarProxy sigarMock = mock(SigarProxy.class);
-        setupMockToReturn(sigarMock,100L,200L,300L,100L,200L,300L);
+        setupMockToReturn(sigarMock,100L,200L,300L,100L,200L,300L,100L,200L,300L);
 
         final Sampler toTest = NetworkReceiveCollector.create(sigarMock);
-        final MonitoringResult result = toTest.sample();
+        final MonitoringResult result = toTest.collectResult();
         Assert.assertEquals(0.0,result.getValue(), DELTA);
     }
     @Test
     public void sumsUp() throws SigarException {
         SigarProxy sigarMock = mock(SigarProxy.class);
-        setupMockToReturn(sigarMock,100L,200L,300L,200L,250L,330L);
+        setupMockToReturn(sigarMock,100L,200L,300L,100L,200L,300L,200L,250L,330L);
 
         final Sampler toTest = NetworkReceiveCollector.create(sigarMock);
-        final MonitoringResult result = toTest.sample();
+        final MonitoringResult result = toTest.collectResult();
         Assert.assertEquals(180.0,result.getValue(), DELTA);
     }
 
-    private void setupMockToReturn(SigarProxy sigarMock, long firstValueInKByte, Long...otherInKByte) throws SigarException {
+    private void setupMockToReturn(SigarProxy sigarMock, long firstValueInKByte, long...otherInKByte) throws SigarException {
         when(sigarMock.getNetInterfaceList()).thenReturn(new String[]{"etc0","etc1","etc2"});
         NetInterfaceStat netStats = mock(NetInterfaceStat.class);
         when(sigarMock.getNetInterfaceStat(anyString())).thenReturn(netStats);
         when(netStats.getRxBytes()).thenReturn(firstValueInKByte*NetworkReceiveCollector.KILO_BYTE,toKiloByte(otherInKByte));
     }
 
-    private Long[] toKiloByte(Long[] otherInKByte) {
+    private Long[] toKiloByte(long[] otherInKByte) {
         Long[] result = new Long[otherInKByte.length];
         for(int i=0;i<otherInKByte.length;i++){
             result[i] = otherInKByte[i]  * NetworkReceiveCollector.KILO_BYTE;

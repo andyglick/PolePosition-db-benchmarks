@@ -31,7 +31,7 @@ import static junit.framework.Assert.assertTrue;
 class CallCountingSampler implements Sampler {
     private final AtomicInteger wasCalled = new AtomicInteger(0);
     @Override
-    public MonitoringResult sample() {
+    public MonitoringResult collectResult() {
         wasCalled.incrementAndGet();
         return MonitoringResult.create(MonitoringType.create("test"), 1.0);
     }

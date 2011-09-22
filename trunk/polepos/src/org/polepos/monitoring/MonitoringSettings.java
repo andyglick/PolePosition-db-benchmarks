@@ -30,31 +30,18 @@ final class MonitoringSettings {
     static final String MONITORING_IS_ENABLED = "monitoring";
     static final String MONITORING_SAMPLING_RATE = "monitoring.samplingrate";
     private final boolean isEnabled;
-    private final long samplingRate;
 
-    MonitoringSettings(boolean enabled, long samplingRate) {
+    MonitoringSettings(boolean enabled) {
         isEnabled = enabled;
-        this.samplingRate = samplingRate;
     }
 
     public static MonitoringSettings create(PropertiesHandler properties){
-        return new MonitoringSettings(properties.getBoolean(MONITORING_IS_ENABLED), readSamplingRate(properties));
+        return new MonitoringSettings(properties.getBoolean(MONITORING_IS_ENABLED));
     }
 
-    private static long readSamplingRate(PropertiesHandler properties) {
-        final String rate = properties.get(MONITORING_SAMPLING_RATE);
-        if(null==rate){
-            return BackgroundSampling.INTERVAL_IN_MILLISEC;
-        }
-        return Long.parseLong(rate);
-    }
 
 
     public boolean isEnabled(){
         return isEnabled;
-    }
-
-    public long getSamplingRateInMillisec() {
-        return samplingRate;
     }
 }
