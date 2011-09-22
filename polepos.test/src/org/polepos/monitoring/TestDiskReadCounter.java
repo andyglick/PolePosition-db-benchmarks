@@ -51,7 +51,7 @@ public class TestDiskReadCounter {
         when(sigarMock.getReads()).thenReturn(1L,5L);
 
         final DiskReadCounter toTest = new DiskReadCounter(map("C:\\", sigarMock));
-        final Double diskReads = toTest.sample().getValue();
+        final Double diskReads = toTest.collectResult().getValue();
 
         Assert.assertEquals(4.0,diskReads, DELTA);
     }
@@ -63,8 +63,8 @@ public class TestDiskReadCounter {
         when(sigarMock.getReads()).thenReturn(2L,5L,20L);
 
         final DiskReadCounter toTest = new DiskReadCounter(map("C:\\", sigarMock));
-        toTest.sample();
-        final Double diskReads = toTest.sample().getValue();
+        toTest.collectResult();
+        final Double diskReads = toTest.collectResult().getValue();
 
         Assert.assertEquals(18.0,diskReads, DELTA);
     }
@@ -73,7 +73,7 @@ public class TestDiskReadCounter {
         DiskUsage sigarMock = diskWithReads(1L,5).invoke();
 
         final DiskReadCounter toTest = new DiskReadCounter(map("C:\\",sigarMock));
-        final String name = toTest.sample().getType().getName();
+        final String name = toTest.collectResult().getType().getName();
 
         Assert.assertEquals(name,DiskReadCounter.SAMPLER_NAME+"C:\\");
     }
@@ -86,8 +86,8 @@ public class TestDiskReadCounter {
         disks.put("/dsk3/", diskWithReads(0,3));
 
         final DiskReadCounter toTest = new DiskReadCounter(disks);
-        final Double diskReads = toTest.sample().getValue();
-        final String name = toTest.sample().getType().getName();
+        final Double diskReads = toTest.collectResult().getValue();
+        final String name = toTest.collectResult().getType().getName();
 
         Assert.assertEquals(100.0,diskReads, DELTA);
         Assert.assertEquals(name,DiskReadCounter.SAMPLER_NAME+"/dsk2/");
@@ -105,8 +105,8 @@ public class TestDiskReadCounter {
 
 
         final Sampler toTest = DiskReadCounter.create(sigar);
-        final Double diskReads = toTest.sample().getValue();
-        final String name = toTest.sample().getType().getName();
+        final Double diskReads = toTest.collectResult().getValue();
+        final String name = toTest.collectResult().getType().getName();
 
         Assert.assertEquals(6.0,diskReads, DELTA);
         Assert.assertEquals(name,DiskReadCounter.SAMPLER_NAME+DISK_ONE);

@@ -26,14 +26,14 @@ package org.polepos.monitoring;
  */
 public final class MonitoringResult {
     private final MonitoringType name;
-    private final Double value;
+    private final double value;
 
-    private MonitoringResult(MonitoringType name, Double value) {
+    private MonitoringResult(MonitoringType name, double value) {
         this.name = name;
         this.value = value;
     }
 
-    public static MonitoringResult create(MonitoringType name, Double value){
+    public static MonitoringResult create(MonitoringType name, double value){
         return new MonitoringResult(name, value);
     }
 
@@ -41,7 +41,7 @@ public final class MonitoringResult {
         return name;
     }
 
-    public Double getValue() {
+    public double getValue() {
         return value;
     }
 

@@ -20,13 +20,33 @@
 
 package org.polepos.monitoring;
 
+import java.util.*;
+
 /**
  * @author roman.stoffel@gamlor.info
  * @since 14.09.11
  */
-interface Sampler {
+final class SamplingCollector {
+    private volatile List<Sampler> samplers;
 
-    MonitoringResult collectResult();
+    private SamplingCollector(Collection<? extends Sampler> samplers) {
+        this.samplers = new ArrayList<Sampler>(samplers);
+    }
+
+    public static SamplingCollector start(Collection<? extends Sampler> samplers){
+        return new SamplingCollector(samplers);
+    }
+
+    private List<MonitoringResult> sampleAndReturnResults() {
+        ArrayList<MonitoringResult> results = new ArrayList<MonitoringResult>();
+        for (Sampler sampler : samplers) {
+            results.add(sampler.collectResult());
+        }
+        return results;
+    }
 
 
+    public Collection<MonitoringResult> stopAndCollectResults() {
+        return sampleAndReturnResults();
+    }
 }

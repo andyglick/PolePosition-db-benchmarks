@@ -20,32 +20,52 @@
 
 package org.polepos.monitoring;
 
-import com.sun.management.OperatingSystemMXBean;
-import org.polepos.util.MathUtil;
+import org.hyperic.sigar.Cpu;
+import org.hyperic.sigar.SigarException;
+import org.hyperic.sigar.SigarProxy;
+
+import static org.polepos.util.JavaLangUtils.rethrow;
 
 /**
  * @author roman.stoffel@gamlor.info
  * @since 14.09.11
  */
 public final class CPULoadCollector implements Sampler {
-    private final OperatingSystemMXBean systemInfo;
-    private int influence = 0;
-    private double currentAverage;
+    private final SigarProxy systemInfo;
+    private long initialTotal = 0;
+    private long initialLoad = 0;
 
     public static final MonitoringType TYPE = MonitoringType.percentUnit("CPU Load Average", "% CPU");
 
-    public CPULoadCollector(OperatingSystemMXBean systemInfo) {
+    CPULoadCollector(SigarProxy systemInfo, long initialTotal, long initialLoad) {
         this.systemInfo = systemInfo;
+        this.initialTotal = initialTotal;
+        this.initialLoad = initialLoad;
     }
 
     @Override
-    public MonitoringResult sample() {
-        influence++;
-        currentAverage = MathUtil.incrementalAverage(currentAverage, influence, systemInfo.getSystemCpuLoad());
-        return MonitoringResult.create(TYPE, currentAverage);
+    public MonitoringResult collectResult() {
+        final Cpu cpu = getCPU(systemInfo);
+        long diffTotal = Math.max(cpu.getTotal()-initialTotal,1);
+        long diffLoad = usedTime(cpu)-initialLoad;
+        double loadFactor = (double)diffLoad / (double)diffTotal;
+        return MonitoringResult.create(TYPE, loadFactor);
     }
 
-    public static CPULoadCollector create(java.lang.management.OperatingSystemMXBean osBean) {
-        return new CPULoadCollector((OperatingSystemMXBean) osBean);
+
+    public static Sampler create(SigarProxy systemInfo) {
+            final Cpu cpu = getCPU(systemInfo);
+            return new CPULoadCollector(systemInfo, cpu.getTotal(), usedTime(cpu));
+    }
+    private static Cpu getCPU(SigarProxy systemInfo) {
+        try {
+            return systemInfo.getCpu();
+        } catch (SigarException e) {
+            throw rethrow(e);
+        }
+    }
+
+    private static long usedTime(Cpu cpu) {
+        return cpu.getUser()+cpu.getSys();
     }
 }

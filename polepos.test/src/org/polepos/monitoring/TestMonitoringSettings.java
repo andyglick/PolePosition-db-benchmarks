@@ -23,7 +23,6 @@ package org.polepos.monitoring;
 import org.junit.Test;
 import org.polepos.framework.PropertiesHandler;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -46,18 +45,6 @@ public class TestMonitoringSettings {
         PropertiesHandler handler = monitoringCfg(false);
         MonitoringSettings toTest = MonitoringSettings.create(handler);
         assertFalse(toTest.isEnabled());
-    }
-    @Test
-    public void samplingRate(){
-        PropertiesHandler handler = samplingRate("100");
-        MonitoringSettings toTest = MonitoringSettings.create(handler);
-        assertEquals(100L,toTest.getSamplingRateInMillisec());
-    }
-    @Test
-    public void defaultSampling(){
-        PropertiesHandler handler = samplingRate(null);
-        MonitoringSettings toTest = MonitoringSettings.create(handler);
-        assertEquals(BackgroundSampling.INTERVAL_IN_MILLISEC,toTest.getSamplingRateInMillisec());
     }
 
     private PropertiesHandler monitoringCfg(boolean isMonitoringEnabled) {

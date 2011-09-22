@@ -50,13 +50,13 @@ public final class Monitoring {
     }
 
     static Collection<? extends Sampler> createDefaultMonitors() {
-        return Samplers.defaultInstance().allSamplers();
+        return Samplers.newInstance().allSamplers();
     }
 
     static <T> ResultAndData<T> monitor(MonitoringSettings settings, Collection<? extends Sampler> samplers,
                                         final NoArgFunction<T> run) {
         if (settings.isEnabled()) {
-            BackgroundSampling sampling = BackgroundSampling.start(samplers, settings.getSamplingRateInMillisec());
+            SamplingCollector sampling = SamplingCollector.start(samplers);
             T data = run.invoke();
             final Collection<MonitoringResult> results = sampling.stopAndCollectResults();
             return new ResultAndData<T>(LoadMonitoringResults.create(results), data);
