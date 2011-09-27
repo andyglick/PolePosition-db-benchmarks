@@ -1,0 +1,44 @@
+<project name="poleposition.monitoring" default="dist" basedir=".">
+
+    <property name="distFolder" value="./dist"/>
+    <property name="compileFolder" value="./bin"/>
+
+    <path id="monitoring_classpath">
+        <fileset dir="./lib">
+            <include name="**/*.jar"/>
+        </fileset>
+        <pathelement location="bin"/>
+    </path>
+
+    <target name="compile" description="compiles the monitoring sources" depends="clean">
+        <mkdir dir="${compileFolder}"/>
+        <copy todir="${compileFolder}">
+            <fileset dir="src/main">
+                <include name="**/**"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <javac destdir="${compileFolder}" debug="true">
+            <src path="src/main"/>
+            <classpath refid="monitoring_classpath"/>
+        </javac>
+    </target>
+
+    <target name="jar" depends="compile">
+        <jar destfile="${distFolder}/polepos.monitoring.jar" basedir="${compileFolder}"/>
+    </target>
+
+    <target name="dist" depends="jar">
+        <copy todir="${distFolder}">
+            <fileset dir="./lib">
+                <include name="**/**"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="clean">
+        <delete dir="${distFolder}"/>
+        <delete dir="${compileFolder}"/>
+    </target>
+
+</project>

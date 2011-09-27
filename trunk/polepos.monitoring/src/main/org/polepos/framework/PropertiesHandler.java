@@ -22,9 +22,11 @@ package org.polepos.framework;
 import java.io.*;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.logging.Logger;
 
 public class PropertiesHandler
 {
+    public final static Logger logger = Logger.getLogger( PropertiesHandler.class.getPackage().getName() );
 	private final static	String		DBPROPSDIR = ".bdbench";
 	private final			String		_fileName;
 	private					Properties	_properties;
@@ -79,14 +81,14 @@ public class PropertiesHandler
                 	_properties.load( propertiesStream );
                 }
                 else {
-        			Log.logger.warning( "Cannot load default properties." );
+        			logger.warning( "Cannot load default properties." );
         			return false;
                 }
             }
 		}
 		catch ( IOException ioex )
 		{
-			Log.logger.warning( "Cannot load default properties." );
+			logger.warning( "Cannot load default properties." );
 			return false;
 		}
 
@@ -98,7 +100,7 @@ public class PropertiesHandler
 		catch ( IOException ioex )
 		{
 			// no custom file present .... thats ok.
-			Log.logger.info( "No custom properties found. Using defaults." );
+			logger.info( "No custom properties found. Using defaults." );
 
 			// create the missing file
 			save();
@@ -122,7 +124,7 @@ public class PropertiesHandler
 		}
 		catch ( IOException ioex )
 		{
-			Log.logger.warning( "Cannot save custom settings." );
+			logger.warning( "Cannot save custom settings." );
 			return false;
 		}
 		return true;
