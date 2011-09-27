@@ -20,7 +20,7 @@
 
 package org.polepos.monitoring;
 
-import org.polepos.teams.jdbc.CircuitSettings;
+import org.polepos.framework.PropertiesHandler;
 import org.polepos.util.NoArgAction;
 import org.polepos.util.NoArgFunction;
 
@@ -33,7 +33,7 @@ import java.util.Collections;
  */
 public final class Monitoring {
 
-    private static final CircuitSettings PROPERTIES = new CircuitSettings();
+    private static final PropertiesHandler PROPERTIES = new PropertiesHandler("settings/Monitoring.properties");
 
     public static LoadMonitoringResults monitor(final NoArgAction run) {
         return monitor(new NoArgFunction<Void>() {

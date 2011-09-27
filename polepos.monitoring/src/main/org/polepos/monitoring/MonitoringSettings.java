@@ -28,7 +28,6 @@ import org.polepos.framework.PropertiesHandler;
  */
 final class MonitoringSettings {
     static final String MONITORING_IS_ENABLED = "monitoring";
-    static final String MONITORING_SAMPLING_RATE = "monitoring.samplingrate";
     private final boolean isEnabled;
 
     MonitoringSettings(boolean enabled) {

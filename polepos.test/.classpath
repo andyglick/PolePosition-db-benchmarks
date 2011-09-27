@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry path="src" kind="src"/>
-	<classpathentry path="org.eclipse.jdt.launching.JRE_CONTAINER" kind="con"/>
-	<classpathentry path="/polepos" combineaccessrules="false" kind="src"/>
-	<classpathentry path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1" kind="con"/>
-	<classpathentry path="bin" kind="output"/>
-	<classpathentry kind="lib" path="../polepost/lib/mongoDB/mongo-2.6.3.jar"/>
-	<classpathentry kind="lib" path="../polepost/lib/sigar/sigar.jar"/>
-	<classpathentry kind="lib" path="./lib/mockito-all-1.8.5.jar"/>
-	<classpathentry kind="lib" path="./lib/ApprovalTests.jar"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/polepos"/>
+	<classpathentry kind="lib" path="../polepos/lib/mongoDB/mongo-2.6.3.jar"/>
+	<classpathentry kind="lib" path="../polepos.monitoring/lib/sigar/sigar.jar"/>
+	<classpathentry kind="lib" path="lib/ApprovalTests.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/polepos.monitoring"/>
+	<classpathentry kind="lib" path="/polepos.monitoring/lib.testing/mockito-all-1.8.5.jar"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>

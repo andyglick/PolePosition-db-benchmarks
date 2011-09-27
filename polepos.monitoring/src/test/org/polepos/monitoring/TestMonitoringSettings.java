@@ -52,9 +52,4 @@ public class TestMonitoringSettings {
         when(handler.getBoolean(MonitoringSettings.MONITORING_IS_ENABLED)).thenReturn(isMonitoringEnabled);
         return handler;
     }
-    private PropertiesHandler samplingRate(String samplingRate) {
-        PropertiesHandler handler = mock(PropertiesHandler.class);
-        when(handler.get(MonitoringSettings.MONITORING_SAMPLING_RATE)).thenReturn(samplingRate);
-        return handler;
-    }
 }
