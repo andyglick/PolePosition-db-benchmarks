@@ -10,12 +10,13 @@
             Source code snippets are provided for selected tasks to show how they are implemented. As a general rule 
 	    using plain JDBC required many more lines of code than using modern object-oriented techniques like object databases or object-relational
 	    mappers. For example <a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/jdbc/ComplexJdbc.java">ComplexJdbc.java</a>
-	    was written with 550 lines of code, whereas the same task was possible with the OO counterparts 
+	    was written with 550 lines of code. The MongoDB implementation uses around 400 lines of code in
+		<a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/mongodb/ComplexMongoDB.java">ComplexMongoDB.java</a> and 
+		<a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/mongodb/ComplexObjectSerialisation.java">ComplexObjectSerialisation.java</a>. The Object Oriented counterparts 
 	    <a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/db4o/ComplexDb4o.java">ComplexDb4o.java</a>, 
         <a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/jdo/ComplexJdo.java">ComplexJdo.java</a> and 
         <a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/hibernate/ComplexHibernate.java">ComplexHibernate.java</a>
-        <a href="http://polepos.svn.sourceforge.net/viewvc/polepos/trunk/polepos/src/org/polepos/teams/mongodb/ComplexMongoDB.java">ComplexMongoDB.java</a>
-        with only about 150 lines of code.
+        are about 150 lines of code.
 	    </p>
 		<hr>
 		<h2>Content</h2>
@@ -135,7 +136,7 @@ query.put("_i2", currentInt);
 query.put(ComplexObjectSerialisation.TYPE_ATTRIBUTE, "ComplexHolder2");
 final DBObject resultDoc = dbCollection().findOne(query, SELECT_MASK); 
  </pre>
- <p>For MongoDB the selection masks selects the parts of the document which are required for the benchmark</p>
+ <p>For MongoDB the selection masks selects the parts of the document which are required for the benchmark to improve the performance</p>
  <hr />
 <h3>Complex.update</h3>
 <p>Complex.update reads the root object of the graph and traverses all
