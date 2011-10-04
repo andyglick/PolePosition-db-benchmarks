@@ -18,43 +18,14 @@
  * MA  02111-1307, USA.MA  02111-1307, USA.
  */
 
-package org.polepos.monitoring;
+package org.polepos.monitoring.remote;
 
 /**
  * @author roman.stoffel@gamlor.info
- * @since 15.09.11
+ * @since 27.09.11
  */
-final class MutableReference<T> {
-    private T value;
+public interface MonitoringMXBean {
+    void start();
 
-
-    public T get() {
-        return value;
-    }
-
-    public void set(T value) {
-        this.value = value;
-    }
-
-    @Override
-    public String toString() {
-        return "MutableReference{" + value + '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        MutableReference that = (MutableReference) o;
-
-        if (value != null ? !value.equals(that.value) : that.value != null) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        return value != null ? value.hashCode() : 0;
-    }
+    String stop();
 }

@@ -20,7 +20,9 @@ MA  02111-1307, USA. */
 
 package org.polepos.framework;
 
-import java.util.*;
+import org.polepos.monitoring.Monitoring;
+
+import java.util.List;
 
 public class ConcurrencyCircuit extends TimedLapsCircuitBase {
 	
@@ -57,14 +59,14 @@ public class ConcurrencyCircuit extends TimedLapsCircuitBase {
 		return NAME_ADD_ON + " " + _delegate.name();
 	}
 
-	public TurnResult[] race(Team team, Car car, Driver driver) {
+	public TurnResult[] race(Monitoring monitoring,Team team, Car car, Driver driver) {
 		
 		TurnSetup[] turnSetups = _delegate.turnSetups();
 		
 		_delegate.setTurnSetups(_turnSetups);
 		_delegate.reportTo(this);
 		
-		TurnResult[] results = _delegate.race(team, car, driver);
+		TurnResult[] results = _delegate.race(monitoring, team, car, driver);
 		
 		
 		_delegate.setTurnSetups(turnSetups);
@@ -107,8 +109,8 @@ public class ConcurrencyCircuit extends TimedLapsCircuitBase {
 		return _turnSetups;
 	}
 
-	public void runLapsBefore(Lap lap, TurnSetup turnSetup, DriverBase driver, Car car) {
-		_delegate.runLapsBefore(lap, turnSetup, driver, car);
+	public void runLapsBefore(Monitoring monitoring,Lap lap, TurnSetup turnSetup, DriverBase driver, Car car) {
+		_delegate.runLapsBefore(monitoring, lap, turnSetup, driver, car);
 	}
 	
 	@Override

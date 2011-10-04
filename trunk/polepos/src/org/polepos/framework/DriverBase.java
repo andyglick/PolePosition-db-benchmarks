@@ -19,6 +19,8 @@ MA  02111-1307, USA. */
 
 package org.polepos.framework;
 
+import org.polepos.monitoring.Monitoring;
+
 import java.lang.reflect.Method;
 
 /**
@@ -105,7 +107,7 @@ public abstract class DriverBase implements Driver
 		// This method can be overridden to clean up state.
 	}
 	
-	public Runnable prepareLap(final Lap lap) {
+	public Runnable prepareLap(Monitoring monitoring,final Lap lap) {
 		return new Runnable(){
 			
 			private final Method method = prepareMethod();

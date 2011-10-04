@@ -19,6 +19,7 @@
 
 package org.polepos.framework;
 
+import org.polepos.monitoring.Monitoring;
 import org.polepos.reporters.Reporter;
 
 import java.util.List;
@@ -30,6 +31,8 @@ public class Racer implements Runnable {
     private final List<Team> teams;
 
     private final List<Reporter> reporters;
+
+    private final Monitoring monitoring = Monitoring.createInstance();
 
 
     public Racer(List<Circuit> circuits_, List<Team> teams_, List<Reporter> reporters_) {
@@ -100,7 +103,7 @@ public class Racer implements Runnable {
                 for (Driver driver : drivers) {
                     System.out.println("** On track: " + team.name() + "/" + car.name());
                     RacingStrategy racingStrategy = circuit.racingStrategy();
-                    racingStrategy.race(team, car, driver, reporters);
+                    racingStrategy.race(monitoring,team, car, driver, reporters);
                 }
 
             }

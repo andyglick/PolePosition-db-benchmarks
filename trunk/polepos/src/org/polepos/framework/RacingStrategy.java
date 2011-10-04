@@ -20,12 +20,13 @@ MA  02111-1307, USA. */
 
 package org.polepos.framework;
 
-import java.util.*;
+import org.polepos.monitoring.Monitoring;
+import org.polepos.reporters.Reporter;
 
-import org.polepos.reporters.*;
+import java.util.List;
 
 public interface RacingStrategy {
 
-	void race(Team team, Car car, Driver driver, List<Reporter> reporters);
+	void race(Monitoring monitoring,Team team, Car car, Driver driver, List<Reporter> reporters);
 
 }

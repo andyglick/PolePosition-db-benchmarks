@@ -33,28 +33,33 @@ import static org.polepos.util.JavaLangUtils.rethrow;
  * @author roman.stoffel@gamlor.info
  * @since 19.09.11
  */
-public final class NetworkReceiveCollector implements Sampler {
+public abstract class NetworkCollector implements Sampler {
     private final SigarProxy sigar;
     private final long initialValue;
     final static long KILO_BYTE = 1024;
     private final List<String> listOfDevices;
-    private static final MonitoringType TYPE = MonitoringType.create("Network received bytes", "kb", "kbyte", 1);
+    private final MonitoringType type;
 
-    NetworkReceiveCollector(SigarProxy sigar, long initialValue, List<String> listOfDevices) {
+    protected NetworkCollector(MonitoringType type, SigarProxy sigar, List<String> listOfDevices) {
         this.sigar = sigar;
-        this.initialValue = initialValue;
+        this.initialValue = collectValue(sigar, listOfDevices);
         this.listOfDevices = listOfDevices;
+        this.type = type;
     }
 
     @Override
     public MonitoringResult collectResult() {
-        long currentValue = collectValue(sigar,listOfDevices);
-        return MonitoringResult.create(TYPE, (double) ((currentValue - initialValue) / KILO_BYTE));
+        long currentValue = collectValue(sigar, listOfDevices);
+        return MonitoringResult.create(type,(double) ((currentValue - initialValue) / KILO_BYTE));
     }
 
-    public static Sampler create(SigarProxy sigar) {
+    public static Sampler createReceiveCollector(SigarProxy sigar) {
         List<String> listOfDevices = listOfMonitoredDevices(sigar);
-        return new NetworkReceiveCollector(sigar, collectValue(sigar, listOfDevices), listOfDevices);
+        return new ReceiveNetworkCollector(sigar, listOfDevices);
+    }
+    public static Sampler createSendCollector(SigarProxy sigar) {
+        List<String> listOfDevices = listOfMonitoredDevices(sigar);
+        return new SendNetworkCollector(sigar, listOfDevices);
     }
 
     private static List<String> listOfMonitoredDevices(SigarProxy sigar)  {
@@ -80,17 +85,44 @@ public final class NetworkReceiveCollector implements Sampler {
         return starts.getRxBytes()!=0||starts.getTxBytes()!=0;
     }
 
-    private static long collectValue(SigarProxy sigar, List<String> listOfDevices) {
+    private long collectValue(SigarProxy sigar, List<String> listOfDevices) {
         long value = 0;
         try {
             for (String ni : listOfDevices) {
                 final NetInterfaceStat netInterfaceStat = sigar.getNetInterfaceStat(ni);
-                final long rxBytes = netInterfaceStat.getRxBytes();
+                final long rxBytes = readData(netInterfaceStat);
                 value += rxBytes;
             }
         } catch (SigarException e) {
             throw rethrow(e);
         }
         return value;
+    }
+    protected abstract long readData(NetInterfaceStat netInterfaceStat);
+
+    static class ReceiveNetworkCollector extends NetworkCollector{
+
+        protected ReceiveNetworkCollector(SigarProxy sigar, List<String> listOfDevices) {
+            super(MonitoringType.create("Network received bytes"+MonitoringType.machineNameAppendix(), "kb", "kbyte", 1),
+                    sigar, listOfDevices);
+        }
+
+        protected long readData(NetInterfaceStat netInterfaceStat) {
+            return netInterfaceStat.getRxBytes();
+        }
+
+    }
+
+    static class SendNetworkCollector extends NetworkCollector{
+
+        protected SendNetworkCollector(SigarProxy sigar, List<String> listOfDevices) {
+            super(MonitoringType.create("Network sent bytes"+MonitoringType.machineNameAppendix(), "kb", "kbyte", 1),
+                    sigar, listOfDevices);
+        }
+
+        protected long readData(NetInterfaceStat netInterfaceStat) {
+            return netInterfaceStat.getTxBytes();
+        }
+
     }
 }

@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.polepos.monitoring.MonitoringType.machineNameAppendix;
 import static org.polepos.util.JavaLangUtils.rethrow;
 
 /**
@@ -85,7 +86,7 @@ public final class DiskReadCounter implements Sampler{
     @Override
     public MonitoringResult collectResult() {
         final DiskInfo currentRead = currentMostReadDisk();
-        return MonitoringResult.create(MonitoringType.create(SAMPLER_NAME+currentRead.getName()), (double)currentRead.currentRead() );
+        return MonitoringResult.create(MonitoringType.create(SAMPLER_NAME+currentRead.getName()+ machineNameAppendix()), (double)currentRead.currentRead() );
     }
 
     private DiskInfo currentMostReadDisk() {

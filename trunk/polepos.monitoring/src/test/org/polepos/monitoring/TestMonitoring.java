@@ -3,10 +3,10 @@ package org.polepos.monitoring;
 import org.junit.Test;
 import org.polepos.util.NoArgFunction;
 
-import java.util.Collection;
-import java.util.Collections;
-
+import static java.util.Arrays.asList;
 import static junit.framework.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.polepos.monitoring.MonitoringTestUtils.waitFor;
 
 /**
@@ -19,25 +19,27 @@ public class TestMonitoring {
 
     @Test
     public void monitoringReturnsNotNull() {
-        final LoadMonitoringResults results = Monitoring.monitor(testSettings(),
-                Collections.<Sampler>emptyList(),new NoArgFunction<Object>() {
-            @Override
-            public Object invoke() {
-                return null;
-            }
-        }).getMonitoring();
+        final LoadMonitoringResults results = new Monitoring(true,collector()).monitor(
+                new NoArgFunction<Object>() {
+                    @Override
+                    public Object invoke() {
+                        return null;
+                    }
+                }).getMonitoring();
         assertNotNull(results);
     }
 
-    private MonitoringSettings testSettings() {
-        return new MonitoringSettings(true);
+    private SessionFactory collector(Sampler...samplers) {
+        SessionFactory sf = mock(SessionFactory.class);
+        when(sf.accordingToConfiguration()).thenReturn(SessionFactory.localSession(asList(samplers)));
+        return sf;
     }
 
     @Test
     public void monitoringRunsSamplers() {
         CallCountingSampler sampler = new CallCountingSampler();
         final String ourResult = "result";
-        final Monitoring.ResultAndData<String> results = Monitoring.monitor(testSettings(),Collections.singleton(sampler),
+        final Monitoring.ResultAndData<String> results = new Monitoring(true,collector(sampler)).monitor(
                 new NoArgFunction<String> ()
                 {
                     @Override
@@ -52,15 +54,9 @@ public class TestMonitoring {
     }
 
     @Test
-    public void defaultSetIsNotNull() {
-        final Collection<? extends Sampler> defaults = Monitoring.createDefaultMonitors();
-        assertNotNull(defaults);
-    }
-    @Test
     public void canDisableMonitoring() {
-        final MonitoringSettings settings = new MonitoringSettings(false);
-        final Collection<? extends Sampler> defaults = Monitoring.createDefaultMonitors();
-        final LoadMonitoringResults results = Monitoring.monitor(settings, defaults, new NoArgFunction<Object>() {
+        final MonitoringSettings settings = new MonitoringSettings(false,"","",new String[]{"1"});
+        final LoadMonitoringResults results = Monitoring.createInstance(settings).monitor(new NoArgFunction<Object>() {
             @Override
             public Object invoke() {
                 waitFor(WAIT_TIME_IN_MILLISEC);
@@ -70,9 +66,13 @@ public class TestMonitoring {
         assertFalse(results.iterator().hasNext());
     }
 
+    private SessionFactory defaultListeners() {
+        return collector(Samplers.create(Samplers.allSamplerNames()).cpuLoad());
+    }
+
     @Test
     public void returnsOriginalValue() {
-        final Monitoring.ResultAndData results = Monitoring.monitor(testSettings(),Monitoring.createDefaultMonitors(),new NoArgFunction<String>() {
+        final Monitoring.ResultAndData results = new Monitoring(true,defaultListeners()).monitor(new NoArgFunction<String>() {
             @Override
             public String invoke() {
                 return "hello world";
