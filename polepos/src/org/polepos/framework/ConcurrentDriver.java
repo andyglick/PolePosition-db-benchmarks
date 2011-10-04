@@ -20,6 +20,8 @@ MA  02111-1307, USA. */
 
 package org.polepos.framework;
 
+import org.polepos.monitoring.Monitoring;
+
 public class ConcurrentDriver implements Driver {
 	
 	
@@ -83,10 +85,10 @@ public class ConcurrentDriver implements Driver {
 		return expectedSum;
 	}
 	
-	public Runnable prepareLap(final Lap lap) {
+	public Runnable prepareLap(Monitoring monitoring,final Lap lap) {
 		
 		TimedLapsCircuitBase circuit = (TimedLapsCircuitBase) lap.circuit();
-		circuit.runLapsBefore(lap, circuit.turnSetups()[0], _masterDriver, _masterDriver.car());
+		circuit.runLapsBefore(monitoring, lap, circuit.turnSetups()[0], _masterDriver, _masterDriver.car());
 		
 		for (int i = 1; i < _drivers.length; i++) {
 			_drivers[i].copyStateFrom(_masterDriver);
@@ -95,7 +97,7 @@ public class ConcurrentDriver implements Driver {
 		
 		final Thread[] threads = new Thread[_drivers.length];
 		for (int i = 0; i < _drivers.length; i++) {
-			threads[i] = new Thread(_drivers[i].prepareLap(lap));
+			threads[i] = new Thread(_drivers[i].prepareLap(monitoring, lap));
 		}
 		
 		return new Runnable(){

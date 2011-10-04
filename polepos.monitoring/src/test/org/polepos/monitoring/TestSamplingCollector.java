@@ -21,11 +21,15 @@
 package org.polepos.monitoring;
 
 import org.junit.Test;
+import org.polepos.util.NoArgAction;
 
 import java.util.Collection;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
 import static junit.framework.Assert.assertEquals;
+import static org.polepos.monitoring.PortUtil.getFreePort;
+import static org.polepos.monitoring.remote.ServerForTests.withRunningServer;
 
 /**
  * @author roman.stoffel@gamlor.info
@@ -34,23 +38,53 @@ import static junit.framework.Assert.assertEquals;
 public class TestSamplingCollector {
 
     @Test
-    public void callsSamplers(){
+    public void callsSamplers() {
         CallCountingSampler check = new CallCountingSampler();
-        final SamplingCollector sampling = SamplingCollector.start(singleton(check));
+        final SamplingSession sampling = SessionFactory.localSession(singleton(check));
         MonitoringTestUtils.waitFor(MonitoringTestUtils.TEST_INTERVAL_IN_MILLISEC * 2);
 
-        sampling.stopAndCollectResults();
+        sampling.sampleAndReturnResults();
         check.assertHasBeenCalled();
 
     }
+
     @Test
-    public void returnsResult(){
+    public void returnsResult() {
         CallCountingSampler check = new CallCountingSampler();
-        final SamplingCollector sampling = SamplingCollector.start(singleton(check));
+        final SamplingSession sampling = SessionFactory.localSession(singleton(check));
         MonitoringTestUtils.waitFor(MonitoringTestUtils.TEST_INTERVAL_IN_MILLISEC * 2);
 
-        final Collection<MonitoringResult> results = sampling.stopAndCollectResults();
+        final Collection<MonitoringResult> results = sampling.sampleAndReturnResults();
         assertEquals(1, results.size());
+    }
+
+    @Test
+    public void onlyLocalSampling() {
+        final SessionFactory sessionFactory = SessionFactory.create(Samplers.create(asList(CPULoadCollector.class.getSimpleName())),
+                "");
+        final SamplingSession sampling = sessionFactory.accordingToConfiguration();
+
+        final Collection<MonitoringResult> results = sampling.sampleAndReturnResults();
+        assertEquals(1, results.size());
+    }
+
+    @Test
+    public void remoteAndLocalSampling() {
+        final int port = getFreePort();
+        withRunningServer("service:jmx:jmxmp://0.0.0.0:" + port, new NoArgAction() {
+            @Override
+            public void invoke() {
+                String remote = "service:jmx:jmxmp://localhost:" + port;
+
+                final SessionFactory sessionFactory = SessionFactory.create(Samplers.create(asList(CPULoadCollector.class.getSimpleName())),
+                        remote);
+                final SamplingSession sampling = sessionFactory.accordingToConfiguration();
+
+                final Collection<MonitoringResult> results = sampling.sampleAndReturnResults();
+                assertEquals(2, results.size());
+            }
+        });
+
     }
 
 

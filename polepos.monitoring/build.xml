@@ -29,9 +29,19 @@
     </target>
 
     <target name="dist" depends="jar">
-        <copy todir="${distFolder}">
+        <copy todir="${distFolder}/lib">
             <fileset dir="./lib">
                 <include name="**/**"/>
+            </fileset>
+        </copy>
+        <copy todir="${distFolder}/settings">
+            <fileset dir="./settings">
+                <include name="**/**"/>
+            </fileset>
+        </copy>
+        <copy todir="${distFolder}/">
+            <fileset dir="./">
+                <include name="start.bat"/>
             </fileset>
         </copy>
     </target>

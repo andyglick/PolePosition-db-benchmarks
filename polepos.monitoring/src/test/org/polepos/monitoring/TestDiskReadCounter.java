@@ -75,7 +75,7 @@ public class TestDiskReadCounter {
         final DiskReadCounter toTest = new DiskReadCounter(map("C:\\",sigarMock));
         final String name = toTest.collectResult().getType().getName();
 
-        Assert.assertEquals(name,DiskReadCounter.SAMPLER_NAME+"C:\\");
+        Assert.assertTrue(name.startsWith(DiskReadCounter.SAMPLER_NAME+"C:\\"));
     }
 
     @Test
@@ -90,7 +90,7 @@ public class TestDiskReadCounter {
         final String name = toTest.collectResult().getType().getName();
 
         Assert.assertEquals(100.0,diskReads, DELTA);
-        Assert.assertEquals(name,DiskReadCounter.SAMPLER_NAME+"/dsk2/");
+        Assert.assertTrue(name.startsWith(DiskReadCounter.SAMPLER_NAME+"/dsk2/"));
     }
     @Test
     public void createsInstance() throws SigarException {
@@ -109,7 +109,7 @@ public class TestDiskReadCounter {
         final String name = toTest.collectResult().getType().getName();
 
         Assert.assertEquals(6.0,diskReads, DELTA);
-        Assert.assertEquals(name,DiskReadCounter.SAMPLER_NAME+DISK_ONE);
+        Assert.assertTrue(name.startsWith(DiskReadCounter.SAMPLER_NAME+DISK_ONE));
     }
     private Map<String,  NoArgFunction<DiskUsage>> map(String diskName,final DiskUsage sigarMock) {
         Map<String, NoArgFunction<DiskUsage>> disks = new HashMap<String,  NoArgFunction<DiskUsage>>();

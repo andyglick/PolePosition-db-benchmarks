@@ -20,6 +20,8 @@ MA  02111-1307, USA. */
 package org.polepos.framework;
 
 
+import org.polepos.monitoring.Monitoring;
+
 public interface Driver extends Cloneable{
 
 	public void circuitCompleted();
@@ -32,7 +34,7 @@ public interface Driver extends Cloneable{
 
 	public void configure(Car car, TurnSetup setup);
 
-	public Runnable prepareLap(final Lap lap);
+	public Runnable prepareLap(Monitoring monitoring,final Lap lap);
 
 	public boolean canRunLap(Lap lap);
 	

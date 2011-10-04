@@ -33,9 +33,28 @@ import java.util.Collections;
  */
 public final class Monitoring {
 
-    private static final PropertiesHandler PROPERTIES = new PropertiesHandler("settings/Monitoring.properties");
+    public static final String SETTINGS_FILE_NAME = "settings/Monitoring.properties";
+    private static final PropertiesHandler PROPERTIES = new PropertiesHandler(SETTINGS_FILE_NAME);
 
-    public static LoadMonitoringResults monitor(final NoArgAction run) {
+    private final boolean isEnabled;
+    private final SessionFactory sessionFactory;
+
+    Monitoring(boolean enabled, SessionFactory sessionFactory) {
+        isEnabled = enabled;
+        this.sessionFactory = sessionFactory;
+    }
+
+    public static Monitoring createInstance(){
+        return createInstance(readSettings());
+    }
+
+    public static Monitoring createInstance(MonitoringSettings settings){
+        SessionFactory sessionFactory = SessionFactory.create(Samplers.create(settings.getSamplers()),
+                settings.getRemote());
+        return new Monitoring(settings.isEnabled(),sessionFactory);
+    }
+
+    public LoadMonitoringResults monitor(final NoArgAction run) {
         return monitor(new NoArgFunction<Void>() {
             @Override
             public Void invoke() {
@@ -45,20 +64,12 @@ public final class Monitoring {
         }).getMonitoring();
     }
 
-    static <T> ResultAndData<T> monitor(final NoArgFunction<T> run) {
-        return monitor(readSettings(), createDefaultMonitors(), run);
-    }
 
-    static Collection<? extends Sampler> createDefaultMonitors() {
-        return Samplers.newInstance().allSamplers();
-    }
-
-    static <T> ResultAndData<T> monitor(MonitoringSettings settings, Collection<? extends Sampler> samplers,
-                                        final NoArgFunction<T> run) {
-        if (settings.isEnabled()) {
-            SamplingCollector sampling = SamplingCollector.start(samplers);
+    <T> ResultAndData<T> monitor(final NoArgFunction<T> run) {
+        if (isEnabled) {
+            final SamplingSession sampling = sessionFactory.accordingToConfiguration();
             T data = run.invoke();
-            final Collection<MonitoringResult> results = sampling.stopAndCollectResults();
+            final Collection<MonitoringResult> results = sampling.sampleAndReturnResults();
             return new ResultAndData<T>(LoadMonitoringResults.create(results), data);
         } else{
             T data = run.invoke();

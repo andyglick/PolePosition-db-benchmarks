@@ -24,6 +24,7 @@ import org.hyperic.sigar.Cpu;
 import org.hyperic.sigar.SigarException;
 import org.hyperic.sigar.SigarProxy;
 
+import static org.polepos.monitoring.MonitoringType.machineNameAppendix;
 import static org.polepos.util.JavaLangUtils.rethrow;
 
 /**
@@ -35,7 +36,7 @@ public final class CPULoadCollector implements Sampler {
     private long initialTotal = 0;
     private long initialLoad = 0;
 
-    public static final MonitoringType TYPE = MonitoringType.percentUnit("CPU Load Average", "% CPU");
+    public static final MonitoringType TYPE = MonitoringType.percentUnit("CPU Load Average"+ machineNameAppendix(), "% CPU");
 
     CPULoadCollector(SigarProxy systemInfo, long initialTotal, long initialLoad) {
         this.systemInfo = systemInfo;

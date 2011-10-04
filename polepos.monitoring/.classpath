@@ -6,5 +6,9 @@
 	<classpathentry kind="lib" path="lib.testing/mockito-all-1.8.5.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="lib" path="lib/jmxremote_optional.jar"/>
+	<classpathentry kind="lib" path="lib/xstream/jettison-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/xstream/xstream-1.4.1.jar"/>
+	<classpathentry kind="lib" path="lib.testing/ApprovalTests.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

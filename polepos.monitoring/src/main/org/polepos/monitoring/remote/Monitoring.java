@@ -18,38 +18,34 @@
  * MA  02111-1307, USA.MA  02111-1307, USA.
  */
 
-package org.polepos.monitoring;
+package org.polepos.monitoring.remote;
+
+import org.polepos.monitoring.LoadMonitoringResults;
+import org.polepos.monitoring.Samplers;
+import org.polepos.monitoring.SamplingSession;
+import org.polepos.monitoring.SessionFactory;
 
 /**
  * @author roman.stoffel@gamlor.info
- * @since 14.09.11
+ * @since 27.09.11
  */
-public final class MonitoringResult{
-    private final MonitoringType name;
-    private final double value;
+public final class Monitoring implements MonitoringMXBean {
+    private SamplingSession sampling;
+    private final Samplers samplers;
 
-    private MonitoringResult(MonitoringType name, double value) {
-        this.name = name;
-        this.value = value;
+    public Monitoring(Samplers samplers) {
+        this.samplers = samplers;
     }
 
-    public static MonitoringResult create(MonitoringType name, double value){
-        return new MonitoringResult(name, value);
-    }
 
-    public MonitoringType getType() {
-        return name;
-    }
-
-    public double getValue() {
-        return value;
+    @Override
+    public synchronized void start() {
+        sampling = SessionFactory.localSession(samplers.samplers());
     }
 
     @Override
-    public String toString() {
-        return "Result{" +
-                "name='" + name + '\'' +
-                ", value=" + value +
-                '}';
+    public synchronized String stop() {
+        final LoadMonitoringResults results = LoadMonitoringResults.create(sampling.sampleAndReturnResults());
+        return Serialisation.toJSON(results);
     }
 }

@@ -24,7 +24,9 @@ import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarProxy;
 import org.hyperic.sigar.SigarProxyCache;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import static java.util.Arrays.asList;
 
@@ -35,29 +37,52 @@ import static java.util.Arrays.asList;
 public final class Samplers {
     private static final int INTERVAL = 25;
     private final SigarProxy sigar;
+    private final Collection<String> listOfUsedSamplers;
 
-    private Samplers(){
+    private Samplers(Collection<String> listOfUsedSamplers) {
+        this.listOfUsedSamplers = listOfUsedSamplers;
         this.sigar = SigarProxyCache.newInstance(new Sigar(), INTERVAL);
-
     }
 
-    public static Samplers newInstance(){
-        return new Samplers();
+    public static Samplers create(Collection<String> listOfUsedSamplers){
+        return new Samplers(new ArrayList<String>(listOfUsedSamplers));
     }
 
     public Sampler cpuLoad() {
         return CPULoadCollector.create(sigar);
     }
 
-    public Collection<? extends Sampler> allSamplers(){
-        return asList(cpuLoad(),networkReads());
+    public Collection<? extends Sampler> samplers(){
+        return filter(asList(cpuLoad(), networkReads(),networkSends(), diskReads()), listOfUsedSamplers);
     }
+    public static Collection<String> allSamplerNames(){
+        return asList(
+                CPULoadCollector.class.getSimpleName(),
+                NetworkCollector.ReceiveNetworkCollector.class.getSimpleName(),
+                NetworkCollector.SendNetworkCollector.class.getSimpleName(),
+                DiskReadCounter.class.getSimpleName()
+                );
+    }
+
 
     public Sampler diskReads() {
         return DiskReadCounter.create(sigar);
     }
 
     public Sampler networkReads() {
-        return NetworkReceiveCollector.create(sigar);
+        return NetworkCollector.createReceiveCollector(sigar);
+    }
+    public Sampler networkSends() {
+        return NetworkCollector.createSendCollector(sigar);
+    }
+
+    private Collection<? extends Sampler> filter(List<Sampler> samplers, Collection<String> listOfUsedSamplers) {
+        ArrayList<Sampler> result = new ArrayList<Sampler>();
+        for (Sampler sampler : samplers) {
+            if(listOfUsedSamplers.contains(sampler.getClass().getSimpleName())){
+                result.add(sampler);
+            }
+        }
+        return result;
     }
 }

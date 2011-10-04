@@ -25,6 +25,9 @@ import org.junit.Test;
 
 import java.util.Collection;
 
+import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
+
 /**
  * @author roman.stoffel@gamlor.info
  * @since 16.09.11
@@ -33,24 +36,35 @@ public class TestSamplers {
 
     @Test
     public void returnsCPULoadMeter(){
-        final Sampler sampler = Samplers.newInstance().cpuLoad();
+        final Sampler sampler = Samplers.create(Samplers.allSamplerNames()).cpuLoad();
         Assert.assertTrue(sampler.collectResult().getValue() >=0.0);
     }
     @Test
     public void returnDiskReadCounter(){
-        final Sampler sampler = Samplers.newInstance().diskReads();
+        final Sampler sampler = Samplers.create(Samplers.allSamplerNames()).diskReads();
         Assert.assertTrue(sampler.collectResult().getValue() >= 0.0);
     }
     @Test
     public void returnNetwork(){
-        final Sampler sampler = Samplers.newInstance().networkReads();
+        final Sampler sampler = Samplers.create(Samplers.allSamplerNames()).networkReads();
+        Assert.assertTrue(sampler.collectResult().getValue() >= 0.0);
+    }
+    @Test
+    public void returnSendNetwork(){
+        final Sampler sampler = Samplers.create(Samplers.allSamplerNames()).networkSends();
         Assert.assertTrue(sampler.collectResult().getValue() >= 0.0);
     }
     @Test
     public void doesContainAllSamplers(){
-        final Collection<? extends Sampler> samplers = Samplers.newInstance().allSamplers();
-        assertContains(CPULoadCollector.class,samplers);
-        assertContains(NetworkReceiveCollector.class,samplers);
+        final Collection<? extends Sampler> samplers = Samplers.create(Samplers.allSamplerNames()).samplers();
+        Assert.assertEquals(4,samplers.size());
+    }
+    @Test
+    public void filtersByName(){
+        final Collection<? extends Sampler> samplers = Samplers.create(asList(DiskReadCounter.class.getSimpleName()))
+                .samplers();
+        assertContains(DiskReadCounter.class,samplers);
+        assertEquals(1, samplers.size());
     }
 
     private void assertContains(Class<?> requiredType, Collection<? extends Sampler> samplers) {

@@ -96,19 +96,19 @@ public abstract class TimedLapsCircuitBase extends CircuitBase {
     /**
      * calling all the laps for all the lapSetups
      */
-	public TurnResult[] race( Team team, Car car, Driver driver){
+	public TurnResult[] race(Monitoring monitoring, Team team, Car car, Driver driver){
         TurnResult[] results = new TurnResult[ _turnSetups.length ];
 
         int index = 0;
         
         for(TurnSetup setup : _turnSetups) {
             System.out.println("*** Turn " + index);
-            results[index++] = runTurn(team, car, driver, index, setup);
+            results[index++] = runTurn(monitoring, team, car, driver, index, setup);
         }
         return results;
     }
 
-	private TurnResult runTurn(Team team, Car car, Driver driver, int index, TurnSetup setup) {
+	private TurnResult runTurn(Monitoring monitoring,Team team, Car car, Driver driver, int index, TurnSetup setup) {
 		
 		Map<Lap, Set<LapReading>> lapReadings = new HashMap<Lap, Set<LapReading>>();
 		for (Lap lap : laps()) {
@@ -128,7 +128,7 @@ public abstract class TimedLapsCircuitBase extends CircuitBase {
 					
 	            	System.out.println("*** Lap " + lap.name());
 	
-				    LapReading lapReading = runLap(team, driver, lap);
+				    LapReading lapReading = runLap(monitoring, team, driver, lap);
 				    if(!warmUp && lap.reportResult()) {
 				    	lapReadings.get(lap).add(lapReading);
 				    }
@@ -186,9 +186,9 @@ public abstract class TimedLapsCircuitBase extends CircuitBase {
 		driver.circuitCompleted();
 	}
 
-	private LapReading runLap(Team team, Driver driver, Lap lap) {
+	private LapReading runLap(Monitoring monitoring, Team team, Driver driver, Lap lap) {
 		
-		final Runnable lapRunnable = driver.prepareLap(lap);
+		final Runnable lapRunnable = driver.prepareLap(monitoring, lap);
 		
 		if( ! lap.hot() ){
 			driver.closeDatabase();
@@ -203,12 +203,13 @@ public abstract class TimedLapsCircuitBase extends CircuitBase {
 		_fileSizeWatcher.monitorFile(team.databaseFile());
 		_fileSizeWatcher.start();
 
-        final LoadMonitoringResults monitoringResults = Monitoring.monitor(new NoArgAction() {
+        final LoadMonitoringResults monitoringResults = monitoring.monitor(new NoArgAction() {
             @Override
             public void invoke() {
                 lapRunnable.run();
             }
         });
+
 
         _timeWatcher.stop();
 		
@@ -261,14 +262,14 @@ public abstract class TimedLapsCircuitBase extends CircuitBase {
 		return false;
 	}
 	
-	public void runLapsBefore(Lap lap, TurnSetup turnSetup, DriverBase driver, Car car) {
+	public void runLapsBefore(Monitoring monitoring,Lap lap, TurnSetup turnSetup, DriverBase driver, Car car) {
 		prepareDriverToRunLaps(car, driver, turnSetup);
 		for (Lap currentLap : laps()) {
 			if(currentLap == lap){
 				return;
 			}
 			if(driver.canRunLap(lap)){
-			    runLap(car.team(), driver, currentLap);
+			    runLap(monitoring, car.team(), driver, currentLap);
 			}
 			
 		}

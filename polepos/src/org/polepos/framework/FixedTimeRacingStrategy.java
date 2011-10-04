@@ -38,11 +38,11 @@ public class FixedTimeRacingStrategy implements RacingStrategy {
     }
 
     @Override
-    public void race(Team team, Car car, Driver driver, List<Reporter> reporters) {
+    public void race(Monitoring monitoring,Team team, Car car, Driver driver, List<Reporter> reporters) {
         TurnSetup[] turnSetups = _circuit.turnSetups();
         TurnResult[] results = new TurnResult[turnSetups.length];
         for (int i = 0; i < turnSetups.length; i++) {
-            Result result = raceTurn(team, car, driver, turnSetups[i], i);
+            Result result = raceTurn(monitoring, team, car, driver, turnSetups[i], i);
             TurnResult turnResult = new TurnResult();
             turnResult.report(result);
             results[i] = turnResult;
@@ -52,7 +52,7 @@ public class FixedTimeRacingStrategy implements RacingStrategy {
         }
     }
 
-    private Result raceTurn(Team team, Car car, Driver driver, TurnSetup setup, int setupIndex) {
+    private Result raceTurn(Monitoring monitoring,Team team, Car car, Driver driver, TurnSetup setup, int setupIndex) {
         car.team().setUp();
 
         driver.configure(car, setup);
@@ -81,7 +81,7 @@ public class FixedTimeRacingStrategy implements RacingStrategy {
             threads[i] = new Thread(racers[i]);
         }
 
-        final LoadMonitoringResults monitoringResult = Monitoring.monitor(new NoArgAction() {
+        final LoadMonitoringResults monitoringResult = monitoring.monitor(new NoArgAction() {
             @Override
             public void invoke() {
                 runRacersForACertainTime(time, racers, threads);

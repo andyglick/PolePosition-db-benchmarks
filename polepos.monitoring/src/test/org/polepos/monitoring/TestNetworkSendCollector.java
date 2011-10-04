@@ -29,10 +29,9 @@ import static org.mockito.Mockito.mock;
 
 /**
  * @author roman.stoffel@gamlor.info
- * @since 19.09.11
+ * @since 03.10.11
  */
-public class TestNetworkReceiveCollector extends NetworkMonitoringTestBase{
-
+public class TestNetworkSendCollector extends NetworkMonitoringTestBase{
 
     @Test
     public void describesAsReceived() throws Exception {
@@ -41,18 +40,17 @@ public class TestNetworkReceiveCollector extends NetworkMonitoringTestBase{
 
         final Sampler toTest = createTestInstance(sigarMock);
         final MonitoringType type = toTest.collectResult().getType();
-        Assert.assertTrue(type.getName().contains("received"));
+        Assert.assertTrue(type.getName().contains("sent"));
 
     }
 
-
     protected Sampler createTestInstance(SigarProxy sigarMock) {
-        return NetworkCollector.createReceiveCollector(sigarMock);
+        return NetworkCollector.createSendCollector(sigarMock);
     }
 
 
 
     protected long channel(NetInterfaceStat netStats) {
-        return netStats.getRxBytes();
+        return netStats.getTxBytes();
     }
 }

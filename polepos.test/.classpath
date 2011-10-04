@@ -5,9 +5,9 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/polepos"/>
 	<classpathentry kind="lib" path="../polepos/lib/mongoDB/mongo-2.6.3.jar"/>
 	<classpathentry kind="lib" path="../polepos.monitoring/lib/sigar/sigar.jar"/>
-	<classpathentry kind="lib" path="lib/ApprovalTests.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/polepos.monitoring"/>
 	<classpathentry kind="lib" path="/polepos.monitoring/lib.testing/mockito-all-1.8.5.jar"/>
+	<classpathentry kind="lib" path="/polepos.monitoring/lib.testing/ApprovalTests.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

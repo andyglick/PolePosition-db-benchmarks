@@ -20,39 +20,14 @@
 
 package org.polepos.monitoring;
 
-import org.hyperic.sigar.NetInterfaceStat;
-import org.hyperic.sigar.SigarProxy;
-import org.junit.Assert;
-import org.junit.Test;
-
-import static org.mockito.Mockito.mock;
+import java.util.Collection;
 
 /**
  * @author roman.stoffel@gamlor.info
- * @since 19.09.11
+ * @since 14.09.11
  */
-public class TestNetworkReceiveCollector extends NetworkMonitoringTestBase{
+public interface SamplingSession {
 
+    Collection<MonitoringResult> sampleAndReturnResults();
 
-    @Test
-    public void describesAsReceived() throws Exception {
-        SigarProxy sigarMock = mock(SigarProxy.class);
-        setupMockToReturn(sigarMock,100L,200L,300L,100L,200L,300L,100L,200L,300L);
-
-        final Sampler toTest = createTestInstance(sigarMock);
-        final MonitoringType type = toTest.collectResult().getType();
-        Assert.assertTrue(type.getName().contains("received"));
-
-    }
-
-
-    protected Sampler createTestInstance(SigarProxy sigarMock) {
-        return NetworkCollector.createReceiveCollector(sigarMock);
-    }
-
-
-
-    protected long channel(NetInterfaceStat netStats) {
-        return netStats.getRxBytes();
-    }
 }

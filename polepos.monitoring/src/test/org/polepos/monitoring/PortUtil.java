@@ -20,33 +20,28 @@
 
 package org.polepos.monitoring;
 
-import java.util.*;
+import java.io.IOException;
+import java.net.ServerSocket;
+
+import static org.polepos.util.JavaLangUtils.rethrow;
 
 /**
  * @author roman.stoffel@gamlor.info
- * @since 14.09.11
+ * @since 28.09.11
  */
-final class SamplingCollector {
-    private volatile List<Sampler> samplers;
+public final class PortUtil {
 
-    private SamplingCollector(Collection<? extends Sampler> samplers) {
-        this.samplers = new ArrayList<Sampler>(samplers);
-    }
 
-    public static SamplingCollector start(Collection<? extends Sampler> samplers){
-        return new SamplingCollector(samplers);
-    }
-
-    private List<MonitoringResult> sampleAndReturnResults() {
-        ArrayList<MonitoringResult> results = new ArrayList<MonitoringResult>();
-        for (Sampler sampler : samplers) {
-            results.add(sampler.collectResult());
+    public static int getFreePort(){
+        ServerSocket s = null;
+        try {
+            s = new ServerSocket(0);
+            int port = s.getLocalPort();
+            s.close();
+            return port;
+        } catch (IOException e) {
+            throw rethrow(e);
         }
-        return results;
     }
 
-
-    public Collection<MonitoringResult> stopAndCollectResults() {
-        return sampleAndReturnResults();
-    }
 }

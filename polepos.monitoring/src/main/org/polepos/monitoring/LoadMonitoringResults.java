@@ -60,6 +60,10 @@ public final class LoadMonitoringResults implements Iterable<MonitoringResult>{
         return results.get(name);
     }
 
+    public Collection<MonitoringResult> asCollection(){
+        return new ArrayList<MonitoringResult>(results.values());
+    }
+
     @Override
     public String toString() {
         return "LoadMonitoringResults{" +
