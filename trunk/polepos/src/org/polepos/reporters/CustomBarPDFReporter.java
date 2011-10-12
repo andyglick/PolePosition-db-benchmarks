@@ -90,7 +90,7 @@ public class CustomBarPDFReporter extends PDFReporterBase {
             pdfData().add(render(graph, new OneArgFunction<Graph, ChartRenderer>() {
                 @Override
                 public ChartRenderer invoke(Graph graph) {
-                    return new LoadGraphRenderer(graph, monitoringType);
+                    return LoadGraphRenderer.create(graph, monitoringType);
                 }
             }));
 
