@@ -95,6 +95,7 @@
             <fileset dir="../polepos.monitoring">
                 <include name="lib/**"/>
                 <include name="lib.testing/**"/>
+                <include name="settings/**"/>
                 <include name="src/**"/>
                 <include name=".classpath"/>
                 <include name=".project"/>
@@ -114,7 +115,7 @@
     </target>
 
     <target name="prepareTransitionalDependencies">
-        <ant antfile="../polepos.monitoring/build.xml" target="dist" usenativebasedir="true"/>
+        <ant antfile="../polepos.monitoring/build.xml" target="dist" dir="../polepos.monitoring/"/>
     </target>
 
     <target name="clean">
