@@ -20,9 +20,7 @@
 
 package org.polepos.reporters;
 
-import org.polepos.framework.Lap;
-import org.polepos.framework.TimedLapsResult;
-import org.polepos.framework.TurnSetup;
+import org.polepos.framework.*;
 import org.polepos.monitoring.MonitoringResult;
 import org.polepos.util.CircuitStub;
 import org.polepos.util.TeamStub;
@@ -43,7 +41,10 @@ final class TestDataFactory {
 
 
     static Graph createEmptyGraph() {
-        return new Graph(new CircuitStub(), new Lap("stub",true,true,false));
+        return createEmptyGraph(new CircuitStub());
+    }
+    static Graph createEmptyGraph(Circuit circuit) {
+        return new Graph(circuit, new Lap("stub",true,true,false));
     }
 
     static TimedLapsResult createResult(Graph forGraph,int time,String teamName) {
@@ -54,5 +55,10 @@ final class TestDataFactory {
         return new TimedLapsResult(
                 forGraph.circuit(), new TeamStub(teamName),forGraph.lap(),
                 new TurnSetup(), create(monitoringResults),0,time,0,0,0);
+    }
+    static FixedTimeResult createFixedTimeResult(Graph forGraph, int interations, String teamName, Collection<MonitoringResult> monitoringResults) {
+        return new FixedTimeResult(
+                forGraph.circuit(),forGraph.lap(), new TeamStub(teamName),
+                new TurnSetup(), create(monitoringResults),0,interations);
     }
 }

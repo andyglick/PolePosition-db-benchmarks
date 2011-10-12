@@ -33,6 +33,17 @@ import java.util.List;
  * @since 16.09.11
  */
 public class CircuitStub extends CircuitBase{
+
+    private final boolean isFixedTime;
+
+    public CircuitStub() {
+        this(false);
+    }
+
+    public CircuitStub(boolean fixedTime) {
+        isFixedTime = fixedTime;
+    }
+
     @Override
     public List<Lap> laps() {
         return Collections.emptyList();
@@ -60,6 +71,6 @@ public class CircuitStub extends CircuitBase{
 
     @Override
     public boolean isFixedTime() {
-        return false;
+        return isFixedTime;
     }
 }
