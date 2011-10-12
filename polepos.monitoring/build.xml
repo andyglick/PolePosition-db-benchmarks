@@ -25,6 +25,7 @@
     </target>
 
     <target name="jar" depends="compile">
+        <mkdir dir="${distFolder}"/>
         <jar destfile="${distFolder}/polepos.monitoring.jar" basedir="${compileFolder}"/>
     </target>
 
