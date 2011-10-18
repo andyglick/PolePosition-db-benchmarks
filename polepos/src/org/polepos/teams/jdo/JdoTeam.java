@@ -188,7 +188,7 @@ public class JdoTeam extends Team{
 		//checkExtentSize(pm, clazz,"");
 		
 		// 1. try Query.deletePersistentAll()
-		deletePersistentAll(pm,clazz);
+		// deletePersistentAll(pm,clazz);
 		
 		//2. try PersistenceManager.delete(Extent.iterator().next()) with batches 
 		deleteAllBatched(pm, clazz);
