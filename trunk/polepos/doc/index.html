@@ -115,7 +115,7 @@ MySQL, McKoi, Derby, HSQLDB, open source, Java">
 				should take a close look at Complex:query. The query optimizer does not seem 
 				to cope with a query over five tables. 
 				<li>
-		The use of O-R mapping technology like Hibernate, 
+		          The use of O-R mapping technology like Hibernate, 
                     Datanucleus or OpenJPA has a 
 				negative impact on performance. O-R mapping advocates may tell you that 
 				caching will bring you back performance. Do not 
@@ -133,6 +133,9 @@ MySQL, McKoi, Derby, HSQLDB, open source, Java">
 					object databases make life so much easier and productive for developers. The task of storing 
 					objects is very similar among all the products tested. A common 
                     object-oriented query language, like LINQ, would be great for Java.</li>
+                <li>NoSQL technologies outperform ORM mappers.</li>
+                <li>Within NoSQL MongoDb does great until you start to introduce concurrency at which point it
+                begins to fall in performance compared to other solutions.</li>
 			</ul>
 		<hr>
 		<a name="download"></a>
