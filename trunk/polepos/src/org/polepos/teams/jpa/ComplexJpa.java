@@ -76,7 +76,7 @@ public class ComplexJpa extends JpaDriver implements Complex {
 		for (int run = 0; run < selectCount; run++) {
 			String filter = "this.i2 = :param";
 			Query query = db().createQuery(
-					"SELECT this FROM " + ComplexHolder2.class.getName()
+					"SELECT this FROM " + ComplexHolder2.class.getSimpleName()
 							+ " this WHERE " + filter);
 			query.setParameter("param", currentInt);
 			Collection result = (Collection) query.getResultList();

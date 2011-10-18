@@ -35,7 +35,7 @@ import org.polepos.teams.jdbc.Jdbc;
  */
 public class JpaCar extends Car {
 
-    private EntityManagerFactory mFactory;
+    private transient EntityManagerFactory mFactory;
 
     private final String              _dbName;
     private final String              _name;
@@ -58,16 +58,20 @@ public class JpaCar extends Car {
     }
     
     private void initialize() throws IOException {
-    
-    Properties props = new Properties();
-        
-    try {
-		mFactory = Persistence.createEntityManagerFactory(_name+"/"+_dbName,props);
-	} catch (PersistenceException e) {
-		e.printStackTrace();
-	} 
-
+	    Properties props = new Properties();
+	    try {
+			mFactory = Persistence.createEntityManagerFactory(persistenceUnitName(),props);
+		} catch (PersistenceException e) {
+			e.printStackTrace();
+		} 
     }
+
+	private String persistenceUnitName() {
+		if(_dbName == null){
+			return _name;
+		}
+		return _name+"/"+_dbName;
+	}
 
     /**
      *

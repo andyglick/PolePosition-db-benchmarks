@@ -19,13 +19,11 @@ MA  02111-1307, USA. */
 
 package org.polepos.teams.jpa.data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
-import org.apache.openjpa.persistence.jdbc.Index;
-import org.polepos.framework.CheckSummable;
+import org.apache.openjpa.persistence.jdbc.*;
+import org.polepos.framework.*;
+
 
 /**
  * @author Christian Ernst

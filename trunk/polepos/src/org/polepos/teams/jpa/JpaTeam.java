@@ -22,7 +22,7 @@ package org.polepos.teams.jpa;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.EntityManager;
+import javax.persistence.*;
 
 import org.polepos.circuits.arraylists.ListHolder;
 import org.polepos.framework.Car;
@@ -129,55 +129,38 @@ public class JpaTeam extends Team{
     
     public void setUp() {
 		for(int i = 0; i < mCars.length;i++){		
-			
 			EntityManager em = ((JpaCar)mCars[i]).getEntityManager();
-
-		    em.getTransaction().begin();
-		    em.createQuery("delete from "+ ComplexHolder0.class.getSimpleName() + " this ").executeUpdate();
-		    em.getTransaction().commit();
-		    
-		    em.getTransaction().begin();
-		    em.createQuery("delete from "+ InheritanceHierarchy0.class.getSimpleName() + " this ").executeUpdate();
-		    em.getTransaction().commit();
-
-		    em.getTransaction().begin();
-		    em.createQuery("delete from "+ JpaIndexedObject.class.getSimpleName() + " this ").executeUpdate();
-		    em.getTransaction().commit();
-		    
-		    em.getTransaction().begin();
-		    em.createQuery("delete from "+ ListHolder.class.getSimpleName() + " this ").executeUpdate();
-		    em.getTransaction().commit();
-		    
-		    em.getTransaction().begin();
-		    em.createQuery("delete from "+ JPB0.class.getSimpleName() + " this ").executeUpdate();
-		    em.getTransaction().commit();
-		    
-		    em.getTransaction().begin();
-		    em.createQuery("delete from "+ JpaIndexedPilot.class.getSimpleName() + " this ").executeUpdate();
-		    em.getTransaction().commit();
-		    
-		    em.getTransaction().begin();
-		    em.createQuery("delete from "+ JpaPilot.class.getSimpleName() + " this ").executeUpdate();
-		    em.getTransaction().commit();
-
-		    em.getTransaction().begin();
-		    em.createQuery("delete from "+ JpaTree.class.getSimpleName() + " this ").executeUpdate();
-		    em.getTransaction().commit();
-
-		    em.getTransaction().begin();
-		    em.createQuery("delete from "+ JpaLightObject.class.getSimpleName() + " this ").executeUpdate();
-		    em.getTransaction().commit();
-		    
-		    em.getTransaction().begin();
-		    em.createQuery("delete from "+ JpaListHolder.class.getSimpleName() + " this ").executeUpdate();
-		    em.getTransaction().commit();
-		    
-		    em.getTransaction().begin();
-		    em.createQuery("delete from "+ JPN1.class.getSimpleName() + " this ").executeUpdate();
-		    em.getTransaction().commit();
-		    	    
+			delete(em, ComplexHolder0.class);
+			delete(em, InheritanceHierarchy0.class);
+			delete(em, JpaIndexedObject.class);
+			delete(em, ListHolder.class);
+			delete(em, JPB0.class);
+			delete(em, JpaIndexedPilot.class);
+			delete(em, JpaPilot.class);
+			delete(em, JpaTree.class);
+			delete(em, JpaLightObject.class);
+			delete(em, JpaListHolder.class);
+			delete(em, JPN1.class);
 		}
+		
 	}
+    
+    private void delete(EntityManager em, Class clazz){
+	    em.getTransaction().begin();
+	    Query query = em.createQuery("select o from "+ clazz.getSimpleName() + " o");
+	    List resultList = query.getResultList();
+	    for (Object object : resultList) {
+			em.remove(object);
+		}
+	    em.getTransaction().commit();
+
+	    // delete queries don't work in VOD JPA yet. Use the following when they are implemented:
+	    
+//	    em.getTransaction().begin();
+//	    em.createQuery("delete from "+ clazz.getSimpleName() + " this ").executeUpdate();
+//	    em.getTransaction().commit();
+
+    }
 
 	
 }

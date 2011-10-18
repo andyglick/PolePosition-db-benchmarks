@@ -57,7 +57,7 @@ public class NestedListsJpa extends JpaDriver implements NestedLists {
         String filter = " this._name = '" + ListHolder.ROOT_NAME + "'";
 
         Query query = db().createQuery(
-				"SELECT this FROM " + ListHolder.class.getName()
+				"SELECT this FROM " + ListHolder.class.getSimpleName()
 						+ " this WHERE " + filter);
         Collection<ListHolder> result = (Collection<ListHolder>)query.getResultList();
         if(result.size() != 1){
