@@ -57,7 +57,7 @@ public class InheritanceHierarchyJpa extends JpaDriver implements InheritanceHie
         String filter = "this.i2 = :param";
         for (int i = 1; i <= count; i++) {
 			Query query = db().createQuery(
-					"SELECT this FROM " + InheritanceHierarchy4.class.getName()
+					"SELECT this FROM " + InheritanceHierarchy4.class.getSimpleName()
 							+ " this WHERE " + filter);
             doQuery(query, i);
         }
@@ -68,7 +68,7 @@ public class InheritanceHierarchyJpa extends JpaDriver implements InheritanceHie
 	public void delete(){
         begin();
         Query query = db().createQuery(
-				"SELECT this FROM " + InheritanceHierarchy4.class.getName()
+				"SELECT this FROM " + InheritanceHierarchy4.class.getSimpleName()
 						+ " this");
         Iterator it = query.getResultList().iterator();
         while(it.hasNext()){

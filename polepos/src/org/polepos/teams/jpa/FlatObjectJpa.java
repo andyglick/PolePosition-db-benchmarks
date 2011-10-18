@@ -53,7 +53,7 @@ public class FlatObjectJpa extends JpaDriver implements FlatObject {
 		String filter = "this._string = :param";
 		while (hasMoreTestIds()) {
 			Query query = db().createQuery(
-					"SELECT this FROM " + JpaIndexedObject.class.getName()
+					"SELECT this FROM " + JpaIndexedObject.class.getSimpleName()
 							+ " this WHERE " + filter);
 			doQuery(query, IndexedObject.queryString(nextTestId()));
 		}
@@ -66,7 +66,7 @@ public class FlatObjectJpa extends JpaDriver implements FlatObject {
 		String filter = "this._int = :param";
 		while (hasMoreTestIds()) {
 			Query query = db().createQuery(
-					"SELECT this FROM " + JpaIndexedObject.class.getName()
+					"SELECT this FROM " + JpaIndexedObject.class.getSimpleName()
 							+ " this WHERE " + filter);
 			doQuery(query, nextTestId());
 		}
@@ -79,7 +79,7 @@ public class FlatObjectJpa extends JpaDriver implements FlatObject {
 		initializeTestId(setup().getUpdateCount());
 		while (hasMoreTestIds()) {
 			Query query = db().createQuery(
-					"SELECT this FROM " + JpaIndexedObject.class.getName()
+					"SELECT this FROM " + JpaIndexedObject.class.getSimpleName()
 							+ " this WHERE " + filter);
 			query.setParameter("param", nextTestId());
 			Collection result = (Collection) query.getResultList();
@@ -97,7 +97,7 @@ public class FlatObjectJpa extends JpaDriver implements FlatObject {
 		initializeTestId(setup().getUpdateCount());
 		while (hasMoreTestIds()) {
 			Query query = db().createQuery(
-					"SELECT this FROM " + JpaIndexedObject.class.getName()
+					"SELECT this FROM " + JpaIndexedObject.class.getSimpleName()
 							+ " this WHERE " + filter);
 			query.setParameter("param", nextTestId());
 			Collection result = (Collection) query.getResultList();
