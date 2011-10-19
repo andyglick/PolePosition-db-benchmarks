@@ -65,6 +65,10 @@ public abstract class JpaDriver extends DriverBase{
         db().getTransaction().commit();
     }
     
+    public void rollback(){
+        db().getTransaction().rollback();
+    }
+    
     public void store(Object obj){
         db().persist(obj);
     }

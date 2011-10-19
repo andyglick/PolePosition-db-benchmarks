@@ -65,6 +65,13 @@ public class JpaCar extends Car {
 			e.printStackTrace();
 		} 
     }
+    
+    protected void reinitialize() throws IOException{
+    	if(mFactory != null){
+    		mFactory.close();
+    	}
+    	initialize();
+    }
 
 	private String persistenceUnitName() {
 		if(_dbName == null){
@@ -82,13 +89,21 @@ public class JpaCar extends Car {
 
     @Override
     public String name() {
-       
         if(isSQL()){
             return Jpa.settings().getName(_name) + "/" +Jdbc.settings().getName(_dbName)+"-"+Jdbc.settings().getVersion(_dbName);
         }
         return Jpa.settings().getVendor(_name) + "/" + Jpa.settings().getName(_name)+"-"+Jpa.settings().getVersion(_name);
-
     }
+    
+    public boolean canRecreateDatabase(){
+    	return false;
+    }
+    
+    public void recreateDatabase(){
+    	// do nothing, override in specific implementations
+    }
+    
+    
 
 
 }

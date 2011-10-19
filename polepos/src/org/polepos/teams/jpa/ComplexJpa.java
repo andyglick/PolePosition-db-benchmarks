@@ -59,7 +59,7 @@ public class ComplexJpa extends JpaDriver implements Complex {
 		begin();
 		ComplexHolder0 holder = read(_rootId);
 		addToCheckSum(holder);
-		commit();
+		rollback();
 	}
 
 	public ComplexHolder0 read(Object id) {
@@ -73,11 +73,11 @@ public class ComplexJpa extends JpaDriver implements Complex {
 		int firstInt = objects() * objects() + objects();
 		int lastInt = firstInt + (objects() * objects() * objects()) - 1;
 		int currentInt = firstInt;
+		String filter = "this.i2 = :param";
+		Query query = db().createQuery(
+				"SELECT this FROM " + ComplexHolder2.class.getSimpleName()
+				+ " this WHERE " + filter);
 		for (int run = 0; run < selectCount; run++) {
-			String filter = "this.i2 = :param";
-			Query query = db().createQuery(
-					"SELECT this FROM " + ComplexHolder2.class.getSimpleName()
-							+ " this WHERE " + filter);
 			query.setParameter("param", currentInt);
 			Collection result = (Collection) query.getResultList();
 			Iterator it = result.iterator();
@@ -102,7 +102,7 @@ public class ComplexJpa extends JpaDriver implements Complex {
 				currentInt = firstInt;
 			}
 		}
-		commit();
+		rollback();
 	}
 
 	@Override

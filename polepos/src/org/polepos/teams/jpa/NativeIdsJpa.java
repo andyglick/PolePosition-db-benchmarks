@@ -49,7 +49,7 @@ public class NativeIdsJpa extends JpaDriver implements NativeIdsDriver{
                 addToCheckSum(pilot.getPoints());
             }
         }   
-        commit();
+        rollback();
     }
 
     private void storePilot(int idx) {

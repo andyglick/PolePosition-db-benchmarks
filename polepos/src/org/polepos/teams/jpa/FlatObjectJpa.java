@@ -51,36 +51,36 @@ public class FlatObjectJpa extends JpaDriver implements FlatObject {
 		begin();
 		initializeTestId(setup().getSelectCount());
 		String filter = "this._string = :param";
+		Query query = db().createQuery(
+				"SELECT this FROM " + JpaIndexedObject.class.getSimpleName()
+				+ " this WHERE " + filter);
 		while (hasMoreTestIds()) {
-			Query query = db().createQuery(
-					"SELECT this FROM " + JpaIndexedObject.class.getSimpleName()
-							+ " this WHERE " + filter);
 			doQuery(query, IndexedObject.queryString(nextTestId()));
 		}
-		commit();
+		rollback();
 	}
 
 	public void queryIndexedInt() {
 		begin();
 		initializeTestId(setup().getSelectCount());
 		String filter = "this._int = :param";
+		Query query = db().createQuery(
+				"SELECT this FROM " + JpaIndexedObject.class.getSimpleName()
+				+ " this WHERE " + filter);
 		while (hasMoreTestIds()) {
-			Query query = db().createQuery(
-					"SELECT this FROM " + JpaIndexedObject.class.getSimpleName()
-							+ " this WHERE " + filter);
 			doQuery(query, nextTestId());
 		}
-		commit();
+		rollback();
 	}
 
 	public void update() {
 		begin();
 		String filter = "this._int = :param";
 		initializeTestId(setup().getUpdateCount());
+		Query query = db().createQuery(
+				"SELECT this FROM " + JpaIndexedObject.class.getSimpleName()
+				+ " this WHERE " + filter);
 		while (hasMoreTestIds()) {
-			Query query = db().createQuery(
-					"SELECT this FROM " + JpaIndexedObject.class.getSimpleName()
-							+ " this WHERE " + filter);
 			query.setParameter("param", nextTestId());
 			Collection result = (Collection) query.getResultList();
 			JpaIndexedObject indexedObject = (JpaIndexedObject) result
@@ -95,10 +95,10 @@ public class FlatObjectJpa extends JpaDriver implements FlatObject {
 		begin();
 		String filter = "this._int = :param";
 		initializeTestId(setup().getUpdateCount());
+		Query query = db().createQuery(
+				"SELECT this FROM " + JpaIndexedObject.class.getSimpleName()
+				+ " this WHERE " + filter);
 		while (hasMoreTestIds()) {
-			Query query = db().createQuery(
-					"SELECT this FROM " + JpaIndexedObject.class.getSimpleName()
-							+ " this WHERE " + filter);
 			query.setParameter("param", nextTestId());
 			Collection result = (Collection) query.getResultList();
 			JpaIndexedObject indexedObject = (JpaIndexedObject) result

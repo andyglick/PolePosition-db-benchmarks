@@ -45,23 +45,23 @@ public class InheritanceHierarchyJpa extends JpaDriver implements InheritanceHie
     
 	@Override
     public void read(){
-	begin();
+		begin();
         readExtent(InheritanceHierarchy4.class);
-        commit();
+        rollback();
     }
     
 	@Override
 	public void query(){
-	begin();
+		begin();
         int count = setup().getSelectCount();
         String filter = "this.i2 = :param";
+        Query query = db().createQuery(
+        		"SELECT this FROM " + InheritanceHierarchy4.class.getSimpleName()
+        		+ " this WHERE " + filter);
         for (int i = 1; i <= count; i++) {
-			Query query = db().createQuery(
-					"SELECT this FROM " + InheritanceHierarchy4.class.getSimpleName()
-							+ " this WHERE " + filter);
             doQuery(query, i);
         }
-        commit();
+        rollback();
     }
     
 	@Override
