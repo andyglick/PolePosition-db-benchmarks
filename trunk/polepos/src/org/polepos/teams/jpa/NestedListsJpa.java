@@ -22,12 +22,11 @@ package org.polepos.teams.jpa;
 
 import java.util.*;
 
-import javax.persistence.Query;
+import javax.persistence.*;
 
 import org.polepos.circuits.nestedlists.*;
 import org.polepos.framework.*;
-import org.polepos.teams.jpa.data.ListHolder;
-import org.polepos.teams.jpa.data.InheritanceHierarchy4;
+import org.polepos.teams.jpa.data.*;
 
 /**
  * @author Christian Ernst
@@ -50,7 +49,7 @@ public class NestedListsJpa extends JpaDriver implements NestedLists {
 				addToCheckSum(listHolder);
 			}
 		});
-		commit();
+		rollback();
 	}
 	
 	private ListHolder root() {
