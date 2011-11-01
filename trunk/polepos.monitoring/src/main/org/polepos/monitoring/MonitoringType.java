@@ -29,14 +29,14 @@ import static org.polepos.util.JavaLangUtils.rethrow;
  * @author roman.stoffel@gamlor.info
  * @since 19.09.11
  */
-public final class MonitoringType {
+public class MonitoringType {
 
     private final String name;
     private final String label;
     private final String unitOfMeasurment;
     private final int scaleFactory;
 
-    MonitoringType(String name, String label,String unitOfMeasurment, int scaleFactory) {
+    private MonitoringType(String name, String label,String unitOfMeasurment, int scaleFactory) {
         this.name = name;
         this.label = label;
         this.unitOfMeasurment = unitOfMeasurment;
@@ -86,7 +86,14 @@ public final class MonitoringType {
         return percentUnit(name, name);
     }
     public static MonitoringType percentUnit(String name, String label) {
-        return create(name,label,"%", 100);
+        final int DOT_PERCENT = 100;
+        final int PERCENT_SCALE = 100*100;
+        return new MonitoringType(name,label,"%", PERCENT_SCALE){
+            @Override
+            public String formatDisplayNumber(long val) {
+                return String.valueOf(val/ DOT_PERCENT)+"."+String.format("%02d",val % DOT_PERCENT);
+            }
+        };
     }
     public static MonitoringType create(String name, String label,String unitOfMeasurment,  int displayScaleFactor) {
         return new MonitoringType(name,label,unitOfMeasurment, displayScaleFactor);
@@ -99,4 +106,7 @@ public final class MonitoringType {
         }
     }
 
+    public String formatDisplayNumber(long val) {
+        return String.valueOf(val);
+    }
 }

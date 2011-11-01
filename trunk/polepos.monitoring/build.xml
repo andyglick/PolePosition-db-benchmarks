@@ -43,6 +43,7 @@
         <copy todir="${distFolder}/">
             <fileset dir="./">
                 <include name="start.bat"/>
+                <include name="start.sh"/>
             </fileset>
         </copy>
     </target>
