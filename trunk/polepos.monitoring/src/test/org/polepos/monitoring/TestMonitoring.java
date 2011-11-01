@@ -14,12 +14,13 @@ import static org.polepos.monitoring.MonitoringTestUtils.waitFor;
  * @since 14.09.11
  */
 public class TestMonitoring {
+        final MonitoringSettings settings = new MonitoringSettings(true,"",new String[]{"1"});
 
     private static final int WAIT_TIME_IN_MILLISEC = 1000;
 
     @Test
     public void monitoringReturnsNotNull() {
-        final LoadMonitoringResults results = new Monitoring(true,collector()).monitor(
+        final LoadMonitoringResults results = new Monitoring(true, settings, collector()).monitor("mock-team",
                 new NoArgFunction<Object>() {
                     @Override
                     public Object invoke() {
@@ -31,7 +32,7 @@ public class TestMonitoring {
 
     private SessionFactory collector(Sampler...samplers) {
         SessionFactory sf = mock(SessionFactory.class);
-        when(sf.accordingToConfiguration()).thenReturn(SessionFactory.localSession(asList(samplers)));
+        when(sf.monitoringWithDBHost("")).thenReturn(SessionFactory.localSession(asList(samplers)));
         return sf;
     }
 
@@ -39,7 +40,7 @@ public class TestMonitoring {
     public void monitoringRunsSamplers() {
         CallCountingSampler sampler = new CallCountingSampler();
         final String ourResult = "result";
-        final Monitoring.ResultAndData<String> results = new Monitoring(true,collector(sampler)).monitor(
+        final Monitoring.ResultAndData<String> results = new Monitoring(true, settings, collector(sampler)).monitor("mock-team",
                 new NoArgFunction<String> ()
                 {
                     @Override
@@ -55,8 +56,8 @@ public class TestMonitoring {
 
     @Test
     public void canDisableMonitoring() {
-        final MonitoringSettings settings = new MonitoringSettings(false,"","",new String[]{"1"});
-        final LoadMonitoringResults results = Monitoring.createInstance(settings).monitor(new NoArgFunction<Object>() {
+        final MonitoringSettings settings = new MonitoringSettings(false,"",new String[]{"1"});
+        final LoadMonitoringResults results = Monitoring.createInstance(settings).monitor("mock-team",new NoArgFunction<Object>() {
             @Override
             public Object invoke() {
                 waitFor(WAIT_TIME_IN_MILLISEC);
@@ -72,7 +73,7 @@ public class TestMonitoring {
 
     @Test
     public void returnsOriginalValue() {
-        final Monitoring.ResultAndData results = new Monitoring(true,defaultListeners()).monitor(new NoArgFunction<String>() {
+        final Monitoring.ResultAndData results = new Monitoring(true, settings, defaultListeners()).monitor("mock-team",new NoArgFunction<String>() {
             @Override
             public String invoke() {
                 return "hello world";

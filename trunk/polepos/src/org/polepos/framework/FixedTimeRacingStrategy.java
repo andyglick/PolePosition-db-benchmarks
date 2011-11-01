@@ -81,7 +81,7 @@ public class FixedTimeRacingStrategy implements RacingStrategy {
             threads[i] = new Thread(racers[i]);
         }
 
-        final LoadMonitoringResults monitoringResult = monitoring.monitor(new NoArgAction() {
+        final LoadMonitoringResults monitoringResult = monitoring.monitor(team.name(),new NoArgAction() {
             @Override
             public void invoke() {
                 runRacersForACertainTime(time, racers, threads);

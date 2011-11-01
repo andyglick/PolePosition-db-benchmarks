@@ -93,6 +93,9 @@
 
         <copy overwrite="true" todir="${monitoringDir}">
             <fileset dir="../polepos.monitoring">
+                <include name="*.bat"/>
+                <include name="*.sh"/>
+                <include name="**.jar"/>
                 <include name="lib/**"/>
                 <include name="lib.testing/**"/>
                 <include name="settings/**"/>

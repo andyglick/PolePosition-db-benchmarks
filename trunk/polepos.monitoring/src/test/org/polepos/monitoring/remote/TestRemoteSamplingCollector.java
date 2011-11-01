@@ -26,6 +26,7 @@ import org.polepos.monitoring.MonitoringResult;
 import org.polepos.monitoring.Samplers;
 import org.polepos.monitoring.SamplingSession;
 import org.polepos.util.NoArgAction;
+import org.polepos.util.NoArgFunction;
 
 import java.util.Collection;
 
@@ -44,7 +45,7 @@ public class TestRemoteSamplingCollector {
         withRunningServer(new NoArgAction() {
             @Override
             public void invoke() {
-                SamplingSession remote = RemoteSamplingSession.remote(
+                SamplingSession remote = RemoteSamplingRepository.remote(
                         new Monitoring(Samplers.create(Samplers.allSamplerNames())));
                 final Collection<MonitoringResult> results = remote.sampleAndReturnResults();
 
@@ -60,11 +61,29 @@ public class TestRemoteSamplingCollector {
             @Override
             public void invoke() {
                 try {
-                    SamplingSession remote = RemoteSamplingSession.newFactory(url).invoke();
+                    SamplingSession remote = RemoteSamplingRepository.newFactory().invoke(url);
                     final Collection<MonitoringResult> results = remote.sampleAndReturnResults();
 
                     Assert.assertTrue(results.size() != 0);
 
+                } catch (Exception e) {
+                    throw rethrow(e);
+                }
+            }
+        });
+    }
+    @Test
+    public void returnsSameInstanceForSameHost() throws Exception {
+        final String url = newUrl();
+        withRunningServer(url,new NoArgAction() {
+            @Override
+            public void invoke() {
+                try {
+                    final RemoteSamplingRepository factory = new RemoteSamplingRepository();
+                    NoArgFunction<SamplingSession> remote1 = factory.forHost(url);
+                    NoArgFunction<SamplingSession> remote2 = factory.forHost(url);
+
+                    Assert.assertSame(remote1,remote2);
                 } catch (Exception e) {
                     throw rethrow(e);
                 }

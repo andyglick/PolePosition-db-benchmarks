@@ -203,7 +203,7 @@ public abstract class TimedLapsCircuitBase extends CircuitBase {
 		_fileSizeWatcher.monitorFile(team.databaseFile());
 		_fileSizeWatcher.start();
 
-        final LoadMonitoringResults monitoringResults = monitoring.monitor(new NoArgAction() {
+        final LoadMonitoringResults monitoringResults = monitoring.monitor(team.name(),new NoArgAction() {
             @Override
             public void invoke() {
                 lapRunnable.run();

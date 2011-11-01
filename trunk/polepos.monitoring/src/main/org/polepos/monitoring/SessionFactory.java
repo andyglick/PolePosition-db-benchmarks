@@ -20,12 +20,11 @@
 
 package org.polepos.monitoring;
 
-import org.polepos.monitoring.remote.RemoteSamplingSession;
-import org.polepos.util.NoArgFunction;
+import org.polepos.monitoring.remote.RemoteSamplingRepository;
+import org.polepos.util.OneArgFunction;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -35,33 +34,16 @@ import java.util.List;
 public class SessionFactory {
 
     private final Samplers samplers;
-    private final NoArgFunction<SamplingSession> remoteSampleHost;
+    private final OneArgFunction<String,SamplingSession> remoteSampleHost;
 
-    SessionFactory(Samplers samplers, NoArgFunction<SamplingSession> remoteSampleHost) {
+    SessionFactory(Samplers samplers,
+                   OneArgFunction<String,SamplingSession> remoteSampleHost) {
         this.samplers = samplers;
         this.remoteSampleHost = remoteSampleHost;
     }
 
-    public static SessionFactory create(Samplers samplers, String remoteSampleHost){
-        return new SessionFactory(samplers, returnRemoteFactory(remoteSampleHost));
-    }
-
-    private static NoArgFunction<SamplingSession> returnRemoteFactory(String remoteSampleHost) {
-        if(null==remoteSampleHost || remoteSampleHost.isEmpty()){
-            return new NoArgFunction<SamplingSession>() {
-                @Override
-                public SamplingSession invoke() {
-                    return new SamplingSession() {
-                        @Override
-                        public Collection<MonitoringResult> sampleAndReturnResults() {
-                            return Collections.emptyList();
-                        }
-                    };
-                }
-            };
-        } else {
-            return RemoteSamplingSession.newFactory(remoteSampleHost);
-        }
+    public static SessionFactory create(Samplers samplers){
+        return new SessionFactory(samplers,RemoteSamplingRepository.newFactory());
     }
 
 
@@ -69,13 +51,18 @@ public class SessionFactory {
         return new LocalSession(samplers);
     }
 
-    public SamplingSession accordingToConfiguration() {
-        final SamplingSession remote = remoteSampleHost.invoke();
+    /**
+     * When the remoteSamplingHost is left empty or null, then remote sampling is turned off.
+     * @param remoteSamplingHost
+     * @return
+     */
+    public SamplingSession monitoringWithDBHost(String remoteSamplingHost) {
+        final SamplingSession remote = remoteSampleHost.invoke(remoteSamplingHost);
         SamplingSession local = localSession(samplers.samplers());
-        return compundCollector(local,remote);
+        return compoundCollector(local, remote);
     }
 
-    public static SamplingSession compundCollector(final SamplingSession local, final SamplingSession remote) {
+    static SamplingSession compoundCollector(final SamplingSession local, final SamplingSession remote) {
         return new SamplingSession() {
             @Override
             public Collection<MonitoringResult> sampleAndReturnResults() {
