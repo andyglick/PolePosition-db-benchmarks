@@ -20,6 +20,8 @@ MA  02111-1307, USA. */
 package org.polepos.framework;
 
 import java.io.*;
+import java.util.Collections;
+import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
@@ -145,6 +147,10 @@ public class PropertiesHandler
 	public String get( String key, String defaultValue ){
 		return _properties.getProperty( key, defaultValue );
 	}
+
+    public Map<String,String> asMap(){
+        return (Map) Collections.unmodifiableMap(_properties);
+    }
 	
 	
 	/**

@@ -60,9 +60,8 @@ public class TestSamplingCollector {
 
     @Test
     public void onlyLocalSampling() {
-        final SessionFactory sessionFactory = SessionFactory.create(Samplers.create(asList(CPULoadCollector.class.getSimpleName())),
-                "");
-        final SamplingSession sampling = sessionFactory.accordingToConfiguration();
+        final SessionFactory sessionFactory = SessionFactory.create(Samplers.create(asList(CPULoadCollector.class.getSimpleName())));
+        final SamplingSession sampling = sessionFactory.monitoringWithDBHost("");
 
         final Collection<MonitoringResult> results = sampling.sampleAndReturnResults();
         assertEquals(1, results.size());
@@ -76,9 +75,9 @@ public class TestSamplingCollector {
             public void invoke() {
                 String remote = "service:jmx:jmxmp://localhost:" + port;
 
-                final SessionFactory sessionFactory = SessionFactory.create(Samplers.create(asList(CPULoadCollector.class.getSimpleName())),
-                        remote);
-                final SamplingSession sampling = sessionFactory.accordingToConfiguration();
+                final SessionFactory sessionFactory = SessionFactory.create(
+                        Samplers.create(asList(CPULoadCollector.class.getSimpleName())));
+                final SamplingSession sampling = sessionFactory.monitoringWithDBHost(remote);
 
                 final Collection<MonitoringResult> results = sampling.sampleAndReturnResults();
                 assertEquals(2, results.size());

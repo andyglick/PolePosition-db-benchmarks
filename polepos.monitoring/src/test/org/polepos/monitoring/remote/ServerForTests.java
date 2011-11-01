@@ -68,7 +68,7 @@ public final class ServerForTests {
             @Override
             public void run() {
                 try {
-                    MonitoringServer.main(new MonitoringSettings(true,"",connectionString,
+                    MonitoringServer.main(new MonitoringSettings(true,connectionString,
                             new String[]{CPULoadCollector.class.getSimpleName()}));
                 } catch (Exception e) {
                     e.printStackTrace();

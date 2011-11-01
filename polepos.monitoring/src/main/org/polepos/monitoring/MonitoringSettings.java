@@ -22,8 +22,7 @@ package org.polepos.monitoring;
 
 import org.polepos.framework.PropertiesHandler;
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.*;
 
 import static java.util.Collections.unmodifiableCollection;
 
@@ -38,22 +37,37 @@ public final class MonitoringSettings {
     private static final String CONNECTOR = "agent.connector";
     private final boolean isEnabled;
     private final Collection<String> samplers;
-    private final String remote;
     private final String connectionUrl;
+    private final Map<String,String> settings;
 
-    public MonitoringSettings(boolean enabled,String remote,String connectionUrl,String[] samplers) {
+    public MonitoringSettings(boolean enabled,
+                              String connectionUrl,String[] samplers,Map<String,String> settings) {
         isEnabled = enabled;
-        this.remote = remote;
         this.connectionUrl = connectionUrl;
         this.samplers = Arrays.asList(samplers);
+        this.settings = settings;
+    }
+    public MonitoringSettings(boolean enabled,
+                              String connectionUrl,String[] samplers) {
+        this(enabled, connectionUrl, samplers, Collections.<String, String>emptyMap());
     }
 
     public static MonitoringSettings create(PropertiesHandler properties){
         return new MonitoringSettings(properties.getBoolean(MONITORING_IS_ENABLED),
-                properties.get(REMOTE),
                 properties.get(CONNECTOR),
-                properties.getArray(SAMPLERS));
+                properties.getArray(SAMPLERS),
+                toLower(properties.asMap()));
     }
+
+    private static Map<String, String> toLower(Map<String, String> values) {
+        Map<String, String> result = new HashMap<String, String>();
+        for (Map.Entry<String, String> stringStringEntry : values.entrySet()) {
+            result.put(stringStringEntry.getKey().toLowerCase(),
+                    stringStringEntry.getValue());
+        }
+        return result;
+    }
+
     public static MonitoringSettings readFromConfig() {
         final PropertiesHandler properties = new PropertiesHandler(Monitoring.SETTINGS_FILE_NAME);
         return create(properties);
@@ -70,7 +84,15 @@ public final class MonitoringSettings {
         return unmodifiableCollection(samplers);
     }
 
-    public String getRemote() {
-        return remote;
+
+    public String remoteHostForTeam(String teamName) {
+        String host = settings.get((REMOTE + "." + teamName).toLowerCase());
+        if(null==host){
+            host = settings.get(REMOTE.toLowerCase());
+        }
+        if(null==host){
+            host = "";
+        }
+        return host;
     }
 }

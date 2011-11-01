@@ -23,6 +23,8 @@ package org.polepos.monitoring;
 import org.junit.Test;
 import org.polepos.framework.PropertiesHandler;
 
+import java.util.HashMap;
+
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -55,14 +57,29 @@ public class TestMonitoringSettings {
     public void returnsRemoteConnection(){
         PropertiesHandler handler = monitoringCfg(false);
         MonitoringSettings toTest = MonitoringSettings.create(handler);
-        assertEquals("my:cool:url", toTest.getRemote());
+        assertEquals("my:cool:url", toTest.remoteHostForTeam("our-team"));
+    }
+    @Test
+    public void returnsSpecificTeamUrl(){
+        PropertiesHandler handler = monitoringCfg(false);
+        MonitoringSettings toTest = MonitoringSettings.create(handler);
+        assertEquals("url-for-team-2", toTest.remoteHostForTeam("Team-2"));
+    }
+    @Test
+    public void teamSpecificsAreCaseInsensitive(){
+        PropertiesHandler handler = monitoringCfg(false);
+        MonitoringSettings toTest = MonitoringSettings.create(handler);
+        assertEquals("url-for-team-2", toTest.remoteHostForTeam("TEAM-2"));
     }
 
     private PropertiesHandler monitoringCfg(boolean isMonitoringEnabled) {
         PropertiesHandler handler = mock(PropertiesHandler.class);
         when(handler.getBoolean(MonitoringSettings.MONITORING_IS_ENABLED)).thenReturn(isMonitoringEnabled);
         when(handler.getArray(MonitoringSettings.SAMPLERS)).thenReturn(new String[]{"1", "2", "3"});
-        when(handler.get(MonitoringSettings.REMOTE)).thenReturn("my:cool:url");
+        when(handler.asMap()).thenReturn(new HashMap<String, String>(){{
+            put(MonitoringSettings.REMOTE,"my:cool:url");
+            put(MonitoringSettings.REMOTE+".Team-2","url-for-team-2");
+        }});
         return handler;
     }
 }

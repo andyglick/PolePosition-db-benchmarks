@@ -22,16 +22,8 @@ package org.polepos.monitoring.remote;
 
 import org.polepos.monitoring.MonitoringResult;
 import org.polepos.monitoring.SamplingSession;
-import org.polepos.util.NoArgFunction;
 
-import javax.management.JMX;
-import javax.management.MBeanServerConnection;
-import javax.management.remote.JMXConnector;
-import javax.management.remote.JMXConnectorFactory;
-import javax.management.remote.JMXServiceURL;
 import java.util.Collection;
-
-import static org.polepos.util.JavaLangUtils.rethrow;
 
 /**
  * @author roman.stoffel@gamlor.info
@@ -40,13 +32,9 @@ import static org.polepos.util.JavaLangUtils.rethrow;
 public final class RemoteSamplingSession implements SamplingSession {
     private final MonitoringMXBean monitoringBean;
 
-    private RemoteSamplingSession(MonitoringMXBean monitoringBean) {
+    RemoteSamplingSession(MonitoringMXBean monitoringBean) {
         this.monitoringBean = monitoringBean;
         monitoringBean.start();
-    }
-
-    public static SamplingSession remote(MonitoringMXBean monitoringBean) {
-        return new RemoteSamplingSession(monitoringBean);
     }
 
     @Override
@@ -54,21 +42,5 @@ public final class RemoteSamplingSession implements SamplingSession {
         String result = monitoringBean.stop();
         return Serialisation.fromJSON(result).asCollection();
     }
-
-    public static NoArgFunction<SamplingSession> newFactory(String url) {
-        try {
-            final JMXConnector jmxc = JMXConnectorFactory.connect(new JMXServiceURL(url), null);
-            final MBeanServerConnection connection = jmxc.getMBeanServerConnection();
-            final MonitoringMXBean mxBean = JMX.newMBeanProxy(connection, MonitoringServer.NAME, MonitoringMXBean.class);
-
-            return new NoArgFunction<SamplingSession>() {
-                @Override
-                public SamplingSession invoke() {
-                    return remote(mxBean);
-                }
-            };
-        } catch (Exception e) {
-            throw rethrow(e);
-        }
-    }
 }
+

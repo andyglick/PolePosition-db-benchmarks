@@ -37,10 +37,12 @@ public final class Monitoring {
     private static final PropertiesHandler PROPERTIES = new PropertiesHandler(SETTINGS_FILE_NAME);
 
     private final boolean isEnabled;
+    private final MonitoringSettings settings;
     private final SessionFactory sessionFactory;
 
-    Monitoring(boolean enabled, SessionFactory sessionFactory) {
+    Monitoring(boolean enabled, MonitoringSettings settings, SessionFactory sessionFactory) {
         isEnabled = enabled;
+        this.settings = settings;
         this.sessionFactory = sessionFactory;
     }
 
@@ -49,13 +51,12 @@ public final class Monitoring {
     }
 
     public static Monitoring createInstance(MonitoringSettings settings){
-        SessionFactory sessionFactory = SessionFactory.create(Samplers.create(settings.getSamplers()),
-                settings.getRemote());
-        return new Monitoring(settings.isEnabled(),sessionFactory);
+        SessionFactory sessionFactory = SessionFactory.create(Samplers.create(settings.getSamplers()));
+        return new Monitoring(settings.isEnabled(),settings,sessionFactory);
     }
 
-    public LoadMonitoringResults monitor(final NoArgAction run) {
-        return monitor(new NoArgFunction<Void>() {
+    public LoadMonitoringResults monitor(String teamName,final NoArgAction run) {
+        return monitor(teamName,new NoArgFunction<Void>() {
             @Override
             public Void invoke() {
                 run.invoke();
@@ -65,9 +66,9 @@ public final class Monitoring {
     }
 
 
-    <T> ResultAndData<T> monitor(final NoArgFunction<T> run) {
+    <T> ResultAndData<T> monitor(String teamName,final NoArgFunction<T> run) {
         if (isEnabled) {
-            final SamplingSession sampling = sessionFactory.accordingToConfiguration();
+            final SamplingSession sampling = sessionFactory.monitoringWithDBHost(urlFor(teamName));
             T data = run.invoke();
             final Collection<MonitoringResult> results = sampling.sampleAndReturnResults();
             return new ResultAndData<T>(LoadMonitoringResults.create(results), data);
@@ -75,6 +76,10 @@ public final class Monitoring {
             T data = run.invoke();
             return new ResultAndData<T>(LoadMonitoringResults.create(Collections.<MonitoringResult>emptyList()),data);
         }
+    }
+
+    private String urlFor(String teamName) {
+        return settings.remoteHostForTeam(teamName);
     }
 
     static MonitoringSettings readSettings() {

@@ -90,7 +90,7 @@ public class TestMonitoringServer {
 
     }
     @Test
-    public void tmp() throws Exception {
+    public void canJustStartAgain() throws Exception {
 
         withRunningServer(new NoArgAction() {
             @Override
