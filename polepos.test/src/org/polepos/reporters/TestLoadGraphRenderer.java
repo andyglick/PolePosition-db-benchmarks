@@ -127,6 +127,18 @@ public class TestLoadGraphRenderer extends RenderingApprovalBase {
         toTest.render(graphic());
         Approvals.approve(image());
     }
+    @Test
+    public void canDealWithSmallNumbers() {
+        this.graph = createEmptyGraph(new CircuitStub(true));
+        LoadGraphRenderer toTest = LoadGraphRenderer.create(graph, CPU_LOAD);
+
+        addTeamWithFixedResult("t-1",500,0.25,0.3, Color.GREEN);
+        addTeamWithFixedResult("t-2", 1000, 0.5, 0.6, Color.BLUE);
+        addTeamWithFixedResult("t-3", 2000, 0.5, 0.6, Color.CYAN);
+
+        toTest.render(graphic());
+        Approvals.approve(image());
+    }
 
     private void addTeam(String teamName, double cpuLoad, double memLoad, Color color) {
         final TimedLapsResult result = createResult(graph, 100, teamName,

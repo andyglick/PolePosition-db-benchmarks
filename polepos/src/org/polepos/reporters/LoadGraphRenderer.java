@@ -46,13 +46,13 @@ public abstract class LoadGraphRenderer extends TimedLapsCustomBarRendererBase {
             return new LoadGraphRenderer(graph, type) {
                 @Override
                 protected String labelForGraph() {
-                    return " per 10 iterations (less is better)";
+                    return " per iteration (less is better)";
 
                 }
 
                 @Override
                 protected long valueToScreenValue(double value, MonitoringType type, TurnSetup setup, TeamCar teamCar) {
-                    return type.calculateDisplayNumber(value / (graph.iterationsFor(teamCar, setup) / 10));
+                    return type.calculateDisplayNumber(value / (graph.iterationsFor(teamCar, setup)));
                 }
             };
         } else {
@@ -82,7 +82,7 @@ public abstract class LoadGraphRenderer extends TimedLapsCustomBarRendererBase {
 
     @Override
     protected String legendOnRightOfBar(TeamData teamData) {
-        return teamData.val + type.getLabel();
+        return type.formatDisplayNumber(teamData.val) + type.getLabel();
     }
 
     @Override
