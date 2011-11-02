@@ -33,30 +33,26 @@ import static org.polepos.util.JavaLangUtils.rethrow;
  */
 public final class CPULoadCollector implements Sampler {
     private final SigarProxy systemInfo;
-    private long initialTotal = 0;
     private long initialLoad = 0;
 
-    public static final MonitoringType TYPE = MonitoringType.percentUnit("CPU Load Average"+ machineNameAppendix(), "% CPU");
+    public static final MonitoringType TYPE = MonitoringType.create("CPU Time"+ machineNameAppendix(), "ms CPU","ms");
 
-    CPULoadCollector(SigarProxy systemInfo, long initialTotal, long initialLoad) {
+    CPULoadCollector(SigarProxy systemInfo, long initialLoad) {
         this.systemInfo = systemInfo;
-        this.initialTotal = initialTotal;
         this.initialLoad = initialLoad;
     }
 
     @Override
     public MonitoringResult collectResult() {
         final Cpu cpu = getCPU(systemInfo);
-        long diffTotal = Math.max(cpu.getTotal()-initialTotal,1);
-        long diffLoad = usedTime(cpu)-initialLoad;
-        double loadFactor = (double)diffLoad / (double)diffTotal;
-        return MonitoringResult.create(TYPE, loadFactor);
+        long load = usedTime(cpu)-initialLoad;
+        return MonitoringResult.create(TYPE, load);
     }
 
 
     public static Sampler create(SigarProxy systemInfo) {
             final Cpu cpu = getCPU(systemInfo);
-            return new CPULoadCollector(systemInfo, cpu.getTotal(), usedTime(cpu));
+            return new CPULoadCollector(systemInfo, usedTime(cpu));
     }
     private static Cpu getCPU(SigarProxy systemInfo) {
         try {

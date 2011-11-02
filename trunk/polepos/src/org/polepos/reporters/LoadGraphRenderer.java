@@ -52,7 +52,7 @@ public abstract class LoadGraphRenderer extends TimedLapsCustomBarRendererBase {
 
                 @Override
                 protected long valueToScreenValue(double value, MonitoringType type, TurnSetup setup, TeamCar teamCar) {
-                    return type.calculateDisplayNumber(value / (graph.iterationsFor(teamCar, setup)));
+                    return (long)value / (graph.iterationsFor(teamCar, setup));
                 }
             };
         } else {
@@ -64,7 +64,7 @@ public abstract class LoadGraphRenderer extends TimedLapsCustomBarRendererBase {
 
                 @Override
                 protected long valueToScreenValue(double value, MonitoringType type, TurnSetup setup, TeamCar teamCar) {
-                    return type.calculateDisplayNumber(value);
+                    return (long)value;
                 }
             };
         }
@@ -82,7 +82,7 @@ public abstract class LoadGraphRenderer extends TimedLapsCustomBarRendererBase {
 
     @Override
     protected String legendOnRightOfBar(TeamData teamData) {
-        return type.formatDisplayNumber(teamData.val) + type.getLabel();
+        return String.valueOf(teamData.val) + type.getLabel();
     }
 
     @Override

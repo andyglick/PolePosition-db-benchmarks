@@ -57,8 +57,8 @@ public class TestSerialisation {
     }
     @Test
     public void canSerializeResult(){
-        MonitoringResult r1 = MonitoringResult.create(MonitoringType.percentUnit("result-1","r-1"),55 );
-        MonitoringResult r2 = MonitoringResult.create(MonitoringType.create("result-2","r-2","runits",42),42 );
+        MonitoringResult r1 = MonitoringResult.create(MonitoringType.create("result-1","r-1","r"),55 );
+        MonitoringResult r2 = MonitoringResult.create(MonitoringType.create("result-2","r-2","runits"),42 );
         LoadMonitoringResults original
                 = LoadMonitoringResults.create(asList(r1,r2));
 
@@ -72,8 +72,8 @@ public class TestSerialisation {
     }
     @Test
     public void serializedForm() throws Exception {
-        MonitoringResult r1 = MonitoringResult.create(MonitoringType.percentUnit("result-1","r-1"),55 );
-        MonitoringResult r2 = MonitoringResult.create(MonitoringType.create("result-2","r-2","runits",42),42 );
+        MonitoringResult r1 = MonitoringResult.create(MonitoringType.create("result-1","r-1","r"),55 );
+        MonitoringResult r2 = MonitoringResult.create(MonitoringType.create("result-2","r-2","runits"),42 );
         LoadMonitoringResults original
                 = LoadMonitoringResults.create(asList(r1,r2));
 

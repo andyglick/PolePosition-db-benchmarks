@@ -103,7 +103,7 @@ public abstract class NetworkCollector implements Sampler {
     static class ReceiveNetworkCollector extends NetworkCollector{
 
         protected ReceiveNetworkCollector(SigarProxy sigar, List<String> listOfDevices) {
-            super(MonitoringType.create("Network received bytes"+MonitoringType.machineNameAppendix(), "kb", "kbyte", 1),
+            super(MonitoringType.create("Network received bytes"+MonitoringType.machineNameAppendix(), "kb", "kbyte"),
                     sigar, listOfDevices);
         }
 
@@ -116,7 +116,7 @@ public abstract class NetworkCollector implements Sampler {
     static class SendNetworkCollector extends NetworkCollector{
 
         protected SendNetworkCollector(SigarProxy sigar, List<String> listOfDevices) {
-            super(MonitoringType.create("Network sent bytes"+MonitoringType.machineNameAppendix(), "kb", "kbyte", 1),
+            super(MonitoringType.create("Network sent bytes"+MonitoringType.machineNameAppendix(), "kb", "kbyte"),
                     sigar, listOfDevices);
         }
 

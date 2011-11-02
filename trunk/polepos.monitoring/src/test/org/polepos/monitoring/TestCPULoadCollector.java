@@ -61,7 +61,7 @@ public class TestCPULoadCollector {
         when(cpuMock.getUser()).thenReturn(200L);
         when(cpuMock.getSys()).thenReturn(100L);
         final MonitoringResult result = toTest.collectResult();
-        Assert.assertEquals(0.3, result.getValue(),0.001);
+        Assert.assertEquals(300L, result.getValue(),0.001);
     }
     @Test
     public void returnsDiffOverTime(){
@@ -70,6 +70,6 @@ public class TestCPULoadCollector {
         when(cpuMock.getSys()).thenReturn(100L,150L);
         this.toTest = CPULoadCollector.create(sigarMock);
         final MonitoringResult result = toTest.collectResult();
-        Assert.assertEquals(0.15, result.getValue(),0.001);
+        Assert.assertEquals(150L, result.getValue(),0.001);
     }
 }
