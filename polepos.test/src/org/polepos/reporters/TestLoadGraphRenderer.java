@@ -44,9 +44,9 @@ import static org.polepos.reporters.TestDataFactory.*;
  */
 public class TestLoadGraphRenderer extends RenderingApprovalBase {
 
-    private static final MonitoringType CPU_LOAD = MonitoringType.percentUnit("CPU-Load", "% CPU");
-    private static final MonitoringType MEMORY_LOAD = MonitoringType.percentUnit("Memory-Load", "% Mem.");
-    private static final MonitoringType BYTES_SENT = MonitoringType.create("Bytes sent"," kb","kb", 1);
+    private static final MonitoringType CPU_LOAD = MonitoringType.create("CPU-Usage", " ms CPU","ms");
+    private static final MonitoringType MEMORY_LOAD = MonitoringType.create("Memory-Load", "kb Mem.","kb");
+    private static final MonitoringType BYTES_SENT = MonitoringType.create("Bytes sent"," kb","kb");
     private Graph graph;
 
     @Override
@@ -78,7 +78,7 @@ public class TestLoadGraphRenderer extends RenderingApprovalBase {
     public void singleMonitoringResult() {
         LoadGraphRenderer toTest = LoadGraphRenderer.create(graph, CPU_LOAD);
 
-        final TimedLapsResult result = createResult(graph, 100, "t-1", singleton(create(CPU_LOAD, 0.5)));
+        final TimedLapsResult result = createResult(graph, 100, "t-1", singleton(create(CPU_LOAD, 50)));
         graph.addResult(new TeamCar(result.getTeam(),new CarStub(result.getTeam(), Color.GREEN)),result );
 
         toTest.render(graphic());
@@ -88,8 +88,8 @@ public class TestLoadGraphRenderer extends RenderingApprovalBase {
     public void printMemoryLoad() {
         LoadGraphRenderer toTest = LoadGraphRenderer.create(graph,MEMORY_LOAD);
 
-        addTeam("t-1", 0.5, 0.8, Color.GREEN);
-        addTeam("t-1", 0.5, 0.7, Color.BLUE);
+        addTeam("t-1", 50, 8000, Color.GREEN);
+        addTeam("t-1", 50, 7000, Color.BLUE);
 
         toTest.render(graphic());
         Approvals.approve(image());
@@ -109,8 +109,8 @@ public class TestLoadGraphRenderer extends RenderingApprovalBase {
     public void multipleTeams() {
         LoadGraphRenderer toTest = LoadGraphRenderer.create(graph, CPU_LOAD);
 
-        addTeam("t-1",0.5,0.7, Color.GREEN);
-        addTeam("t-2", 0.3, 0.75, Color.BLUE);
+        addTeam("t-1",50,70, Color.GREEN);
+        addTeam("t-2", 30, 750, Color.BLUE);
 
         toTest.render(graphic());
         Approvals.approve(image());
@@ -120,21 +120,9 @@ public class TestLoadGraphRenderer extends RenderingApprovalBase {
         this.graph = createEmptyGraph(new CircuitStub(true));
         LoadGraphRenderer toTest = LoadGraphRenderer.create(graph, CPU_LOAD);
 
-        addTeamWithFixedResult("t-1",50,0.25,0.3, Color.GREEN);
-        addTeamWithFixedResult("t-2", 100, 0.5, 0.6, Color.BLUE);
-        addTeamWithFixedResult("t-3", 200, 0.5, 0.6, Color.CYAN);
-
-        toTest.render(graphic());
-        Approvals.approve(image());
-    }
-    @Test
-    public void canDealWithSmallNumbers() {
-        this.graph = createEmptyGraph(new CircuitStub(true));
-        LoadGraphRenderer toTest = LoadGraphRenderer.create(graph, CPU_LOAD);
-
-        addTeamWithFixedResult("t-1",500,0.25,0.3, Color.GREEN);
-        addTeamWithFixedResult("t-2", 1000, 0.5, 0.6, Color.BLUE);
-        addTeamWithFixedResult("t-3", 2000, 0.5, 0.6, Color.CYAN);
+        addTeamWithFixedResult("t-1",50,250,300, Color.GREEN);
+        addTeamWithFixedResult("t-2", 100, 500, 600, Color.BLUE);
+        addTeamWithFixedResult("t-3", 200, 500, 600, Color.CYAN);
 
         toTest.render(graphic());
         Approvals.approve(image());

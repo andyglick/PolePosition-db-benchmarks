@@ -86,7 +86,7 @@ public final class DiskReadCounter implements Sampler{
     @Override
     public MonitoringResult collectResult() {
         final DiskInfo currentRead = currentMostReadDisk();
-        return MonitoringResult.create(MonitoringType.create(SAMPLER_NAME+currentRead.getName()+ machineNameAppendix()), (double)currentRead.currentRead() );
+        return MonitoringResult.create(MonitoringType.create(SAMPLER_NAME+currentRead.getName()+ machineNameAppendix(),"reads","kb"), (double)currentRead.currentRead() );
     }
 
     private DiskInfo currentMostReadDisk() {

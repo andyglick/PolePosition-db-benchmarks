@@ -34,13 +34,11 @@ public class MonitoringType {
     private final String name;
     private final String label;
     private final String unitOfMeasurment;
-    private final int scaleFactory;
 
-    private MonitoringType(String name, String label,String unitOfMeasurment, int scaleFactory) {
+    private MonitoringType(String name, String label,String unitOfMeasurment) {
         this.name = name;
         this.label = label;
         this.unitOfMeasurment = unitOfMeasurment;
-        this.scaleFactory = scaleFactory;
     }
 
     public String getName() {
@@ -48,10 +46,6 @@ public class MonitoringType {
     }
     public String getLabel() {
         return label;
-    }
-
-    public long calculateDisplayNumber(double input){
-        return (long) (scaleFactory*input);
     }
 
     public String getUnitOfMeasurment() {
@@ -81,22 +75,11 @@ public class MonitoringType {
                 "name='" + name + '\'' +
                 '}';
     }
-
     public static MonitoringType create(String name) {
-        return percentUnit(name, name);
+        return new MonitoringType(name,"","");
     }
-    public static MonitoringType percentUnit(String name, String label) {
-        final int DOT_PERCENT = 100;
-        final int PERCENT_SCALE = 100*100;
-        return new MonitoringType(name,label,"%", PERCENT_SCALE){
-            @Override
-            public String formatDisplayNumber(long val) {
-                return String.valueOf(val/ DOT_PERCENT)+"."+String.format("%02d",val % DOT_PERCENT);
-            }
-        };
-    }
-    public static MonitoringType create(String name, String label,String unitOfMeasurment,  int displayScaleFactor) {
-        return new MonitoringType(name,label,unitOfMeasurment, displayScaleFactor);
+    public static MonitoringType create(String name, String label,String unitOfMeasurment) {
+        return new MonitoringType(name,label,unitOfMeasurment);
     }
     public static String machineNameAppendix() {
         try {
@@ -104,9 +87,5 @@ public class MonitoringType {
         } catch (UnknownHostException e) {
             throw rethrow(e);
         }
-    }
-
-    public String formatDisplayNumber(long val) {
-        return String.valueOf(val);
     }
 }

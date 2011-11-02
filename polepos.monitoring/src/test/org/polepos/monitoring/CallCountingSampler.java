@@ -33,7 +33,7 @@ class CallCountingSampler implements Sampler {
     @Override
     public MonitoringResult collectResult() {
         wasCalled.incrementAndGet();
-        return MonitoringResult.create(MonitoringType.create("test"), 1.0);
+        return MonitoringResult.create(MonitoringType.create("test","t test","t"), 1.0);
     }
 
     public void assertHasBeenCalled(){

@@ -34,9 +34,9 @@ import static org.polepos.monitoring.LoadMonitoringResults.create;
  */
 public class TestLoadMonitoringResults {
 
-    private static final MonitoringType RESULT_ONE = MonitoringType.create("test1");
-    private static final MonitoringType RESULT_TWO = MonitoringType.create("test2");
-    private static final MonitoringType NOT_AVAILABLE = MonitoringType.create("not-available");
+    private static final MonitoringType RESULT_ONE = MonitoringType.create("test1","t1","t");
+    private static final MonitoringType RESULT_TWO = MonitoringType.create("test2","t2","t");
+    private static final MonitoringType NOT_AVAILABLE = MonitoringType.create("not-available","-","-");
 
     @Test
     public void singleResultSumIp() {
