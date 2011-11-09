@@ -38,18 +38,20 @@ public final class Samplers {
     private static final int INTERVAL = 25;
     private final SigarProxy sigar;
     private final Collection<String> listOfUsedSamplers;
+    private final String machineName;
 
-    private Samplers(Collection<String> listOfUsedSamplers) {
+    private Samplers(Collection<String> listOfUsedSamplers,String machineName) {
         this.listOfUsedSamplers = listOfUsedSamplers;
+        this.machineName = machineName;
         this.sigar = SigarProxyCache.newInstance(new Sigar(), INTERVAL);
     }
 
-    public static Samplers create(Collection<String> listOfUsedSamplers){
-        return new Samplers(new ArrayList<String>(listOfUsedSamplers));
+    public static Samplers create(Collection<String> listOfUsedSamplers,String machineName){
+        return new Samplers(new ArrayList<String>(listOfUsedSamplers),machineName);
     }
 
     public Sampler cpuLoad() {
-        return CPULoadCollector.create(sigar);
+        return CPULoadCollector.create(sigar,machineName);
     }
 
     public Collection<? extends Sampler> samplers(){
@@ -66,17 +68,18 @@ public final class Samplers {
 
 
     public Sampler diskReads() {
-        return DiskReadCounter.create(sigar);
+        return DiskReadCounter.create(sigar,machineName);
     }
 
     public Sampler networkReads() {
-        return NetworkCollector.createReceiveCollector(sigar);
+        return NetworkCollector.createReceiveCollector(sigar,machineName);
     }
     public Sampler networkSends() {
-        return NetworkCollector.createSendCollector(sigar);
+        return NetworkCollector.createSendCollector(sigar,machineName);
     }
 
-    private Collection<? extends Sampler> filter(List<Sampler> samplers, Collection<String> listOfUsedSamplers) {
+    private Collection<? extends Sampler> filter(List<Sampler> samplers,
+                                                 Collection<String> listOfUsedSamplers) {
         ArrayList<Sampler> result = new ArrayList<Sampler>();
         for (Sampler sampler : samplers) {
             if(listOfUsedSamplers.contains(sampler.getClass().getSimpleName())){

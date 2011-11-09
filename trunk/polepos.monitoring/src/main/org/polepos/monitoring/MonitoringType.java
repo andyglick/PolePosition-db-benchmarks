@@ -20,11 +20,6 @@
 
 package org.polepos.monitoring;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
-import static org.polepos.util.JavaLangUtils.rethrow;
-
 /**
  * @author roman.stoffel@gamlor.info
  * @since 19.09.11
@@ -81,11 +76,11 @@ public class MonitoringType {
     public static MonitoringType create(String name, String label,String unitOfMeasurment) {
         return new MonitoringType(name,label,unitOfMeasurment);
     }
-    public static String machineNameAppendix() {
-        try {
-            return " on "+ InetAddress.getLocalHost().getHostName();
-        } catch (UnknownHostException e) {
-            throw rethrow(e);
-        }
-    }
+//    public static String machineAppendix() {
+//        try {
+//            return " on "+ InetAddress.getLocalHost().getHostName();
+//        } catch (UnknownHostException e) {
+//            throw rethrow(e);
+//        }
+//    }
 }

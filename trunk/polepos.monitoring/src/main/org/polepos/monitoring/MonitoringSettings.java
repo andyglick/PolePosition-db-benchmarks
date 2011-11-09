@@ -35,6 +35,7 @@ public final class MonitoringSettings {
     static final String SAMPLERS = "samplers";
     public static final String REMOTE = "remote.collect";
     private static final String CONNECTOR = "agent.connector";
+    static String MACHINE_NAME = "monitoring.name";
     private final boolean isEnabled;
     private final Collection<String> samplers;
     private final String connectionUrl;
@@ -82,6 +83,14 @@ public final class MonitoringSettings {
 
     public Collection<String> getSamplers() {
         return unmodifiableCollection(samplers);
+    }
+
+    public String machineName() {
+        String name = settings.get(MACHINE_NAME);
+        if(null==name){
+            return "?unknown-machine?";
+        }
+        return name;
     }
 
 

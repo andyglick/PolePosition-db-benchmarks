@@ -44,7 +44,7 @@ public class TestMonitoring {
     }
 
     private Monitoring newTestInstance() {
-        final Samplers samplers = Samplers.create(Samplers.allSamplerNames());
+        final Samplers samplers = Samplers.create(Samplers.allSamplerNames(),"client-machine");
         return new Monitoring(samplers);
     }
 

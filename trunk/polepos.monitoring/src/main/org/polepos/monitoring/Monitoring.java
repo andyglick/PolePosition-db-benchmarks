@@ -51,7 +51,7 @@ public final class Monitoring {
     }
 
     public static Monitoring createInstance(MonitoringSettings settings){
-        SessionFactory sessionFactory = SessionFactory.create(Samplers.create(settings.getSamplers()));
+        SessionFactory sessionFactory = SessionFactory.create(Samplers.create(settings.getSamplers(),settings.machineName()));
         return new Monitoring(settings.isEnabled(),settings,sessionFactory);
     }
 

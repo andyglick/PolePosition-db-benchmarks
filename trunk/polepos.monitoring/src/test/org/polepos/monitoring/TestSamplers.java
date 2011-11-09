@@ -33,35 +33,35 @@ import static org.junit.Assert.assertEquals;
  * @since 16.09.11
  */
 public class TestSamplers {
-
+    private final String machine = "client-machine";
     @Test
     public void returnsCPULoadMeter(){
-        final Sampler sampler = Samplers.create(Samplers.allSamplerNames()).cpuLoad();
+        final Sampler sampler = Samplers.create(Samplers.allSamplerNames(),machine).cpuLoad();
         Assert.assertTrue(sampler.collectResult().getValue() >=0.0);
     }
     @Test
     public void returnDiskReadCounter(){
-        final Sampler sampler = Samplers.create(Samplers.allSamplerNames()).diskReads();
+        final Sampler sampler = Samplers.create(Samplers.allSamplerNames(),machine).diskReads();
         Assert.assertTrue(sampler.collectResult().getValue() >= 0.0);
     }
     @Test
     public void returnNetwork(){
-        final Sampler sampler = Samplers.create(Samplers.allSamplerNames()).networkReads();
+        final Sampler sampler = Samplers.create(Samplers.allSamplerNames(),machine).networkReads();
         Assert.assertTrue(sampler.collectResult().getValue() >= 0.0);
     }
     @Test
     public void returnSendNetwork(){
-        final Sampler sampler = Samplers.create(Samplers.allSamplerNames()).networkSends();
+        final Sampler sampler = Samplers.create(Samplers.allSamplerNames(),machine).networkSends();
         Assert.assertTrue(sampler.collectResult().getValue() >= 0.0);
     }
     @Test
     public void doesContainAllSamplers(){
-        final Collection<? extends Sampler> samplers = Samplers.create(Samplers.allSamplerNames()).samplers();
+        final Collection<? extends Sampler> samplers = Samplers.create(Samplers.allSamplerNames(),machine).samplers();
         Assert.assertEquals(4,samplers.size());
     }
     @Test
     public void filtersByName(){
-        final Collection<? extends Sampler> samplers = Samplers.create(asList(DiskReadCounter.class.getSimpleName()))
+        final Collection<? extends Sampler> samplers = Samplers.create(asList(DiskReadCounter.class.getSimpleName()),machine)
                 .samplers();
         assertContains(DiskReadCounter.class,samplers);
         assertEquals(1, samplers.size());

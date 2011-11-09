@@ -57,7 +57,7 @@ public final class MonitoringServer {
         final MBeanServer beanServer = ManagementFactory.getPlatformMBeanServer();
          (JMXConnectorServerFactory.newJMXConnectorServer(
                  new JMXServiceURL(config.getConnectionUrl()), new HashMap<String, Object>(), beanServer)).start();
-        final Monitoring theBean = new Monitoring(Samplers.create(config.getSamplers()));
+        final Monitoring theBean = new Monitoring(Samplers.create(config.getSamplers(),config.machineName()));
         try {
             beanServer.registerMBean(theBean, NAME);
 

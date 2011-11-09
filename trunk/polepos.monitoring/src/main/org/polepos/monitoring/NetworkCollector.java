@@ -53,13 +53,13 @@ public abstract class NetworkCollector implements Sampler {
         return MonitoringResult.create(type,(double) ((currentValue - initialValue) / KILO_BYTE));
     }
 
-    public static Sampler createReceiveCollector(SigarProxy sigar) {
+    public static Sampler createReceiveCollector(SigarProxy sigar,String machineName) {
         List<String> listOfDevices = listOfMonitoredDevices(sigar);
-        return new ReceiveNetworkCollector(sigar, listOfDevices);
+        return new ReceiveNetworkCollector(sigar, listOfDevices,machineName);
     }
-    public static Sampler createSendCollector(SigarProxy sigar) {
+    public static Sampler createSendCollector(SigarProxy sigar,String machineName) {
         List<String> listOfDevices = listOfMonitoredDevices(sigar);
-        return new SendNetworkCollector(sigar, listOfDevices);
+        return new SendNetworkCollector(sigar, listOfDevices,machineName);
     }
 
     private static List<String> listOfMonitoredDevices(SigarProxy sigar)  {
@@ -102,8 +102,8 @@ public abstract class NetworkCollector implements Sampler {
 
     static class ReceiveNetworkCollector extends NetworkCollector{
 
-        protected ReceiveNetworkCollector(SigarProxy sigar, List<String> listOfDevices) {
-            super(MonitoringType.create("Network received bytes"+MonitoringType.machineNameAppendix(), "kb", "kbyte"),
+        protected ReceiveNetworkCollector(SigarProxy sigar, List<String> listOfDevices,String machineName) {
+            super(MonitoringType.create("Network received bytes on "+machineName, "kb", "kbyte"),
                     sigar, listOfDevices);
         }
 
@@ -115,8 +115,8 @@ public abstract class NetworkCollector implements Sampler {
 
     static class SendNetworkCollector extends NetworkCollector{
 
-        protected SendNetworkCollector(SigarProxy sigar, List<String> listOfDevices) {
-            super(MonitoringType.create("Network sent bytes"+MonitoringType.machineNameAppendix(), "kb", "kbyte"),
+        protected SendNetworkCollector(SigarProxy sigar, List<String> listOfDevices,String machineName) {
+            super(MonitoringType.create("Network sent bytes on "+machineName, "kb", "kbyte"),
                     sigar, listOfDevices);
         }
 

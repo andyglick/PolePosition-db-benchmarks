@@ -68,7 +68,7 @@ public class TestMonitoring {
     }
 
     private SessionFactory defaultListeners() {
-        return collector(Samplers.create(Samplers.allSamplerNames()).cpuLoad());
+        return collector(Samplers.create(Samplers.allSamplerNames(),"client-machine").cpuLoad());
     }
 
     @Test

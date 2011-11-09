@@ -24,7 +24,6 @@ import org.hyperic.sigar.Cpu;
 import org.hyperic.sigar.SigarException;
 import org.hyperic.sigar.SigarProxy;
 
-import static org.polepos.monitoring.MonitoringType.machineNameAppendix;
 import static org.polepos.util.JavaLangUtils.rethrow;
 
 /**
@@ -35,24 +34,25 @@ public final class CPULoadCollector implements Sampler {
     private final SigarProxy systemInfo;
     private long initialLoad = 0;
 
-    public static final MonitoringType TYPE = MonitoringType.create("CPU Time"+ machineNameAppendix(), "ms CPU","ms");
+    final MonitoringType type;
 
-    CPULoadCollector(SigarProxy systemInfo, long initialLoad) {
+    CPULoadCollector(SigarProxy systemInfo,String name, long initialLoad) {
         this.systemInfo = systemInfo;
         this.initialLoad = initialLoad;
+        this.type = MonitoringType.create("CPU Time on "+ name, "ms CPU","ms");
     }
 
     @Override
     public MonitoringResult collectResult() {
         final Cpu cpu = getCPU(systemInfo);
         long load = usedTime(cpu)-initialLoad;
-        return MonitoringResult.create(TYPE, load);
+        return MonitoringResult.create(type, load);
     }
 
 
-    public static Sampler create(SigarProxy systemInfo) {
+    public static Sampler create(SigarProxy systemInfo, String machineName) {
             final Cpu cpu = getCPU(systemInfo);
-            return new CPULoadCollector(systemInfo, usedTime(cpu));
+            return new CPULoadCollector(systemInfo,machineName, usedTime(cpu));
     }
     private static Cpu getCPU(SigarProxy systemInfo) {
         try {
