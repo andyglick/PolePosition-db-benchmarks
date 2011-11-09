@@ -40,13 +40,14 @@ public class TestCPULoadCollector {
     private Sampler toTest;
     private SigarProxy sigarMock;
     private Cpu cpuMock;
+    private String clientMachines = "client-machine";
 
     @Before
     public void setup() throws SigarException {
         this.sigarMock = mock(SigarProxy.class);
         this.cpuMock = mock(Cpu.class);
         when(sigarMock.getCpu()).thenReturn(cpuMock);
-        this.toTest = CPULoadCollector.create(sigarMock);
+        this.toTest = CPULoadCollector.create(sigarMock,clientMachines);
     }
 
     @Test
@@ -68,7 +69,7 @@ public class TestCPULoadCollector {
         when(cpuMock.getTotal()).thenReturn(1000L,2000L);
         when(cpuMock.getUser()).thenReturn(200L,300L);
         when(cpuMock.getSys()).thenReturn(100L,150L);
-        this.toTest = CPULoadCollector.create(sigarMock);
+        this.toTest = CPULoadCollector.create(sigarMock,clientMachines);
         final MonitoringResult result = toTest.collectResult();
         Assert.assertEquals(150L, result.getValue(),0.001);
     }

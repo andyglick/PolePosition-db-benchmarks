@@ -71,6 +71,12 @@ public class TestMonitoringSettings {
         MonitoringSettings toTest = MonitoringSettings.create(handler);
         assertEquals("url-for-team-2", toTest.remoteHostForTeam("TEAM-2"));
     }
+    @Test
+    public void machineName(){
+        PropertiesHandler handler = monitoringCfg(false);
+        MonitoringSettings toTest = MonitoringSettings.create(handler);
+        assertEquals("client-machine-test", toTest.machineName());
+    }
 
     private PropertiesHandler monitoringCfg(boolean isMonitoringEnabled) {
         PropertiesHandler handler = mock(PropertiesHandler.class);
@@ -79,6 +85,7 @@ public class TestMonitoringSettings {
         when(handler.asMap()).thenReturn(new HashMap<String, String>(){{
             put(MonitoringSettings.REMOTE,"my:cool:url");
             put(MonitoringSettings.REMOTE+".Team-2","url-for-team-2");
+            put(MonitoringSettings.MACHINE_NAME,"client-machine-test");
         }});
         return handler;
     }

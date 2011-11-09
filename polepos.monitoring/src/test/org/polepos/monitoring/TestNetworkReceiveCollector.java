@@ -47,7 +47,7 @@ public class TestNetworkReceiveCollector extends NetworkMonitoringTestBase{
 
 
     protected Sampler createTestInstance(SigarProxy sigarMock) {
-        return NetworkCollector.createReceiveCollector(sigarMock);
+        return NetworkCollector.createReceiveCollector(sigarMock,"client-machine");
     }
 
 

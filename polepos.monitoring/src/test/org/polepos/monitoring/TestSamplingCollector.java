@@ -60,7 +60,8 @@ public class TestSamplingCollector {
 
     @Test
     public void onlyLocalSampling() {
-        final SessionFactory sessionFactory = SessionFactory.create(Samplers.create(asList(CPULoadCollector.class.getSimpleName())));
+        final SessionFactory sessionFactory = SessionFactory.create(
+                Samplers.create(asList(CPULoadCollector.class.getSimpleName()),"client-machine"));
         final SamplingSession sampling = sessionFactory.monitoringWithDBHost("");
 
         final Collection<MonitoringResult> results = sampling.sampleAndReturnResults();
@@ -76,7 +77,7 @@ public class TestSamplingCollector {
                 String remote = "service:jmx:jmxmp://localhost:" + port;
 
                 final SessionFactory sessionFactory = SessionFactory.create(
-                        Samplers.create(asList(CPULoadCollector.class.getSimpleName())));
+                        Samplers.create(asList(CPULoadCollector.class.getSimpleName()),"client-machine"));
                 final SamplingSession sampling = sessionFactory.monitoringWithDBHost(remote);
 
                 final Collection<MonitoringResult> results = sampling.sampleAndReturnResults();

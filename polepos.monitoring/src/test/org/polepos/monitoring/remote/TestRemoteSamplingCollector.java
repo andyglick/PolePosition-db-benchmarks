@@ -46,7 +46,7 @@ public class TestRemoteSamplingCollector {
             @Override
             public void invoke() {
                 SamplingSession remote = RemoteSamplingRepository.remote(
-                        new Monitoring(Samplers.create(Samplers.allSamplerNames())));
+                        new Monitoring(Samplers.create(Samplers.allSamplerNames(),"client-machine")));
                 final Collection<MonitoringResult> results = remote.sampleAndReturnResults();
 
                 Assert.assertTrue(results.size() != 0);

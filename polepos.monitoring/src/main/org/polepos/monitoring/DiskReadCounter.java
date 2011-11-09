@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.polepos.monitoring.MonitoringType.machineNameAppendix;
 import static org.polepos.util.JavaLangUtils.rethrow;
 
 /**
@@ -39,15 +38,20 @@ import static org.polepos.util.JavaLangUtils.rethrow;
  */
 public final class DiskReadCounter implements Sampler{
     final static String SAMPLER_NAME = "Disk-Reads on ";
+    private final String machineName;
     private final List<DiskInfo> allDisks = new ArrayList<DiskInfo>();
 
-    DiskReadCounter(Map<String,NoArgFunction<DiskUsage>> disks) {
+    DiskReadCounter(Map<String,NoArgFunction<DiskUsage>> disks){
+        this(disks,"client-machine");
+    }
+    DiskReadCounter(Map<String,NoArgFunction<DiskUsage>> disks,String machineName) {
+        this.machineName = machineName;
         for (Map.Entry<String, NoArgFunction<DiskUsage>> entry : disks.entrySet()) {
             this.allDisks.add(new DiskInfo(entry.getKey(), entry.getValue()));
         }
     }
 
-    public static Sampler create(SigarProxy sigar) {
+    public static Sampler create(SigarProxy sigar,String machineName) {
         try {
             Map<String,NoArgFunction<DiskUsage>> disks = new HashMap<String, NoArgFunction<DiskUsage>>();
             for (Object dn : sigar.getFileSystemMap().keySet()) {
@@ -58,7 +62,7 @@ public final class DiskReadCounter implements Sampler{
                     disks.put(diskName, disk);
                 }
             }
-            return new DiskReadCounter(disks);
+            return new DiskReadCounter(disks,machineName);
         } catch (SigarException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
@@ -86,7 +90,7 @@ public final class DiskReadCounter implements Sampler{
     @Override
     public MonitoringResult collectResult() {
         final DiskInfo currentRead = currentMostReadDisk();
-        return MonitoringResult.create(MonitoringType.create(SAMPLER_NAME+currentRead.getName()+ machineNameAppendix(),"reads","kb"), (double)currentRead.currentRead() );
+        return MonitoringResult.create(MonitoringType.create(SAMPLER_NAME+currentRead.getName()+ machineName,"reads","kb"), (double)currentRead.currentRead() );
     }
 
     private DiskInfo currentMostReadDisk() {

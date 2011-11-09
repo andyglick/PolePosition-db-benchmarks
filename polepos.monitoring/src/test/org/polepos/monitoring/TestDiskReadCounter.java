@@ -104,7 +104,7 @@ public class TestDiskReadCounter {
         when(sigar.getDiskUsage(DISK_ONE)).thenReturn(disk);
 
 
-        final Sampler toTest = DiskReadCounter.create(sigar);
+        final Sampler toTest = DiskReadCounter.create(sigar,"client-machine");
         final Double diskReads = toTest.collectResult().getValue();
         final String name = toTest.collectResult().getType().getName();
 
