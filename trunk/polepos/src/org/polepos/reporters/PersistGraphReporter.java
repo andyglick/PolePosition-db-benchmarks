@@ -41,7 +41,7 @@ public class PersistGraphReporter extends GraphReporter {
     private void persist(Map<CircuitLap, Graph> graphs) {
 		new File("graph.db4o").delete();
 		EmbeddedObjectContainer db = Db4oEmbedded.openFile("graph.db4o");
-		db.store(new PersistentGraphs(graphs));
+		// db.store(new PersistentGraphs(graphs));
 		db.commit();
 		db.close();
 	}

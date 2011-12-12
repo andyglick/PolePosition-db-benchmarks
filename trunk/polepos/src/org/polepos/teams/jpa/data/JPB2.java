@@ -19,17 +19,16 @@ MA  02111-1307, USA. */
 
 package org.polepos.teams.jpa.data;
 
-import javax.persistence.Entity;
-
-import org.apache.openjpa.persistence.jdbc.Index;
+import javax.persistence.*;
 
 /**
  * @author Christian Ernst
  */
+@com.versant.jpa.annotations.Index(name="ib2", attributes={"b2"})
 @Entity
 public class JPB2 extends JPB1{
     
-	@Index
+	@org.apache.openjpa.persistence.jdbc.Index
     private int b2;  // index this one for queries
     
     public JPB2(){

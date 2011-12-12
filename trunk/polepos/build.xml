@@ -1,15 +1,30 @@
 <project name="poleposition" default="race" basedir=".">
 
-    <property name="polepositionversion" value="0.40"/>
+    <property name="polepositionversion" value="0.50"/>
     <property name="polepos.concurrency" value="true"/>
 
     <property name="jdo" value="jdo"/>
-    <property name="jvi" value="jvi"/>
-    <property name="jpa" value="jpa"/>
-
-    <path id="poleposition_classpath">
+	<property name="vodjpa" value="vodjpa"/>
+<!--
+	<property name="jpa" value="jpa"/>
+	<property name="jvi" value="jvi"/>
+-->
+		
+    <path id="compilation_classpath">
         <fileset dir="lib">
             <include name="**/*.jar"/>
+        	<exclude name="**/vodjdo.jar" />
+        </fileset>
+        <fileset dir="../polepos.monitoring/dist">
+            <include name="**/*.jar"/>
+        </fileset>
+        <pathelement location="bin"/>
+    </path>
+	
+    <path id="runtime_classpath">
+        <fileset dir="lib">
+            <include name="**/*.jar"/>
+        	<exclude name="**/vodjdo.jar" />
         </fileset>
         <fileset dir="../polepos.monitoring/dist">
             <include name="**/*.jar"/>
@@ -18,32 +33,40 @@
     </path>
 
 
+
     <target name="jdoenhance" description="runs the JDO enhancer" if="jdo">
         <java classname="org.polepos.enhance.JdoEnhance">
-            <classpath refid="poleposition_classpath"/>
+            <classpath refid="compilation_classpath"/>
         </java>
     </target>
 
     <target name="jpaenhance" description="runs the JPA enhancer" if="jpa">
         <java classname="org.polepos.enhance.JpaEnhance">
-            <classpath refid="poleposition_classpath"/>
+            <classpath refid="compilation_classpath"/>
+        </java>
+    </target>
+	
+    <target name="vodjpaenhance" description="runs the VOD JPA enhancer" if="vodjpa">
+        <java classname="org.polepos.enhance.VodJpaEnhance">
+            <classpath refid="compilation_classpath"/>
         </java>
     </target>
 
     <target name="jvienhance" description="runs the JVI enhancer" if="jvi">
         <java classname="com.versant.Enhance" fork="yes" failonerror="yes">
-            <classpath refid="poleposition_classpath"/>
+            <classpath refid="compilation_classpath"/>
             <arg line="-config src/config.jvi -in bin -out bin"/>
         </java>
     </target>
 
-    <target name="race" depends="clean,compile,jpaenhance,jdoenhance"
+    <target name="race" depends="clean,compile,jdoenhance, vodjpaenhance"
             description="runs with all circuits and all teams ">
         <echo message="${polepos.debug}"/>
-        <java classname="org.polepos.RunSeason" fork="true">
-            <classpath refid="poleposition_classpath">
+    	<java classname="org.polepos.RunSeason" fork="true">
+            <classpath refid="runtime_classpath">
             </classpath>
-            <jvmarg value="-Xmx1024m"/>
+            <jvmarg value="-Xmx1400m"/>
+        	<jvmarg value="-javaagent:lib/vod/jpa-agent.jar"/>
             <sysproperty key="polepos.debug" value="${polepos.debug}"/>
             <sysproperty key="polepos.concurrency" value="${polepos.concurrency}"/>
 
@@ -61,7 +84,7 @@
         </copy>
         <javac destdir="bin" debug="true">
             <src path="src"/>
-            <classpath refid="poleposition_classpath"/>
+            <classpath refid="compilation_classpath"/>
         </javac>
     </target>
 

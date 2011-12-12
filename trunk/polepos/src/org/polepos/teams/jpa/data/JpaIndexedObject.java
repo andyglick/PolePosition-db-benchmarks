@@ -20,26 +20,26 @@ MA  02111-1307, USA. */
 
 package org.polepos.teams.jpa.data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
-import org.apache.openjpa.persistence.jdbc.Index;
-import org.polepos.data.IndexedObject;
-import org.polepos.framework.CheckSummable;
+import org.polepos.data.*;
+import org.polepos.framework.*;
 
 @Entity
+@com.versant.jpa.annotations.Indexes({
+	@com.versant.jpa.annotations.Index(name="i_int", attributes={"_int"}),
+	@com.versant.jpa.annotations.Index(name="i_string", attributes={"_string"})
+})
 public class JpaIndexedObject implements CheckSummable{
 	
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private long oid;
     
-    @Index
+    @org.apache.openjpa.persistence.jdbc.Index
 	public int _int;
 	
-    @Index
+    @org.apache.openjpa.persistence.jdbc.Index
 	public String _string;
 	
 	public JpaIndexedObject(){

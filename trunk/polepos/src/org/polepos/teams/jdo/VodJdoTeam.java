@@ -18,35 +18,34 @@ Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA  02111-1307, USA. */
 
 
-package org.polepos.teams.jpa.data;
+package org.polepos.teams.jdo;
 
-import javax.persistence.Entity;
+import org.polepos.framework.*;
 
-@Entity
-@com.versant.jpa.annotations.Index(name="ii2", attributes={"i2"})
-public class ComplexHolder2 extends ComplexHolder1 {
+public class VodJdoTeam extends JdoTeam {
 	
-    @org.apache.openjpa.persistence.jdbc.Index
-	public int i2;
+	private transient ClassLoader _standardClassLoader;
 	
-	public int getI2() {
-		return i2;
-	}
+	private transient ClassLoader _versionClassLoader;
 
-	public void setI2(int i2) {
-		this.i2 = i2;
+	public VodJdoTeam() {
+		super(false);
+		_versionClassLoader = getClass().getClassLoader();
+		String name = "vod8";
+		mCars = new Car[]{new JdoCar(this, name, null, Jdo.settings().color(name))};
 	}
-
+	
 	@Override
-	public long ownCheckSum() {
-		return i2 + super.ownCheckSum();
+	public void setUp() {
+		_standardClassLoader = Thread.currentThread().getContextClassLoader();
+		Thread.currentThread().setContextClassLoader(_versionClassLoader);
+		super.setUp();
 	}
-
+	
 	@Override
-	protected void setSpecial(int value) {
-		super.setSpecial(value);
-		i2 = value;
+	protected void tearDown() {
+		super.tearDown();
+		Thread.currentThread().setContextClassLoader(_standardClassLoader);
 	}
-
 
 }

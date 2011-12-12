@@ -20,7 +20,6 @@
 	<classpathentry kind="lib" path="lib/slf4j/slf4j-log4j12-1.5.10.jar"/>
 	<classpathentry kind="lib" path="lib/vod/jvi80.jar"/>
 	<classpathentry kind="lib" path="lib/vod/pizza.jar"/>
-	<classpathentry kind="lib" path="lib/vod/vodjdo.jar"/>
 	<classpathentry kind="lib" path="lib/hsqldb/hsqldb.jar"/>
 	<classpathentry kind="lib" path="lib/jdo/jdo-api-3.0.jar"/>
 	<classpathentry kind="lib" path="lib/db4o/db4o-8.0.174.15231-all-java5.jar"/>
@@ -29,6 +28,12 @@
 	<classpathentry kind="lib" path="lib/graph/jcommon-1.0.16.jar"/>
 	<classpathentry kind="lib" path="lib/graph/jfreechart-1.0.13.jar" sourcepath="lib/graph/jfreechart-1.0.13-src.zip"/>
 	<classpathentry kind="lib" path="lib/sqlite/sqlitejdbc-v056.jar"/>
+	<classpathentry kind="lib" path="lib/vod/vodjpa.jar" sourcepath="C:/Users/Carl/crosenbe_JPA/vobs/pmc_java/jpa"/>
+	<classpathentry kind="lib" path="lib/vod/jpa-agent.jar"/>
+	<classpathentry kind="lib" path="lib/jpa/javax.persistence_2.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/vod/antlr-3.3-complete.jar"/>
+	<classpathentry kind="lib" path="lib/vod/asm-all-4.0_RC1.jar"/>
+	<classpathentry kind="lib" path="lib/common/ant.jar"/>
 	<classpathentry kind="var" path="JUNIT_HOME/junit.jar" sourcepath="/ECLIPSE_HOME/plugins/org.eclipse.jdt.source_3.1.0/src/org.junit_3.8.1/junitsrc.zip"/>
 	<classpathentry kind="lib" path="lib/graph/gnujaxp.jar"/>
 	<classpathentry kind="lib" path="lib/graph/itext-1.2.jar"/>
@@ -37,7 +42,6 @@
 	<classpathentry kind="lib" path="lib/mysql/mysql-connector-java-5.1.16-bin.jar"/>
 	<classpathentry kind="lib" path="lib/postgresql/postgresql-9.0-801.jdbc4.jar"/>
 	<classpathentry kind="lib" path="lib/common/ehcache-core-2.2.0.jar"/>
-	<classpathentry kind="lib" path="lib/jpa/geronimo-jpa_2.0_spec-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/jta/geronimo-jta_1.1_spec-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/openjpa/openjpa-2.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/common/asm-3.3.jar"/>

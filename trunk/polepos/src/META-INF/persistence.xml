@@ -2,7 +2,40 @@
 <persistence xmlns="http://java.sun.com/xml/ns/persistence"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
-    http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd" version="1.0">
+    http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd" version="2.0">
+    
+    
+	<persistence-unit name="vodjpa">
+		<provider>com.versant.jpa.core.VersantPersistence</provider>
+        <class>org.polepos.teams.jpa.data.ComplexHolder0</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder1</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder2</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder3</class>
+        <class>org.polepos.teams.jpa.data.ComplexHolder4</class>
+        <class>org.polepos.teams.jpa.data.ListHolder</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy0</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy1</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy2</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy3</class>
+        <class>org.polepos.teams.jpa.data.InheritanceHierarchy4</class>
+        <class>org.polepos.teams.jpa.data.JpaIndexedObject</class>
+        <class>org.polepos.teams.jpa.data.JpaIndexedPilot</class>
+        <class>org.polepos.teams.jpa.data.JpaPilot</class>
+        <class>org.polepos.teams.jpa.data.JpaTree</class>
+        <class>org.polepos.teams.jpa.data.JPB0</class>
+        <class>org.polepos.teams.jpa.data.JPB1</class>
+        <class>org.polepos.teams.jpa.data.JPB2</class>
+        <class>org.polepos.teams.jpa.data.JPB3</class>
+        <class>org.polepos.teams.jpa.data.JPB4</class>
+        <class>org.polepos.teams.jpa.data.JpaLightObject</class>
+        <class>org.polepos.teams.jpa.data.JpaListHolder</class>
+        <class>org.polepos.teams.jpa.data.JPN1</class>
+        <properties>
+        	<property name="versant.connectionURL" value="dbbench@localhost" />
+        </properties>
+    </persistence-unit>
+    
+    
   <!--
     <persistence-unit name="datanucleus/mysql" transaction-type="RESOURCE_LOCAL">
         <provider>org.datanucleus.jpa.PersistenceProviderImpl</provider>
@@ -44,7 +77,7 @@
         </properties>
 
     </persistence-unit>
-    
+
     <persistence-unit name="datanucleus/postgresql" transaction-type="RESOURCE_LOCAL">
         <provider>org.datanucleus.jpa.PersistenceProviderImpl</provider>
         
@@ -87,7 +120,7 @@
     </persistence-unit>
     
    -->  
-   
+<!--   
     <persistence-unit name="openjpa/mysql">
         <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
         
@@ -117,8 +150,6 @@
         
         <properties>
 
-			<!-- Set up openjpa with Apache DBCP connection pooling -->
-
  			<property name="openjpa.ConnectionProperties" 
                 value="DriverClassName=com.mysql.jdbc.Driver,
                   Url=jdbc:mysql://localhost/dbbench, 
@@ -136,6 +167,7 @@
             
         </properties>
     </persistence-unit>
+-->    
     
     <!--
     <persistence-unit name="openjpa/postgresql">

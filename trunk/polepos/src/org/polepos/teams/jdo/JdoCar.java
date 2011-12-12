@@ -51,7 +51,7 @@ public class JdoCar extends Car {
     
     private String _name; 
 
-    JdoCar(Team team, String name, String dbName, String color) {
+    public JdoCar(Team team, String name, String dbName, String color) {
     	super(team, color);
 
         _jdoName = name;
@@ -151,7 +151,7 @@ public class JdoCar extends Car {
 		properties.setProperty("datanucleus.autoStartMechanism","None");
 		properties.setProperty("datanucleus.cache.level2.type","ehcache");
 
-		_persistenceManagerFactory = JDOHelper.getPersistenceManagerFactory(properties, JDOHelper.class.getClassLoader());
+		_persistenceManagerFactory = JDOHelper.getPersistenceManagerFactory(properties, Thread.currentThread().getContextClassLoader());
 		
 		// Datanucleus Schema create
 		if(_persistenceManagerFactory instanceof JDOPersistenceManagerFactory){
@@ -203,7 +203,7 @@ public class JdoCar extends Car {
         
         properties.setProperty("datanucleus.autoCreateSchema", "false");
 
-        _persistenceManagerFactory = JDOHelper.getPersistenceManagerFactory(properties, JDOHelper.class.getClassLoader());
+        _persistenceManagerFactory = JDOHelper.getPersistenceManagerFactory(properties, Thread.currentThread().getContextClassLoader());
         
     }
 

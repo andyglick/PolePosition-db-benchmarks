@@ -71,7 +71,7 @@ public class CustomBarPDFReporter extends PDFReporterBase {
             pdfData().add(render(graph, new OneArgFunction<Graph, ChartRenderer>() {
                 @Override
                 public ChartRenderer invoke(Graph graph) {
-                    return newRenderer(graph);
+                	return RendererFactory.newRenderer(graph);
                 }
             }));
 
@@ -113,18 +113,6 @@ public class CustomBarPDFReporter extends PDFReporterBase {
         return new ImgTemplate(tp);
     }
 
-    private CustomBarRendererBase newRenderer(Graph graph) {
-        if (graph.circuit().isFixedTime()) {
-            if (Settings.LOGARITHMIC) {
-                return new LogarithmicFixedTimeCustomBarRenderer(graph);
-            }
-            return new LinearFixedTimeCustomBarRenderer(graph);
-        }
-        if (Settings.LOGARITHMIC) {
-            return new LogarithmicTimedLapsCustomBarRenderer(graph);
-        }
-        return new LinearTimedLapsCustomBarRenderer(graph);
-    }
 
     @Override
     protected void renderTableAndGraph(int type, Graph graph, String unitsLegend) throws BadElementException {

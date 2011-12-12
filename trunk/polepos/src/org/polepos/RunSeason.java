@@ -61,7 +61,7 @@ public class RunSeason extends AbstractRunner {
 
 	@Override
 	public Circuit[] circuits() {
-		return ArraysP.concat(defaultCircuits(), concurrencyCircuits());
+		return ArraysP.concat(concurrencyCircuits(), defaultCircuits());
 	}
 	
 	private Circuit[] defaultCircuits(){
@@ -92,12 +92,17 @@ public class RunSeason extends AbstractRunner {
 	@Override
 	public Team[] teams() {
 		return new Team[] {
-				new Db4oTeam(),
-				new JdoTeam(),
-//				new Db4oClientServerTeam(),
+				VodJdoTeamFactory.newVodJdoTeam(),
+				VodJpaTeamFactory.newVodJpaTeam(),
+//				new JdoTeam(),
+//				new JpaTeam(true),
+//				new Db4oTeam(),
+				
+				new Db4oClientServerTeam(),
 				new JdbcTeam(),
 				new HibernateTeam(),
-				new JpaTeam(),
+				
+//				new JpaTeam(),
 //				new MongoDBTeam(),
 //				new JviTeam(),
 		};
@@ -107,5 +112,6 @@ public class RunSeason extends AbstractRunner {
 	protected Reporter[] reporters() {
 		return DefaultReporterFactory.defaultReporters();
 	}
+	
 
 }
