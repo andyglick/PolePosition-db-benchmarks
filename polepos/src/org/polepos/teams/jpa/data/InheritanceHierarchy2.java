@@ -24,9 +24,10 @@ import javax.persistence.Entity;
 import org.apache.openjpa.persistence.jdbc.Index;
 
 @Entity
+@com.versant.jpa.annotations.Index(name="iihi2", attributes={"i2"})
 public class InheritanceHierarchy2 extends InheritanceHierarchy1{
     
-    @Index
+	@org.apache.openjpa.persistence.jdbc.Index
     private int i2;  // index this one for queries
     
     public InheritanceHierarchy2(){

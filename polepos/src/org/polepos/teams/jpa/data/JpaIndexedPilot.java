@@ -21,7 +21,6 @@ package org.polepos.teams.jpa.data;
 
 import javax.persistence.*;
 
-import org.apache.openjpa.persistence.jdbc.*;
 import org.polepos.framework.*;
 
 
@@ -29,17 +28,21 @@ import org.polepos.framework.*;
  * @author Christian Ernst
  */
 @Entity
+@com.versant.jpa.annotations.Indexes({
+	@com.versant.jpa.annotations.Index(name="iName", attributes={"mName"}),
+	@com.versant.jpa.annotations.Index(name="iLicenseID", attributes={"mLicenseID"})
+})
 public class JpaIndexedPilot implements CheckSummable
 {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     private long oid;
     
-    @Index
+    @org.apache.openjpa.persistence.jdbc.Index
 	private		String	mName;
 	private		String	mFirstName;
 	private		int		mPoints;
-	@Index
+	@org.apache.openjpa.persistence.jdbc.Index
 	private		int		mLicenseID;
 
 	

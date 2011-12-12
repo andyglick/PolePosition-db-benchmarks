@@ -37,7 +37,6 @@ public abstract class AbstractDb4oVersionsRaceRunner extends AbstractRunner {
 			"0x127ABF",
 			"0x44BDE0",
 			"0xFFCA07",
-
 	};
 	
 	private int currentColor;

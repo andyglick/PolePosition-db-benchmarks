@@ -35,7 +35,8 @@ public class HibernateTeam extends Team {
 	public HibernateTeam() {
 		String[] dbs = Jdbc.settings().getHibernateTypes();
 		_cars = new Car[dbs.length];
-		String[] colors = new String[]{"0x2B439C", "0x44BDE0", "0x127ABF"};
+		
+		String[] colors = new String[]{"0x2B439C", "0x8A2BE2", "0x127ABF"};
 		for (int i = 0; i < dbs.length; i++) {
 			_cars[i] = new HibernateCar(this, dbs[i], i>=colors.length ? "0x000000" : colors[i]);
 		}

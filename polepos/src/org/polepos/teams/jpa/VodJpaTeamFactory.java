@@ -18,35 +18,21 @@ Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA  02111-1307, USA. */
 
 
-package org.polepos.teams.jpa.data;
+package org.polepos.teams.jpa;
 
-import javax.persistence.Entity;
+import org.polepos.framework.*;
+import org.polepos.teams.*;
 
-@Entity
-@com.versant.jpa.annotations.Index(name="ii2", attributes={"i2"})
-public class ComplexHolder2 extends ComplexHolder1 {
+/**
+ * VOD JDO and VOD JPA are not compatible to run in the same ClassLoader
+ * space. That's why we use a special classloader for VOD JDO that knows
+ * it's vodjdo.jar. 
+ *
+ */
+public class VodJpaTeamFactory extends TeamFactory{
 	
-    @org.apache.openjpa.persistence.jdbc.Index
-	public int i2;
+	public static Team newVodJpaTeam(){
+		return newTeam("vodjpa.jar", "lib/vod", "org.polepos.teams.jpa.VodJpaTeam", "com.versant", "org.polepos.teams.jpa");
+	}
 	
-	public int getI2() {
-		return i2;
-	}
-
-	public void setI2(int i2) {
-		this.i2 = i2;
-	}
-
-	@Override
-	public long ownCheckSum() {
-		return i2 + super.ownCheckSum();
-	}
-
-	@Override
-	protected void setSpecial(int value) {
-		super.setSpecial(value);
-		i2 = value;
-	}
-
-
 }

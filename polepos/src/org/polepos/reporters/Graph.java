@@ -28,6 +28,12 @@ import java.util.*;
 
 
 public class Graph {
+	
+	public static interface ResultProcessor {
+		
+		void process(TurnCombination turnCombination, Result result);
+		
+	}
     
     private final List<TeamCar>teamCars= new ArrayList<TeamCar>();
 	private final List<TurnSetup> setups=new ArrayList<TurnSetup>();
@@ -42,6 +48,16 @@ public class Graph {
     public Graph(Circuit circuit, Lap lap){
         this.circuit = circuit;
         this.lap = lap;
+    }
+    
+    Iterable<Result> resultValues(){
+    	return results.values();
+    }
+    
+    public void traverseResults(ResultProcessor processor){
+    	for(Map.Entry<TurnCombination, Result> entry : results.entrySet()){
+    		processor.process(entry.getKey(), entry.getValue());
+    	}
     }
 
     public void addResult(TeamCar teamCar, Result result) {

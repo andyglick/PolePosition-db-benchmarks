@@ -97,16 +97,14 @@ public abstract class CustomBarRendererBase implements ChartRenderer{
 		
 		int circuitNo = 5;
 		ObjectSet<Graph> result = db.query(Graph.class);
-		// Graph graph = result.iterator().next();
-		Graph graph = result.get(circuitNo);
+		Graph graph = result.iterator().next();
+		// Graph graph = result.get(circuitNo);
 		
 		
 		db.activate(graph, Integer.MAX_VALUE);
 		db.close();
 		
-		
-		// final CustomBarRendererBase renderer = (graph.circuit().isFixedTime() ? new FixedTimeCustomBarRenderer(graph) : new LogarithmicTimedLapsCustomBarRenderer(graph));
-		final CustomBarRendererBase renderer = (graph.circuit().isFixedTime() ? new LinearFixedTimeCustomBarRenderer(graph) : new LinearTimedLapsCustomBarRenderer(graph));
+		final CustomBarRendererBase renderer = RendererFactory.newRenderer(graph);
 
 		JFrame w = new JFrame("Polepos preview");
 		JPanel contentPane = new JPanel()

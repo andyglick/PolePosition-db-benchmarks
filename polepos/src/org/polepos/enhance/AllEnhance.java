@@ -29,7 +29,9 @@ public class AllEnhance {
 		
 //		new JviEnhance().runWithoutSystemExit();
 		
-		JpaEnhance.main(null);
+		VodJpaEnhance.main(null);
+		
+		// JpaEnhance.main(null);
 	}
 
 }

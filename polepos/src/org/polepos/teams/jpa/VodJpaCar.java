@@ -18,35 +18,37 @@ Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA  02111-1307, USA. */
 
 
-package org.polepos.teams.jpa.data;
+package org.polepos.teams.jpa;
 
-import javax.persistence.Entity;
+import java.io.*;
 
-@Entity
-@com.versant.jpa.annotations.Index(name="ii2", attributes={"i2"})
-public class ComplexHolder2 extends ComplexHolder1 {
+import org.polepos.framework.*;
+
+import com.versant.admin.*;
+
+public class VodJpaCar extends JpaCar{
+
+	private String _connectUrl;
+
+	public VodJpaCar(Team team, String name, String dbName, String color) throws IOException  {
+		super(team, name, dbName, color);
+		_connectUrl = Jpa.settings().getConnectUrl(name);
+	}
 	
-    @org.apache.openjpa.persistence.jdbc.Index
-	public int i2;
+	@Override
+	public boolean canRecreateDatabase() {
+		return true;
+	}
 	
-	public int getI2() {
-		return i2;
-	}
-
-	public void setI2(int i2) {
-		this.i2 = i2;
-	}
-
 	@Override
-	public long ownCheckSum() {
-		return i2 + super.ownCheckSum();
+	public void recreateDatabase() {
+		ServerAdministration.removeDatabase(_connectUrl);
+		ServerAdministration.createDatabase(_connectUrl);
+		try {
+			reinitialize();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
-
-	@Override
-	protected void setSpecial(int value) {
-		super.setSpecial(value);
-		i2 = value;
-	}
-
 
 }

@@ -19,8 +19,8 @@ MA  02111-1307, USA. */
 
 package org.polepos.teams.jpa;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 import javax.persistence.*;
 
@@ -45,9 +45,27 @@ import org.polepos.teams.jpa.data.JpaTree;
  */
 public class JpaTeam extends Team{
     
-	private final Car[] mCars;
+	protected Car[] mCars;
+	
+	final Map<String, JpaCarFactory> factories = new HashMap<String, JpaCarFactory>();
+	
+	public JpaTeam() {
+		this(true);
+	}
     
-    public JpaTeam() {
+    public JpaTeam(boolean initialize) {
+    	
+    	if(! initialize){
+    		return;
+    	}
+    	
+    	factories.put("vodjpa", new JpaCarFactory() {
+			@Override
+			public JpaCar newInstance(JpaTeam team, String name, String dbName, String color) throws IOException {
+				return new VodJpaCar(team, name, dbName, color);
+			}
+		});
+    	
         
         String[] impls = Jpa.settings().getJpaImplementations();
         
@@ -72,7 +90,12 @@ public class JpaTeam extends Team{
                     }
                 }else{
                     try {
-                        cars.add(new JpaCar(this, impl, null, Jpa.settings().color(impl)));
+                    	JpaCarFactory jpaCarFactory = factories.get(impl);
+                    	if(jpaCarFactory != null){
+                    		cars.add(jpaCarFactory.newInstance(this, impl, null, Jpa.settings().color(impl)));
+                    	} else {
+                    		cars.add(new JpaCar(this, impl, null, Jpa.settings().color(impl)));
+                    	}
                     } catch (Exception e) {
                         e.printStackTrace();
                     } 
@@ -128,21 +151,30 @@ public class JpaTeam extends Team{
     }
     
     public void setUp() {
-		for(int i = 0; i < mCars.length;i++){		
-			EntityManager em = ((JpaCar)mCars[i]).getEntityManager();
-			delete(em, ComplexHolder0.class);
-			delete(em, InheritanceHierarchy0.class);
-			delete(em, JpaIndexedObject.class);
-			delete(em, ListHolder.class);
-			delete(em, JPB0.class);
-			delete(em, JpaIndexedPilot.class);
-			delete(em, JpaPilot.class);
-			delete(em, JpaTree.class);
-			delete(em, JpaLightObject.class);
-			delete(em, JpaListHolder.class);
-			delete(em, JPN1.class);
+		for(int i = 0; i < mCars.length;i++){
+			JpaCar jpaCar = (JpaCar)mCars[i];
+			if(jpaCar.canRecreateDatabase()){
+				jpaCar.recreateDatabase();
+			} else {
+				deleteAllPersistentClasses(jpaCar);
+			}
 		}
-		
+	}
+
+
+	private void deleteAllPersistentClasses(JpaCar jpaCar) {
+		EntityManager em = jpaCar.getEntityManager();
+		delete(em, ComplexHolder0.class);
+		delete(em, InheritanceHierarchy0.class);
+		delete(em, JpaIndexedObject.class);
+		delete(em, ListHolder.class);
+		delete(em, JPB0.class);
+		delete(em, JpaIndexedPilot.class);
+		delete(em, JpaPilot.class);
+		delete(em, JpaTree.class);
+		delete(em, JpaLightObject.class);
+		delete(em, JpaListHolder.class);
+		delete(em, JPN1.class);
 	}
     
     private void delete(EntityManager em, Class clazz){

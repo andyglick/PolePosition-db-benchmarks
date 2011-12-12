@@ -18,35 +18,29 @@ Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA  02111-1307, USA. */
 
 
-package org.polepos.teams.jpa.data;
+package org.polepos.enhance;
 
-import javax.persistence.Entity;
+import java.io.*;
 
-@Entity
-@com.versant.jpa.annotations.Index(name="ii2", attributes={"i2"})
-public class ComplexHolder2 extends ComplexHolder1 {
+import org.apache.tools.ant.*;
+import org.apache.tools.ant.types.*;
+
+import com.versant.jpa.enhancer.ant.*;
+
+public class VodJpaEnhance {
 	
-    @org.apache.openjpa.persistence.jdbc.Index
-	public int i2;
-	
-	public int getI2() {
-		return i2;
+	public static void main(String[] args) {
+		Project project = new Project();
+		EnhancerTask enhancerTask = new EnhancerTask();
+		enhancerTask.setProject(project);
+		enhancerTask.setInheritsClasspath(true);
+		enhancerTask.setDestdir("bin");
+		FileSet fs = new FileSet();
+		fs.setProject(project);
+		fs.setDir(new File("bin"));
+		fs.createInclude().setName("**/*.class");
+		enhancerTask.addFileSet(fs);
+		enhancerTask.execute();
 	}
-
-	public void setI2(int i2) {
-		this.i2 = i2;
-	}
-
-	@Override
-	public long ownCheckSum() {
-		return i2 + super.ownCheckSum();
-	}
-
-	@Override
-	protected void setSpecial(int value) {
-		super.setSpecial(value);
-		i2 = value;
-	}
-
 
 }

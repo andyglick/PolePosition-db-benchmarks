@@ -57,10 +57,12 @@ import org.polepos.teams.jdo.data.ListHolder;
 
 public class JdoTeam extends Team{
     
-	private final Car[] mCars;
-    
-    public JdoTeam() {
-        
+	protected Car[] mCars;
+	
+	protected JdoTeam(boolean initialize){
+		if(! initialize){
+			return;
+		}
         String[] impls = Jdo.settings().getJdoImplementations();
         
         if(impls == null){
@@ -94,7 +96,11 @@ public class JdoTeam extends Team{
             mCars = new Car[ cars.size() ];
             cars.toArray(mCars);
         }
-        
+		
+	}
+    
+    public JdoTeam() {
+    	this(true);
     }
     
 	

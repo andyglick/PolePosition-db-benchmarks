@@ -49,6 +49,7 @@ public class VersionClassLoader extends URLClassLoader {
 
     protected Class<?> loadClass(String name,boolean resolve) throws ClassNotFoundException {
         try {
+        	// System.out.println(name + " ... loaded from VersionClassLoader");
             if(cache.containsKey(name)) {
                 return cache.get(name);
             }
