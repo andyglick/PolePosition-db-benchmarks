@@ -26,7 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public abstract class GraphReporter extends ReporterBase {
-
+	
 	protected Map<CircuitLap,Graph> mGraphs= new LinkedHashMap<CircuitLap,Graph>();
 	private java.util.List<Circuit> mCircuits= new ArrayList <Circuit>();
 	public static int timeIndex = 0;
@@ -90,8 +90,8 @@ public abstract class GraphReporter extends ReporterBase {
     @Override
 	public void endSeason() {
 		if(mGraphs != null){
-            for (Graph graph : mGraphs.values()) {
-            	report(graph);
+            for (CircuitLap circuitLap : mGraphs.keySet()) {
+            	report(mGraphs.get(circuitLap));
 			}
         }
 	}
