@@ -37,7 +37,7 @@ public class Graph {
     
     private final List<TeamCar>teamCars= new ArrayList<TeamCar>();
 	private final List<TurnSetup> setups=new ArrayList<TurnSetup>();
-    private final Map<TurnCombination,Result> results=new HashMap<TurnCombination,Result>();
+    private final Map<TurnCombination,Result> results=new LinkedHashMap<TurnCombination,Result>();
 	
     private final Circuit circuit;
     private final Lap lap;

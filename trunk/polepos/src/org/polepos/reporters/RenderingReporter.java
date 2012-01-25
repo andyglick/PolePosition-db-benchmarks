@@ -173,30 +173,27 @@ public abstract class RenderingReporter extends GraphReporter{
 		return dataset;
 	}
 
-	
-
 	protected static String legend(TurnSetup setup) {
 		String legend = "";
 		boolean first = true;
 		int count = 0;
 		for (SetupProperty sp : setup.properties()) {
+			String name = sp.name();
+			if (name.equals("commitinterval")) {
+				continue;
+			}
 			if (!first) {
 				legend += ", ";
 			}
-			String name = sp.name();
-			if (!name.equals("commitinterval")) {
-				legend += name + "=" + sp.value();
-				first = false;
-			}
+			legend += name + "=" + sp.value();
+			first = false;
 			count++;
 			if(count >= MAX_PROPERTIES_TO_DISPLAY){
 				return legend;
 			}
 		}
-
 		return legend;
 	}
-
 	
 	double logarithmicMagnitudeGraphValue(double average, double time, boolean bestOnTop){
 		if(average == time){

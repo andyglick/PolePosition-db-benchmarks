@@ -206,7 +206,8 @@ public abstract class PDFReporterBase extends RenderingReporter {
         para.add(new Chunk(lap.name()+ "\n",bigFont));
         _pdfData.add(para);
         
-        renderCode(lap);
+        // Don't render code for now, it's not included for all the laps.
+        // renderCode(lap);
 	}
 
 	private void renderCode(Lap lap) {
