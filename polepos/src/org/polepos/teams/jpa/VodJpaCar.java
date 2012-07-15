@@ -42,6 +42,10 @@ public class VodJpaCar extends JpaCar{
 	
 	@Override
 	public void recreateDatabase() {
+		if(_emf != null){
+			_emf.close();
+			_emf = null;
+		}
 		ServerAdministration.removeDatabase(_connectUrl);
 		ServerAdministration.createDatabase(_connectUrl);
 		try {

@@ -200,14 +200,19 @@ public class JdoCar extends Car {
 		((JdoTeam)team()).deleteAll(pm);
         pm.close();
         _persistenceManagerFactory.close();
+        _persistenceManagerFactory = null;
         
         properties.setProperty("datanucleus.autoCreateSchema", "false");
 
-        _persistenceManagerFactory = JDOHelper.getPersistenceManagerFactory(properties, Thread.currentThread().getContextClassLoader());
+        
         
     }
 
     public PersistenceManager getPersistenceManager() {
+    	if(_persistenceManagerFactory == null){
+    		_persistenceManagerFactory = JDOHelper.getPersistenceManagerFactory(properties, Thread.currentThread().getContextClassLoader());
+    	}
+    	
         PersistenceManager pm = _persistenceManagerFactory.getPersistenceManager();
         if(! "hsqldb".equals(_dbName)){
         	return pm;
@@ -239,6 +244,13 @@ public class JdoCar extends Car {
         }
         
         return _name;
+    }
+    
+    public void tearDown(){
+    	if(_persistenceManagerFactory != null){
+    		_persistenceManagerFactory.close();
+    		_persistenceManagerFactory = null;
+    	}
     }
 
 }

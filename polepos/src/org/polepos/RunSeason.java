@@ -94,16 +94,17 @@ public class RunSeason extends AbstractRunner {
 		return new Team[] {
 				VodJdoTeamFactory.newVodJdoTeam(),
 				VodJpaTeamFactory.newVodJpaTeam(),
+				
 //				new JdoTeam(),
 //				new JpaTeam(true),
-//				new Db4oTeam(),
 				
+// 				new Db4oTeam(),
 				new Db4oClientServerTeam(),
+				
 				new JdbcTeam(),
 				new HibernateTeam(),
+				new MongoDBTeam(),
 				
-//				new JpaTeam(),
-//				new MongoDBTeam(),
 //				new JviTeam(),
 		};
 	}
