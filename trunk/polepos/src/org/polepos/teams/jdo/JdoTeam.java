@@ -155,6 +155,14 @@ public class JdoTeam extends Team{
 		    pm.close();
 		}
 	}
+	
+	@Override
+	protected void tearDown() {
+		for(int i = 0; i < mCars.length;i++){		
+		    JdoCar jdoCar = (JdoCar)mCars[i];
+		    jdoCar.tearDown();
+		}
+	}
 
 
 	public void deleteAll(PersistenceManager pm) {

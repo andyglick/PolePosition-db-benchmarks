@@ -32,8 +32,9 @@
 	<classpathentry kind="lib" path="lib/vod/jpa-agent.jar"/>
 	<classpathentry kind="lib" path="lib/jpa/javax.persistence_2.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/vod/antlr-3.3-complete.jar"/>
-	<classpathentry kind="lib" path="lib/vod/asm-all-4.0_RC1.jar"/>
 	<classpathentry kind="lib" path="lib/common/ant.jar"/>
+	<classpathentry kind="lib" path="lib/vod/asm-all-4.0.jar"/>
+	<classpathentry kind="lib" path="lib/vod/commons-cli-1.1.jar"/>
 	<classpathentry kind="var" path="JUNIT_HOME/junit.jar" sourcepath="/ECLIPSE_HOME/plugins/org.eclipse.jdt.source_3.1.0/src/org.junit_3.8.1/junitsrc.zip"/>
 	<classpathentry kind="lib" path="lib/graph/gnujaxp.jar"/>
 	<classpathentry kind="lib" path="lib/graph/itext-1.2.jar"/>

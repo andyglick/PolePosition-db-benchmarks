@@ -35,7 +35,7 @@ final class MongoDBCar extends Car {
 
     @Override
     public String name() {
-        return "1.8.2";
+        return "2.0.6";
     }
 
 

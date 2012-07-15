@@ -20,27 +20,44 @@ MA  02111-1307, USA. */
 
 package org.polepos.enhance;
 
-import java.io.*;
+import java.net.*;
 
-import org.apache.tools.ant.*;
-import org.apache.tools.ant.types.*;
-
-import com.versant.jpa.enhancer.ant.*;
+import com.versant.jpa.enhancer.main.*;
 
 public class VodJpaEnhance {
 	
 	public static void main(String[] args) {
-		Project project = new Project();
-		EnhancerTask enhancerTask = new EnhancerTask();
-		enhancerTask.setProject(project);
-		enhancerTask.setInheritsClasspath(true);
-		enhancerTask.setDestdir("bin");
-		FileSet fs = new FileSet();
-		fs.setProject(project);
-		fs.setDir(new File("bin"));
-		fs.createInclude().setName("**/*.class");
-		enhancerTask.addFileSet(fs);
-		enhancerTask.execute();
+		
+        args = new String[]{
+                "-b",
+                "bin",
+                "-d",
+                "bin",
+                "-l"
+        };
+        try {
+            EnhancerMain.main(args);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+        
+        // The following is the Ant task way. Specifying a persistence unit doesn't seem to work.
+		
+//		Project project = new Project();
+//		EnhancerTask enhancerTask = new EnhancerTask();
+//		enhancerTask.setProject(project);
+//		enhancerTask.setInheritsClasspath(true);
+//		// enhancerTask.setPersistenceUnit("vodjpa");
+//		File destdir = new File("bin");
+//		System.out.println(destdir.getAbsolutePath());
+//		enhancerTask.setDestdir(destdir);
+//		FileSet fs = new FileSet();
+//		fs.setProject(project);
+//		fs.setDir(destdir);
+//		fs.createInclude().setName("**/*.class");
+//		fs.createInclude().setName("**/*.xml");
+//		enhancerTask.addFileSet(fs);
+//		enhancerTask.execute();
 	}
 
 }
